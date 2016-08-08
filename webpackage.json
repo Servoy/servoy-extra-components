@@ -2,7 +2,7 @@
     "name":"servoyextra",
     "displayName":"Servoy Extra Components Package",
     "packageType": "Web-Component",
-    "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Boostrap_logo.svg/1020px-Boostrap_logo.svg.png",
+    "icon": "https://raw.githubusercontent.com/Servoy/servoy-extra-components/master/servoy.png",
     "description": "A set of extra components like a tree and a table",
     "wikiUrl": "https://github.com/Servoy/servoy-extra-components/wiki",
     "sourceUrl" : "https://github.com/Servoy/servoy-extra-components",
