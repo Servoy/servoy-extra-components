@@ -1,10 +1,10 @@
 {
     "name":"servoyextra",
-    "displayName":"Servoy Extra Components Package",
+    "displayName":"Servoy Extra Components",
     "packageType": "Web-Component",
     "icon": "https://raw.githubusercontent.com/Servoy/servoy-extra-components/master/servoy.png",
     "description": "A set of extra components like a tree and a table",
     "wikiUrl": "https://github.com/Servoy/servoy-extra-components/wiki",
     "sourceUrl" : "https://github.com/Servoy/servoy-extra-components",
-    "releases" : [{"version":"1.0.0","url":"https://github.com/Servoy/servoy-extra-components/releases/download/v1.0.0/servoyextra.zip"}]
+    "releases" : [{"version":"1.0.0","url":"https://github.com/Servoy/servoy-extra-components/releases/download/V1.0.0/servoy-extra-components.zip"}]
 }
