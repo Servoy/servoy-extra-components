@@ -29,7 +29,7 @@
 			"styleClass" : { "type" :"styleclass"},
 			"styleClassDataprovider" : { "type": "dataprovider",	"forFoundset": "foundset"},
 			"valuelist" : { "type" : "valuelist", "tags": { "scope" :"design" }, "for": "dataprovider"},
-			"width" : {"type" : "int"}
+			"width" : {"type" : "string"}
 		}
 	},
 	"handlers":

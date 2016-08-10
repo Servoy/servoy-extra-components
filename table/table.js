@@ -22,7 +22,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     				  var headers = table.find("th");
     				  $scope.$apply(function(){    	                	
         				  for(var i = 0; i < headers.length; i++) {
-        					  $scope.model.columns[i].width = $(headers.get(i)).outerWidth(false);
+        					  $scope.model.columns[i].width = $(headers.get(i)).outerWidth(false) + "px";
         				  }
     				  })    	                
     			  }
@@ -32,7 +32,22 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     	  function calculateTableWidth() {
     		  var tableWidth = 0;
     		  for(var i = 0; i < $scope.model.columns.length; i++) {
-    			  tableWidth += $scope.model.columns[i].width;
+    			  var w = $scope.model.columns[i].width;
+    			  if(w) {
+    				  w = w.trim().toLowerCase();
+    				  if(w.indexOf("px") == w.length - 2) {
+    					  var wNumber = parseInt(w.substring(0, w.length - 2));
+    					  if(isNaN(wNumber)) {
+    						  tableWidth = 0;
+    						  break;
+    					  }
+    	    			  tableWidth += wNumber;
+    				  }
+    				  else {
+    					  tableWidth = 0;
+    					  break;
+    				  }
+    			  }
     		  }
     		  return tableWidth;
     	  }
@@ -251,8 +266,8 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     	  
     	  $scope.getColumnStyle = function (column) {
         	  var columnStyle = {};
-        	  if($scope.model.columns[column].width > 0) {
-        		  columnStyle.width = $scope.model.columns[column].width + "px";
+        	  if($scope.model.columns[column].width) {
+        		  columnStyle.width = $scope.model.columns[column].width;
         	  }
         	  return columnStyle;
     	  }
