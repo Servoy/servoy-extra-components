@@ -15,7 +15,8 @@
 		"styleClass" : { "type": "styleclass", "tags": { "scope": "design" }, "default": "table", "values": ["table", "table-striped", "table-bordered", "table-hover", "table-condensed"] },
 		"selectionClass" : { "type": "styleclass", "default": "table-servoyextra-selected "},
 		"tabSeq" : {"type" :"tabseq", "tags": { "scope" :"design" }},
-	 	"visible" : "visible"
+	 	"visible" : "visible",
+	 	"enableColumnResize" : {"type":"boolean", "default": false}
 	},
 	"types":
 	{

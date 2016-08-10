@@ -40,21 +40,22 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     	  $scope.tableWidth = calculateTableWidth();
     	  
     	  $scope.$on('ngRowsRenderRepeatFinished', function(ngRepeatFinishedEvent) {
-    		  addColResizable(false);
-        	  Object.defineProperty($scope.model, $sabloConstants.modelChangeNotifier, {
-        		  configurable : true,
-        		  value : function(property, value) {
-        			  switch (property) {
-        			  	case "columns":
-        			  		$scope.tableWidth = calculateTableWidth();
-        			  		$timeout(function() {
-        			  			addColResizable(true);
-        			  		}, 0);
-        			  		break;
-        			  }
-        		  }
-        	  });
-
+    		  if($scope.model.enableColumnResize) {
+	    		  addColResizable(false);
+	        	  Object.defineProperty($scope.model, $sabloConstants.modelChangeNotifier, {
+	        		  configurable : true,
+	        		  value : function(property, value) {
+	        			  switch (property) {
+	        			  	case "columns":
+	        			  		$scope.tableWidth = calculateTableWidth();
+	        			  		$timeout(function() {
+	        			  			addColResizable(true);
+	        			  		}, 0);
+	        			  		break;
+	        			  }
+	        		  }
+	        	  });
+    		  }
     	  });
 
     	  $scope.$watch('model.foundset.serverSize', function (newValue) {
