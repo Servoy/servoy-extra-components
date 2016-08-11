@@ -273,11 +273,19 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     	  }
 
     	  $scope.getCellStyle = function (column) {
-        	  var columnStyle = {};
-        	  if($scope.model.columns[column].width && column < $scope.model.columns.length - 1) {
-        		  columnStyle.width = $scope.model.columns[column].width;
+        	  var cellStyle = {};
+        	  if(column < $scope.model.columns.length - 1) {
+        		  if($scope.model.columns[column].width) {
+        			  cellStyle.width = $scope.model.columns[column].width;
+        		  }
+        		  else {
+            		  var tbl = $element.find("table:first");
+    				  var headers = tbl.find("th");
+    				  cellStyle.width = $(headers.get(column)).outerWidth(false) + "px";        			  
+        		  }
+        			  
         	  }
-        	  return columnStyle;
+        	  return cellStyle;
     	  }    	  
     	  
       },
