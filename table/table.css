@@ -2,9 +2,23 @@
 	background-color: #CCCCFF;
 }
 
-.tablewrapper
-{
+.tablewrapper {
 	width: 100%;
     height: 100%;
-    overflow: auto;
+}
+
+.tablewrapper table {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 100%;	
+}
+
+.tablewrapper tbody {
+	overflow: auto;
+	position: absolute;
+	top: 38px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
 }
