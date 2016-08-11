@@ -29,24 +29,30 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     		  });    		  
     	  }
     	  
+    	  function getNumberFromWidthString(s) {
+    		  var numberFromWidthString = -1;
+			  if(s) {
+				  s = s.trim().toLowerCase();
+				  if(s.indexOf("px") == s.length - 2) {
+					  var wNumber = parseInt(s.substring(0, s.length - 2));
+					  if(!isNaN(wNumber)) {
+						  numberFromWidthString = wNumber;
+					  }
+				  }
+			  }
+			  return numberFromWidthString;
+    	  }
+    	  
     	  function calculateTableWidth() {
     		  var tableWidth = 0;
     		  for(var i = 0; i < $scope.model.columns.length; i++) {
-    			  var w = $scope.model.columns[i].width;
-    			  if(w) {
-    				  w = w.trim().toLowerCase();
-    				  if(w.indexOf("px") == w.length - 2) {
-    					  var wNumber = parseInt(w.substring(0, w.length - 2));
-    					  if(isNaN(wNumber)) {
-    						  tableWidth = 0;
-    						  break;
-    					  }
-    	    			  tableWidth += wNumber;
-    				  }
-    				  else {
-    					  tableWidth = 0;
-    					  break;
-    				  }
+    			  var w = getNumberFromWidthString($scope.model.columns[i].width);
+    			  if(w > -1) {
+    				  tableWidth += w;
+    			  }
+    			  else {
+    				  tableWidth = 0;
+    				  break;
     			  }
     		  }
     		  return tableWidth;
@@ -261,32 +267,58 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     		  if($scope.tableWidth > 0) {
     			  tableStyle.width = $scope.tableWidth + "px";
     		  }
+    		  if($scope.showPagination()) {
+//        		  var tbl = $element.find("table:first");
+//    			  var pagination = tbl.find("ul");
+    			  tableStyle.paddingBottom = "36px";
+    		  }
     		  return tableStyle;
     	  }
     	  
     	  $scope.getColumnStyle = function (column) {
-        	  var columnStyle = {};
+        	  var columnStyle = {overflow: "hidden"};
         	  if($scope.model.columns[column].width) {
         		  columnStyle.width = $scope.model.columns[column].width;
+    			  var w = getNumberFromWidthString($scope.model.columns[column].width);
+    			  if(w > -1) {
+    				  columnStyle.minWidth = $scope.model.columns[column].width;
+    				  columnStyle.maxWidth = $scope.model.columns[column].width;
+    			  }        		  
         	  }
         	  return columnStyle;
     	  }
 
     	  $scope.getCellStyle = function (column) {
         	  var cellStyle = {};
-        	  if(column < $scope.model.columns.length - 1) {
-        		  if($scope.model.columns[column].width) {
-        			  cellStyle.width = $scope.model.columns[column].width;
-        		  }
-        		  else {
+        	  if(column < $scope.model.columns.length) {
+        		  var w = getNumberFromWidthString($scope.model.columns[column].width);
+        		  if (w < 0) {
             		  var tbl = $element.find("table:first");
     				  var headers = tbl.find("th");
-    				  cellStyle.width = $(headers.get(column)).outerWidth(false) + "px";        			  
+    				  if($(headers).is(":visible")) {
+    					  w = $(headers.get(column)).outerWidth(false);
+    				  }
         		  }
-        			  
+        		  if(w > -1) {
+        			  cellStyle.minWidth = w + "px";
+        			  cellStyle.width = w + "px";
+        		  }
+        		  else if ($scope.model.columns[column].width) {
+        			  cellStyle.width = $scope.model.columns[column].width;
+        		  }
         	  }
         	  return cellStyle;
-    	  }    	  
+    	  }
+    	  
+    	  $scope.getTBodyStyle = function() {
+    		  var tBodyStyle = {};    		  
+    		  var tbl = $element.find("table:first");
+			  var tblHead = tbl.find("thead");
+			  if($(tblHead).is(":visible")) {
+				  tBodyStyle.top = $(tblHead).height() + "px";
+			  }
+			  return tBodyStyle;
+    	  }
     	  
       },
       templateUrl: 'servoyextra/table/table.html'
