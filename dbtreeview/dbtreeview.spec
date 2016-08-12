@@ -2,6 +2,7 @@
 	"name": "servoyextra-dbtreeview",
 	"displayName": "DBTreeview",
 	"version": 1,
+	"icon": "servoyextra/dbtreeview/DBTreeView32.gif",
 	"definition": "servoyextra/dbtreeview/dbtreeview.js",
 	"serverscript": "servoyextra/dbtreeview/dbtreeview_server.js",
 	"libraries": [{"name":"dbtreeview.css", "version":"1", "url":"servoyextra/dbtreeview/css/dbtreeview.css", "mimetype":"text/css"}],
