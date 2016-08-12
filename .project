@@ -5,8 +5,14 @@
 	<projects>
 	</projects>
 	<buildSpec>
+		<buildCommand>
+			<name>sj.jsonSchemaValidationBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>com.servoy.eclipse.core.ServoyNGPackage</nature>
+		<nature>sj.jsonSchemaValidationNature</nature>
 	</natures>
 </projectDescription>
