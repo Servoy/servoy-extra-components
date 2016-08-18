@@ -7,6 +7,20 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
       },
       link: function($scope, $element, $attrs) {
     	  
+    	  function getNumberFromPxString(s) {
+    		  var numberFromPxString = -1;
+			  if(s) {
+				  s = s.trim().toLowerCase();
+				  if(s.indexOf("px") == s.length - 2) {
+					  var wNumber = parseInt(s.substring(0, s.length - 2));
+					  if(!isNaN(wNumber)) {
+						  numberFromPxString = wNumber;
+					  }
+				  }
+			  }
+			  return numberFromPxString;
+    	  }    	  
+    	  
     	  function addColResizable(cleanPrevious) {
     		  var tbl = $element.find("table:first");
     		  if(cleanPrevious) {
@@ -18,6 +32,16 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     			  liveDrag:false,
     			  resizeMode:"fit",
     			  onResize:function(e) {
+    				  var resizer = $element.find(".JCLRgrips");
+    				  var resizerLeft = getNumberFromPxString($(resizer).css("left"));
+    				  if(resizerLeft < 0) {
+        				  var colGrips = $element.find(".JCLRgrip");
+        				  for(var i = 0; i < colGrips.length; i++) {
+        					  var left = getNumberFromPxString($(colGrips.get(i)).css("left"));
+        					  $(colGrips.get(i)).css("left", left - resizerLeft + "px");
+        				  }  
+    				  }
+    				  
     				  var table = $(e.currentTarget); //reference to the resized table
     				  var headers = table.find("th");
     				  $scope.$apply(function(){    	                	
@@ -29,24 +53,10 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     		  });    		  
     	  }
     	  
-    	  function getNumberFromWidthString(s) {
-    		  var numberFromWidthString = -1;
-			  if(s) {
-				  s = s.trim().toLowerCase();
-				  if(s.indexOf("px") == s.length - 2) {
-					  var wNumber = parseInt(s.substring(0, s.length - 2));
-					  if(!isNaN(wNumber)) {
-						  numberFromWidthString = wNumber;
-					  }
-				  }
-			  }
-			  return numberFromWidthString;
-    	  }
-    	  
     	  function calculateTableWidth() {
     		  var tableWidth = {size : 0, autoColumns: 0};
     		  for(var i = 0; i < $scope.model.columns.length; i++) {
-    			  var w = getNumberFromWidthString($scope.model.columns[i].width);
+    			  var w = getNumberFromPxString($scope.model.columns[i].width);
     			  if(w > -1) {
     				  tableWidth.size += w;
     			  }
@@ -310,21 +320,21 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     	  }
     	  
     	  $scope.getColumnStyle = function (column) {
-        	  var columnStyle = {};
-			  var w = getNumberFromWidthString($scope.model.columns[column].width);
+        	  var columnStyle = {overflow: "hidden"};
+			  var w = getNumberFromPxString($scope.model.columns[column].width);
 			  if(w > -1) {
 				  columnStyle.width = $scope.model.columns[column].width;
 			  }
 			  else {
-				  columnStyle.width = (($scope.model.size.width - tableWidth.size) / tableWidth.autoColumns) + "px";
+				  columnStyle.width = (($scope.model.size.width - tableWidth.size - 18) / tableWidth.autoColumns) + "px";
 			  }
         	  return columnStyle;
     	  }
 
     	  $scope.getCellStyle = function (column) {
-        	  var cellStyle = {};
+        	  var cellStyle = {overflow: "hidden"};
         	  if(column < $scope.model.columns.length) {
-        		  var w = getNumberFromWidthString($scope.model.columns[column].width);
+        		  var w = getNumberFromPxString($scope.model.columns[column].width);
         		  if (w < 0) {
             		  var tbl = $element.find("table:first");
     				  var headers = tbl.find("th");
@@ -335,6 +345,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
         		  if(w > -1) {
         			  cellStyle.minWidth = w + "px";
         			  cellStyle.width = w + "px";
+        			  cellStyle.maxWidth = w + "px";
         		  }
         		  else if ($scope.model.columns[column].width) {
         			  cellStyle.width = $scope.model.columns[column].width;
