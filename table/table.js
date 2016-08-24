@@ -6,7 +6,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
        	handlers: "=svyHandlers"
       },
       link: function($scope, $element, $attrs) {
-    	  
+
     	  function getNumberFromPxString(s) {
     		  var numberFromPxString = -1;
 			  if(s) {
@@ -21,6 +21,93 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
 			  return numberFromPxString;
     	  }    	  
     	  
+    	  function calculateTableWidth() {
+    		  var tableWidth = 0;
+    		  for(var i = 0; i < $scope.model.columns.length; i++) {
+    			  var w = getNumberFromPxString($scope.model.columns[i].width);
+    			  if(w > -1) {
+    				  tableWidth += w;
+    			  }
+    		  }
+    		  return tableWidth;
+    	  }    	  
+    	  
+    	  function getAutoColumns() {
+    		  var autoColumns = {columns: {}, count : 0};
+    		  for(var i = 0; i < $scope.model.columns.length; i++) {
+    			  var w = getNumberFromPxString($scope.model.columns[i].width);
+    			  if(w < 0) {
+    				  autoColumns.columns[i] = true;
+    				  autoColumns.count += 1;
+    			  }
+    		  }
+
+    		  return autoColumns;    		  
+    	  }
+    	  
+    	  var tableWidth = calculateTableWidth();
+    	  var autoColumns = getAutoColumns();
+    	  $scope.componentWidth = $element.parent().outerWidth(false);
+    	  
+    	  var tableLeftOffset = 0;
+    	  var onTBodyScrollListener = null;
+    	  var resizeTimeout = null;
+    	  
+    	  function onColumnResize() {
+
+			  var table = $element.find("table:first");
+			  var headers = table.find("th");
+    	                	
+			  for(var i = 0; i < headers.length; i++) {
+				  var header = $(headers.get(i));
+				  $scope.model.columns[i].width = header[0].style.maxWidth = header[0].style.minWidth = header[0].style.width;
+			  }
+			  
+			  var resizer = $element.find(".JCLRgrips");
+			  var resizerLeft = getNumberFromPxString($(resizer).css("left"));
+
+			  var colGrips = $element.find(".JCLRgrip");
+			  var leftOffset = 1;
+			  for(var i = 0; i < colGrips.length; i++) {
+				  leftOffset += getNumberFromPxString($scope.model.columns[i].width);
+				  $(colGrips.get(i)).css("left", leftOffset - resizerLeft + "px");
+			  }
+    	  }
+    	  
+
+    	  $(window).on('resize', function() {
+    		  if(resizeTimeout) $timeout.cancel(resizeTimeout);
+    		  resizeTimeout = $timeout(function() {
+				  $scope.$apply(function(){
+					  var newComponentWidth = $element.parent().outerWidth(false);
+					  var deltaWidth = newComponentWidth - $scope.componentWidth;
+	        		  $scope.componentWidth = newComponentWidth;
+
+	    			  for(var i = $scope.model.columns.length - 1; i > -1; i--) {
+	    				  if(autoColumns.columns[i]) {
+	    					  var cw = getNumberFromPxString($scope.model.columns[i].width);
+	    					  if(cw > -1) {
+		    					  if(cw + deltaWidth > 5) {
+		    						  $scope.model.columns[i].width = (cw + deltaWidth) + "px";
+		    						  break;
+		    					  }
+		    					  else {
+		    						  $scope.model.columns[i].width = 5 + "px";
+		    						  deltaWidth -= (cw - 5);
+		    					  }
+	    					  }
+	    				  }
+	    			  }
+	        		  if($scope.model.enableColumnResize) {
+//	        			tableWidth = calculateTableWidth();
+    			  		$timeout(function() {
+    			  			addColResizable(true);
+    			  		}, 0);
+	        		  }
+				  })   
+    		  }, 50);
+    	  });
+
     	  function addColResizable(cleanPrevious) {
     		  var tbl = $element.find("table:first");
     		  if(cleanPrevious) {
@@ -32,46 +119,13 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     			  liveDrag:false,
     			  resizeMode:"fit",
     			  onResize:function(e) {
-    				  var resizer = $element.find(".JCLRgrips");
-    				  var resizerLeft = getNumberFromPxString($(resizer).css("left"));
-    				  if(resizerLeft < 0) {
-        				  var colGrips = $element.find(".JCLRgrip");
-        				  for(var i = 0; i < colGrips.length; i++) {
-        					  var left = getNumberFromPxString($(colGrips.get(i)).css("left"));
-        					  $(colGrips.get(i)).css("left", left - resizerLeft + "px");
-        				  }  
-    				  }
-    				  
-    				  var table = $(e.currentTarget); //reference to the resized table
-    				  var headers = table.find("th");
     				  $scope.$apply(function(){    	                	
-        				  for(var i = 0; i < headers.length; i++) {
-        					  $scope.model.columns[i].width = $(headers.get(i)).outerWidth(false) + "px";
-        				  }
-    				  })    	                
+    					  onColumnResize();
+    				  })
     			  }
-    		  });    		  
-    	  }
-    	  
-    	  function calculateTableWidth() {
-    		  var tableWidth = {size : 0, autoColumns: 0};
-    		  for(var i = 0; i < $scope.model.columns.length; i++) {
-    			  var w = getNumberFromPxString($scope.model.columns[i].width);
-    			  if(w > -1) {
-    				  tableWidth.size += w;
-    			  }
-    			  else {
-    				  tableWidth.autoColumns += 1;
-    			  }
-    		  }
-
-    		  return tableWidth;
+    		  	});
     	  }
 
-    	  var tableWidth = calculateTableWidth();
-    	  
-    	  var tableLeftOffset = 0;
-    	  var onTBodyScrollListener = null;
     	  
     	  $scope.$on('ngRowsRenderRepeatFinished', function(ngRepeatFinishedEvent) {
     		  if(!onTBodyScrollListener) {
@@ -95,6 +149,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
 	        		  value : function(property, value) {
 	        			  switch (property) {
 	        			  	case "columns":
+	        			  		var cols = $scope.model.columns;
 	        			  		tableWidth = calculateTableWidth();
 	        			  		$timeout(function() {
 	        			  			addColResizable(true);
@@ -291,20 +346,21 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     	  
     	  $scope.getTableStyle = function () {
     		  var tableStyle = {};
-    	      tableStyle.width = tableWidth.autoColumns > 0 ? $scope.model.size.width + "px" : tableWidth.size + "px";
+    	      tableStyle.width = autoColumns.count > 0 ? $scope.componentWidth + "px" : tableWidth + "px";
     		  return tableStyle;
     	  }
   
     	  
     	  $scope.getTHeadStyle = function() {
     		  var tHeadStyle = {};
-   			  tHeadStyle.width = tableWidth.autoColumns > 0 ? $scope.model.size.width + "px" : tableWidth.size + "px";
+   			  tHeadStyle.width = autoColumns.count > 0 ? $scope.componentWidth + "px" : tableWidth + "px";
     		  tHeadStyle.left = tableLeftOffset + "px";
     		  return tHeadStyle;
     	  }
     	  
     	  $scope.getTBodyStyle = function() {
-    		  var tBodyStyle = {width: $scope.model.size.width + "px"};    		  
+    		  var tBodyStyle = {};
+    		  tBodyStyle.width = $scope.componentWidth + "px";
     		  var tbl = $element.find("table:first");
 			  var tblHead = tbl.find("thead");
 			  if($(tblHead).is(":visible")) {
@@ -323,17 +379,20 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
         	  var columnStyle = {overflow: "hidden"};
 			  var w = getNumberFromPxString($scope.model.columns[column].width);
 			  if(w > -1) {
+				  columnStyle.minWidth = columnStyle.maxWidth = columnStyle.width = $scope.model.columns[column].width;
+			  }
+			  else if($scope.model.columns[column].width) {
 				  columnStyle.width = $scope.model.columns[column].width;
 			  }
 			  else {
-				  columnStyle.width = (($scope.model.size.width - tableWidth.size - 18) / tableWidth.autoColumns) + "px";
+				  columnStyle.minWidth = columnStyle.maxWidth = columnStyle.width = (($scope.componentWidth - tableWidth - 18) / autoColumns.count) + "px";
 			  }
         	  return columnStyle;
     	  }
 
-    	  $scope.getCellStyle = function (column) {
+    	  $scope.getCellStyle = function (row, column) {
         	  var cellStyle = {overflow: "hidden"};
-        	  if(column < $scope.model.columns.length) {
+        	  if(row == 0 && column < $scope.model.columns.length) {
         		  var w = getNumberFromPxString($scope.model.columns[column].width);
         		  if (w < 0) {
             		  var tbl = $element.find("table:first");
