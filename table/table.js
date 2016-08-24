@@ -392,7 +392,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
 
     	  $scope.getCellStyle = function (row, column) {
         	  var cellStyle = {overflow: "hidden"};
-        	  if(row == 0 && column < $scope.model.columns.length) {
+        	  if(/*row == 0 && */column < $scope.model.columns.length) {
         		  var w = getNumberFromPxString($scope.model.columns[column].width);
         		  if (w < 0) {
             		  var tbl = $element.find("table:first");
