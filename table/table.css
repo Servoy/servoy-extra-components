@@ -2,6 +2,19 @@
 	background-color: #CCCCFF;
 }
 
+.table-servoyextra-header-label {
+	display: inline-block;
+}
+
+.table-servoyextra-sort-show-up, .table-servoyextra-sort-show-down{
+	float: right;
+	padding: 2px;
+}
+
+.table-servoyextra-sort-hide {
+	display: none;
+}
+
 .tablewrapper {
 	overflow: hidden;
 	position: absolute;

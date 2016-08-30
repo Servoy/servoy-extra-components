@@ -1,4 +1,4 @@
-angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$timeout","$sabloConstants", function($timeout, $sabloConstants) {  
+angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$timeout","$sabloConstants","$foundsetTypeConstants", function($timeout, $sabloConstants, $foundsetTypeConstants) {  
     return {
       restrict: 'E',
       scope: {
@@ -12,10 +12,10 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
 			  if(s) {
 				  s = s.trim().toLowerCase();
 				  if(s.indexOf("px") == s.length - 2) {
-					  var wNumber = parseInt(s.substring(0, s.length - 2));
-					  if(!isNaN(wNumber)) {
-						  numberFromPxString = wNumber;
-					  }
+					  s = s.substring(0, s.length - 2);
+				  }
+				  if($.isNumeric(s)) {
+					  numberFromPxString = parseInt(s);
 				  }
 			  }
 			  return numberFromPxString;
@@ -99,7 +99,6 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
 	    				  }
 	    			  }
 	        		  if($scope.model.enableColumnResize) {
-//	        			tableWidth = calculateTableWidth();
     			  		$timeout(function() {
     			  			addColResizable(true);
     			  		}, 0);
@@ -149,7 +148,6 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
 	        		  value : function(property, value) {
 	        			  switch (property) {
 	        			  	case "columns":
-	        			  		var cols = $scope.model.columns;
 	        			  		tableWidth = calculateTableWidth();
 	        			  		$timeout(function() {
 	        			  			addColResizable(true);
@@ -300,9 +298,23 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     		  }
     	  }
     	  
-    	  if ($scope.handlers.onHeaderClick) {
+    	  if ($scope.model.enableSort || $scope.handlers.onHeaderClick) {
     		  $scope.headerClicked = function(column) {
-    			  $scope.handlers.onHeaderClick(column);
+    			  if($scope.model.enableSort) {
+					  var sortCol = $scope.model.columns[column].dataprovider.idForFoundset;
+					  var sortDirection = "asc";
+    				  if($scope.model.foundset.sortColumns) {
+    					  var sortColumnsA = $scope.model.foundset.sortColumns.split(" ");
+    					  if(sortCol == sortColumnsA[0] ) {
+    						  sortDirection = sortColumnsA[1].toLowerCase() == "asc" ? "desc" : "asc";
+    					  }
+    				  }
+    				  $scope.model.foundset.sortColumns = sortCol + " " + sortDirection;
+					  $scope.model.foundset.sort([{name: sortCol, direction: sortDirection}]);
+    			  }
+    			  if($scope.handlers.onHeaderClick) {
+    				  $scope.handlers.onHeaderClick(column);
+    			  }
     		  }
     	  }
     	  
@@ -353,6 +365,9 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     	  
     	  $scope.getTHeadStyle = function() {
     		  var tHeadStyle = {};
+    		  if($scope.model.enableSort || $scope.handlers.onHeaderClick) {
+    			  tHeadStyle.cursor = "pointer";
+    		  }
    			  tHeadStyle.width = autoColumns.count > 0 ? $scope.componentWidth + "px" : tableWidth + "px";
     		  tHeadStyle.left = tableLeftOffset + "px";
     		  return tHeadStyle;
@@ -412,6 +427,20 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
         	  }
         	  return cellStyle;
     	  }
+    	  
+    	  $scope.getSortClass = function (column) {
+    		  var sortClass = "table-servoyextra-sort-hide";
+    		  if($scope.model.enableSort && $scope.model.foundset.sortColumns) {
+    			  var sortCol = $scope.model.columns[column].dataprovider.idForFoundset;
+    			  var sortColumnsA = $scope.model.foundset.sortColumns.split(" ");
+    			  if(sortCol == sortColumnsA[0]) {
+    				  var direction = sortColumnsA[1].toLowerCase() == "asc" ? "up" : "down";
+    				  sortClass = "table-servoyextra-sort-show-" + direction + " glyphicon glyphicon-chevron-" + direction;
+    			  }
+    		  }
+    		  return sortClass;
+    	  }
+    	  
       },
       templateUrl: 'servoyextra/table/table.html'
     };

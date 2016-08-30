@@ -2,7 +2,7 @@
 	<table ng-style="getTableStyle()" class='svy-table' ng-class="model.styleClass" sablo-tabseq='model.tabSeq' ng-keydown="keyPressed($event)" ng-click="tableClicked($event,1)" svy-rightclick="tableRightClick($event)">
 	   <thead ng-style="getTHeadStyle()">
 	  	<tr>
-	    	<th ng-style="getColumnStyle(model.columns.indexOf(column))" ng-class="column.headerStyleClass" ng-repeat="column in model.columns" svy-click="headerClicked(model.columns.indexOf(column))"><div ng-bind='column.headerText'></div></th>
+	    	<th ng-style="getColumnStyle(model.columns.indexOf(column))" ng-class="column.headerStyleClass" ng-repeat="column in model.columns" svy-click="headerClicked(model.columns.indexOf(column))"><div ng-bind='column.headerText' class="table-servoyextra-header-label"></div><span ng-class="getSortClass(model.columns.indexOf(column))"></span></th>
 		</tr>	   
 	   </thead>
 	  <tbody ng-style="getTBodyStyle()">

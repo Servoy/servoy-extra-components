@@ -16,7 +16,8 @@
 		"selectionClass" : { "type": "styleclass", "default": "table-servoyextra-selected "},
 		"tabSeq" : {"type" :"tabseq", "tags": { "scope" :"design" }},
 	 	"visible" : "visible",
-	 	"enableColumnResize" : {"type":"boolean", "default": false}
+	 	"enableColumnResize" : {"type":"boolean", "default": false},
+	 	"enableSort" : {"type":"boolean", "default": true}
 	},
 	"types":
 	{
