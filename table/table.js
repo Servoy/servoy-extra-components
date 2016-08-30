@@ -400,7 +400,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
 				  columnStyle.width = $scope.model.columns[column].width;
 			  }
 			  else {
-				  columnStyle.minWidth = columnStyle.maxWidth = columnStyle.width = (($scope.componentWidth - tableWidth - 18) / autoColumns.count) + "px";
+				  columnStyle.minWidth = columnStyle.maxWidth = columnStyle.width = Math.floor(($scope.componentWidth - tableWidth - 18) / autoColumns.count) + "px";
 			  }
         	  return columnStyle;
     	  }
