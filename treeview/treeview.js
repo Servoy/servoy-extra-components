@@ -81,10 +81,26 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       		return fancyTreeJSON;
       	}
       	
+      	/**
+		 * Refresh the tree display.
+		 *
+		 * @example
+		 * %%elementName%%.refresh()
+		 *
+		 */
       	$scope.api.refresh = function(restoreExpandedNodes) {
       		if(theTree) theTree.reload();
       	}
       	
+      	/**
+		 * Expand a node by id.
+		 *
+		 * @example
+		 * %%elementName%%.expandNode(22)
+		 *
+		 * @param nodeId node id
+		 * 
+		 */
       	$scope.api.expandNode = function(nodeId) {
       		if(theTree) {
 	  			var node = theTree.getNodeByKey(nodeId.toString());
@@ -95,6 +111,16 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       		}
       	}
 
+    	/**
+		 * Returns expand state of a node.
+		 *
+		 * @example
+		 * var expanded = %%elementName%%.isNodeExpanded([22])
+		 *
+		 * @param pk array of each level id
+		 * 
+		 * @return {boolean}
+		 */
       	$scope.api.isNodeExpanded = function(nodeId) {
       		if(theTree) {
 	  			var node = theTree.getNodeByKey(nodeId.toString());
@@ -105,6 +131,15 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       		return false;
       	}
 
+      	/**
+		 * Collaps a node by id.
+		 *
+		 * @example
+		 * %%elementName%%.collapseNode(22)
+		 *
+		 * @param nodeId node id
+		 * 
+		 */
       	$scope.api.collapseNode = function(nodeId) {
       		if(theTree) {
 	  			var node = theTree.getNodeByKey(nodeId.toString());
@@ -114,6 +149,14 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       		}
       	}
 
+      	/**
+      	 * Sets selected node by id.
+      	 *
+      	 * @example
+      	 * %%elementName%%.setSelectedNode(22)
+      	 *
+      	 * @param nodeId node id
+      	 */
       	$scope.api.setSelectedNode = function(nodeId) {
       		if(theTree) {
 	  			var node = theTree.getNodeByKey(nodeId.toString());
@@ -123,6 +166,14 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       		}
       	}
 
+      	/**
+      	 * Get selected node id.
+      	 *
+      	 * @example
+      	 * var selection = %%elementName%%.getSeletedNode()
+      	 *
+      	 * @return {Object}
+      	 */
       	$scope.api.getSeletedNode = function() {
       		if(theTree) {
 	  			var nodes = theTree.getSelectedNodes();
@@ -133,6 +184,16 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       		return null;
       	}
 
+      	/**
+      	 * Get child nodes ids of a parent node.
+      	 *
+      	 * @example
+      	 * var childNodes = %%elementName%%.getChildNodes()
+      	 *
+      	 * @param nodeId node id
+      	 * 
+      	 * @return {Array}
+      	 */
       	$scope.api.getChildNodes = function(nodeId) {
       		var childNodesId = new Array();
       		if(theTree) {
@@ -146,6 +207,16 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       		return childNodesId;
       	}
       	
+      	/**
+      	 * Get child nodes ids of a parent node.
+      	 *
+      	 * @example
+      	 * var childNodes = %%elementName%%.getChildNodes()
+      	 *
+      	 * @param nodeId node id
+      	 * 
+      	 * @return {Object}
+      	 */
       	$scope.api.getParentNode = function(nodeId) {
       		if(theTree) {
 	  			var node = theTree.getNodeByKey(nodeId.toString());
@@ -156,6 +227,16 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       		return null;
       	}
       	
+      	/**
+      	 * Get the tree level a node is situated.
+      	 *
+      	 * @example
+      	 * var nodeLevel = %%elementName%%.getNodeLevel()
+      	 *
+      	 * @param nodeId node id
+      	 * 
+      	 * @return {int}
+      	 */
       	$scope.api.getNodeLevel = function(nodeId) {
       		if(theTree) {
 	  			var node = theTree.getNodeByKey(nodeId.toString());
@@ -166,6 +247,14 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       		return -1;
       	}
       	
+      	/**
+      	 * Get root nodes ids .
+      	 *
+      	 * @example
+      	 * var rootNodes = %%elementName%%.getRootNodes()
+      	 *
+      	 * @return {Array}
+      	 */
       	$scope.api.getRootNodes = function() {
       		var rootNodesId = new Array();
       		if(theTree) {

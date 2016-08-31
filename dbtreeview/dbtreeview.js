@@ -393,6 +393,13 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 			}
       	}
 
+      	/**
+		 * Refresh the tree display.
+		 *
+		 * @example
+		 * %%elementName%%.refresh()
+		 *
+		 */
       	$scope.api.refresh = function() {
       		if($scope.pendingChildrenRequests > 0) {
       			$scope.pendingRefresh = true;
@@ -403,6 +410,16 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
       		refresh();
       	}
       	
+      	/**
+		 * Returns expand state of a node.
+		 *
+		 * @example
+		 * var expanded = %%elementName%%.isNodeExpanded([22])
+		 *
+		 * @param pk array of each level id
+		 * 
+		 * @return {boolean}
+		 */
       	$scope.api.isNodeExpanded = function(pk) {
       		if(theTree) {	  			
 	  			var node = findNode(theTree.getRootNode(), pk, 0);
@@ -413,6 +430,16 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
       		return false;
       	}
 
+      	/**
+		 * Sets expand state of a node.
+		 *
+		 * @example
+		 * %%elementName%%.setExpandNode([22],true)
+		 *
+		 * @param pk array of each level id
+		 * @param state expand state
+		 * 
+		 */
       	$scope.api.setExpandNode = function(pk, state) {
       		theTreeDefer.promise.then(function(theTree) {
 	  			var node = findNode(theTree.getRootNode(), pk, 0);
@@ -439,6 +466,14 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
       		}
       	}
       	
+      	/**
+		 * Returns path of the selected node.
+		 *
+		 * @example
+		 * var selection = %%elementName%%.getSelectionPath()
+		 *
+		 * @return {Array}
+		 */
       	$scope.api.getSelectionPath = function() {
       		return $scope.model.selection;
       	}
