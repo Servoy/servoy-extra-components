@@ -25,3 +25,5 @@ Web-Component: True
 Name: dbtreeview/dbtreeview.spec
 Web-Component: True
 
+Name: fontawesome/fontawesome.spec
+Web-Component: True
