@@ -1,0 +1,23 @@
+<div class="form-group input-group">
+	<span class="input-group-addon"><i class="{{'fa '+ model.faclass}}"></i></span>
+	<input 	name="textbox"
+			type="{{model.inputType}}"
+		    ng-class='model.styleClass' class='bts-textbox'
+		    ng-model="model.dataProviderID"
+		    ng-disabled="!model.enabled"
+		    ng-readonly="model.readOnly"
+		    placeholder="{{model.placeholderText}}"
+		    svy-focusgained='handlers.onFocusGainedMethodID($event)'
+		   	svy-focuslost='handlers.onFocusLostMethodID($event)'
+		   	svy-enter='handlers.onActionMethodID($event)'
+		   	svy-rightclick='handlers.onRightClickMethodID($event)'
+	      	svy-autoapply
+	      	ng-show='model.visible'
+			sablo-tabseq='model.tabSeq'
+			id="{{::model.svyMarkupId}}"
+			ng-invalid='inputValidator'
+		    />
+</div>
+<div ng-if="showError" class="textfieldgroup-msg-error">
+	{{errorMessage}}
+</div>
