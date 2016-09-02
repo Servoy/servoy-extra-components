@@ -300,7 +300,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     	  
     	  if ($scope.model.enableSort || $scope.handlers.onHeaderClick) {
     		  $scope.headerClicked = function(column) {
-    			  if($scope.model.enableSort) {
+    			  if($scope.model.enableSort && $scope.model.columns[column].dataprovider) {
 					  var sortCol = $scope.model.columns[column].dataprovider.idForFoundset;
 					  var sortDirection = "asc";
     				  if($scope.model.foundset.sortColumns) {
@@ -430,7 +430,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     	  
     	  $scope.getSortClass = function (column) {
     		  var sortClass = "table-servoyextra-sort-hide";
-    		  if($scope.model.enableSort && $scope.model.foundset.sortColumns) {
+    		  if($scope.model.enableSort && $scope.model.foundset.sortColumns && $scope.model.columns[column].dataprovider) {
     			  var sortCol = $scope.model.columns[column].dataprovider.idForFoundset;
     			  var sortColumnsA = $scope.model.foundset.sortColumns.split(" ");
     			  if(sortCol == sortColumnsA[0]) {
