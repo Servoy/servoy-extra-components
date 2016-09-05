@@ -3,9 +3,14 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
       restrict: 'E',
       scope: {
     	  model: "=svyModel",
+    	  svyServoyapi: "=",
     	  api: "=svyApi"
       },
-      link: function($scope, $element, $attrs) {    	  
+      link: function($scope, $element, $attrs) { 
+    	  if ($scope.svyServoyapi.isInDesigner()) {
+    		  $element.html("<div class=\"tree_design\"></div>");
+    	  }
+    	  
     	$scope.expandedNodes = [];
     	$scope.pendingChildrenRequests = 0;
     	$scope.pendingRefresh = false;
