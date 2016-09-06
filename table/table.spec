@@ -17,7 +17,8 @@
 		"tabSeq" : {"type" :"tabseq", "tags": { "scope" :"design" }},
 	 	"visible" : "visible",
 	 	"enableColumnResize" : {"type":"boolean", "default": false},
-	 	"enableSort" : {"type":"boolean", "default": true}
+	 	"enableSort" : {"type":"boolean", "default": true},
+	 	"responsiveHeight" : {"type":"int", "default":"300"}
 	},
 	"types":
 	{

@@ -1,4 +1,9 @@
-<div class="tablewrapper" ng-if='model.visible'>
+<div style="display: inline-block;" ng-if='model.visible && showEditorHint()'>
+	  <label>
+	  	 <span>Drop table columns from palette</span>
+	  </label>
+</div>
+<div class="tablewrapper" ng-style="getLayoutStyle()" ng-if='model.visible'>
 	<table ng-style="getTableStyle()" class='svy-table' ng-class="model.styleClass" sablo-tabseq='model.tabSeq' ng-keydown="keyPressed($event)" ng-click="tableClicked($event,1)" svy-rightclick="tableRightClick($event)">
 	   <thead ng-style="getTHeadStyle()">
 	  	<tr>
@@ -22,9 +27,4 @@
 	  <li class="disabled"><a href="#" tabindex="-1">{{model.currentPage}}</a></li>
 	  <li ng-class="hasNext() ? '' : 'disabled'"><a href="#" ng-click="modifyPage(1)" tabindex="-1">&raquo;</a></li>
 	</ul>
-</div>
-<div ng-class='model.styleClass' ng-if='model.visible && (!model.columns || model.columns.length == 0)'>
-	  <label>
-	  	 <span>Drop table columns from palette</span>
-	  </label>
 </div>

@@ -3,6 +3,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
       restrict: 'E',
       scope: {
        	model: "=svyModel",
+       	svyServoyapi: "=",
        	handlers: "=svyHandlers"
       },
       link: function($scope, $element, $attrs) {
@@ -23,23 +24,27 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     	  
     	  function calculateTableWidth() {
     		  var tableWidth = 0;
-    		  for(var i = 0; i < $scope.model.columns.length; i++) {
-    			  var w = getNumberFromPxString($scope.model.columns[i].width);
-    			  if(w > -1) {
-    				  tableWidth += w;
-    			  }
+    		  if($scope.model.columns) {
+	    		  for(var i = 0; i < $scope.model.columns.length; i++) {
+	    			  var w = getNumberFromPxString($scope.model.columns[i].width);
+	    			  if(w > -1) {
+	    				  tableWidth += w;
+	    			  }
+	    		  }
     		  }
     		  return tableWidth;
     	  }    	  
     	  
     	  function getAutoColumns() {
     		  var autoColumns = {columns: {}, count : 0};
-    		  for(var i = 0; i < $scope.model.columns.length; i++) {
-    			  var w = getNumberFromPxString($scope.model.columns[i].width);
-    			  if(w < 0) {
-    				  autoColumns.columns[i] = true;
-    				  autoColumns.count += 1;
-    			  }
+    		  if($scope.model.columns) {
+	    		  for(var i = 0; i < $scope.model.columns.length; i++) {
+	    			  var w = getNumberFromPxString($scope.model.columns[i].width);
+	    			  if(w < 0) {
+	    				  autoColumns.columns[i] = true;
+	    				  autoColumns.count += 1;
+	    			  }
+	    		  }
     		  }
 
     		  return autoColumns;    		  
@@ -77,34 +82,36 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
 
     	  $(window).on('resize', function() {
     		  if(resizeTimeout) $timeout.cancel(resizeTimeout);
-    		  resizeTimeout = $timeout(function() {
-				  $scope.$apply(function(){
-					  var newComponentWidth = $element.parent().outerWidth(false);
-					  var deltaWidth = newComponentWidth - $scope.componentWidth;
-	        		  $scope.componentWidth = newComponentWidth;
-
-	    			  for(var i = $scope.model.columns.length - 1; i > -1; i--) {
-	    				  if(autoColumns.columns[i]) {
-	    					  var cw = getNumberFromPxString($scope.model.columns[i].width);
-	    					  if(cw > -1) {
-		    					  if(cw + deltaWidth > 5) {
-		    						  $scope.model.columns[i].width = (cw + deltaWidth) + "px";
-		    						  break;
+    		  if($scope.model.columns) {
+	    		  resizeTimeout = $timeout(function() {
+					  $scope.$apply(function(){
+						  var newComponentWidth = $element.parent().outerWidth(false);
+						  var deltaWidth = newComponentWidth - $scope.componentWidth;
+		        		  $scope.componentWidth = newComponentWidth;
+	
+		    			  for(var i = $scope.model.columns.length - 1; i > -1; i--) {
+		    				  if(autoColumns.columns[i]) {
+		    					  var cw = getNumberFromPxString($scope.model.columns[i].width);
+		    					  if(cw > -1) {
+			    					  if(cw + deltaWidth > 5) {
+			    						  $scope.model.columns[i].width = (cw + deltaWidth) + "px";
+			    						  break;
+			    					  }
+			    					  else {
+			    						  $scope.model.columns[i].width = 5 + "px";
+			    						  deltaWidth -= (cw - 5);
+			    					  }
 		    					  }
-		    					  else {
-		    						  $scope.model.columns[i].width = 5 + "px";
-		    						  deltaWidth -= (cw - 5);
-		    					  }
-	    					  }
-	    				  }
-	    			  }
-	        		  if($scope.model.enableColumnResize) {
-    			  		$timeout(function() {
-    			  			addColResizable(true);
-    			  		}, 0);
-	        		  }
-				  })   
-    		  }, 50);
+		    				  }
+		    			  }
+		        		  if($scope.model.enableColumnResize) {
+	    			  		$timeout(function() {
+	    			  			addColResizable(true);
+	    			  		}, 0);
+		        		  }
+					  })   
+	    		  }, 50);
+    		  }
     	  });
 
     	  function addColResizable(cleanPrevious) {
@@ -220,7 +227,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
 			  }
     	  }
     	  $scope.$watch('model.foundset.selectedRowIndexes', function (newValue,oldValue) {
-    		  if ( $scope.model.foundset.selectedRowIndexes.length > 0) {
+    		  if ( $scope.model.foundset && $scope.model.foundset.selectedRowIndexes.length > 0) {
     			  if (tbody == null || tbody.length == 0) {
     				  wrapper = $element.find(".tablewrapper")[0];
     				  tbody= $element.find("tbody");
@@ -430,7 +437,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     	  
     	  $scope.getSortClass = function (column) {
     		  var sortClass = "table-servoyextra-sort-hide";
-    		  if($scope.model.enableSort && $scope.model.foundset.sortColumns && $scope.model.columns[column].dataprovider) {
+    		  if($scope.model.enableSort && $scope.model.foundset && $scope.model.foundset.sortColumns && $scope.model.columns[column].dataprovider) {
     			  var sortCol = $scope.model.columns[column].dataprovider.idForFoundset;
     			  var sortColumnsA = $scope.model.foundset.sortColumns.split(" ");
     			  if(sortCol == sortColumnsA[0]) {
@@ -441,6 +448,26 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     		  return sortClass;
     	  }
     	  
+    	  $scope.getLayoutStyle = function() {
+    		  var layoutStyle = {};
+    		  var isAbsolute = $scope.$parent.formProperties && $scope.$parent.formProperties.absoluteLayout;
+    		  if(isAbsolute) {
+    			  layoutStyle.position = "absolute";
+    			  layoutStyle.height = "100%";
+    		  }
+    		  else {
+    			  layoutStyle.position = "relative";
+    			  if($scope.model.columns) {
+    				  layoutStyle.height = $scope.model.responsiveHeight + "px";
+    			  }
+    		  }
+    		  return layoutStyle;
+    	  }
+    	  
+    	  $scope.showEditorHint = function()
+    	  {
+    		  return (!$scope.model.columns || $scope.model.columns.length == 0) && $scope.svyServoyapi.isInDesigner();
+    	  }
       },
       templateUrl: 'servoyextra/table/table.html'
     };
