@@ -7,6 +7,11 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
     	  handlers: "=svyHandlers"
       },
       link: function($scope, $element, $attrs) {
+    	  
+    	  if ($scope.svyServoyapi.isInDesigner()) {
+    		  $element.html("<div class=\"tree_design\"></div>");
+    	  }
+    	  
     	var treeJSON;
     	var theTree;
     	

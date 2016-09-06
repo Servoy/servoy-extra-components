@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 Ant-Version: Apache Ant 1.8.4
 CSS-ClientLibs: servoyextra/lib/css/skin-win8/ui.fancytree.css;name=ui
  .fancytree.css";version=2.9.0
+CSS-DesignLibs: servoyextra/lib/css/servoyextra_design.css
 Responsive-Layout: True
 Bundle-SymbolicName: servoyextra
 Bundle-Name: Servoy Extra Components
