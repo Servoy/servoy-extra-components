@@ -27,7 +27,7 @@
         "removeAllRoots": {
         },
         "refresh": {
-        	"delayUntilFormLoad": true
+        	"delayUntilFormLoads": true
         },  
         "isNodeExpanded": {
 			"parameters":[
@@ -49,7 +49,7 @@
 							"type": "boolean"
 		                	}		                	
 						 ],
-			"delayUntilFormLoad": true						 
+			"delayUntilFormLoads": true						 
         },
         "setNodeLevelVisible": {
 			"parameters":[
