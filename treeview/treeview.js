@@ -4,6 +4,7 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       scope: {
     	  model: "=svyModel",
     	  api: "=svyApi",
+    	  svyServoyapi: "=",
     	  handlers: "=svyHandlers"
       },
       link: function($scope, $element, $attrs) {
