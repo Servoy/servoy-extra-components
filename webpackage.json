@@ -7,5 +7,6 @@
     "wikiUrl": "https://github.com/Servoy/servoy-extra-components/wiki",
     "sourceUrl" : "https://github.com/Servoy/servoy-extra-components",
     "releases" : [{"version":"1.0.0","url":"https://github.com/Servoy/servoy-extra-components/releases/download/V1.0.0/servoy-extra-components.zip"},
-                  {"version":"1.0.1","url":"https://github.com/Servoy/servoy-extra-components/releases/download/V1.0.1/servoy-extra-components.zip"}]
+                  {"version":"1.0.1","url":"https://github.com/Servoy/servoy-extra-components/releases/download/V1.0.1/servoy-extra-components.zip"},
+                  {"version":"1.0.2","url":"https://github.com/Servoy/servoy-extra-components/releases/download/V1.0.2/servoy-extra-components.zip"}]
 }
