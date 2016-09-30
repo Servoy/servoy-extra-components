@@ -1,4 +1,5 @@
-<div class="form-group input-group">
+<div class="form-group input-group"
+	 	    ng-show='model.visible'>
 	<span class="input-group-addon"><i class="{{'fa '+ model.faclass}}"></i></span>
 	<input 	name="textbox"
 			type="{{model.inputType}}"
@@ -12,7 +13,6 @@
 		   	svy-enter='handlers.onActionMethodID($event)'
 		   	svy-rightclick='handlers.onRightClickMethodID($event)'
 	      	svy-autoapply
-	      	ng-show='model.visible'
 			sablo-tabseq='model.tabSeq'
 			id="{{::model.svyMarkupId}}"
 			ng-invalid='inputValidator'
