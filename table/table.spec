@@ -5,7 +5,7 @@
 	"icon": "servoycore/portal/portal.gif",
 	"definition": "servoyextra/table/table.js",
 	"libraries": [{"name":"servoyextra-table-css", "version":"1.0", "url":"servoyextra/table/table.css", "mimetype":"text/css"},
-				{"name":"colResizable", "version":"1.6", "url":"servoyextra/table/js/colResizable-1.6.min.js", "mimetype":"text/javascript"}],
+				{"name":"colResizable", "version":"1.7", "url":"servoyextra/table/js/colResizable-1.7.min.js", "mimetype":"text/javascript"}],
 	"model":
 	{
 		"columns":  { "type":"column[]", "droppable": true, "pushToServer": "shallow", "elementConfig" : {"pushToServer": "shallow"}},

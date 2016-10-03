@@ -125,7 +125,8 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     		  var tbl = $element.find("table:first");
     		  if(cleanPrevious) {
         		  tbl.colResizable({
-        			  disable:true
+        			  disable:true,
+        			  removePadding:false
         		  });  
     		  }
     		  tbl.colResizable({
@@ -135,7 +136,8 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     				  $scope.$apply(function(){    	                	
     					  onColumnResize();
     				  })
-    			  }
+    			  },
+    			  removePadding:false
     		  	});
     	  }
 
