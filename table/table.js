@@ -208,6 +208,18 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     		  {
     			  $scope.model.foundset.loadRecordsAsync($scope.model.pageSize * ($scope.model.currentPage -1), $scope.model.pageSize);
     		  }	  
+    		  $scope.model.foundset.setPreferredViewportSize(newValue)
+          });
+    	  
+    	  $scope.$watch('model.foundset.viewPort', function (newValue,oldValue) {
+			 if ($scope.showPagination()) {
+				 if ($scope.model.pageSize * ($scope.model.currentPage -1) != newValue.startIndex) {
+					 $scope.model.currentPage =  Math.floor(newValue.startIndex / $scope.model.pageSize) + 1;
+				 }
+				 else if (newValue.size < $scope.model.pageSize && $scope.model.foundset.serverSize > (newValue.startIndex+newValue.size)) {
+					 $scope.model.foundset.loadRecordsAsync($scope.model.pageSize * ($scope.model.currentPage -1), $scope.model.pageSize);
+				 }
+			 }
           });
     	  var toBottom = false;
     	  var tbody = null;
