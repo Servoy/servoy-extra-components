@@ -26,9 +26,11 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     		  var tableWidth = 0;
     		  if($scope.model.columns) {
 	    		  for(var i = 0; i < $scope.model.columns.length; i++) {
-	    			  var w = getNumberFromPxString($scope.model.columns[i].width);
-	    			  if(w > -1) {
-	    				  tableWidth += w;
+	    			  if(!$scope.model.columns[i].autoResize) {
+		    			  var w = getNumberFromPxString($scope.model.columns[i].width);
+		    			  if(w > -1) {
+		    				  tableWidth += w;
+		    			  }
 	    			  }
 	    		  }
     		  }
@@ -36,12 +38,14 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     	  }    	  
     	  
     	  function getAutoColumns() {
-    		  var autoColumns = {columns: {}, count : 0};
+    		  var autoColumns = {columns: {}, minWidth: {}, initialValue: {}, count : 0};
     		  if($scope.model.columns) {
 	    		  for(var i = 0; i < $scope.model.columns.length; i++) {
-	    			  var w = getNumberFromPxString($scope.model.columns[i].width);
-	    			  if(w < 0) {
+	    			  var minWidth = getNumberFromPxString($scope.model.columns[i].width);
+	    			  if($scope.model.columns[i].autoResize || minWidth < 0) {
 	    				  autoColumns.columns[i] = true;
+	    				  autoColumns.minWidth[i] = minWidth;
+	    				  autoColumns.initialValue[i] = $scope.model.columns[i].width;
 	    				  autoColumns.count += 1;
 	    			  }
 	    		  }
@@ -49,6 +53,25 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
 
     		  return autoColumns;
     	  }
+
+    	  function updateAutoColumnsWidth(delta) {
+    		  var componentWidth = getComponentWidth();
+    		  var oldWidth = componentWidth - delta;  
+			  for(var i = 0; i < $scope.model.columns.length; i++) {
+				  if(autoColumns.columns[i]) {
+					  if(autoColumns.minWidth[i] > 0) {
+						  var w = Math.floor(getNumberFromPxString($scope.model.columns[i].width) * componentWidth / oldWidth);
+						  if(w < autoColumns.minWidth[i]) {
+							  w = autoColumns.minWidth[i];
+						  }
+						  $scope.model.columns[i].width = w + "px";
+					  }
+					  else {
+						  $scope.model.columns[i].width = autoColumns.initialValue[i];
+					  }
+				  }
+			  }    		  
+    	  }    	  
     	  
     	  
     	  $scope.componentWidth = 0;
@@ -62,6 +85,8 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     	  var tableWidth = calculateTableWidth();
     	  var autoColumns = getAutoColumns();
     	  
+    	  updateAutoColumnsWidth(getComponentWidth() - $scope.model.size.width);
+    	  
     	  var tableLeftOffset = 0;
     	  var onTBodyScrollListener = null;
     	  var resizeTimeout = null;
@@ -70,9 +95,17 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
 
 			  var table = $element.find("table:first");
 			  var headers = table.find("th");
-    	                	
+    	      
 			  for(var i = 0; i < headers.length; i++) {
 				  var header = $(headers.get(i));
+				  if((autoColumns.minWidth[i] > 0) && (getNumberFromPxString(header[0].style.width) < autoColumns.minWidth[i])) {
+					  $scope.model.columns[i].width = autoColumns.minWidth[i] + "px";
+	        		  updateAutoColumnsWidth(0);
+	        		  $timeout(function() {
+	        			  addColResizable(true);
+	        		  }, 0);
+	        		  return;
+				  }
 				  $scope.model.columns[i].width = header[0].style.maxWidth = header[0].style.minWidth = header[0].style.width;
 			  }
 			  
@@ -86,7 +119,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
 				  $(colGrips.get(i)).css("left", leftOffset - resizerLeft + "px");
 			  }
     	  }
-
+    	  
     	  $(window).on('resize', function() {
     		  if(resizeTimeout) $timeout.cancel(resizeTimeout);
     		  if($scope.model.columns) {
@@ -94,28 +127,15 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
 					  $scope.$apply(function(){
 						  var newComponentWidth = $element.parent().outerWidth(false);
 						  var deltaWidth = newComponentWidth - getComponentWidth();
-		        		  $scope.componentWidth = newComponentWidth;
-	
-		    			  for(var i = $scope.model.columns.length - 1; i > -1; i--) {
-		    				  if(autoColumns.columns[i]) {
-		    					  var cw = getNumberFromPxString($scope.model.columns[i].width);
-		    					  if(cw > -1) {
-			    					  if(cw + deltaWidth > 5) {
-			    						  $scope.model.columns[i].width = (cw + deltaWidth) + "px";
-			    						  break;
-			    					  }
-			    					  else {
-			    						  $scope.model.columns[i].width = 5 + "px";
-			    						  deltaWidth -= (cw - 5);
-			    					  }
-		    					  }
-		    				  }
-		    			  }
-		        		  if($scope.model.enableColumnResize) {
-	    			  		$timeout(function() {
-	    			  			addColResizable(true);
-	    			  		}, 0);
-		        		  }
+						  if(deltaWidth != 0) {
+			        		  $scope.componentWidth = newComponentWidth;
+			        		  updateAutoColumnsWidth(deltaWidth);
+			        		  if($scope.model.enableColumnResize) {
+		    			  		$timeout(function() {
+		    			  			addColResizable(true);
+		    			  		}, 0);
+			        		  }
+						  }
 					  })   
 	    		  }, 50);
     		  }
@@ -139,6 +159,18 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     			  },
     			  removePadding:false
     		  	});
+    		  // don't want JColResize to change the column width on window resize
+    		  $(window).unbind('resize.JColResizer');
+    		  // update the model with the right px values
+    		  var tbl = $element.find("table:first");
+			  var headers = tbl.find("th");
+			  if($(headers).is(":visible")) {
+	    		  for(var i = 0; i < $scope.model.columns.length; i++) {
+	    			  if(autoColumns.columns[i] && autoColumns.minWidth[i] < 0) {
+	    				  $scope.model.columns[i].width = $(headers.get(i)).outerWidth(false) + "px";
+	    			  }
+	    		  }				  
+			  }
     	  }
 
     	  
@@ -417,12 +449,12 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     		  }			  
 			  return tBodyStyle;
     	  }
-    	  
+
     	  $scope.getColumnStyle = function (column) {
         	  var columnStyle = {overflow: "hidden"};
 			  var w = getNumberFromPxString($scope.model.columns[column].width);
 			  if(w > -1) {
-				  columnStyle.minWidth = columnStyle.maxWidth = columnStyle.width = $scope.model.columns[column].width;
+				  columnStyle.minWidth = columnStyle.maxWidth = columnStyle.width = w + "px";
 			  }
 			  else if($scope.model.columns[column].width) {
 				  columnStyle.width = $scope.model.columns[column].width;
@@ -437,11 +469,14 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
         	  var cellStyle = {overflow: "hidden"};
         	  if(/*row == 0 && */column < $scope.model.columns.length) {
         		  var w = getNumberFromPxString($scope.model.columns[column].width);
-        		  if (w < 0) {
+        		  if ($scope.model.columns[column].autoResize || w < 0) {
             		  var tbl = $element.find("table:first");
     				  var headers = tbl.find("th");
     				  if($(headers).is(":visible")) {
     					  w = $(headers.get(column)).outerWidth(false);
+    					  if(column == $scope.model.columns.length - 1) {
+    						  w -= 18;
+    					  }
     				  }
         		  }
         		  if(w > -1) {
