@@ -4,7 +4,7 @@
 	  </label>
 </div>
 <div class="tablewrapper" ng-style="getLayoutStyle()" ng-if='model.visible'>
-	<table ng-style="getTableStyle()" class='svy-table' ng-class="model.styleClass" sablo-tabseq='model.tabSeq' ng-keydown="keyPressed($event)" ng-click="tableClicked($event,1)" svy-rightclick="tableRightClick($event)">
+	<table ng-style="getTableStyle()" class='svy-table' ng-class="model.styleClass" sablo-tabseq='model.tabSeq' ng-keydown="keyPressed($event)" ng-click="tableClicked($event,1)" svy-rightclick="tableRightClick($event)" svy-focusgained="handlers.onFocusGainedMethodID($event)" svy-focuslost="handlers.onFocusLostMethodID($event)">
 	   <thead ng-style="getTHeadStyle()">
 	  	<tr>
 	    	<th ng-style="getColumnStyle(model.columns.indexOf(column))" ng-class="column.headerStyleClass" ng-repeat="column in model.columns" svy-click="headerClicked(model.columns.indexOf(column))"><div ng-bind='column.headerText' class="table-servoyextra-header-label"></div><span ng-class="getSortClass(model.columns.indexOf(column))"></span></th>

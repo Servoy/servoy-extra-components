@@ -83,6 +83,24 @@
 						"type":"int"
 					}
 				]
-		}
+		},
+        "onFocusGainedMethodID" : {
+         	
+        	"parameters":[
+							{
+					          "name":"event",
+							  "type":"JSEvent"
+							} 
+						 ]
+        }, 
+        "onFocusLostMethodID" : {
+         	
+        	"parameters":[
+							{
+					          "name":"event",
+							  "type":"JSEvent"
+							} 
+						 ]
+        }		
 	}
 }
