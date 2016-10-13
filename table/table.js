@@ -498,7 +498,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     			  var sortColumnsA = $scope.model.foundset.sortColumns.split(" ");
     			  if(sortCol == sortColumnsA[0]) {
     				  var direction = sortColumnsA[1].toLowerCase() == "asc" ? "up" : "down";
-    				  sortClass = "table-servoyextra-sort-show-" + direction + " glyphicon glyphicon-chevron-" + direction;
+    				  sortClass = "table-servoyextra-sort-show-" + direction + " " + $scope.model["sort"+direction+"Class"];
     			  }
     		  }
     		  return sortClass;

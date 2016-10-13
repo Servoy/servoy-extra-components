@@ -8,7 +8,19 @@
 
 .table-servoyextra-sort-show-up, .table-servoyextra-sort-show-down{
 	float: right;
-	padding: 2px;
+	padding: 10px;
+}
+
+.table-servoyextra-sort-down {
+	background-image: url("caret-down.png");
+	background-repeat: no-repeat;
+    background-position: right;
+}
+
+.table-servoyextra-sort-up {
+	background-image: url("caret-up.png");
+	background-repeat: no-repeat;
+    background-position: right;
 }
 
 .table-servoyextra-sort-hide {

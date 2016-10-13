@@ -18,7 +18,9 @@
 	 	"visible" : "visible",
 	 	"enableColumnResize" : {"type":"boolean", "default": false},
 	 	"enableSort" : {"type":"boolean", "default": true},
-	 	"responsiveHeight" : {"type":"int", "default":"300"}
+	 	"responsiveHeight" : {"type":"int", "default":"300"},
+	 	"sortupClass" : { "type": "styleclass", "default": "table-servoyextra-sort-up "},
+		"sortdownClass" : { "type": "styleclass", "default": "table-servoyextra-sort-down "}
 	},
 	"types":
 	{
