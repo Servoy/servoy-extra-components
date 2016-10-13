@@ -206,13 +206,36 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
 	        	  });
     		  }
     	  });
-
+    	  
+    	  var unregTbody = $scope.$watch(function() {
+    		  return $element.find("tbody").length;
+    	  },function(newValue) {
+    		  if (newValue == 0) return;
+    		  unregTbody();
+    		  if ($scope.model.pageSize == 0) {
+        		  // this is endless scrolling
+        		  var tbody = $element.find("tbody");
+        		  var lastRequestedViewPortSize = 0;
+        		  tbody.scroll(function (e) {
+        			  var viewportSize = $scope.model.foundset.viewPort.size;
+        			  if (viewportSize != lastRequestedViewPortSize && $scope.model.foundset.serverSize > viewportSize && 
+        			     (tbody.scrollTop() + tbody.height()) > (tbody[0].scrollHeight - tbody.height()))
+        			  { 
+        				lastRequestedViewPortSize = viewportSize;
+        				$scope.model.foundset.loadExtraRecordsAsync(nonePagingPageSize);
+        			  }
+        		  })
+        	  }
+    	  })
+    	  var nonePagingPageSize = 200;
     	  $scope.$watch('model.foundset.serverSize', function (newValue) {
     		  if (newValue)
     		  {
     			  if (!$scope.showPagination())
     			  {
-    				  $scope.model.foundset.loadRecordsAsync(0, newValue);
+    				  var rowsToLoad = Math.min(newValue,$scope.model.pageSize?$scope.model.pageSize:nonePagingPageSize)
+    				  if ($scope.model.foundset.viewPort.size <  rowsToLoad)
+    					  $scope.model.foundset.loadExtraRecordsAsync(rowsToLoad - $scope.model.foundset.viewPort.size);
     			  }
     			  else
     			  {
