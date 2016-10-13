@@ -289,15 +289,11 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     	  function scrollIntoView() {
     		  var firstSelected = $scope.model.foundset.selectedRowIndexes[0];
     		  firstSelected = firstSelected - ($scope.model.pageSize * ($scope.model.currentPage -1));
-    		  var child = null;
-    		  if (firstSelected == 0) {
-    			  child= $element.find("thead");
-    		  } 
-    		  else child = tbody.children().eq(firstSelected)
+    		  var child = tbody.children().eq(firstSelected)
 			  if (child.length > 0) {
 				  var wrapperRect = wrapper.getBoundingClientRect();
 				  var childRect =child[0].getBoundingClientRect();
-				  if (childRect.top < wrapperRect.top || childRect.bottom > wrapperRect.bottom) {
+				  if (childRect.top < (wrapperRect.top+10) || childRect.bottom > wrapperRect.bottom) {
 					  child[0].scrollIntoView(!toBottom);
 				  }
 			  }
