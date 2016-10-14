@@ -4,6 +4,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
       scope: {
        	model: "=svyModel",
        	svyServoyapi: "=",
+		api: "=svyApi",
        	handlers: "=svyHandlers"
       },
       link: function($scope, $element, $attrs) {
@@ -577,6 +578,28 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     	  {
     		  return (!$scope.model.columns || $scope.model.columns.length == 0) && $scope.svyServoyapi.isInDesigner();
     	  }
+    	  
+    	  var skipOnce = false;
+    	  if ( $scope.handlers.onFocusGainedMethodID) {
+    		  $scope.onFocusGained = function(event) {
+    			  if (!skipOnce) {
+    				  $scope.handlers.onFocusGainedMethodID(event);
+    			  }
+    			  skipOnce = false;
+    		  }
+    	  }
+    	  
+    	//implement api calls starts from here
+			/**
+			 * Request the focus to the table html element.
+			 * @example %%prefix%%%%elementName%%.requestFocus();
+			 * @param mustExecuteOnFocusGainedMethod (optional) if false will not execute the onFocusGained method; the default value is true
+			 */
+			$scope.api.requestFocus = function(mustExecuteOnFocusGainedMethod) {
+				var tbl = $element.find("table:first");
+				skipOnce = mustExecuteOnFocusGainedMethod === false;
+				tbl.focus();
+			}
       },
       templateUrl: 'servoyextra/table/table.html'
     };

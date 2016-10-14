@@ -105,5 +105,22 @@
 							} 
 						 ]
         }		
+	},
+	"api": 
+	{
+		"requestFocus": 
+		{
+			"parameters": 
+			[
+				{
+					"name": "mustExecuteOnFocusGainedMethod",
+					"type": "boolean",
+					"optional": true
+				}
+			],
+
+			"delayUntilFormLoad": true,
+			"globalExclusive": true
+		}
 	}
 }
