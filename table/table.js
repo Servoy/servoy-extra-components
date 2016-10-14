@@ -28,7 +28,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     		  if($scope.model.columns) {
 	    		  for(var i = 0; i < $scope.model.columns.length; i++) {
 	    			  if(!$scope.model.columns[i].autoResize) {
-		    			  var w = getNumberFromPxString($scope.model.columns[i].initialWidth);
+		    			  var w = getNumberFromPxString($scope.model.columns[i].width);
 		    			  if(w > -1) {
 		    				  tableWidth += w;
 		    			  }
@@ -45,7 +45,10 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
 	    			  if($scope.model.columns[i].initialWidth == undefined) {
 	    				  $scope.model.columns[i].initialWidth = $scope.model.columns[i].width == undefined ? "" : $scope.model.columns[i].width; 
 	    			  }
-	    			  var minWidth = getNumberFromPxString($scope.model.columns[i].initialWidth);
+	    			  else {
+	    				  $scope.model.columns[i].width = $scope.model.columns[i].initialWidth; 
+	    			  }
+	    			  var minWidth = getNumberFromPxString($scope.model.columns[i].width);
 	    			  if($scope.model.columns[i].autoResize || minWidth < 0) {
 	    				  autoColumns.columns[i] = true;
 	    				  autoColumns.minWidth[i] = minWidth;
@@ -200,6 +203,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
 	        			  switch (property) {
 	        			  	case "columns":
 	        			  		tableWidth = calculateTableWidth();
+	        			  		updateAutoColumnsWidth(0);
 	        			  		$timeout(function() {
 	        			  			addColResizable(true);
 	        			  		}, 0);
