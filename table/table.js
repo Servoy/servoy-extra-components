@@ -543,7 +543,18 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     	  $scope.showEditorHint = function()
     	  {
     		  return (!$scope.model.columns || $scope.model.columns.length == 0) && $scope.svyServoyapi.isInDesigner();
-    	  },
+    	  }
+    	  
+    	  var skipOnce = false;
+    	  if ( $scope.handlers.onFocusGainedMethodID) {
+    		  $scope.onFocusGained = function(event) {
+    			  if (!skipOnce) {
+    				  $scope.handlers.onFocusGainedMethodID(event);
+    			  }
+    			  skipOnce = false;
+    		  }
+    	  }
+    	  
     	//implement api calls starts from here
 			/**
 			 * Request the focus to the table html element.
@@ -552,13 +563,8 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
 			 */
 			$scope.api.requestFocus = function(mustExecuteOnFocusGainedMethod) {
 				var tbl = $element.find("table:first");
-				if (mustExecuteOnFocusGainedMethod === false && $scope.handlers.onFocusGainedMethodID) {
-					tbl.unbind('focus');
-					tbl.focus();
-					tbl.bind('focus', $scope.handlers.onFocusGainedMethodID)
-				} else {
-					tbl.focus();
-				}
+				skipOnce = mustExecuteOnFocusGainedMethod === false;
+				tbl.focus();
 			}
       },
       templateUrl: 'servoyextra/table/table.html'
