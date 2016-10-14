@@ -542,7 +542,23 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     	  $scope.showEditorHint = function()
     	  {
     		  return (!$scope.model.columns || $scope.model.columns.length == 0) && $scope.svyServoyapi.isInDesigner();
-    	  }
+    	  },
+    	//implement api calls starts from here
+			/**
+			 * Request the focus to the table html element.
+			 * @example %%prefix%%%%elementName%%.requestFocus();
+			 * @param mustExecuteOnFocusGainedMethod (optional) if false will not execute the onFocusGained method; the default value is true
+			 */
+			$scope.api.requestFocus = function(mustExecuteOnFocusGainedMethod) {
+				var tbl = $element.find("table:first");
+				if (mustExecuteOnFocusGainedMethod === false && $scope.handlers.onFocusGainedMethodID) {
+					tbl.unbind('focus');
+					tbl.focus();
+					tbl.bind('focus', $scope.handlers.onFocusGainedMethodID)
+				} else {
+					tbl.focus();
+				}
+			}
       },
       templateUrl: 'servoyextra/table/table.html'
     };
