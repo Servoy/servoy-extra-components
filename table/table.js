@@ -362,7 +362,40 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     				 var rowIndex = $scope.model.foundset.viewPort.rows.indexOf(row_column.row); 
     				 var columnIndex = $scope.model.columns.indexOf(row_column.column);
     				 var realRow = $scope.getRealRow(rowIndex);
-    				 $scope.model.foundset.requestSelectionUpdate([realRow]);
+    				 var newSelection = [realRow];
+//    				 if($scope.model.foundset.multiSelect) {
+	    				 if(event.ctrlKey) {
+	    					 newSelection = $scope.model.foundset.selectedRowIndexes ? $scope.model.foundset.selectedRowIndexes.slice() : [];
+	    					 var realRowIdx = newSelection.indexOf(realRow);
+	    					 if(realRowIdx == -1) {
+	    						 newSelection.push(realRow);
+	    					 }
+	    					 else if(newSelection.length > 1) {
+	    						 newSelection.splice(realRowIdx, 1);
+	    					 }
+	    				 }
+	    				 else if(event.shiftKey) {
+	    					 var start = -1;
+	    					 if($scope.model.foundset.selectedRowIndexes) {
+	    						 for(var i = 0; i < $scope.model.foundset.selectedRowIndexes.length; i++) {
+	    							 if(start == -1 || start > $scope.model.foundset.selectedRowIndexes[i]) {
+	    								 start = $scope.model.foundset.selectedRowIndexes[i];
+	    							 }
+	    						 }
+	    					 }
+	    					 var stop = realRow;
+	    					 if(start > realRow) {
+	    						 stop = start;
+	    						 start = realRow;
+	    					 }
+	    					 newSelection = []
+	    					 for(var i = start; i <= stop; i++) {
+	    						 newSelection.push(i);
+	    					 }
+	    				 }
+//    				 }
+
+    				 $scope.model.foundset.requestSelectionUpdate(newSelection);
     				 if (type == 1 && $scope.handlers.onCellClick) {
     					$scope.handlers.onCellClick(realRow + 1, columnIndex, $scope.model.foundset.viewPort.rows[rowIndex]);
     		    	 }
@@ -427,7 +460,6 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
 	    				  }
 	    				  else $scope.modifyPage(1);
 	    			  }
-	    			  event.preventDefault();
 	    		  } 
 	    		  else if (event.keyCode == 13) {
 	    			 if ($scope.handlers.onCellClick) {
