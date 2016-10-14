@@ -34,6 +34,7 @@
 			"styleClassDataprovider" : { "type": "dataprovider",	"forFoundset": "foundset"},
 			"valuelist" : { "type" : "valuelist", "tags": { "scope" :"design" }, "for": "dataprovider"},
 			"width" : {"type" : "string"},
+			"initialWidth" : {"type": "string", "tags": {"scope": "runtime"} },
 			"autoResize" : {"type":"boolean", "default": false}
 			
 		}

@@ -27,7 +27,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     		  if($scope.model.columns) {
 	    		  for(var i = 0; i < $scope.model.columns.length; i++) {
 	    			  if(!$scope.model.columns[i].autoResize) {
-		    			  var w = getNumberFromPxString($scope.model.columns[i].width);
+		    			  var w = getNumberFromPxString($scope.model.columns[i].initialWidth);
 		    			  if(w > -1) {
 		    				  tableWidth += w;
 		    			  }
@@ -38,14 +38,16 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     	  }    	  
     	  
     	  function getAutoColumns() {
-    		  var autoColumns = {columns: {}, minWidth: {}, initialValue: {}, count : 0};
+    		  var autoColumns = {columns: {}, minWidth: {}, count : 0};
     		  if($scope.model.columns) {
 	    		  for(var i = 0; i < $scope.model.columns.length; i++) {
-	    			  var minWidth = getNumberFromPxString($scope.model.columns[i].width);
+	    			  if($scope.model.columns[i].initialWidth == undefined) {
+	    				  $scope.model.columns[i].initialWidth = $scope.model.columns[i].width == undefined ? "" : $scope.model.columns[i].width; 
+	    			  }
+	    			  var minWidth = getNumberFromPxString($scope.model.columns[i].initialWidth);
 	    			  if($scope.model.columns[i].autoResize || minWidth < 0) {
 	    				  autoColumns.columns[i] = true;
 	    				  autoColumns.minWidth[i] = minWidth;
-	    				  autoColumns.initialValue[i] = $scope.model.columns[i].width;
 	    				  autoColumns.count += 1;
 	    			  }
 	    		  }
@@ -67,7 +69,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
 						  $scope.model.columns[i].width = w + "px";
 					  }
 					  else {
-						  $scope.model.columns[i].width = autoColumns.initialValue[i];
+						  $scope.model.columns[i].width = $scope.model.columns[i].initialWidth;
 					  }
 				  }
 			  }    		  
@@ -82,8 +84,8 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     		  return $scope.componentWidth;
     	  }
     	  
-    	  var tableWidth = calculateTableWidth();
     	  var autoColumns = getAutoColumns();
+    	  var tableWidth = calculateTableWidth();
     	  
     	  updateAutoColumnsWidth(getComponentWidth() - $scope.model.size.width);
     	  
