@@ -465,6 +465,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
 	    				  }
 	    				  else $scope.modifyPage(1);
 	    			  }
+	    			  event.preventDefault();
 	    		  } 
 	    		  else if (event.keyCode == 13) {
 	    			 if ($scope.handlers.onCellClick) {
