@@ -2,12 +2,12 @@ Manifest-Version: 1.0
 Ant-Version: Apache Ant 1.8.4
 CSS-ClientLibs: servoyextra/lib/css/skin-win8/ui.fancytree.css;name=ui
  .fancytree.css";version=2.9.0
-CSS-DesignLibs: servoyextra/lib/css/servoyextra_design.css
 Responsive-Layout: True
 Bundle-SymbolicName: servoyextra
 Bundle-Name: Servoy Extra Components
 Bundle-Version: 1.0.3
 Absolute-Layout: True
+CSS-DesignLibs: servoyextra/lib/css/servoyextra_design.css
 Created-By: 1.7.0_05-b06 (Oracle Corporation)
 Package-Type: Web-Component
 JS-ClientLibs: js/jquery-ui.min.js;name=jquery-ui.min.js;version=1.11.
@@ -15,6 +15,9 @@ JS-ClientLibs: js/jquery-ui.min.js;name=jquery-ui.min.js;version=1.11.
  e-all.min.js;version=2.9.0,
 
 Name: table/table.spec
+Web-Component: True
+
+Name: sidenav/sidenav.spec
 Web-Component: True
 
 Name: treeview/treeview.spec

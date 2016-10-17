@@ -1,0 +1,79 @@
+<!-- Classes: 
+	svy-sidenav
+	svy-sidenav-menu
+		svy-sidenav-dropdown
+		svy-sidenav-item
+	svy-sidenav-menu2
+	svy-sidenav-menu3
+	svy-sidenav-menu4
+
+	svy-navitem-selected 		the active sub nav item
+	svy-sidenav-collapsed 		the open sub nav item
+
+-->
+		<nav id={{::model.svyMarkupId}} class="svy-sidenav">		
+			<input ng-model="searchText" class="svy-searchbox"></input>
+			<!-- The main menu -->
+			<ul class="svy-sidenav-menu svy-sidenav-collapsed">
+
+				<!-- Main list -->
+				<li ng-repeat="item in model.menu"
+ 					class="svy-sidenav-dropdown" 
+					ng-class="selectedIndex[1] == $index ? 'svy-navitem-selected' : ''"
+					>
+
+					<!-- Main Menu Items -->
+					<a class="svy-sidenav-item" ng-href="" ng-click="selectItem(1, $index, item, $event)">
+						<i ng-class="item.iconStyleClass"></i>
+						{{item.text}}
+						<i class="pull-right" ng-class="selectedIndex[1] == $index ? 'glyphicon glyphicon-chevron-down' : 'glyphicon glyphicon-chevron-right'"></i>
+					</a>	
+			
+					<!-- Second List -->
+					<ul class="svy-sidenav-menu2" ng-class="selectedIndex[1] == $index ? 'svy-sidenav-collapsed' : ''">
+						<li ng-repeat="item2 in item.menuItems"
+ 							class="svy-sidenav-dropdown" 
+							ng-class="selectedIndex[2] == $index ? 'svy-navitem-selected' : ''"
+							>
+							<!-- Second Menu Items -->
+							<a class="svy-sidenav-item" ng-href="" ng-click="selectItem(2, $index, item2, $event)">
+								<i ng-class="item2.iconStyleClass"></i>
+								{{item2.text}}
+								<i class="pull-right" ng-class="selectedIndex[2] == $index ? 'glyphicon glyphicon-chevron-down' : 'glyphicon glyphicon-chevron-right'"></i>
+							</a>
+
+
+							<!-- Third List -->
+							<ul class="svy-sidenav-menu3" ng-class="selectedIndex[2] == $index ? 'svy-sidenav-collapsed' : ''">
+								<li ng-repeat="item3 in item2.menuItems"
+ 									class="svy-sidenav-dropdown" 
+									ng-class="selectedIndex[3] == $index ? 'svy-navitem-selected' : ''"
+									>
+									<!-- Second Menu Items -->
+									<a class="svy-sidenav-item" ng-href="" ng-click="selectItem(3, $index, item3, $event)">
+										<i ng-class="item3.iconStyleClass"></i>
+										{{item3.text}}
+										<i class="pull-right" ng-class="selectedIndex[3] == $index ? 'glyphicon glyphicon-chevron-down' : 'glyphicon glyphicon-chevron-right'"></i>
+									</a>
+		
+									<!-- Fourth List -->
+									<ul class="svy-sidenav-menu4" ng-class="selectedIndex[3] == $index ? 'svy-sidenav-collapsed' : ''">
+										<li ng-repeat="item4 in item3.menuItems"
+											class="svy-sidenav-dropdown" 
+											ng-class="selectedIndex[4] == $index ? 'svy-navitem-selected' : ''"
+											>
+											<!-- Second Menu Items -->
+											<a class="svy-sidenav-item" ng-href="" ng-click="selectItem(4, $index, item4, $event)">
+												<i ng-class="item4.iconStyleClass"></i>
+												{{item4.text}}
+											</a>
+										</li>
+									</ul><!-- #fourth list -->
+								</li>
+							</ul><!-- #third list -->
+						</li>
+					</ul><!-- #sub list -->
+				</li>	
+			</ul><!-- #main list -->
+		</nav> 
+<!-- #sidebar -->
