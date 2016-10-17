@@ -27,7 +27,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     		  var tableWidth = 0;
     		  if($scope.model.columns) {
 	    		  for(var i = 0; i < $scope.model.columns.length; i++) {
-	    			  if(!$scope.model.columns[i].autoResize) {
+	    			  if(!$scope.model.columns[i].autoResize && getNumberFromPxString($scope.model.columns[i].initialWidth) > 0) {
 		    			  var w = getNumberFromPxString($scope.model.columns[i].width);
 		    			  if(w > -1) {
 		    				  tableWidth += w;
