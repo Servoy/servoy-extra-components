@@ -89,9 +89,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     	  }
     	  
     	  var autoColumns = getAutoColumns();
-    	  var tableWidth = calculateTableWidth();
-    	  
-    	  updateAutoColumnsWidth(getComponentWidth() - $scope.model.size.width);
+    	  var tableWidth = 0;
     	  
     	  var tableLeftOffset = 0;
     	  var onTBodyScrollListener = null;
@@ -196,6 +194,8 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     			  $(tblBody).bind("scroll", onTBodyScrollListener);
     		  }
     		  if($scope.model.enableColumnResize) {
+    			  tableWidth = calculateTableWidth();
+    			  updateAutoColumnsWidth(0);    			  
 	    		  addColResizable(true);
 	        	  Object.defineProperty($scope.model, $sabloConstants.modelChangeNotifier, {
 	        		  configurable : true,
