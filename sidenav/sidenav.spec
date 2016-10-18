@@ -3,10 +3,12 @@
 	"displayName": "sidenav",
 	"version": 1,
 	"definition": "servoyextra/sidenav/sidenav.js",
-	"libraries": [{"name":"svy-sidenav.css", "version":"1", "url":"servoyextra/sidenav/svy-sidenav.css", "mimetype":"text/css"}],
+	"serverscript" : "servoyextra/sidenav/sidenav_server.js",
+	"libraries": [{"name":"svy-sidenav.css", "version":"1", "url":"servoyextra/sidenav/svy-sidenav.css", "mimetype":"text/css"},
+				  {"name":"angular-animate.js", "version":"1.5.8", "url":"servoyextra/sidenav/angular-animate.min.js", "mimetype":"text/javascript"}],
 	"model":
 	{
-		"menu"					: {"type" :"menuItem[]", "default" : [], "pushToServer": "deep", "tags": { "scope" :"runtime" }},
+		"menu"					: {"type" :"menuItem[]", "default" : [], "pushToServer": "allow", "tags": { "scope" :"runtime" }},
 		"selectedIndex"					: {"type" :"object", "tags": { "scope" :"private" }, "pushToServer" : "allow"},
 		
 		"verticalAlignment"				: {"type" :"string", "tags": {"scope": "design"},"values": [{"FIXED-TOP": "navbar-fixed-top"}, {"FIXED-BOTTOM": "navbar-fixed-bottom"}, {"STATIC": "navbar-static-top"}], "default" : "navbar-static-top"},
@@ -28,20 +30,20 @@
 	{
 	        "onMenuItemSelected" 		: {
 										        "parameters" : [
-										            { "name" : "event", "type" : "JSEvent" },
-										            { "name" : "menuItem", "type" : "menuItem" }
+										        	{ "name" : "menuItem", "type" : "menuItem" },
+										            { "name" : "event", "type" : "JSEvent" }
 										        ]
 										  },
 			"onMenuItemExpanded" 		: {
 										        "parameters" : [
-										            { "name" : "event", "type" : "JSEvent" },
-										            { "name" : "menuItem", "type" : "menuItem" }
+										        	{ "name" : "menuItem", "type" : "menuItem" },
+										            { "name" : "event", "type" : "JSEvent" }
 										        ]
 										  },
 			"onMenuItemCollapsed" 		: {
 										        "parameters" : [
-										            { "name" : "event", "type" : "JSEvent" },
-										            { "name" : "menuItem", "type" : "menuItem" }
+										        	{ "name" : "menuItem", "type" : "menuItem" },
+										            { "name" : "event", "type" : "JSEvent" }
 										        ]
 										  }
 	},
@@ -55,13 +57,20 @@
 			],
 			"returns" : "object"
 		},
+		"setMenuItems": 
+		{
+			"parameters": 
+			[
+				{	"name": "menuItems",	"type": "menuItems[]" }
+			]
+		},
 		"setSelectedById": 
 		{
 			"parameters": 
 			[
 				{	"name": "id",	"type": "string" },
 				{	"name": "level", "type": "int", "optional" : true},
-				{	"name": "mustExecuteOnMenuItemSelected", "type": "boolan", "optional" : true}
+				{	"name": "mustExecuteOnMenuItemSelected", "type": "boolean", "optional" : true}
 			],
 			"returns" : "boolean"
 		},
@@ -70,7 +79,7 @@
 			"parameters": 
 			[
 				{	"name": "selectedNodePath",	"type": "object[]" },
-				{	"name": "mustExecuteOnMenuItemSelected", "type": "boolan", "optional" : true}
+				{	"name": "mustExecuteOnMenuItemSelected", "type": "boolean", "optional" : true}
 			],
 			"returns" : "boolean"
 		},
@@ -116,13 +125,13 @@
       		"text"					: "tagstring",
       		"icon"					: "media",
       		"iconStyleClass"		: "styleclass",
+      		"styleClass"			: "styleclass",
       		"enabled"				: "boolean",
       		
       		"data"					: "object",
       		"menuItems"				: "menuItem[]",
-      		"isDivider"				: "boolean",
       		
-      		"selected"				: "boolean"
+      		"isDivider"				: "boolean"
     	}
 	}
 }

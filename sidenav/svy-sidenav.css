@@ -10,17 +10,22 @@
 }
 
 /* All Sub Menu */
-.svy-sidenav [class^="svy-sidenav-menu"] {
+[class^="svy-sidenav-menu"] {
 	display: none;
-	color : #777;
+	color : #444;
 }
 
-.svy-sidenav [class^="svy-sidenav-menu"].svy-sidenav-collapsed {
+[class^="svy-sidenav-menu"].svy-sidenav-collapsed {
 	display: block;
 }
 
-.svy-sidenav .svy-navitem-selected {
+.svy-navitem-selected {
 	color: green;
+}
+
+.svy-navitem-disabled {
+	background: #eee;
+	color: #777;
 }
 
 .svy-sidenav li {
@@ -31,15 +36,32 @@
 
 /* Main Nav collection*/
 .svy-sidenav-menu {
-	font-size: 16px;
-	line-height: 16px;
-    padding: 0;
+	font-size: 18px;
+	line-height: 18px;
+	padding-left: 0px;
 }
 
 .svy-sidenav-menu2 {
 	font-size: 16px;
 	line-height: 16px;
-    padding: 0;
+}
+
+/* Animate the menu */
+[class^="svy-sidenav-menu"].ng-enter, 
+[class^="svy-sidenav-menu"].ng-leave {
+  	transition: max-height cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.35s;
+}
+
+[class^="svy-sidenav-menu"].ng-enter,
+[class^="svy-sidenav-menu"].ng-leave.ng-leave-active {
+  	max-height: 0px;
+  	overflow: hidden;
+}
+
+[class^="svy-sidenav-menu"].ng-leave,
+[class^="svy-sidenav-menu"].ng-enter.ng-enter-active {
+ 	max-height: 200px;
+ 	overflow: hidden;
 }
 
 /* Style */
@@ -66,7 +88,8 @@
 } */
 
 /* Color border of list */
-.svy-sidenav-main, .svy-sidenab-menu2 {
+.svy-sidenav-main, 
+.svy-sidenav-menu2 {
 	border-color: #e6e6e6;
 }
 
@@ -77,4 +100,9 @@
 /* Active main list item */
 .svy-sidenav-main > .svy-sidenav-selected {
 	border-left: 3px solid #41b495;
+}
+
+.svy-sidenav-divider {
+	width: 100%;
+	border-top: 1px solid #e6e6e6;
 }

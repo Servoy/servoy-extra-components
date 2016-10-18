@@ -9,7 +9,7 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       },
       link: function($scope, $element, $attrs) {
     	  
-    	  if ($scope.svyServoyapi.isInDesigner()) {
+    	  if ($scope.svyServoyapi.isInDesigner() && !$scope.model.menu) {
     		  $element.html("<div class=\"tree_design\"></div>");
     	  }
     	  
@@ -272,6 +272,11 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 	  			}
       		}
       		return rootNodesId;
+      	}
+      	
+      	$scope.api.refreshUI = function() {
+      		// trigger a digest loop
+      		$scope.$apply("model.menu");
       	}
       	
       },
