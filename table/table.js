@@ -89,7 +89,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     	  }
     	  
     	  var autoColumns = getAutoColumns();
-    	  var tableWidth = 0;
+    	  var tableWidth = calculateTableWidth();
     	  
     	  var tableLeftOffset = 0;
     	  var onTBodyScrollListener = null;
