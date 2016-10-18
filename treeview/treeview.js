@@ -274,11 +274,6 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       		return rootNodesId;
       	}
       	
-      	$scope.api.refreshUI = function() {
-      		// trigger a digest loop
-      		$scope.$apply("model.menu");
-      	}
-      	
       },
       templateUrl: 'servoyextra/treeview/treeview.html'
     };
