@@ -194,6 +194,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     			  $(tblBody).bind("scroll", onTBodyScrollListener);
     		  }
     		  if($scope.model.enableColumnResize) {
+    			  autoColumns = getAutoColumns();
     			  tableWidth = calculateTableWidth();
     			  updateAutoColumnsWidth(0);    			  
 	    		  addColResizable(true);
