@@ -202,11 +202,23 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
 	        		  value : function(property, value) {
 	        			  switch (property) {
 	        			  	case "columns":
-	        			  		tableWidth = calculateTableWidth();
-	        			  		updateAutoColumnsWidth(0);
-	        			  		$timeout(function() {
-	        			  			addColResizable(true);
-	        			  		}, 0);
+	        			  		var valueChanged = false;
+	        			  		for(var i = 0; i < $scope.model.columns.length; i++) {
+	        			  			var iw = getNumberFromPxString($scope.model.columns[i].initialWidth);
+	        			  			if(iw > -1 && ($scope.model.columns[i].width != $scope.model.columns[i].initialWidth)) {
+	        			  				$scope.model.columns[i].initialWidth = $scope.model.columns[i].width;
+	        			  				if(!valueChanged) valueChanged = true;	        			  				
+	        			  			}
+	        			  		}    
+	        			  		
+	        			  		if(valueChanged) {
+	        			  			autoColumns = getAutoColumns();
+		        			  		tableWidth = calculateTableWidth();
+		        			  		updateAutoColumnsWidth(0);
+		        			  		$timeout(function() {
+		        			  			addColResizable(true);
+		        			  		}, 0);
+	        			  		}
 	        			  		break;
 	        			  }
 	        		  }
@@ -494,7 +506,11 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     	  
     	  $scope.getTBodyStyle = function() {
     		  var tBodyStyle = {};
-    		  tBodyStyle.width = getComponentWidth() + "px";
+    		  var componentWidth = getComponentWidth();
+    		  tBodyStyle.width = componentWidth + "px";
+    		  if(tableWidth < componentWidth) {
+    			  tBodyStyle.overflowX = "hidden";
+    		  }
     		  var tbl = $element.find("table:first");
 			  var tblHead = tbl.find("thead");
 			  if($(tblHead).is(":visible")) {
@@ -519,7 +535,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
 				  columnStyle.width = $scope.model.columns[column].width;
 			  }
 			  else {
-				  columnStyle.minWidth = columnStyle.maxWidth = columnStyle.width = Math.floor((getComponentWidth() - tableWidth - 18) / autoColumns.count) + "px";
+				  columnStyle.minWidth = columnStyle.maxWidth = columnStyle.width = Math.floor((getComponentWidth() - tableWidth) / autoColumns.count) + "px";
 			  }
         	  return columnStyle;
     	  }
@@ -533,9 +549,6 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     				  var headers = tbl.find("th");
     				  if($(headers).is(":visible")) {
     					  w = $(headers.get(column)).outerWidth(false);
-    					  if(column == $scope.model.columns.length - 1) {
-    						  w -= 18;
-    					  }
     				  }
         		  }
         		  if(w > -1) {
