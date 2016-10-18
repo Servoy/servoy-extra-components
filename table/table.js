@@ -460,7 +460,60 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     		  var fs = $scope.model.foundset;
     		  if (fs.selectedRowIndexes && fs.selectedRowIndexes.length > 0) {
     			  var selection = fs.selectedRowIndexes[0];
-	    		  if (event.keyCode == 38) {
+				  if (event.keyCode == 34 || event.keyCode == 33) {
+					  var firstSelected = $scope.model.foundset.selectedRowIndexes[0];
+		    		  firstSelected = firstSelected - ($scope.model.pageSize * ($scope.model.currentPage -1));
+		    		  var child = tbody.children().eq(firstSelected)
+		    		  if (child.length > 0) {
+			    		 var childBounds =  child[0].getBoundingClientRect();
+			    		 var tbodyBounds = tbody[0].getBoundingClientRect();
+			    		 if (event.keyCode == 34) {
+				    		 if (childBounds.top <= (tbodyBounds.top + childBounds.height - 5)) {
+				    		  var newTopChild = null;
+				    		  var totalHeight = childBounds.height/2;
+				    		  var numberOfItems = 0;
+				    		  var children = tbody.children().slice(firstSelected);
+				    		  for(;numberOfItems<children.length;numberOfItems++) {
+				    		  	var childHeight = children[numberOfItems].getBoundingClientRect().height;
+				    		  	totalHeight += childHeight;
+				    		  	if ( totalHeight > tbodyBounds.height) {
+				    		  		newTopChild = children[numberOfItems];
+				    		  		break;
+				    		  	}
+				    		  }
+				    		  if (newTopChild != null) {
+				    		  	 newTopChild.scrollIntoView(true);
+				    		  	 fs.selectedRowIndexes = [firstSelected+numberOfItems];
+				    		  }
+				    		 }
+				    		 else {
+				    		 	 child[0].scrollIntoView(true);
+				    		 }
+			    		 }
+			    		 else if (childBounds.bottom <= (tbodyBounds.bottom - childBounds.height + 5)) {
+							 child[0].scrollIntoView(false);
+			    		 }
+						 else {
+				    		  var newTopChild = null;
+				    		  var totalHeight = childBounds.height/2;
+				    		  var numberOfItems = firstSelected;
+				    		  var children = tbody.children();
+				    		  for(;numberOfItems>0;numberOfItems--) {
+				    		  	var childHeight = children[numberOfItems].getBoundingClientRect().height;
+				    		  	totalHeight += childHeight;
+				    		  	if ( totalHeight > tbodyBounds.height) {
+				    		  		newTopChild = children[numberOfItems];
+				    		  		break;
+				    		  	}
+				    		  }
+				    		  if (newTopChild != null) {
+				    		  	 newTopChild.scrollIntoView(false);
+				    		  	 fs.selectedRowIndexes = [numberOfItems];
+				    		  }
+			    		 }
+	    			  }
+				  }
+				  else if (event.keyCode == 38) {
 	    			  if (selection > 0) {
 	    				  fs.selectedRowIndexes = [selection-1];
 	    				  if ( (fs.viewPort.startIndex) <=  selection-1){
