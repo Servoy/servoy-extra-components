@@ -49,6 +49,14 @@
 	},
 	"api":
 	{
+		"getMenuItemById": 
+		{
+			"parameters": 
+			[
+				{	"name": "id",	"type": "object" }
+			],
+			"returns" : "menuItem"
+		},
 		"getSelectedMenuItem": 
 		{
 			"parameters": 
@@ -68,7 +76,7 @@
 		{
 			"parameters": 
 			[
-				{	"name": "id",	"type": "string" },
+				{	"name": "id",	"type": "object" },
 				{	"name": "level", "type": "int", "optional" : true},
 				{	"name": "mustExecuteOnMenuItemSelected", "type": "boolean", "optional" : true}
 			],
@@ -97,12 +105,20 @@
 			],
 			"returns" : "boolean"
 		},
-		
+		"setMenuItemEnabled": 
+		{
+			"parameters": 
+			[
+				{ "name": "menuItemId",	"type": "object" },
+				{ "name": "enabled",	"type": "boolean" }
+			],
+			"returns" : "boolean"
+		},
 		"setMenuItemsById" :{
 			"parameters":[
 				{
 					"name": "id",	
-					"type": "string"
+					"type": "object"
 				},
 				{
 					"name": "menuItems",	
@@ -121,7 +137,7 @@
 	},
 	"types": {
     	"menuItem": {
-      		"id"					: "string",
+      		"id"					: "object",
       		"text"					: "tagstring",
       		"icon"					: "media",
       		"iconStyleClass"		: "styleclass",

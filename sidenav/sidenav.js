@@ -39,6 +39,7 @@ angular.module('servoyextraSidenav',['servoy', 'ngAnimate']).directive('servoyex
 			var getSelectedNode;
 			var setSelectedIndex;
 			var storeSelectedIndex;
+			var isDisabled;
 
 			// scope vars
 			$scope.selectedIndex = { };// old the selected index of each level
@@ -91,7 +92,9 @@ angular.module('servoyextraSidenav',['servoy', 'ngAnimate']).directive('servoyex
 			$scope.selectItem = function(level, index, item, event) {
 				
 				// prevent selection if item is disabled
-				if (item.enabled == false) {
+				if (isDisabled(item.id)) {
+					// FIXME check if parent is disabled too.
+					// receive index path !?
 					return;
 				}
 
@@ -408,6 +411,20 @@ angular.module('servoyextraSidenav',['servoy', 'ngAnimate']).directive('servoyex
 				var event = document.createEvent("MouseEvents");
 				event.initMouseEvent("click", false, true, window, 1, x, y, x, y);
 				return event;
+			}
+			
+			isDisabled = function(nodeId) {
+				var indexPath = getPathToNode(nodeId, $scope.model.menu);
+				var tree = $scope.model.menu;
+				var node;
+				for (var i = 0; i < indexPath.length; i++) {
+					node = tree[indexPath[i]];
+					if (node.enabled == false) {
+						return true;
+					}
+					tree = node.menuItems;
+				}
+				return false;
 			}
       },
       link: function($scope, $element, $attrs) {

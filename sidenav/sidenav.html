@@ -15,9 +15,17 @@
 		enabled
 		collapsible
 		open api
+		sort on Text enable/disable
+		search is complicated (should search in child nodes)
+
+				collapse node if disabled
+					<ul class="svy-sidenav-menu2" 
+						ng-class="selectedIndex[1] == $index && !(item.enabled==false) ? 'svy-sidenav-collapsed' : ''"
+						ng-if="selectedIndex[1] == $index"
+						>
 
 -->
-		<nav id={{::model.svyMarkupId}} class="svy-sidenav">		
+		<nav id={{::model.svyMarkupId}} class="svy-sidenav" ng-show="model.visible">		
 			<input ng-model="searchText" class="svy-searchbox"></input>
 			<!-- The main menu -->
 			<ul class="svy-sidenav-menu svy-sidenav-collapsed">
@@ -29,7 +37,7 @@
 					>
 
 					<!-- Main Menu Items -->
-					<a ng-disabled="item.enabled == false" class="svy-sidenav-item" ng-class="item.styleClass" ng-href="" ng-click="selectItem(1, $index, item, $event)">
+					<a ng-if="!item.isDivider" class="svy-sidenav-item" ng-class="item.styleClass" ng-href="" ng-click="selectItem(1, $index, item, $event)">
 						<i ng-class="item.iconStyleClass"></i>
 						{{item.text}}
 						<i class="pull-right" ng-class="item.menuItems ? (selectedIndex[1] == $index ? 'glyphicon glyphicon-chevron-down' : 'glyphicon glyphicon-chevron-right') : ''"></i>
@@ -42,10 +50,10 @@
 						>
 						<li ng-repeat="item2 in item.menuItems"
  							class="svy-sidenav-dropdown" 
-							ng-class="(selectedIndex[2] == $index ? 'svy-navitem-selected' : '') + (item.enabled == false ? ' svy-navitem-disabled' : '')"
+							ng-class="(selectedIndex[2] == $index ? 'svy-navitem-selected' : '') + (item.enabled == false || item2.enabled == false ? ' svy-navitem-disabled' : '')"
 							>
 							<!-- Second Menu Items -->
-							<a class="svy-sidenav-item" ng-class="item2.styleClass" ng-href="" ng-click="selectItem(2, $index, item2, $event)">
+							<a ng-if="!item2.isDivider" class="svy-sidenav-item" ng-class="item2.styleClass" ng-href="" ng-click="selectItem(2, $index, item2, $event)">
 								<i ng-class="item2.iconStyleClass"></i>
 								{{item2.text}}
 								<i class="pull-right" ng-class="item2.menuItems ? (selectedIndex[2] == $index ? 'glyphicon glyphicon-chevron-down' : 'glyphicon glyphicon-chevron-right') : ''"></i>
@@ -57,10 +65,10 @@
 								>
 								<li ng-repeat="item3 in item2.menuItems"
  									class="svy-sidenav-dropdown" 
-									ng-class="(selectedIndex[3] == $index ? 'svy-navitem-selected' : '') + (item3.enabled == false ? ' svy-navitem-disabled' : '')"
+									ng-class="(selectedIndex[3] == $index ? 'svy-navitem-selected' : '') + (item.enabled == false || item2.enabled == false || item3.enabled == false ? ' svy-navitem-disabled' : '')"
 									>
 									<!-- Third Menu Items -->
-									<a class="svy-sidenav-item" ng-class="item3.styleClass" ng-href="" ng-click="selectItem(3, $index, item3, $event)">
+									<a ng-if="!item3.isDivider" class="svy-sidenav-item" ng-class="item3.styleClass" ng-href="" ng-click="selectItem(3, $index, item3, $event)">
 										<i ng-class="item3.iconStyleClass"></i>
 										{{item3.text}}
 										<i class="pull-right" ng-class="item3.menuItems ? (selectedIndex[3] == $index ? 'glyphicon glyphicon-chevron-down' : 'glyphicon glyphicon-chevron-right') : ''"></i>
@@ -72,10 +80,10 @@
 										>
 										<li ng-repeat="item4 in item3.menuItems"
 											class="svy-sidenav-dropdown" 
-											ng-class="(selectedIndex[4] == $index ? 'svy-navitem-selected' : '') + (item4.enabled == false ? ' svy-navitem-disabled' : '')"
+											ng-class="(selectedIndex[4] == $index ? 'svy-navitem-selected' : '') + (item.enabled == false || item2.enabled == false || item3.enabled == false || item4.enabled == false ? ' svy-navitem-disabled' : '')"
 											>
 											<!-- Second Menu Items -->
-											<a class="svy-sidenav-item" ng-class="item4.styleClass" ng-href="" ng-click="selectItem(4, $index, item4, $event)">
+											<a ng-if="!item4.isDivider" class="svy-sidenav-item" ng-class="item4.styleClass" ng-href="" ng-click="selectItem(4, $index, item4, $event)">
 												<i ng-class="item4.iconStyleClass"></i>
 												{{item4.text}}
 											</a>
