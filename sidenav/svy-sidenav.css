@@ -49,7 +49,7 @@
 /* Animate the menu */
 [class^="svy-sidenav-menu"].ng-enter, 
 [class^="svy-sidenav-menu"].ng-leave {
-  	transition: max-height cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.35s;
+  	transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.35s;
 }
 
 [class^="svy-sidenav-menu"].ng-enter,
@@ -69,6 +69,7 @@
 	display: block;
 	color: inherit;
 	padding: 10px 15px;
+	cursor: pointer;
 }
 
 .svy-sidenav-item:focus,
@@ -79,6 +80,10 @@
 
 .svy-sidenav-main a {
 	color: #777;
+}
+
+.svy-navitem-disabled .svy-sidenav-item {
+	cursor: default;
 }
 
 /* .svy-sidenav-main a:hover, a:focus {
@@ -98,11 +103,17 @@
 }
 
 /* Active main list item */
-.svy-sidenav-main > .svy-sidenav-selected {
+.svy-sidenav-menu > .svy-navitem-selected {
 	border-left: 3px solid #41b495;
 }
 
 .svy-sidenav-divider {
 	width: 100%;
-	border-top: 1px solid #e6e6e6;
+	border-top: 1px solid #000;
+}
+
+.svy-sidenav-collapse-icon {
+	padding: 10px;
+	margin-right: -10px;
+	margin-top: -10px;
 }

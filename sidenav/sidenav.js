@@ -25,26 +25,60 @@ angular.module('servoyextraSidenav',['servoy', 'ngAnimate']).directive('servoyex
     	   * 	what happen to selection if i add an item in between
     	   * 	remove a selected node
     	   * 
+    	   * 
+    	   * DONE
+    	   * animate
+    	   * visible
+    	   * divider
+    	   * iconClass
+    	   * 
+    	   * 
+    	   * API
+    	   * init
+    	   * add/remove nodes
+    	   * add/remove subNodes
+    	   * enable nodes
+    	   * getNode
     	   *  
     	   *  */
+    	  
+    	  /* 
+    	   * Selection nodes are stored in hash object where 'level' = 'node.id'
+    	   * Expanded nodes are stored in hash object where 'level' = 'node.id'
+    	   * 
+    	   * Selection triggers node expand
+    	   * Expanding a node does not trigger a selection
+    	   * 
+    	   * Selection can be canceled if onMenuItemSelected returns false
+    	   * 
+    	   * NOTE: what happen if a node is removed ?
+    	   * read all anchestor, check if node still exists
+    	   * I need to understand when a node is removed (server to client API !?)
+    	   * 
+    	   * */
     	  
     		// private methods
 			var getNodeByIndexPath;
 			var getNodeById;
 			var getPathToNode;
+			var getNodeAnchestors;
+			var getAllNodesToNodeId;
 			var clearSelectedIndex;
 			var createJSEvent;
 			var getSelectedIndexPath;
 			var getSelectedNode;
 			var setSelectedIndex;
 			var storeSelectedIndex;
+			var setExpandedIndex;
+			var storeExpandedIndex;
+			var clearExpandedIndex;
 			var isDisabled;
+			var isNodeSelected;
+			var isNodeExpanded;
 
 			// scope vars
-			$scope.selectedIndex = { };// old the selected index of each level
-			
-	    	$animate.enabled($element, true);
-
+			$scope.selectedIndex = { }; 	// hold the id of the selected nodes, per level
+			$scope.expandedIndex = { }; 	// hold the id of the expanded nodes, per level
 			
 			// sample menu for developer
 			if ($scope.svyServoyapi.isInDesigner()) {
@@ -65,13 +99,18 @@ angular.module('servoyextraSidenav',['servoy', 'ngAnimate']).directive('servoyex
 	    		  	id: 3,
 					text: "Sample Item #3"
 	    		  }];
-	    		  $scope.selectedIndex = { 1: 0 }
-	    	  }
+	    		  $scope.selectedIndex = { 1: 0 };
+	    		  $scope.expandedIndex = { 1: 0 };
+			}
+			
+			// enable animation
+	    	$animate.enabled($element, $scope.model.animate ? true : false);
 
 			// init navigation
-			if ($scope.model.defaultExpanded) { // expand the first node at startup
-				$scope.selectedIndex[1] = 0;
-			}
+			// TODO expand first node ?
+//			if ($scope.model.defaultExpanded) { // expand the first node at startup
+//				$scope.selectedIndex[1] = 0;
+//			}
 
 			// wait that model is syncronized with the server
 			$scope.$watch("model.svyMarkupId", function(newValue, oldValue) {
@@ -84,30 +123,105 @@ angular.module('servoyextraSidenav',['servoy', 'ngAnimate']).directive('servoyex
 							// init selectedIndex
 							// $scope.selectedIndex[1] = 0;
 						}
+						
+						if ($scope.model.expandedIndex) {
+							$scope.expandedIndex = JSON.parse($scope.model.expandedIndex);
+						} else {
+							// init expandedIndex
+						}
 					}
 				});
 
-			/** Select the main Item */
-			$scope.selectItem = function(level, index, item, event) {
+			/** 
+			 * @param {Number} level
+			 * @param {Number} index
+			 * @param {Object} item
+			 * @param {Object} [event]
+			 * @param {Object} [preventHandler]
+			 * 
+			 * Select the main Item */
+			$scope.selectItem = function(level, index, item, event, preventHandler) {
+				console.log("select " + level + ' - ' + item.id)
 				
-				// prevent selection if item is disabled
-				if (isDisabled(item.id)) {
-					// FIXME check if parent is disabled too.
-					// receive index path !?
-					return;
+				if (event) { 	// 
+					event.stopPropagation();
+				} else {	// 
+					event = createJSEvent();
 				}
 
-				if ($scope.handlers.onMenuItemSelected) { // change selection only if onMenuItemSelected allows it
+				// prevent selection if item is disabled
+				if (isDisabled(item.id)) {
+					return false;
+				}
+
+				if (preventHandler!=true && $scope.handlers.onMenuItemSelected) { // change selection only if onMenuItemSelected allows it
 					$scope.handlers.onMenuItemSelected(item, event).then(function(result) {
 							if (result == true) {
-								setSelectedIndex(level, index);
+								setSelectedIndex(level, index, item);
+								$scope.expandItem(level, index, item, event);	// TODO add collapsed argument
 							}
 						}, function(err) { // Error: "Oops something went wrong"
 							// TODO use logging instead
 							console.log(err);
 						});
 				} else {
-					setSelectedIndex(level, index);
+					setSelectedIndex(level, index, item);
+					$scope.expandItem(level, index, item, event);
+				}
+				return true;
+			}
+			
+			/** 
+			 * @param {Number} level
+			 * @param {Number} index
+			 * @param {Object} item
+			 * @param {Object} [event]
+			 * @param {Object} [preventHandler]
+			 * 
+			 * Select the main Item */
+			$scope.expandItem = function(level, index, item, event, preventHandler) {
+				console.log("expand " + level + ' - ' + item.id);
+				
+				if (event) { 	// 
+					event.stopPropagation();
+				} else {	// 
+					event = createJSEvent();
+				}
+				
+				// prevent selection if item is disabled
+				if (isDisabled(item.id)) {
+					return false;
+				}
+				
+				if ($scope.expandedIndex[level] !== item.id) {	// expand the item
+
+					// if is expanded
+					if (preventHandler!=true && $scope.handlers.onMenuItemExpanded) { // change selection only if onMenuItemSelected allows it
+						$scope.handlers.onMenuItemExpanded(item, event).then(function(result) {
+								// if (result == true) {
+									setExpandedIndex(level, index, item);
+								// }
+							}, function(err) { // Error: "Oops something went wrong"
+								// TODO use logging instead
+								console.log(err);
+							});
+					} else {
+						setExpandedIndex(level, index, item);
+					}
+				} else {	// collapse the item
+				
+					if (preventHandler!=true && $scope.handlers.onMenuItemCollapsed) { // change selection only if onMenuItemSelected allows it
+						$scope.handlers.onMenuItemCollapsed(item, event).then(function(result) {
+								// if (result == true) {
+									clearExpandedIndex(level-1);
+								// }
+							}, function(err) { // Error: "Oops something went wrong"
+								// TODO use logging instead
+								console.log(err);
+							});
+					} else {
+						clearExpandedIndex(level-1);
+					}
 				}
 			}
 
@@ -123,6 +237,13 @@ angular.module('servoyextraSidenav',['servoy', 'ngAnimate']).directive('servoyex
 			}
 
 			// TODO fixme mustExecuteOnSelectNode not executed
+			/**
+			 * @param {Object} id
+			 * @param {Number} level
+			 * @param {Boolean} mustExecuteOnSelectNode
+			 * 
+			 * Should allow selection by index path as an API ?
+			 *  */
 			$scope.api.setSelectedById = function(id, level, mustExecuteOnSelectNode) {
 				var nodes;
 				var levelPath = [];
@@ -148,43 +269,70 @@ angular.module('servoyextraSidenav',['servoy', 'ngAnimate']).directive('servoyex
 					return false;
 				}
 				
-				return $scope.api.setSelectedByIndexPath(path, mustExecuteOnSelectNode);
+				// TODO fix me, force the selection if item is already in selection path
+				// do nothing if the item is already selected
+				if ($scope.selectedIndex && $scope.selectedIndex[path.length] == id && !$scope.selectedIndex[path.length + 1]) {
+					return true;
+				} else {
+					// search the node
+					if (!node) {
+						node = getNodeByIndexPath(path, $scope.model.menu);
+					}
+				
+					// select the item
+					var preventHandler = mustExecuteOnSelectNode == true ? false : true;
+					return $scope.selectItem(path.length, path[path.length-1], node, null, preventHandler);
+				}
 			}
 
+			/**
+			 * @param {Array<Number>} path
+			 * @param {Boolean} mustExecuteOnSelectNode
+			 * 
+			 * Should allow selection by index path as an API ?
+			 *  */
 			$scope.api.setSelectedByIndexPath = function(path, mustExecuteOnSelectNode) {
-
+				
 				// search node in tree
 				var node = getNodeByIndexPath(path, $scope.model.menu);
-				if (node) {
-					if (mustExecuteOnSelectNode && $scope.handlers.onMenuItemSelected) { // change selection only if onMenuItemSelected allows it
-						// TODO create an event
-						var event = createJSEvent();
-						$scope.handlers.onMenuItemSelected(node, event).then(function(result) {
-								if (result == true) {
-									setSelectedPath(path);
-								}
-								// TODO if selection is blocked should not return true ?
-							}, function(err) { // Error: "Oops something went wrong"
-								// TODO use logging instead
-								console.log(err);
-							});
-					} else {
-						setSelectedPath(path);
-					}
-					return true;
-				} else { // returns false if node does not exists
-					return false;
-				}
-
-				// change the selectedIndex
-				function setSelectedPath(indexPath) {
-					var selectedIndex = { }
-					for (var i = 0; i < indexPath.length; i++) {
-						selectedIndex[i + 1] = indexPath[i];
-					}
-					$scope.selectedIndex = selectedIndex;
-					storeSelectedIndex();
-				}
+				var preventHandler = mustExecuteOnSelectNode == true ? false : true;
+				$scope.selectItem(path.length, path[path.length-1], node, null, preventHandler);
+				return;
+				
+//				if (node && !isDisabled(node.id)) {	// check if node is enabled
+//					if (mustExecuteOnSelectNode && $scope.handlers.onMenuItemSelected) { // change selection only if onMenuItemSelected allows it
+//						// TODO create an event
+//						var event = createJSEvent();
+//						$scope.handlers.onMenuItemSelected(node, event).then(function(result) {
+//								if (result == true) {
+//									setSelectedPath(path);
+//								}
+//								// TODO if selection is blocked should not return true ?
+//							}, function(err) { // Error: "Oops something went wrong"
+//								// TODO use logging instead
+//								console.log(err);
+//							});
+//					} else {
+//						setSelectedPath(path);
+//					}
+//					return true;
+//				} else { // returns false if node does not exists
+//					return false;
+//				}
+//
+//				// change the selectedIndex
+//				/** 
+//				 * @param {Array} indexPath
+//				 * */
+//				function setSelectedPath(indexPath) {
+//					var allNodes = getAllNodesToNodeId(node.id);
+//					var selectedIndex = { }
+//					for (var i = 0; i < allNodes.length; i++) {
+//						selectedIndex[i + 1] = allNodes[i].id;
+//					}
+//					$scope.selectedIndex = selectedIndex;
+//					storeSelectedIndex();
+//				}
 			}
 
 			$scope.api.setSubMenuItemsByIndexPath = function(path, subtree) {
@@ -276,22 +424,44 @@ angular.module('servoyextraSidenav',['servoy', 'ngAnimate']).directive('servoyex
 				}
 				return null;
 			}
-
+			
 			/**
-			 * Delete all indexes from level
-			 *  */
-			clearSelectedIndex = function (level) {
-				var levels = $scope.selectedIndex;
-				// reset all sub levels
-				for (var lvl in levels) {
-					if (lvl > level) { // reset the next levels
-						delete levels[lvl];
-					}
-				}
+			 * Returns all anchestors of node
+			 *
+			 * @param {Object} nodeId
+			 * @return Array
+			 * */
+			getAllNodesToNodeId = function (nodeId) {
+				var nodes = $scope.model.menu;
+				var pathIndex = getPathToNode(nodeId, nodes);
+				var anchestors = [];
+				var node;
+				
+				// returns all the anchestors of node
+				for (var i = 0; pathIndex && i < pathIndex.length; i++) {
+					node = nodes[pathIndex[i]];
+					anchestors.push(node);
+					nodes = node.menuItems;
+				}			
+				return anchestors;
+			}
+			
+			/**
+			 * Returns all anchestors of node
+			 *
+			 * @param {Object} nodeId
+			 * @return Array
+			 * */
+			getNodeAnchestors = function(nodeId) {
+				var anchestors = getAllNodesToNodeId(nodeId);
+				anchestors.pop();
+				return anchestors;
 			}
 
 			/**
 			 * Returns the selected node up-to level
+			 * TODO check me
+			 * @deprecated 
 			 *
 			 * @param {Number} [level] 1-based
 			 * @return Object
@@ -303,6 +473,7 @@ angular.module('servoyextraSidenav',['servoy', 'ngAnimate']).directive('servoyex
 
 			/**
 			 * Returns the selected index path up-to level
+			 * @deprecated can't find selected node by index anymore
 			 *
 			 * @param {Number} [level] 1-based
 			 * @return {Array<Number>}
@@ -326,31 +497,145 @@ angular.module('servoyextraSidenav',['servoy', 'ngAnimate']).directive('servoyex
 			 * Set the index at level
 			 *
 			 * @param {Number} [level] 1-based target level
-			 * @param {Array<Number>} index value
+			 * @param {Number} index value
+			 * @param {Object} item
 			 *
 			 * */
-			setSelectedIndex = function(level, index) {
+			setSelectedIndex = function(level, index, item) {
 				if (!$scope.selectedIndex) $scope.selectedIndex = { }
 				var levels = $scope.selectedIndex;
 				
+				// clear level below selection
 				clearSelectedIndex(level);
-
-				// set level index
-				if (levels[level] == index) {	// collapse the selected menu
-					delete levels[level];
-				} else {
-					levels[level] = index; // change selection at level (x)
+				
+//				// update levels above selection, all anchestors
+				var newSelectedIndex = { }
+				var anchestors = getNodeAnchestors(item.id);
+				for (var i = 0; i < anchestors.length; i++) {
+					if (newSelectedIndex[i+1] != anchestors[i].id) {
+						newSelectedIndex[i+1] = anchestors[i].id;
+					}
 				}
 
+				// TODO select all parents as well
+				// set level index
+				if (levels[level] == item.id) {	// collapse the selected menu
+					// TODO allow unselect !?
+				} else {
+					newSelectedIndex[level] = item.id;
+				}
+				$scope.selectedIndex = newSelectedIndex;
+
 				console.log(levels);
-				storeSelectedIndex();
+				storeSelectedIndex();				
 			}
 
 			storeSelectedIndex = function() {
 				$scope.model.selectedIndex = JSON.stringify($scope.selectedIndex);
 				$scope.svyServoyapi.apply("selectedIndex");
 			}
+			
+			/**
+			 * Delete all indexes from level
+			 *  */
+			clearSelectedIndex = function (level) {
+				var levels = $scope.selectedIndex;
+				// reset all sub levels
+				for (var lvl in levels) {
+					if (lvl > level) { // reset the next levels
+						delete levels[lvl];
+					}
+				}
+			}
+			
+			/**
+			 * Set the index at level
+			 *
+			 * @param {Number} [level] 1-based target level
+			 * @param {Number} index value
+			 * @param {Object} item the expanded node
+			 *
+			 * */
+			setExpandedIndex = function(level, index, item) {
+				if (!$scope.expandedIndex) $scope.expandedIndex = { }
+				var levels = $scope.expandedIndex;
+				
+				// clear sub levels
+				clearExpandedIndex(level);
+				
+				// expand all anchestors
+				var newExpandedIndex = { }
+				var anchestors = getNodeAnchestors(item.id);
+				for (var i = 0; i < anchestors.length; i++) {
+					if (newExpandedIndex[i+1] != anchestors[i].id) {
+						newExpandedIndex[i+1] = anchestors[i].id;
+					}
+				}
 
+				// TODO select all parents as well
+				// expand node index
+				if (levels[level] != item.id) {	// collapse the selected menu
+					newExpandedIndex[level] = item.id;
+				}
+				$scope.expandedIndex = newExpandedIndex;
+
+				console.log(levels);
+				storeExpandedIndex();
+			}
+			
+			storeExpandedIndex = function() {
+				$scope.model.expandedIndex = JSON.stringify($scope.expandedIndex);
+				$scope.svyServoyapi.apply("expandedIndex");
+			}
+			
+			/**
+			 * Delete all indexes from level
+			 *  */
+			clearExpandedIndex = function (level) {
+				var levels = $scope.expandedIndex;
+				// reset all sub levels
+				for (var lvl in levels) {
+					if (lvl > level) { // reset the next levels
+						delete levels[lvl];
+					}
+				}
+			}
+			
+			isDisabled = function(nodeId) {
+				// TODO refactor: use getNodeAnchestors
+				var indexPath = getPathToNode(nodeId, $scope.model.menu);
+				var tree = $scope.model.menu;
+				var node;
+				for (var i = 0; i < indexPath.length; i++) {
+					node = tree[indexPath[i]];
+					if (node.enabled == false) {
+						return true;
+					}
+					tree = node.menuItems;
+				}
+				return false;
+			}
+			
+			isNodeSelected = function (nodeId) {
+				var levels = $scope.selectedIndex;
+				for (var level in levels) {
+					if (levels[level] == nodeId) {
+						return true;
+					}
+				}
+				return false;
+			}
+			
+			isNodeExpanded = function (nodeId) {
+				var levels = $scope.expandedIndex;
+				for (var level in levels) {
+					if (levels[level] == nodeId) {
+						return true;
+					}
+				}
+				return false;
+			}
+			
 			/**
 			 * Create a JSEvent
 			 * */
@@ -363,20 +648,6 @@ angular.module('servoyextraSidenav',['servoy', 'ngAnimate']).directive('servoyex
 				var event = document.createEvent("MouseEvents");
 				event.initMouseEvent("click", false, true, window, 1, x, y, x, y);
 				return event;
-			}
-			
-			isDisabled = function(nodeId) {
-				var indexPath = getPathToNode(nodeId, $scope.model.menu);
-				var tree = $scope.model.menu;
-				var node;
-				for (var i = 0; i < indexPath.length; i++) {
-					node = tree[indexPath[i]];
-					if (node.enabled == false) {
-						return true;
-					}
-					tree = node.menuItems;
-				}
-				return false;
 			}
       },
       link: function($scope, $element, $attrs) {

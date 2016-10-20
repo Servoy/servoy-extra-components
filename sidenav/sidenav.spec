@@ -10,10 +10,11 @@
 	{
 		"menu"					: {"type" :"menuItem[]", "default" : [], "pushToServer": "allow", "tags": { "scope" :"runtime" }},
 		"selectedIndex"					: {"type" :"object", "tags": { "scope" :"private" }, "pushToServer" : "allow"},
+		"expandedIndex"					: {"type" :"object", "tags": { "scope" :"private" }, "pushToServer" : "allow"},
 		
 		"verticalAlignment"				: {"type" :"string", "tags": {"scope": "design"},"values": [{"FIXED-TOP": "navbar-fixed-top"}, {"FIXED-BOTTOM": "navbar-fixed-bottom"}, {"STATIC": "navbar-static-top"}], "default" : "navbar-static-top"},
 		
-		"openMenuOnHover"				: {"type" :"boolean", "default" : true, "tags": { "scope" :"design" }},
+		"animate"						: {"type" :"boolean", "default" : true, "tags": { "scope" :"design" }},
 		"styleClass"					: {"type" :"styleclass", "tags": { "scope" :"design" }},
 		
 		"styleClassSelectedMenu"		: {"type" :"styleclass", "tags": { "scope" :"design" }},
@@ -32,7 +33,8 @@
 										        "parameters" : [
 										        	{ "name" : "menuItem", "type" : "menuItem" },
 										            { "name" : "event", "type" : "JSEvent" }
-										        ]
+										        ],
+										        "returns" : "boolean"
 										  },
 			"onMenuItemExpanded" 		: {
 										        "parameters" : [
