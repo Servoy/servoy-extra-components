@@ -3,8 +3,9 @@ var getPathToNode;
 var getParentNode;
 var getParentNodeByIndexPath;
 var getNodeByIndexPath;
+var clearGroups;
 
-$scope.api.setMenuItems = function(menuItems) {
+$scope.api.setRootMenuItems = function(menuItems) {
 	$scope.model.menu = menuItems;
 	menuItems = $scope.model.menu
 }
@@ -81,13 +82,43 @@ $scope.api.removeMenuItem = function (nodeId) {
 	return false;
 }
 
-$scope.api.removeMenuItems = function (nodeId) {
+$scope.api.setSubMenuItems = function(id, subtree) {
+	var tree = $scope.model.menu;
+	var node = getNodeById(id, tree);
+	if (node) {
+		node.menuItems = subtree;
+		return true;
+	}
+	return false;
+}
+
+$scope.api.removeSubMenuItems = function (nodeId) {
 	var node = getNodeById(nodeId, $scope.model.menu);
 	if (node) {
 		delete node.menuItems;
 		return true;
 	}
 	return false;
+}
+
+/**
+ * Clears all sub-nodes at level
+ *
+ * @param {Number} depth 1-based
+ *  */
+$scope.api.removeAllMenuItemsAtDepth = function(depth) {
+	if (depth === 1) {	// if level is one remove the root
+		$scope.model.menu = [];
+	} else { // remove all subnodes at level
+		var nodes = $scope.model.menu;
+		clearGroups(depth, nodes, 2);
+	}
+	
+	// TODO call update menu items
+	// clear indexes at deeper level
+	// clearSelectedIndex(level - 1);
+	// storeSelectedIndex();
+	// $scope.svyServoyapi.apply("menu");
 }
 
 /**
@@ -191,4 +222,19 @@ getParentNodeByIndexPath = function (indexPath, nodes) {
 		return getNodeByIndexPath(indexPath.slice(0,indexPath.length-1), nodes);
 	}  
 	return null;
+}
+
+/**
+ * Remove all the nodes where level = deep
+ *  */
+clearGroups = function(level, nodes, deep) {
+	if (nodes) {
+		for (var i = 0; i < nodes.length; i++) { // go one level deeper
+			var subTree = nodes[i];
+			if (level === deep) { // delete all subgroups
+				delete subTree.menuItems;
+			}
+			clearGroups(level, subTree.menuItems, deep + 1);
+		}
+	}
 }

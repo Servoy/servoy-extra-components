@@ -65,7 +65,7 @@
 			],
 			"returns" : "object"
 		},
-		"setMenuItems": 
+		"setRootMenuItems": 
 		{
 			"parameters": 
 			[
@@ -118,7 +118,20 @@
 			],
 			"returns" : "boolean"
 		},
-		"removeMenuItems" : {
+		"setSubMenuItems" :{
+			"parameters":[
+				{
+					"name": "id",	
+					"type": "object"
+				},
+				{
+					"name": "menuItems",	
+					"type": "menuItem[]"
+				}
+			],
+			"returns" : "boolean"
+		},
+		"removeSubMenuItems" : {
 			"parameters":[
 				{
 					"name": "nodeId",	
@@ -127,14 +140,14 @@
 			],
 			"returns" : "boolean"
 		},
-		"clearMenuItems" : {
+		"removeAllMenuItemsAtDepth" : {
 			"parameters":[
 				{
-					"name": "depthLevel",	
+					"name": "depth",	
 					"type": "int"
 				}]
 		},
-		"setMenuItemsByIndexPath" :{
+		"setSubMenuItemsByIndexPath" :{
 			"parameters":[
 				{
 					"name": "indexNodePath",	
@@ -153,19 +166,6 @@
 			[
 				{ "name": "menuItemId",	"type": "object" },
 				{ "name": "enabled",	"type": "boolean" }
-			],
-			"returns" : "boolean"
-		},
-		"setMenuItemsById" :{
-			"parameters":[
-				{
-					"name": "id",	
-					"type": "object"
-				},
-				{
-					"name": "menuItems",	
-					"type": "menuItem[]"
-				}
 			],
 			"returns" : "boolean"
 		}

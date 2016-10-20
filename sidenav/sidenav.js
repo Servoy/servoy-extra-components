@@ -32,7 +32,6 @@ angular.module('servoyextraSidenav',['servoy', 'ngAnimate']).directive('servoyex
 			var getNodeByIndexPath;
 			var getNodeById;
 			var getPathToNode;
-			var clearGroups;
 			var clearSelectedIndex;
 			var createJSEvent;
 			var getSelectedIndexPath;
@@ -188,18 +187,7 @@ angular.module('servoyextraSidenav',['servoy', 'ngAnimate']).directive('servoyex
 				}
 			}
 
-			$scope.api.setMenuItemsById = function(id, subtree) {
-				var tree = $scope.model.menu;
-				var node = getNodeById(id, tree);
-				if (node) {
-					node.menuItems = subtree;
-					$scope.svyServoyapi.apply("menu");
-					return true;
-				}
-				return false;
-			}
-
-			$scope.api.setMenuItemsByIndexPath = function(path, subtree) {
+			$scope.api.setSubMenuItemsByIndexPath = function(path, subtree) {
 				var tree = $scope.model.menu;
 				var node = getNodeByIndexPath(path, tree);
 				if (node) {
@@ -208,28 +196,6 @@ angular.module('servoyextraSidenav',['servoy', 'ngAnimate']).directive('servoyex
 					return true;
 				}
 				return false;
-			}
-
-			/**
-			 * Clears all sub-nodes at level
-			 *
-			 * @param {Number} level level deep 1-based
-			 *  */
-			$scope.api.clearMenuItems = function(level) {
-				if (level === 1) {	// if level is one remove the root
-					$scope.model.menu = [];
-				} else { // remove all subnodes at level
-					var nodes = $scope.model.menu;
-					clearGroups(level, nodes, 2);
-				}
-				
-				// clear indexes at deeper level
-				clearSelectedIndex(level - 1);
-				storeSelectedIndex();
-				
-				$scope.svyServoyapi.apply("menu");
-				console.log($scope.model.menu);
-				console.log($scope.selectedIndex);
 			}
 
 			/***********************************************************************************
@@ -311,20 +277,6 @@ angular.module('servoyextraSidenav',['servoy', 'ngAnimate']).directive('servoyex
 				return null;
 			}
 
-			/**
-			 * Remove all the nodes where level = deep
-			 *  */
-			clearGroups = function(level, nodes, deep) {
-				if (nodes) {
-					for (var i = 0; i < nodes.length; i++) { // go one level deeper
-						var subTree = nodes[i];
-						if (level === deep) { // delete all subgroups
-							delete subTree.menuItems;
-						}
-						clearGroups(level, subTree.menuItems, deep + 1);
-					}
-				}
-			}
 			/**
 			 * Delete all indexes from level
 			 *  */
