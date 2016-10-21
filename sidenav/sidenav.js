@@ -20,6 +20,8 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 * slideIn/slideOut
 				 * reStyle
 				 * 
+				 * Addition to the text (badge) HTML
+				 * 
 				 * Scan nodes to report duplicate ID.
 				 * Possible Conflicts with Node Edit.
 				 * 		Selection if i add an item in between

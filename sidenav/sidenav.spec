@@ -12,15 +12,15 @@
 		"selectedIndex"					: {"type" :"object", "tags": { "scope" :"private" }, "pushToServer" : "allow"},
 		"expandedIndex"					: {"type" :"object", "tags": { "scope" :"private" }, "pushToServer" : "allow"},
 		
-		"verticalAlignment"				: {"type" :"string", "tags": {"scope": "design"},"values": [{"FIXED-TOP": "navbar-fixed-top"}, {"FIXED-BOTTOM": "navbar-fixed-bottom"}, {"STATIC": "navbar-static-top"}], "default" : "navbar-static-top"},
+		
+		"styleClassSelectedMenu"		: {"type" :"styleclass", "tags": { "scope" :"private" }},
+		"styleClassMenuItem"			: {"type" :"styleclass", "tags": { "scope" :"private" }},
+		"styleClassSelectedMenuItem"	: {"type" :"styleclass", "tags": { "scope" :"private" }},
+		"brandingTemplate"				: {"type" :"tagstring", "tags": { "scope" :"private" }, "default" : ""},
+		"verticalAlignment"				: {"type" :"string", "tags": {"scope": "private"},"values": [{"FIXED-TOP": "navbar-fixed-top"}, {"FIXED-BOTTOM": "navbar-fixed-bottom"}, {"STATIC": "navbar-static-top"}], "default" : "navbar-static-top"},
 		
 		"animate"						: {"type" :"boolean", "default" : true, "tags": { "scope" :"design" }},
 		"styleClass"					: {"type" :"styleclass", "tags": { "scope" :"design" }},
-		
-		"styleClassSelectedMenu"		: {"type" :"styleclass", "tags": { "scope" :"design" }},
-		"styleClassMenuItem"			: {"type" :"styleclass", "tags": { "scope" :"design" }},
-		"styleClassSelectedMenuItem"	: {"type" :"styleclass", "tags": { "scope" :"design" }},
-		"brandingTemplate"				: {"type" :"tagstring", "tags": { "scope" :"design" }, "default" : ""},
 		
 		"size" 							: {"type" :"dimension",  "default" : {"width":260, "height":300}},
 		"location" 						: "point", 
