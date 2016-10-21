@@ -170,6 +170,15 @@
 				{ "name": "enabled",	"type": "boolean" }
 			],
 			"returns" : "boolean"
+		},
+		"setMenuItemExpanded": 
+		{
+			"parameters": 
+			[
+				{ "name": "menuItemId",	"type": "object" },
+				{ "name": "expanded",	"type": "boolean" },
+				{ "name": "mustExecuteOnMenuItemExpand", "type": "boolean", "optional" : true}
+			]
 		}
 	},
 	"types": {
@@ -180,7 +189,6 @@
       		"iconStyleClass"		: "styleclass",
       		"styleClass"			: "styleclass",
       		"enabled"				: "boolean",
-      		
       		"data"					: "object",
       		"menuItems"				: "menuItem[]",
       		
