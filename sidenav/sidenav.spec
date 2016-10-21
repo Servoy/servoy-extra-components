@@ -51,11 +51,11 @@
 	},
 	"api":
 	{
-		"getMenuItemById": 
+		"getMenuItem": 
 		{
 			"parameters": 
 			[
-				{	"name": "id",	"type": "object" }
+				{	"name": "menuItemId",	"type": "object" }
 			],
 			"returns" : "menuItem"
 		},
@@ -65,7 +65,7 @@
 			[
 				{	"name": "level",	"type": "int" }
 			],
-			"returns" : "object"
+			"returns" : "menuItem"
 		},
 		"setRootMenuItems": 
 		{
@@ -74,13 +74,14 @@
 				{	"name": "menuItems",	"type": "menuItems[]" }
 			]
 		},
-		"setSelectedById": 
+		"setSelectedMenuItem": 
 		{
 			"parameters": 
 			[
-				{	"name": "id",	"type": "object" },
+				{	"name": "menuItemId",	"type": "object" },
 				{	"name": "level", "type": "int", "optional" : true},
-				{	"name": "mustExecuteOnMenuItemSelected", "type": "boolean", "optional" : true}
+				{	"name": "mustExecuteOnMenuItemSelected", "type": "boolean", "optional" : true},
+				{	"name": "mustExecuteOnMenuItemExpand", "type": "boolean", "optional" : true}
 			],
 			"returns" : "boolean"
 		},
@@ -100,7 +101,7 @@
 					"type": "menuItem"
 				},
 				{
-					"name": "nodeId",	
+					"name": "menuItemId",	
 					"type": "object"
 				},
 				{
@@ -114,7 +115,7 @@
 		"removeMenuItem" :{
 			"parameters":[
 				{
-					"name": "nodeId",	
+					"name": "menuItemId",	
 					"type": "object"
 				}
 			],
@@ -123,7 +124,7 @@
 		"setSubMenuItems" :{
 			"parameters":[
 				{
-					"name": "id",	
+					"name": "menuItemId",	
 					"type": "object"
 				},
 				{
@@ -136,7 +137,7 @@
 		"removeSubMenuItems" : {
 			"parameters":[
 				{
-					"name": "nodeId",	
+					"name": "menuItemId",	
 					"type": "object"
 				}
 			],

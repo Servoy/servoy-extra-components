@@ -117,7 +117,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				// wait that model is syncronized with the server
 				$scope.$watch("model.svyMarkupId", function(newValue, oldValue) {
 						if (newValue) {
-							console.log($scope.model.selectedIndex);
+							
 							// TODO restore selectedindex
 							if ($scope.model.selectedIndex) {
 								$scope.selectedIndex = JSON.parse($scope.model.selectedIndex);
@@ -143,7 +143,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 *
 				 * Select the main Item */
 				$scope.selectItem = function(level, index, item, event, preventHandler) {
-					console.log("select " + level + ' - ' + item.id)
+//					console.log("select " + level + ' - ' + item.id)
 
 					if (event) { //
 						event.stopPropagation();
@@ -185,8 +185,11 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					}
 				}
 
+				/**
+				 * toggle the item expand collapse
+				 *  */
 				$scope.toggleExpandedItem = function(level, index, item, event, preventHandler) {
-					if ($scope.expandedIndex[level] !== item.id) { // expand the item
+					if (!isNodeExpanded(item.id, level)) { // expand the item
 						$scope.expandItem(level, index, item, event, preventHandler);
 					} else { // collapse the item
 						$scope.collapseItem(level, index, item, event, preventHandler);
@@ -203,7 +206,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 *
 				 * Expand the item */
 				$scope.expandItem = function(level, index, item, event, preventHandler) {
-					console.log("expand " + level + ' - ' + item.id);
+//					console.log("expand " + level + ' - ' + item.id);
 
 					if (event) { //
 						event.stopPropagation();
@@ -281,22 +284,34 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 * API
 				 **************************************************************/
 
+				/** 
+				 * Returns the selected menuItem.
+				 * Client Side API
+				 * @public
+				 * 
+				 * @param {Number} [level] if level is provided search for the selected menu item at level.
+				 * 
+				 * @return {Object}
+				 * */
 				$scope.api.getSelectedMenuItem = function(level) {
-					var levelPath = getSelectedIndexPath(level);
-					var node = getNodeByIndexPath(levelPath, $scope.model.menu);
-					console.log(node)
-					return node;
+					return getSelectedNode(level);
 				}
 
-				// TODO fixme mustExecuteOnSelectNode not executed
 				/**
+				 * Select the menu item with the given id.
+				 * If level is provided search is optimized since it will search only within the descendant of the selected menuItem at level. 
+				 * For example if a root menuItem is selected and level is equal 2 search only in the subMenuItems of the selected root.
+				 * 
+				 * 
 				 * @param {Object} id
-				 * @param {Number} level
-				 * @param {Boolean} mustExecuteOnSelectNode
+				 * @param {Number} [level] reduce the search to the selected menuItem at level, if any menuItem is selected at level.
+				 * @param {Boolean} [mustExecuteOnMenuItemSelect] Force the onMenuItemSelect to be executed. Default false.
+				 * @param {Boolean} [mustExecuteOnMenuItemExpand] Force the onMenuItemExpand to be executed. Default false.
+				 * 
+				 * @return {Boolean}
 				 *
-				 * Should allow selection by index path as an API ?
 				 *  */
-				$scope.api.setSelectedById = function(id, level, mustExecuteOnSelectNode) {
+				$scope.api.setSelectedMenuItem = function(id, level, mustExecuteOnMenuItemSelect, mustExecuteOnMenuItemExpand) {
 					var nodes;
 					var levelPath = [];
 
@@ -321,16 +336,15 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 						return false;
 					}
 
-					// TODO fix me, force the selection if item is already in selection path
 					// do nothing if the item is already selected
-					if ($scope.selectedIndex && $scope.selectedIndex[path.length] == id && !$scope.selectedIndex[path.length + 1]) {
+					if (isNodeSelected(id, path.length) && !$scope.selectedIndex[path.length + 1]) {
 						return true;
 					} else {
 						// search the node
 						var	node = getNodeByIndexPath(subPath, nodes);
 
 						// select the item
-						var preventHandler = mustExecuteOnSelectNode == true ? false : true;
+						var preventHandler = mustExecuteOnMenuItemExpand == true ? false : true;
 						return $scope.selectItem(path.length, path[path.length - 1], node, null, preventHandler);
 					}
 				}
@@ -338,6 +352,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				/**
 				 * @param {Array<Number>} path
 				 * @param {Boolean} mustExecuteOnSelectNode
+				 * @deprecated 
 				 *
 				 * Should allow selection by index path as an API ?
 				 *  */
@@ -399,9 +414,18 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					return false;
 				}
 				
-				$scope.api.setMenuItemExpanded = function(nodeId, expanded, mustExecuteOnMenuItemExpand) {
-					var node = getNodeById(nodeId, $scope.model.menu);
-					var level = getNodeLevel(nodeId);
+				/**
+				 * Force the menuItem to be expanded or collapsed
+				 * 
+				 * 
+				 * @param {Object} menuItemId
+				 * @param {Boolean} expanded force the menuItem to expand if true, is collapsed otherwise
+				 * @param {Boolean} [mustExecuteOnMenuItemExpand] Force the onMenuItemExpand to be executed. Default false.
+				 * 
+				 *  */
+				$scope.api.setMenuItemExpanded = function(menuItemId, expanded, mustExecuteOnMenuItemExpand) {
+					var node = getNodeById(menuItemId, $scope.model.menu);
+					var level = getNodeLevel(menuItemId);
 					var preventHandler = mustExecuteOnMenuItemExpand == true ? false : true;
 					
 					if (expanded) {
@@ -418,7 +442,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				/**
 				 * Returns the subtree at the Given path
 				 *
-				 * @param {Number} nodeId
+				 * @param {Object} nodeId
 				 * @param {Array} nodes
 				 *
 				 * @return {Object}
@@ -672,7 +696,6 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					}
 					$scope.expandedIndex = newExpandedIndex;
 
-					console.log(levels);
 					storeExpandedIndex();
 				}
 
@@ -687,6 +710,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 *  */
 				clearExpandedIndex = function(level) {
 					var levels = $scope.expandedIndex;
+					
 					// reset all sub levels
 					for (var lvl in levels) {
 						if (lvl > level) { // reset the next levels

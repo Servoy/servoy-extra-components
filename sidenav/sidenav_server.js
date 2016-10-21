@@ -5,17 +5,42 @@ var getParentNodeByIndexPath;
 var getNodeByIndexPath;
 var clearGroups;
 
+/** 
+ * Set the root menuItems
+ * @public
+ * 
+ * @param {Array<Object>} menuItems
+ * 
+ * */
 $scope.api.setRootMenuItems = function(menuItems) {
 	$scope.model.menu = menuItems;
 	menuItems = $scope.model.menu
 }
 
-$scope.api.getMenuItemById = function(nodeId) {
-	return getNodeById(nodeId, $scope.model.menu);
+/** 
+ * Returns the menuItem object
+ * @public
+ * 
+ * @param {Object} menuItemId
+ * 
+ * @return {Object}
+ * */
+$scope.api.getMenuItem = function(menuItemId) {
+	return getNodeById(menuItemId, $scope.model.menu);
 }
 
-$scope.api.setMenuItemEnabled = function(nodeId, enabled) {
-	var node = getNodeById(nodeId, $scope.model.menu);
+/** 
+ * Enable or disable the menuItem
+ * Return false if menuItemId cannot be found.
+ * @public
+ * 
+ * @param {Object} menuItemId
+ * @param {Boolean} enabled
+ * 
+ * @return {Object}
+ * */
+$scope.api.setMenuItemEnabled = function(menuItemId, enabled) {
+	var node = getNodeById(menuItemId, $scope.model.menu);
 	if (node) {
 		node.enabled = enabled;
 		return true;
@@ -23,12 +48,24 @@ $scope.api.setMenuItemEnabled = function(nodeId, enabled) {
 	return false;
 }
 
-$scope.api.addMenuItem = function (menuItem, nodeId, index) {
+/** 
+ * Add a menu item. The menu is added as sub Menu Item if a menuItemId is provided, otherwise is added in root.
+ * If index is provided the menu is added at the specified index position, otherwise is added as last element.
+ * Return false if menuItemId cannot be found.
+ * @public
+ * 
+ * @param {Object} menuItem
+ * @param {Object} [menuItemId] add the item as subMenuItem of the menuItemId
+ * @param {Number} [index]	0-based. if specified add the menuItem at the given position. Index value should not be greater then number of sibelings.
+ * 
+ * @return {Boolean}
+ * */
+$scope.api.addMenuItem = function (menuItem, menuItemId, index) {
 	var nodes;
 	
 	// find the nodes
-	if (nodeId) {	// add to node
-		var node = getNodeById(nodeId, $scope.model.menu);
+	if (menuItemId) {	// add to node
+		var node = getNodeById(menuItemId, $scope.model.menu);
 		if (node) {
 			if (!node.menuItems) node.menuItems = [];
 			nodes = node.menuItems;
@@ -46,6 +83,7 @@ $scope.api.addMenuItem = function (menuItem, nodeId, index) {
 			nodes.push(menuItem);
 		} else {
 			// invalid index
+			// TODO how to handle this exception ?
 			throw "invalid argument index " + index;
 		}
 		return true;
@@ -54,12 +92,21 @@ $scope.api.addMenuItem = function (menuItem, nodeId, index) {
 	}
 }
 
-$scope.api.removeMenuItem = function (nodeId) {
+/** 
+ * Remove the menu item and all it's subMenuItems from the tree.
+ * Return false if menuItemId cannot be found.
+ * @public
+ * 
+ * @param {Object} menuItemId 
+ * 
+ * @return {Boolean}
+ * */
+$scope.api.removeMenuItem = function (menuItemId) {
 	var nodes;
 	var index;
 	
 	// find path to node;
-	var pathIndex = getPathToNode(nodeId, $scope.model.menu);
+	var pathIndex = getPathToNode(menuItemId, $scope.model.menu);
 	if (pathIndex && pathIndex.length) {
 		index = pathIndex.pop();
 		
@@ -82,7 +129,17 @@ $scope.api.removeMenuItem = function (nodeId) {
 	return false;
 }
 
-$scope.api.setSubMenuItems = function(id, subtree) {
+/** 
+ * Set the menuItems as sub menu items of the menu item with id 'menuItemId'
+ * Return false if menuItemId cannot be found.
+ * @public
+ * 
+ * @param {Object} menuItemId
+ * @param {Array<Object>} menuItems 
+ * 
+ * @return {Boolean}
+ * */
+$scope.api.setSubMenuItems = function(menuItemId, menuItems) {
 	var tree = $scope.model.menu;
 	var node = getNodeById(id, tree);
 	if (node) {
@@ -92,8 +149,17 @@ $scope.api.setSubMenuItems = function(id, subtree) {
 	return false;
 }
 
-$scope.api.removeSubMenuItems = function (nodeId) {
-	var node = getNodeById(nodeId, $scope.model.menu);
+/** 
+ * Remove all the sub menu items of the menu item with id 'menuItemId'
+ * Return false if menuItemId cannot be found.
+ * @public
+ * 
+ * @param {Object} menuItemId
+ * 
+ * @return {Boolean}
+ * */
+$scope.api.removeSubMenuItems = function (menuItemId) {
+	var node = getNodeById(menuItemId, $scope.model.menu);
 	if (node) {
 		delete node.menuItems;
 		return true;
@@ -102,7 +168,9 @@ $scope.api.removeSubMenuItems = function (nodeId) {
 }
 
 /**
- * Clears all sub-nodes at level
+ * Clears all sub-nodes at level.
+ * If depth is equal to 1 all roots will be removed.
+ * @public 
  *
  * @param {Number} depth 1-based
  *  */
@@ -122,20 +190,22 @@ $scope.api.removeAllMenuItemsAtDepth = function(depth) {
 }
 
 /**
- * Retuns the path to the given node
+ * Search the node into the given node.
+ * Cost: O(n) full scan
+ * @private 
  *
- * @param {Object} nodeId
+ * @param {Object} menuItemId
  * @param {Array} nodes
  *
  * @return {Object} */
-getNodeById = function(nodeId, nodes) {
+getNodeById = function(menuItemId, nodes) {
 	if (nodes) {
 		for (var i = 0; i < nodes.length; i++) { // search in each subtree
 			var subTree = nodes[i];
-			if (subTree.id == nodeId) { // find the node
+			if (subTree.id == menuItemId) { // find the node
 				return subTree;
 			}
-			var node = getNodeById(nodeId, subTree.menuItems);
+			var node = getNodeById(menuItemId, subTree.menuItems);
 			if (node) {
 				return node;
 			}
@@ -146,6 +216,8 @@ getNodeById = function(nodeId, nodes) {
 
 /**
  * Returns the subtree at the Given path
+ * Cost O(1) scan depth
+ * @private 
  *
  * @param {Array<Number>} path
  * @param {Array} nodes
@@ -169,6 +241,7 @@ getNodeByIndexPath = function(path, nodes) {
 
 /**
  * Retuns the path to the given node
+ * @private 
  *
  * @param {Object} idOrNode
  * @param {Array} nodes
@@ -177,15 +250,15 @@ getNodeByIndexPath = function(path, nodes) {
  * @return {Array<Number>} */
 getPathToNode = function(idOrNode, nodes, key) {
 	if (!key) key = 'id';
-	var nodeId = idOrNode[key] ? idOrNode[key] : idOrNode;
+	var menuItemId = idOrNode[key] ? idOrNode[key] : idOrNode;
 
 	if (nodes) { // for each node in nodes
 		for (var i = 0; i < nodes.length; i++) { // search in each subtree
 			var subTree = nodes[i];
-			if (subTree[key] == nodeId) { // find the node
+			if (subTree[key] == menuItemId) { // find the node
 				return [i];
 			}
-			var path = getPathToNode(nodeId, subTree.menuItems, key);
+			var path = getPathToNode(menuItemId, subTree.menuItems, key);
 			if (path) {
 				return [i].concat(path);
 			}
@@ -196,13 +269,14 @@ getPathToNode = function(idOrNode, nodes, key) {
 
 /**
  * Retuns the path to the given node
+ * @private 
  *
- * @param {Object} nodeId
+ * @param {Object} menuItemId
  * @param {Array} nodes
  *
  * @return {Array} */
-getParentNode = function (nodeId, nodes) {
-	var indexPath = getPathToNode(nodeId, nodes);
+getParentNode = function (menuItemId, nodes) {
+	var indexPath = getPathToNode(menuItemId, nodes);
 	if (indexPath && indexPath.length > 1) {
 		indexPath.pop();
 		return getNodeByIndexPath(indexPath, nodes)
@@ -212,6 +286,7 @@ getParentNode = function (nodeId, nodes) {
 
 /**
  * Retuns the parent node
+ * @private 
  *
  * @param {Array<Number>} indexPath
  * @param {Array} nodes
@@ -226,6 +301,12 @@ getParentNodeByIndexPath = function (indexPath, nodes) {
 
 /**
  * Remove all the nodes where level = deep
+ * @private 
+ * 
+ * @param {Number} level
+ * @param {Array} nodes
+ * @param {Number} deep
+ * 
  *  */
 clearGroups = function(level, nodes, deep) {
 	if (nodes) {
