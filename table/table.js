@@ -96,7 +96,6 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     	  var resizeTimeout = null;
     	  
     	  function onColumnResize() {
-
 			  var table = $element.find("table:first");
 			  var headers = table.find("th");
     	      
@@ -198,32 +197,6 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     			  tableWidth = calculateTableWidth();
     			  updateAutoColumnsWidth(0);    			  
 	    		  addColResizable(true);
-	        	  Object.defineProperty($scope.model, $sabloConstants.modelChangeNotifier, {
-	        		  configurable : true,
-	        		  value : function(property, value) {
-	        			  switch (property) {
-	        			  	case "columns":
-	        			  		var valueChanged = false;
-	        			  		for(var i = 0; i < $scope.model.columns.length; i++) {
-	        			  			var iw = getNumberFromPxString($scope.model.columns[i].initialWidth);
-	        			  			if(iw > -1 && ($scope.model.columns[i].width != $scope.model.columns[i].initialWidth)) {
-	        			  				$scope.model.columns[i].initialWidth = $scope.model.columns[i].width;
-	        			  				if(!valueChanged) valueChanged = true;	        			  				
-	        			  			}
-	        			  		}    
-	        			  		
-	        			  		if(valueChanged) {
-	        			  			autoColumns = getAutoColumns();
-		        			  		tableWidth = calculateTableWidth();
-		        			  		updateAutoColumnsWidth(0);
-		        			  		$timeout(function() {
-		        			  			addColResizable(true);
-		        			  		}, 0);
-	        			  		}
-	        			  		break;
-	        			  }
-	        		  }
-	        	  });
     		  }
     	  });
     	  
@@ -270,7 +243,39 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     			  }	  
     		  }	  
           });
-    	  
+    	  // watch the columns so that we can relay out the columns when width or size stuff are changed.
+    	  var currentColumnLength = $scope.model.columns?$scope.model.columns.length:0;
+    	  Object.defineProperty($scope.model, $sabloConstants.modelChangeNotifier, {
+    		  configurable : true,
+    		  value : function(property, value) {
+    			  switch (property) {
+    			  	case "columns":
+    			  		var valueChanged = currentColumnLength != $scope.model.columns.length;
+    			  		currentColumnLength = $scope.model.columns.length
+    			  		if (!valueChanged) {
+	    			  		for(var i = 0; i < $scope.model.columns.length; i++) {
+	    			  			var iw = getNumberFromPxString($scope.model.columns[i].initialWidth);
+	    			  			if(iw > -1 && ($scope.model.columns[i].width != $scope.model.columns[i].initialWidth)) {
+	    			  				$scope.model.columns[i].initialWidth = $scope.model.columns[i].width;
+	    			  				if(!valueChanged) valueChanged = true;	        			  				
+	    			  			}
+	    			  		}    
+    			  		}
+    			  		
+    			  		if(valueChanged) {
+    			  			autoColumns = getAutoColumns();
+        			  		tableWidth = calculateTableWidth();
+        			  		updateAutoColumnsWidth(0);
+        			  		if($scope.model.enableColumnResize)
+        		                $timeout(function() {
+        					  	  addColResizable(true);
+        					  	});
+    			  		}
+    			  		break;
+    			  }
+    		  }
+    	  });
+    	
     	  $scope.$watch('model.currentPage', function (newValue) {
     		  if (newValue &&  $scope.showPagination())
     		  {
@@ -594,16 +599,17 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
         	  return columnStyle;
     	  }
 
-    	  $scope.getCellStyle = function (row, column) {
-        	  var cellStyle = {overflow: "hidden"};
-        	  if(/*row == 0 && */column < $scope.model.columns.length) {
+    	  var cellStyles = [];
+    	  $scope.getCellStyle = function (column) {
+        	  var cellStyle = cellStyles[column]
+        	  if (cellStyle) return cellStyle;
+        	  cellStyle = {overflow: "hidden"};
+        	  if(column < $scope.model.columns.length) {
         		  var w = getNumberFromPxString($scope.model.columns[column].width);
         		  if ($scope.model.columns[column].autoResize || w < 0) {
             		  var tbl = $element.find("table:first");
     				  var headers = tbl.find("th");
-    				  if($(headers).is(":visible")) {
-    					  w = $(headers.get(column)).outerWidth(false);
-    				  }
+    				  w = $(headers.get(column)).outerWidth(false);
         		  }
         		  if(w > -1) {
         			  cellStyle.minWidth = w + "px";
@@ -614,8 +620,22 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
         			  cellStyle.width = $scope.model.columns[column].width;
         		  }
         	  }
+        	  cellStyles[column] = cellStyle;
         	  return cellStyle;
     	  }
+    	  // watch the table header if there are any column widht changes/
+    	  // if that happens flush the cellStyles cache
+    	  $scope.$watch(function() {
+    		  var array = [];
+    		  var tbl = $element.find("table:first");
+			  var headers = tbl.find("th");
+			  for(var column = $scope.model.columns.length;--column;) {
+			  	array[column] = $(headers.get(column)).outerWidth(false);
+			  }
+			  return array;
+    	  },function(newValue,oldValue) {
+    		  cellStyles = [];
+    	  },true)
     	  
     	  $scope.getSortClass = function (column) {
     		  var sortClass = "table-servoyextra-sort-hide";
