@@ -63,7 +63,7 @@
 		{
 			"parameters": 
 			[
-				{	"name": "level",	"type": "int" }
+				{	"name": "level", "type": "int", "optional" : true }
 			],
 			"returns" : "menuItem"
 		},
@@ -82,15 +82,6 @@
 				{	"name": "level", "type": "int", "optional" : true},
 				{	"name": "mustExecuteOnMenuItemSelected", "type": "boolean", "optional" : true},
 				{	"name": "mustExecuteOnMenuItemExpand", "type": "boolean", "optional" : true}
-			],
-			"returns" : "boolean"
-		},
-		"setSelectedByIndexPath": 
-		{
-			"parameters": 
-			[
-				{	"name": "selectedNodePath",	"type": "object[]" },
-				{	"name": "mustExecuteOnMenuItemSelected", "type": "boolean", "optional" : true}
 			],
 			"returns" : "boolean"
 		},
@@ -150,19 +141,6 @@
 					"type": "int"
 				}]
 		},
-		"setSubMenuItemsByIndexPath" :{
-			"parameters":[
-				{
-					"name": "indexNodePath",	
-					"type": "array"
-				},
-				{
-					"name": "menuItems",	
-					"type": "menuItem[]"
-				}
-			],
-			"returns" : "boolean"
-		},
 		"setMenuItemEnabled": 
 		{
 			"parameters": 
@@ -184,7 +162,7 @@
 	},
 	"types": {
     	"menuItem": {
-      		"id"					: "object",
+      		"id"					: {"type" : "object"},
       		"text"					: "tagstring",
       		"icon"					: "media",
       		"iconStyleClass"		: "styleclass",

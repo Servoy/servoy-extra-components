@@ -11,19 +11,20 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 
 				/**
 				 * TODO
-				 * enabled
-				 * 	enable selection from API if node/parent disabled ?
-				 * 	deselect item ?
-				 * isDivider
-				 * dynamicTree
-				 * use IndexPath !? it collide with isDivider standalone element.
-				 * selectedNode (should be the deeper)
+				 * Unselect menuItem
+				 * call onMenuItemCollapse when another node is expanded
+				 * addDivider
+				 * clearSelection
 				 * autoselect next level
-				 * persist selection during collapse
-				 * do i want to deselect an item ?
-				 * edit nodes
-				 * 	what happen to selection if i add an item in between
-				 * 	remove a selected node
+				 * mediaIcon
+				 * slideIn/slideOut
+				 * reStyle
+				 * 
+				 * Scan nodes to report duplicate ID.
+				 * Possible Conflicts with Node Edit.
+				 * 		Selection if i add an item in between
+				 * 		Remove a selected/expanded node, node with same ID is added again before selection is changed. 
+				 * 			Force refresh Index when node is collapsed.
 				 *
 				 *
 				 * DONE
@@ -31,6 +32,9 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 * visible
 				 * divider
 				 * iconClass
+				 * enable
+				 * collapse/expand
+				 * select
 				 *
 				 *
 				 * API
@@ -285,8 +289,9 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 **************************************************************/
 
 				/** 
-				 * Returns the selected menuItem.
 				 * Client Side API
+				 * 
+				 * Returns the selected menuItem.
 				 * @public
 				 * 
 				 * @param {Number} [level] if level is provided search for the selected menu item at level.
@@ -294,14 +299,17 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 * @return {Object}
 				 * */
 				$scope.api.getSelectedMenuItem = function(level) {
+					// TODO if level is greater then selected level, what should return ?
 					return getSelectedNode(level);
 				}
 
 				/**
+				 * Client Side API
+				 * 
 				 * Select the menu item with the given id.
 				 * If level is provided search is optimized since it will search only within the descendant of the selected menuItem at level. 
 				 * For example if a root menuItem is selected and level is equal 2 search only in the subMenuItems of the selected root.
-				 * 
+				 * @public 
 				 * 
 				 * @param {Object} id
 				 * @param {Number} [level] reduce the search to the selected menuItem at level, if any menuItem is selected at level.
@@ -350,13 +358,15 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				}
 
 				/**
+				 * Client Side API
+				 * 
 				 * @param {Array<Number>} path
 				 * @param {Boolean} mustExecuteOnSelectNode
 				 * @deprecated 
 				 *
 				 * Should allow selection by index path as an API ?
 				 *  */
-				$scope.api.setSelectedByIndexPath = function(path, mustExecuteOnSelectNode) {
+				$scope.setSelectedByIndexPath = function(path, mustExecuteOnSelectNode) {
 
 					// search node in tree
 					var node = getNodeByIndexPath(path, $scope.model.menu);
@@ -401,9 +411,11 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				}
 
 				/** 
+				 * Client Side API
+				 * 
 				 * @deprecated 
 				 * */
-				$scope.api.setSubMenuItemsByIndexPath = function(path, subtree) {
+				$scope.setSubMenuItemsByIndexPath = function(path, subtree) {
 					var tree = $scope.model.menu;
 					var node = getNodeByIndexPath(path, tree);
 					if (node) {
@@ -415,8 +427,10 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				}
 				
 				/**
-				 * Force the menuItem to be expanded or collapsed
+				 * Client Side API
 				 * 
+				 * Force the menuItem to be expanded or collapsed
+				 * @public 
 				 * 
 				 * @param {Object} menuItemId
 				 * @param {Boolean} expanded force the menuItem to expand if true, is collapsed otherwise
@@ -587,7 +601,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					
 					// get the node at deeper level
 					for (var lvl in levels) {
-						if (lvl > maxLevel && lvl <= level) {
+						if (lvl > maxLevel && (!level || lvl <= level)) {
 							maxLevel = lvl;
 						}
 					}
