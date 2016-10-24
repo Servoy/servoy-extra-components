@@ -1,4 +1,4 @@
-angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoyextraSidenav', ["$animate", function($animate) {
+angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoyextraSidenav', ["$animate", "$sabloConstants", function($animate, $sabloConstants) {
 		return {
 			restrict: 'E',
 			scope: {
@@ -222,12 +222,12 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					
 					// check if node is already collapsed
 					if (isNodeExpanded(item.id, level)) {
-						return;
+						return true;
 					}
 
 					// prevent selection if item is disabled
 					if (isDisabled(item.id)) {
-						return;
+						return false;
 					}
 
 					// if is expanded
@@ -243,6 +243,8 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					} else {
 						setExpandedIndex(level, index, item);
 					}
+					
+					return true;
 				}
 
 				/**
@@ -263,12 +265,12 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					
 					// check if node is already collapsed
 					if (!isNodeExpanded(item.id, level)) {
-						return;
+						return true;
 					}
 
 					// prevent selection if item is disabled
 					if (isDisabled(item.id)) {
-						return;
+						return false;
 					}					
 
 					// call handler onMenuItemCollapsed
@@ -284,6 +286,8 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					} else {
 						clearExpandedIndex(level - 1);
 					}
+					
+					return true;
 				}
 
 				/****************************************************************
@@ -311,6 +315,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 * Select the menu item with the given id.
 				 * If level is provided search is optimized since it will search only within the descendant of the selected menuItem at level. 
 				 * For example if a root menuItem is selected and level is equal 2 search only in the subMenuItems of the selected root.
+				 * Return false if menuItemId cannot be found or is disabled.
 				 * @public 
 				 * 
 				 * @param {Object} id
@@ -431,24 +436,33 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				/**
 				 * Client Side API
 				 * 
-				 * Force the menuItem to be expanded or collapsed
+				 * Force the menuItem to be expanded or collapsed.
+				 * Return false if menuItemId cannot be found or is disabled.
 				 * @public 
 				 * 
 				 * @param {Object} menuItemId
 				 * @param {Boolean} expanded force the menuItem to expand if true, is collapsed otherwise
 				 * @param {Boolean} [mustExecuteOnMenuItemExpand] Force the onMenuItemExpand to be executed. Default false.
 				 * 
+				 * @return {Boolean}
 				 *  */
 				$scope.api.setMenuItemExpanded = function(menuItemId, expanded, mustExecuteOnMenuItemExpand) {
 					var node = getNodeById(menuItemId, $scope.model.menu);
+					
+					if (!node) {
+						return false;
+					}
+					
+					// expandItem/collapsItem requires node level
 					var level = getNodeLevel(menuItemId);
 					var preventHandler = mustExecuteOnMenuItemExpand == true ? false : true;
 					
 					if (expanded) {
-						$scope.expandItem(level, null, node, null, preventHandler);
+						return $scope.expandItem(level, null, node, null, preventHandler);
 					} else {
-						$scope.collapseItem(level, null, node, null, preventHandler);
+						return $scope.collapseItem(level, null, node, null, preventHandler);
 					}
+					
 				}
 
 				/***********************************************************************************
@@ -467,7 +481,8 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					if (nodes) {
 						for (var i = 0; i < nodes.length; i++) { // search in each subtree
 							var subTree = nodes[i];
-							if (subTree.id === nodeId) { // find the node
+							// TODO use type equality or not ?
+							if (subTree.id == nodeId) { // find the node
 								return subTree;
 							}
 							var node = getNodeById(nodeId, subTree.menuItems);
@@ -743,6 +758,11 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 * @return {Boolean}
 				 *  */
 				isDisabled = function(nodeId) {
+					// check if menu itself is disable
+					if ($scope.model.enabled == false) {
+						return true;
+					}
+					
 					// TODO refactor: use getNodeAnchestors
 					var indexPath = getPathToNode(nodeId, $scope.model.menu);
 					var tree = $scope.model.menu;
@@ -811,11 +831,44 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					var y = offset.top;
 
 					var event = document.createEvent("MouseEvents");
-					event.initMouseEvent("click", false, true, window, 1, x, y, x, y);
+					event.initMouseEvent("click", false, true, window, 1, x, y, x, y, false, false, false, false, 0, null);
 					return event;
 				}
 			},
-			link: function($scope, $element, $attrs) { },
+			link: function($scope, $element, $attrs) { 
+				
+				var className = null;
+				var sidenav = $element.find("nav");
+				
+				Object.defineProperty($scope.model,$sabloConstants.modelChangeNotifier, {configurable:true,value:function(property,value) {
+					switch(property) {
+						case "enabled":
+							if (value) {
+								sidenav.removeAttr("disabled");
+								sidenav.removeClass("svy-sidenav-disabled");
+							} else {
+								sidenav.attr("disabled","disabled");
+								sidenav.addClass("svy-sidenav-disabled");
+							}
+							break;
+						case "styleClass":
+							if (className) sidenav.removeClass(className);
+							className = value;
+							if(className) sidenav.addClass(className);
+							break;
+					}
+				}});
+				var destroyListenerUnreg = $scope.$on("$destroy", function() {
+					destroyListenerUnreg();
+					delete $scope.model[$sabloConstants.modelChangeNotifier];
+				});
+				// data can already be here, if so call the modelChange function so that it is initialized correctly.
+				var modelChangFunction = $scope.model[$sabloConstants.modelChangeNotifier];
+				for (key in $scope.model) {
+					modelChangFunction(key,$scope.model[key]);
+				}
+				
+			},
 			templateUrl: 'servoyextra/sidenav/sidenav.html'
 		};
 	}])

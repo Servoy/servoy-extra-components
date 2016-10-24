@@ -13,14 +13,15 @@
 		"expandedIndex"					: {"type" :"object", "tags": { "scope" :"private" }, "pushToServer" : "allow"},
 		
 		
-		"styleClassSelectedMenu"		: {"type" :"styleclass", "tags": { "scope" :"private" }},
-		"styleClassMenuItem"			: {"type" :"styleclass", "tags": { "scope" :"private" }},
+		"iconExpandStyleClass"			: {"type" :"styleclass", "tags": { "scope" :"design" }, "default": "glyphicon glyphicon-chevron-right"},
+		"iconCollapseStyleClass"		: {"type" :"styleclass", "tags": { "scope" :"design" }, "default": "glyphicon glyphicon-chevron-down"},
 		"styleClassSelectedMenuItem"	: {"type" :"styleclass", "tags": { "scope" :"private" }},
 		"brandingTemplate"				: {"type" :"tagstring", "tags": { "scope" :"private" }, "default" : ""},
 		"verticalAlignment"				: {"type" :"string", "tags": {"scope": "private"},"values": [{"FIXED-TOP": "navbar-fixed-top"}, {"FIXED-BOTTOM": "navbar-fixed-bottom"}, {"STATIC": "navbar-static-top"}], "default" : "navbar-static-top"},
 		
+		"enabled"						: {"type" :"enabled", "default" : true, "blockingOn": false, "for": ["onMenuItemSelected","onMenuItemExpanded","onMenuItemCollapsed"]},
 		"animate"						: {"type" :"boolean", "default" : true, "tags": { "scope" :"design" }},
-		"styleClass"					: {"type" :"styleclass", "tags": { "scope" :"design" }},
+		"styleClass"					: {"type" :"styleclass"},
 		
 		"size" 							: {"type" :"dimension",  "default" : {"width":260, "height":300}},
 		"location" 						: "point", 
@@ -157,7 +158,8 @@
 				{ "name": "menuItemId",	"type": "object" },
 				{ "name": "expanded",	"type": "boolean" },
 				{ "name": "mustExecuteOnMenuItemExpand", "type": "boolean", "optional" : true}
-			]
+			],
+			"returns" : "boolean"
 		}
 	},
 	"types": {
