@@ -1,4 +1,4 @@
-angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$timeout","$sabloConstants","$foundsetTypeConstants", function($timeout, $sabloConstants, $foundsetTypeConstants) {  
+angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$log", "$timeout","$sabloConstants","$foundsetTypeConstants", function($log, $timeout, $sabloConstants, $foundsetTypeConstants) {  
     return {
       restrict: 'E',
       scope: {
@@ -435,23 +435,44 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     		  }
     	  }
     	  
+
+		  function doFoundsetSQLSort(column) {
+				if($scope.model.columns[column].dataprovider) {
+					var sortCol = $scope.model.columns[column].dataprovider.idForFoundset;
+					var sqlSortDirection = "asc";
+					if($scope.model.foundset.sortColumns) {
+						var sortColumnsA = $scope.model.foundset.sortColumns.split(" ");
+						if(sortCol == sortColumnsA[0] ) {
+							sqlSortDirection = sortColumnsA[1].toLowerCase() == "asc" ? "desc" : "asc";
+						}
+					}
+					$scope.model.foundset.sortColumns = sortCol + " " + sqlSortDirection;
+					$scope.model.foundset.sort([{name: sortCol, direction: sqlSortDirection}]);
+				}
+		  }
+
+		  var sortColumnIndex = -1, sortDirection;
     	  if ($scope.model.enableSort || $scope.handlers.onHeaderClick) {
-    		  $scope.headerClicked = function(column) {
-    			  if($scope.model.enableSort && $scope.model.columns[column].dataprovider) {
-					  var sortCol = $scope.model.columns[column].dataprovider.idForFoundset;
-					  var sortDirection = "asc";
-    				  if($scope.model.foundset.sortColumns) {
-    					  var sortColumnsA = $scope.model.foundset.sortColumns.split(" ");
-    					  if(sortCol == sortColumnsA[0] ) {
-    						  sortDirection = sortColumnsA[1].toLowerCase() == "asc" ? "desc" : "asc";
-    					  }
-    				  }
-    				  $scope.model.foundset.sortColumns = sortCol + " " + sortDirection;
-					  $scope.model.foundset.sort([{name: sortCol, direction: sortDirection}]);
-    			  }
+    		  $scope.headerClicked = function(column) {				  
     			  if($scope.handlers.onHeaderClick) {
-    				  $scope.handlers.onHeaderClick(column);
+					  $scope.handlers.onHeaderClick(column, sortDirection).then(
+						function(ret) {
+							if($scope.model.enableSort) {
+								sortColumnIndex = column;
+								sortDirection = ret;
+								if(!sortDirection) {
+									doFoundsetSQLSort(sortColumnIndex);			
+								}
+							}
+					  },function(reason) {
+						  $log.error(reason);
+					  });
     			  }
+				  else if($scope.model.enableSort) {
+					  sortColumnIndex = column;
+					  doFoundsetSQLSort(sortColumnIndex);
+				  }
+
     		  }
     	  }
     	  
@@ -639,13 +660,30 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$t
     	  
     	  $scope.getSortClass = function (column) {
     		  var sortClass = "table-servoyextra-sort-hide";
-    		  if($scope.model.enableSort && $scope.model.foundset && $scope.model.foundset.sortColumns && $scope.model.columns[column].dataprovider) {
-    			  var sortCol = $scope.model.columns[column].dataprovider.idForFoundset;
-    			  var sortColumnsA = $scope.model.foundset.sortColumns.split(" ");
-    			  if(sortCol == sortColumnsA[0]) {
-    				  var direction = sortColumnsA[1].toLowerCase() == "asc" ? "up" : "down";
-    				  sortClass = "table-servoyextra-sort-show-" + direction + " " + $scope.model["sort"+direction+"Class"];
-    			  }
+    		  if($scope.model.enableSort) {
+				  var direction;
+				  var isGetSortFromSQL = sortColumnIndex < 0;
+				  if(column == sortColumnIndex) {
+					  direction = sortDirection;
+					  if(!direction) {
+						  isGetSortFromSQL = true;
+					  }
+				  }
+				  if(isGetSortFromSQL) {
+					if($scope.model.foundset && $scope.model.foundset.sortColumns && $scope.model.columns[column].dataprovider) {
+						var sortCol = $scope.model.columns[column].dataprovider.idForFoundset;
+						var sortColumnsA = $scope.model.foundset.sortColumns.split(" ");
+
+						if(sortCol == sortColumnsA[0]) {
+							direction = sortColumnsA[1].toLowerCase() == "asc" ? "up" : "down";
+						}
+					}
+				  }
+
+
+				  if(direction) {
+					  sortClass = "table-servoyextra-sort-show-" + direction + " " + $scope.model["sort"+direction+"Class"];
+				  }
     		  }
     		  return sortClass;
     	  }

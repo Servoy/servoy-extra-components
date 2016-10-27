@@ -84,8 +84,13 @@
 					{
 						"name":"columnindex",
 						"type":"int"
+					},
+					{
+						"name":"sortdirection",
+						"type":"string"
 					}
-				]
+				],
+				"returns":"string"
 		},
         "onFocusGainedMethodID" : {
          	
