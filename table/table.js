@@ -301,6 +301,22 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
 				 }
 			 }
           });
+
+		  $scope.$watch('model.foundset.sortColumns', function (newValue, oldValue) {
+				if(newValue) {
+					var sortColumnsA = $scope.model.foundset.sortColumns.split(" ");
+					if(sortColumnsA.length == 2) {
+						$scope.model.sortDirection = sortColumnsA[1].toLowerCase() == 'asc' ? 'up' : 'down';
+						for(var i = 0; i < $scope.model.columns.length; i++) {
+							if(sortColumnsA[0] == $scope.model.columns[i].dataprovider.idForFoundset) {
+								$scope.model.sortColumnIndex = i;
+								break;
+							}
+						}						
+					}
+				}
+		  });
+
     	  var toBottom = false;
     	  var tbody = null;
     	  var wrapper = null;
