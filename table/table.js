@@ -451,17 +451,19 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
 				}
 		  }
 
-		  var sortColumnIndex = -1, sortDirection;
     	  if ($scope.model.enableSort || $scope.handlers.onHeaderClick) {
     		  $scope.headerClicked = function(column) {				  
     			  if($scope.handlers.onHeaderClick) {
-					  $scope.handlers.onHeaderClick(column, sortDirection).then(
+					  if($scope.model.enableSort && ($scope.model.sortColumnIndex != column)) {
+						  $scope.model.sortDirection = null;
+					  }
+					  $scope.handlers.onHeaderClick(column, $scope.model.sortDirection).then(
 						function(ret) {
 							if($scope.model.enableSort) {
-								sortColumnIndex = column;
-								sortDirection = ret;
-								if(!sortDirection) {
-									doFoundsetSQLSort(sortColumnIndex);			
+								$scope.model.sortColumnIndex = column;
+								$scope.model.sortDirection = ret;
+								if(!$scope.model.sortDirection) {
+									doFoundsetSQLSort($scope.model.sortColumnIndex);			
 								}
 							}
 					  },function(reason) {
@@ -469,8 +471,8 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
 					  });
     			  }
 				  else if($scope.model.enableSort) {
-					  sortColumnIndex = column;
-					  doFoundsetSQLSort(sortColumnIndex);
+					  $scope.model.sortColumnIndex = column;
+					  doFoundsetSQLSort($scope.model.sortColumnIndex);
 				  }
 
     		  }
@@ -662,9 +664,9 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
     		  var sortClass = "table-servoyextra-sort-hide";
     		  if($scope.model.enableSort) {
 				  var direction;
-				  var isGetSortFromSQL = sortColumnIndex < 0;
-				  if(column == sortColumnIndex) {
-					  direction = sortDirection;
+				  var isGetSortFromSQL = $scope.model.sortColumnIndex < 0;
+				  if(column == $scope.model.sortColumnIndex) {
+					  direction = $scope.model.sortDirection;
 					  if(!direction) {
 						  isGetSortFromSQL = true;
 					  }
