@@ -436,11 +436,11 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
 
     				 $scope.model.foundset.requestSelectionUpdate(newSelection);
     				 if (type == 1 && $scope.handlers.onCellClick) {
-    					$scope.handlers.onCellClick(realRow + 1, columnIndex, $scope.model.foundset.viewPort.rows[rowIndex]);
+    					$scope.handlers.onCellClick(realRow + 1, columnIndex, $scope.model.foundset.viewPort.rows[rowIndex], event);
     		    	 }
     		    	  
     		    	 if ( type == 2 && $scope.handlers.onCellRightClick) {
-    					$scope.handlers.onCellRightClick(realRow + 1, columnIndex, $scope.model.foundset.viewPort.rows[rowIndex]);
+    					$scope.handlers.onCellRightClick(realRow + 1, columnIndex, $scope.model.foundset.viewPort.rows[rowIndex], event);
     		    	 }
     			 }
     		 }
@@ -468,12 +468,12 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
 		  }
 
     	  if ($scope.model.enableSort || $scope.handlers.onHeaderClick) {
-    		  $scope.headerClicked = function(column) {				  
+    		  $scope.headerClicked = function(event, column) {				  
     			  if($scope.handlers.onHeaderClick) {
 					  if($scope.model.enableSort && ($scope.model.sortColumnIndex != column)) {
 						  $scope.model.sortDirection = null;
 					  }
-					  $scope.handlers.onHeaderClick(column, $scope.model.sortDirection).then(
+					  $scope.handlers.onHeaderClick(column, $scope.model.sortDirection, event).then(
 						function(ret) {
 							if($scope.model.enableSort) {
 								$scope.model.sortColumnIndex = column;

@@ -59,6 +59,11 @@
 						"name":"record",
 						"type":"record",
 						"optional":true
+					},
+					{
+						"name":"event",
+						"type":"JSEvent",
+						"optional":"true"
 					}
 				]
 		},
@@ -78,7 +83,12 @@
 					"name":"record",
 					"type":"record",
 					"optional":true
-				}
+				},
+				{
+					"name":"event",
+					"type":"JSEvent",
+					"optional":"true"
+				}				
 			]
 		},
 		"onHeaderClick" : {
@@ -89,8 +99,14 @@
 					},
 					{
 						"name":"sortdirection",
-						"type":"string"
-					}
+						"type":"string",
+						"optional":"true"
+					},
+					{
+						"name":"event",
+						"type":"JSEvent",
+						"optional":"true"
+					}					
 				],
 				"returns":"string"
 		},
