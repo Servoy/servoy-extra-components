@@ -1,4 +1,4 @@
-angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$log", "$timeout","$sabloConstants","$foundsetTypeConstants", function($log, $timeout, $sabloConstants, $foundsetTypeConstants) {  
+angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$log", "$timeout","$sabloConstants","$foundsetTypeConstants","$filter", function($log, $timeout, $sabloConstants, $foundsetTypeConstants,$filter) {  
     return {
       restrict: 'E',
       scope: {
@@ -275,6 +275,10 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
     			  }
     		  }
     	  });
+    	  
+    	  $scope.$watch('model.foundset.viewPort.rows', function(newValue,oldValue) {
+    		  generateTemplate();
+    	  })
     	
     	  $scope.$watch('model.currentPage', function (newValue) {
     		  if (newValue &&  $scope.showPagination())
@@ -327,13 +331,17 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
     			   wrapper = null;
     		  }
     	  })
+    	  var previousSelectedChild = null; // this should be an array for multi select.
     	  function scrollIntoView() {
     		  var firstSelected = $scope.model.foundset.selectedRowIndexes[0];
     		  firstSelected = firstSelected - ($scope.model.pageSize * ($scope.model.currentPage -1));
     		  var child = tbody.children().eq(firstSelected)
+    		  if (previousSelectedChild) previousSelectedChild.className = "";
 			  if (child.length > 0) {
 				  var wrapperRect = wrapper.getBoundingClientRect();
 				  var childRect =child[0].getBoundingClientRect();
+				  child[0].className = $scope.model.selectionClass;
+				  previousSelectedChild = child[0];
 				  if (childRect.top < (wrapperRect.top+10) || childRect.bottom > wrapperRect.bottom) {
 					  child[0].scrollIntoView(!toBottom);
 				  }
@@ -398,8 +406,8 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
     		 for(var i=elements.length;--i>0;) {
     			 var row_column = $(elements[i]).data("row_column");
     			 if (row_column) {
-    				 var rowIndex = $scope.model.foundset.viewPort.rows.indexOf(row_column.row); 
-    				 var columnIndex = $scope.model.columns.indexOf(row_column.column);
+    				 var rowIndex = row_column.row; 
+    				 var columnIndex = row_column.column;
     				 var realRow = $scope.getRealRow(rowIndex);
     				 var newSelection = [realRow];
 //    				 if($scope.model.foundset.multiSelect) {
@@ -585,15 +593,147 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
     		  }
     	  }
     	  
+    	  function getDisplayValue(input, valuelist) {
+    			if (valuelist) {
+    				for (i = 0; i < valuelist.length; i++) {
+    					if (input === valuelist[i].realValue) {
+    						return valuelist[i].displayValue;
+    					}
+    				}
+    			}
+    			return input;
+    	  }
+    	  
+    	  function updateTable(changes) {
+    		  var formatFilter = $filter("formatFilter");
+			  var columns = $scope.model.columns;
+			  for (i = 0; i < changes.length; i++) {
+					var rowUpdate = changes[i];
+					if (rowUpdate.type == 0) { // 0 == CHANGE
+						var children = tbody.children();
+						for (j = rowUpdate.startIndex; j <= rowUpdate.endIndex; j++) {
+							  var trChildren = children.eq(j).children()
+							  for (var c=columns.length; --c>0 ;) {
+								  var column = columns[c];
+								  var td = trChildren.eq(c);
+								  var divChild = td.children("div");
+								  if (divChild.length == 1) {
+									  // its text node
+									  var value = column.dataprovider?column.dataprovider[j]:null;
+				    			      value = getDisplayValue(value, column.valuelist);
+				    			      value = formatFilter(value,column.format.display,column.format.type);
+									  divChild.text(value)
+								  }
+								  else {
+									  var imgChild = td.children("img");
+									  if (imgChild.length ==1 ) {
+										  
+									  }
+									  else {
+										  console.log("illegal state should be div or img")
+									  }
+								  }
+							  }
+						}
+					}
+			  }
+    	  }
+    	  var columnListener = null;
+    	  function generateTemplate() {
+    		  console.log("generate template")
+    		  var tbodyJQ = $element.find("tbody");
+    		  var tblHead = $element.find("thead");
+    		  if (tbodyJQ.length == 0 ||  $(tblHead).height() <= 0) {
+    			  console.log("generate template timeout")
+    			   if ($element.closest("body").length > 0) $timeout(generateTemplate);
+    			  return;
+    		  }
+    		  var rows = $scope.model.foundset.viewPort.rows;
+    		  var columns = $scope.model.columns;
+    		  
+    		  if (columnListener == null) {
+    			  for (var c=0; c< columns.length;c++) {
+    				 if ( columns[c].dataprovider) {
+    	    			  columnListener = function(changes) {
+    	    				  $scope.$evalAsync(function() {
+    	    					  updateTable(changes)
+    	    				  })
+    	    			  }
+    	    			  columns[c].dataprovider.addChangeListener(columnListener);
+    	    			  break;
+    				 }
+    			  }
+    			  // todo check if the column listener is attached to 1 column? (if not then there are no columns wit dataproviders?)
+    		  }
+    		  var formatFilter = $filter("formatFilter");
+    		  var tbodyOld = tbodyJQ[0];
+    		  var tbodyNew = document.createElement("TBODY");
+    		  var tbodyStyle = $scope.getTBodyStyle();
+ 			  for(var key in tbodyStyle){
+ 				 tbodyNew.style[key] = tbodyStyle[key];
+			  }
+    		  for (var r = 0; r < rows.length; r++) {
+    			 var tr = document.createElement("TR");
+    			 tbodyNew.appendChild(tr);
+    			 for (var c=0; c< columns.length;c++) {
+    				 var column = columns[c];
+    				 var td = document.createElement("TD");
+    				 var tdStyle = $scope.getCellStyle(c);
+    				 for(var key in tdStyle){
+    					 td.style[key] = tdStyle[key];
+    				 }
+    				 $(td).data('row_column', {row:r,column:c});
+    				 var tdClass = column.styleClass;
+    				 if (column.styleClassDataprovider && column.styleClassDataprovider[r]) {
+    					 tdClass += ' ' + column.styleClassDataprovider[r];
+    				 }
+    				 if (tdClass) {
+    					 td.className = tdClass;
+    				 }
+    				 tr.appendChild(td);
+    				 if (column.dataprovider && column.dataprovider[r] && column.dataprovider[r].url)
+    				 {
+    	    			var img = document.createElement("IMG");
+    	    			img.setAttribute("src",column.dataprovider[r].url);
+    	    			td.appendChild(img);
+    	    		 }
+    				 else {
+    					var div = document.createElement("DIV");
+    					var value = column.dataprovider?column.dataprovider[r]:null;
+    					value = getDisplayValue(value, column.valuelist);
+    					value = formatFilter(value,column.format.display,column.format.type);
+    					var txt = document.createTextNode(value?value:"");
+    					div.appendChild(txt);
+    					td.appendChild(div);
+    				 }
+    			 }
+    		  }
+    		  tbodyOld.parentNode.replaceChild(tbodyNew,tbodyOld)
+    		  console.log("replaced")
+    		  tbody = $(tbodyNew);
+    		  if (wrapper == null) {
+    			  wrapper = $element.find(".tablewrapper")[0];
+    		  }
+    		  scrollIntoView();
+    		  
+    		  
+//    		  <tr ng-repeat="row in model.foundset.viewPort.rows" ng-class='getRowStyle(model.foundset.viewPort.rows.indexOf(row))' on-finish-render-rows="ngRowsRenderRepeatFinished">
+//    		    <td ng-style="getCellStyle(model.columns.indexOf(column))" model-in-data="{row:row,column:column}" ng-class="column.styleClass + ' ' + column.styleClassDataprovider[model.foundset.viewPort.rows.indexOf(row)]" ng-repeat="column in model.columns" >
+//    		    	<img ng-show="getUrl(column,row) != null" ng-src="{{getUrl(column,row)}}"></img>
+//    		    	<div ng-bind='column.dataprovider[model.foundset.viewPort.rows.indexOf(row)]| getDisplayValue:column.valuelist | formatFilter:column.format.display:column.format.type' ng-show="getUrl(column,row) === null"></div>
+//    	        </td>
+//    		  </tr>
+    	  }
+    	  
+    	  var tableStyle = {};
     	  $scope.getTableStyle = function () {
-    		  var tableStyle = {};
     	      tableStyle.width = autoColumns.count > 0 ? getComponentWidth() + "px" : tableWidth + "px";
     		  return tableStyle;
     	  }
   
     	  
+          var tHeadStyle = {}
     	  $scope.getTHeadStyle = function() {
-    		  var tHeadStyle = {};
     		  if($scope.model.enableSort || $scope.handlers.onHeaderClick) {
     			  tHeadStyle.cursor = "pointer";
     		  }
@@ -602,8 +742,8 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
     		  return tHeadStyle;
     	  }
     	  
+          var tBodyStyle = {};
     	  $scope.getTBodyStyle = function() {
-    		  var tBodyStyle = {};
     		  var componentWidth = getComponentWidth();
     		  tBodyStyle.width = componentWidth + "px";
     		  if(tableWidth < componentWidth) {
@@ -622,9 +762,12 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
     		  }			  
 			  return tBodyStyle;
     	  }
-
+    	  var columnStyleCache = []
     	  $scope.getColumnStyle = function (column) {
-        	  var columnStyle = {overflow: "hidden"};
+        	  var columnStyle = columnStyleCache[column];
+        	  if (columnStyle) return columnStyle;
+        	  columnStyle = {overflow: "hidden"};
+        	  columnStyleCache[column] = columnStyle;
 			  var w = getNumberFromPxString($scope.model.columns[column].width);
 			  if(w > -1) {
 				  columnStyle.minWidth = columnStyle.maxWidth = columnStyle.width = w + "px";
@@ -662,19 +805,20 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
         	  cellStyles[column] = cellStyle;
         	  return cellStyle;
     	  }
-    	  // watch the table header if there are any column widht changes/
+    	  // watch the table header if there are any column width changes/
     	  // if that happens flush the cellStyles cache
     	  $scope.$watch(function() {
-    		  var array = [];
+    		  var array = "";
     		  var tbl = $element.find("table:first");
 			  var headers = tbl.find("th");
 			  for(var column = $scope.model.columns.length;--column;) {
-			  	array[column] = $(headers.get(column)).outerWidth(false);
+			  	array += $(headers.get(column)).outerWidth(false);
 			  }
 			  return array;
     	  },function(newValue,oldValue) {
     		  cellStyles = [];
-    	  },true)
+    		  columnStyleCache = [];
+    	  })
     	  
     	  $scope.getSortClass = function (column) {
     		  var sortClass = "table-servoyextra-sort-hide";

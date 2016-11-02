@@ -6,20 +6,9 @@
 <div class="tablewrapper" ng-style="getLayoutStyle()" ng-if='model.visible'>
 	<table ng-style="getTableStyle()" class='svy-table' ng-class="model.styleClass" sablo-tabseq='model.tabSeq' ng-keydown="keyPressed($event)" ng-click="tableClicked($event,1)" svy-rightclick="tableRightClick($event)" svy-focusgained="onFocusGained($event)" svy-focuslost="handlers.onFocusLostMethodID($event)">
 	   <thead ng-style="getTHeadStyle()">
-	  	<tr>
-	    	<th ng-style="getColumnStyle(model.columns.indexOf(column))" ng-class="column.headerStyleClass" ng-repeat="column in model.columns" svy-click="headerClicked(model.columns.indexOf(column))"><div ng-bind='column.headerText' class="table-servoyextra-header-label"></div><span ng-class="getSortClass(model.columns.indexOf(column))"></span></th>
-		</tr>	   
+	  	<tr><th ng-style="getColumnStyle(model.columns.indexOf(column))" ng-class="column.headerStyleClass" ng-repeat="column in model.columns" svy-click="headerClicked(model.columns.indexOf(column))"><div ng-bind='column.headerText' class="table-servoyextra-header-label"></div><span ng-class="getSortClass(model.columns.indexOf(column))"></span></th></tr>	   
 	   </thead>
-	  <tbody ng-style="getTBodyStyle()">
-	  <tr ng-repeat="row in model.foundset.viewPort.rows"
-	  	  ng-class='getRowStyle(model.foundset.viewPort.rows.indexOf(row))' on-finish-render-rows="ngRowsRenderRepeatFinished">
-	    <td ng-style="getCellStyle(model.columns.indexOf(column))" model-in-data="{row:row,column:column}" ng-class="column.styleClass + ' ' + column.styleClassDataprovider[model.foundset.viewPort.rows.indexOf(row)]" ng-repeat="column in model.columns" >
-	    	<img ng-show="getUrl(column,row) != null" 
-	    		ng-src="{{getUrl(column,row)}}"></img>
-	    	<div ng-bind='column.dataprovider[model.foundset.viewPort.rows.indexOf(row)]| getDisplayValue:column.valuelist | formatFilter:column.format.display:column.format.type'
-	    	ng-show="getUrl(column,row) === null">
-	    	</div></td>
-	  </tr>
+	  <tbody>
 	  </tbody>
 	</table>
 	<ul class="svy-pagination pagination svy-nomargin" ng-if="showPagination()">
