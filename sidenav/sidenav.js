@@ -490,6 +490,35 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					}
 					
 				}
+				
+				/**
+				 * Client Side API
+				 * 
+				 * Returns true if the menuItem is expanded.
+				 * @public 
+				 * 
+				 * @param {String|Number} menuItemId
+				 * 
+				 * @return {Boolean}
+				 *  */
+				$scope.api.isMenuItemExpanded = function(menuItemId) {
+					return isNodeExpanded(menuItemId);
+				}
+				
+				/**
+				 * Client Side API
+				 * 
+				 * Returns true if the menuItem and the parent menuItem are enabled. <br/>
+				 * <i>NOTE: The method returns false if any anchestor of the menuItem is not enabled; if the property enabled of the menuItem is set to true, but has a parent with the enabled property set to false, then isMenuItemEnabled returns false. </i><br/>
+				 * @public 
+				 * 
+				 * @param {String|Number} menuItemId
+				 * 
+				 * @return {Boolean}
+				 *  */
+				$scope.api.isMenuItemEnabled = function(menuItemId) {
+					return !isDisabled(menuItemId);
+				}
 
 				/***********************************************************************************
 				 * Private Methoods

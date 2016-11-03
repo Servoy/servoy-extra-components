@@ -151,6 +151,14 @@
 			],
 			"returns" : "boolean"
 		},
+		"isMenuItemEnabled": 
+		{
+			"parameters": 
+			[
+				{ "name": "menuItemId",	"type": "object" }
+			],
+			"returns" : "boolean"
+		},
 		"setMenuItemExpanded": 
 		{
 			"parameters": 
@@ -158,6 +166,14 @@
 				{ "name": "menuItemId",	"type": "object" },
 				{ "name": "expanded",	"type": "boolean" },
 				{ "name": "mustExecuteOnMenuItemExpand", "type": "boolean", "optional" : true}
+			],
+			"returns" : "boolean"
+		},
+		"isMenuItemExpanded": 
+		{
+			"parameters": 
+			[
+				{ "name": "menuItemId",	"type": "object" }
 			],
 			"returns" : "boolean"
 		}
@@ -169,7 +185,7 @@
       		"icon"					: "media",
       		"iconStyleClass"		: "styleclass",
       		"styleClass"			: "styleclass",
-      		"enabled"				: "boolean",
+      		"enabled"				: {"type" : "boolean", "default": true},
       		"data"					: "object",
       		"menuItems"				: "MenuItem[]",
       		
