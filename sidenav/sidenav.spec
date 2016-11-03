@@ -8,7 +8,7 @@
 				  {"name":"angular-animate.js", "version":"1.5.8", "url":"servoyextra/sidenav/angular-animate.min.js", "mimetype":"text/javascript"}],
 	"model":
 	{
-		"menu"					: {"type" :"menuItem[]", "default" : [], "pushToServer": "allow", "tags": { "scope" :"runtime" }},
+		"menu"					: {"type" :"MenuItem[]", "default" : [], "pushToServer": "allow", "tags": { "scope" :"runtime" }},
 		"selectedIndex"					: {"type" :"object", "tags": { "scope" :"private" }, "pushToServer" : "allow"},
 		"expandedIndex"					: {"type" :"object", "tags": { "scope" :"private" }, "pushToServer" : "allow"},
 		
@@ -32,20 +32,20 @@
 	{
 	        "onMenuItemSelected" 		: {
 										        "parameters" : [
-										        	{ "name" : "menuItem", "type" : "menuItem" },
+										        	{ "name" : "menuItem", "type" : "MenuItem" },
 										            { "name" : "event", "type" : "JSEvent" }
 										        ],
 										        "returns" : "boolean"
 										  },
 			"onMenuItemExpanded" 		: {
 										        "parameters" : [
-										        	{ "name" : "menuItem", "type" : "menuItem" },
+										        	{ "name" : "menuItem", "type" : "MenuItem" },
 										            { "name" : "event", "type" : "JSEvent" }
 										        ]
 										  },
 			"onMenuItemCollapsed" 		: {
 										        "parameters" : [
-										        	{ "name" : "menuItem", "type" : "menuItem" },
+										        	{ "name" : "menuItem", "type" : "MenuItem" },
 										            { "name" : "event", "type" : "JSEvent" }
 										        ]
 										  }
@@ -58,7 +58,7 @@
 			[
 				{	"name": "menuItemId",	"type": "object" }
 			],
-			"returns" : "menuItem"
+			"returns" : "MenuItem"
 		},
 		"getSelectedMenuItem": 
 		{
@@ -66,13 +66,13 @@
 			[
 				{	"name": "level", "type": "int", "optional" : true }
 			],
-			"returns" : "menuItem"
+			"returns" : "MenuItem"
 		},
 		"setRootMenuItems": 
 		{
 			"parameters": 
 			[
-				{	"name": "menuItems",	"type": "menuItems[]" }
+				{	"name": "menuItems",	"type": "MenuItem[]" }
 			]
 		},
 		"setSelectedMenuItem": 
@@ -80,9 +80,9 @@
 			"parameters": 
 			[
 				{	"name": "menuItemId",	"type": "object" },
-				{	"name": "level", "type": "int", "optional" : true},
 				{	"name": "mustExecuteOnMenuItemSelected", "type": "boolean", "optional" : true},
-				{	"name": "mustExecuteOnMenuItemExpand", "type": "boolean", "optional" : true}
+				{	"name": "mustExecuteOnMenuItemExpand", "type": "boolean", "optional" : true},
+				{	"name": "level", "type": "int", "optional" : true}
 			],
 			"returns" : "boolean"
 		},
@@ -90,7 +90,7 @@
 			"parameters":[
 				{
 					"name": "menuItem",	
-					"type": "menuItem"
+					"type": "MenuItem"
 				},
 				{
 					"name": "menuItemId",	
@@ -121,7 +121,7 @@
 				},
 				{
 					"name": "menuItems",	
-					"type": "menuItem[]"
+					"type": "MenuItem[]"
 				}
 			],
 			"returns" : "boolean"
@@ -163,7 +163,7 @@
 		}
 	},
 	"types": {
-    	"menuItem": {
+    	"MenuItem": {
       		"id"					: {"type" : "object"},
       		"text"					: "tagstring",
       		"icon"					: "media",
@@ -171,7 +171,7 @@
       		"styleClass"			: "styleclass",
       		"enabled"				: "boolean",
       		"data"					: "object",
-      		"menuItems"				: "menuItem[]",
+      		"menuItems"				: "MenuItem[]",
       		
       		"isDivider"				: "boolean"
     	}
