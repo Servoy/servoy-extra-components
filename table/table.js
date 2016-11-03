@@ -61,6 +61,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
     	  }
 
     	  function updateAutoColumnsWidth(delta) {
+			  columnStyleCache = [];
     		  var componentWidth = getComponentWidth();
     		  var oldWidth = componentWidth - delta;  
 			  for(var i = 0; i < $scope.model.columns.length; i++) {
@@ -88,6 +89,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
     		  return $scope.componentWidth;
     	  }
     	  
+		  var tableName = $element.attr('name');
     	  var autoColumns = getAutoColumns();
     	  var tableWidth = calculateTableWidth();
     	  
@@ -110,6 +112,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
 	        		  return;
 				  }
 				  $scope.model.columns[i].width = header[0].style.maxWidth = header[0].style.minWidth = header[0].style.width;
+				  updateTableColumnStyleClass(i, {width: $scope.model.columns[i].width, minWidth: $scope.model.columns[i].width, maxWidth: $scope.model.columns[i].width});
 			  }
 			  
 			  var resizer = $element.find(".JCLRgrips");
@@ -132,12 +135,20 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
 						  var deltaWidth = newComponentWidth - getComponentWidth();
 						  if(deltaWidth != 0) {
 			        		  $scope.componentWidth = newComponentWidth;
-			        		  updateAutoColumnsWidth(deltaWidth);
-			        		  if($scope.model.enableColumnResize) {
-		    			  		$timeout(function() {
-		    			  			addColResizable(true);
-		    			  		}, 0);
-			        		  }
+							  updateTBodyStyle($element.find('tbody')[0]);
+							  if($scope.model.columns && $scope.model.columns.length > 0) {
+								updateAutoColumnsWidth(deltaWidth);
+								$timeout(function() {
+									if($scope.model.enableColumnResize) {	
+										addColResizable(true);
+									}
+									else {
+										for(var i = 0; i < $scope.model.columns.length; i++) {
+											updateTableColumnStyleClass(i, getCellStyle(i));
+										}
+									}
+								}, 0);
+							  }
 						  }
 					  })   
 	    		  }, 50);
@@ -171,13 +182,13 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
 	    		  for(var i = 0; i < $scope.model.columns.length; i++) {
 	    			  if(autoColumns.columns[i] && autoColumns.minWidth[i] < 0) {
 	    				  $scope.model.columns[i].width = $(headers.get(i)).outerWidth(false) + "px";
+						  updateTableColumnStyleClass(i, {width: $scope.model.columns[i].width, minWidth: $scope.model.columns[i].width, maxWidth: $scope.model.columns[i].width});
 	    			  }
 	    		  }				  
 			  }
     	  }
-
     	  
-    	  $scope.$on('ngRowsRenderRepeatFinished', function(ngRepeatFinishedEvent) {
+    	  function onTableRendered() {
     		  if(!onTBodyScrollListener) {
     			  var tbl = $element.find("table:first");
     			  var tblBody = tbl.find("tbody");
@@ -198,7 +209,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
     			  updateAutoColumnsWidth(0);    			  
 	    		  addColResizable(true);
     		  }
-    	  });
+    	  }
     	  
     	  var unregTbody = $scope.$watch(function() {
     		  return $element.find("tbody").length;
@@ -265,11 +276,19 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
     			  		if(valueChanged) {
     			  			autoColumns = getAutoColumns();
         			  		tableWidth = calculateTableWidth();
-        			  		updateAutoColumnsWidth(0);
-        			  		if($scope.model.enableColumnResize)
-        		                $timeout(function() {
-        					  	  addColResizable(true);
-        					  	});
+							if($scope.model.columns && $scope.model.columns.length > 0) {
+								updateAutoColumnsWidth(0);
+								$timeout(function() {
+									if($scope.model.enableColumnResize) {	
+										addColResizable(true);
+									}
+									else {
+										for(var i = 0; i < $scope.model.columns.length; i++) {
+											updateTableColumnStyleClass(i, getCellStyle(i));
+										}
+									}
+								}, 0);
+							}
     			  		}
     			  		break;
     			  }
@@ -638,6 +657,43 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
 					}
 			  }
     	  }
+
+		  var columnCSSRules = [];
+		  function updateTableColumnStyleClass(columnIndex, style) {
+			  if(!columnCSSRules[columnIndex]) {
+				var ss = document.styleSheets;
+				var clsName = "data-servoyextra-table[name='" + tableName + "'] .c" + columnIndex;
+				var targetStyleSheet;
+
+				for (var i = 0; i < ss.length; i++) {
+					if(ss[i].href != null) continue;
+					if(!targetStyleSheet) targetStyleSheet = ss[i];
+					var rules = ss[i].cssRules || ss[i].rules;
+		
+					for (var j = 0; j < rules.length; j++) {
+						if (rules[j].selectorText == clsName) {
+							columnCSSRules[columnIndex] = rules[j];
+							break;
+						}
+					}
+				}
+				if(!columnCSSRules[columnIndex]) {
+					if(!targetStyleSheet) {
+						targetStyleSheet = document.createElement('style');
+						targetStyleSheet.type = 'text/css';
+						document.getElementsByTagName('head')[0].appendChild(targetStyleSheet);
+					}
+					var rules = targetStyleSheet.cssRules || targetStyleSheet.rules;
+					targetStyleSheet.insertRule(clsName + '{}', rules.length);
+					columnCSSRules[columnIndex] = rules[rules.length - 1];
+				}
+			  }
+
+			  for(var p in style) {
+			  	columnCSSRules[columnIndex].style[p] = style[p];
+			  } 
+		  }
+
     	  var columnListener = null;
     	  function generateTemplate() {
     		  console.log("generate template")
@@ -668,22 +724,25 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
     		  var formatFilter = $filter("formatFilter");
     		  var tbodyOld = tbodyJQ[0];
     		  var tbodyNew = document.createElement("TBODY");
-    		  var tbodyStyle = $scope.getTBodyStyle();
- 			  for(var key in tbodyStyle){
- 				 tbodyNew.style[key] = tbodyStyle[key];
-			  }
+			  updateTBodyStyle(tbodyNew);
     		  for (var r = 0; r < rows.length; r++) {
     			 var tr = document.createElement("TR");
     			 tbodyNew.appendChild(tr);
-    			 for (var c=0; c< columns.length;c++) {
+    			 for (var c = 0; c < columns.length; c++) {
+					 if(r == 0) {
+						 updateTableColumnStyleClass(c, getCellStyle(c));
+					 }
     				 var column = columns[c];
     				 var td = document.createElement("TD");
-    				 var tdStyle = $scope.getCellStyle(c);
-    				 for(var key in tdStyle){
-    					 td.style[key] = tdStyle[key];
-    				 }
+    				//  var tdStyle = $scope.getCellStyle(c);
+    				//  for(var key in tdStyle){
+    				// 	 td.style[key] = tdStyle[key];
+    				//  }
     				 $(td).data('row_column', {row:r,column:c});
-    				 var tdClass = column.styleClass;
+    				 var tdClass = 'c' + c;
+					 if(column.styleClass) {
+						 tdClass += ' ' + column.styleClass;
+					 }
     				 if (column.styleClassDataprovider && column.styleClassDataprovider[r]) {
     					 tdClass += ' ' + column.styleClassDataprovider[r];
     				 }
@@ -715,6 +774,7 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
     			  wrapper = $element.find(".tablewrapper")[0];
     		  }
     		  scrollIntoView();
+			  onTableRendered();
     		  
     		  
 //    		  <tr ng-repeat="row in model.foundset.viewPort.rows" ng-class='getRowStyle(model.foundset.viewPort.rows.indexOf(row))' on-finish-render-rows="ngRowsRenderRepeatFinished">
@@ -742,8 +802,8 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
     		  return tHeadStyle;
     	  }
     	  
-          var tBodyStyle = {};
-    	  $scope.getTBodyStyle = function() {
+    	  function updateTBodyStyle(tBodyEl) {
+			  var tBodyStyle = {};
     		  var componentWidth = getComponentWidth();
     		  tBodyStyle.width = componentWidth + "px";
     		  if(tableWidth < componentWidth) {
@@ -759,8 +819,11 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
     			  if(pagination.get().length > 0) {
     				  tBodyStyle.marginBottom = ($(pagination).height() + 2) + "px";
     			  }
-    		  }			  
-			  return tBodyStyle;
+    		  }
+
+			  for(var p in tBodyStyle) {
+				  tBodyEl.style[p] = tBodyStyle[p];
+			  }
     	  }
     	  var columnStyleCache = []
     	  $scope.getColumnStyle = function (column) {
@@ -781,11 +844,8 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
         	  return columnStyle;
     	  }
 
-    	  var cellStyles = [];
-    	  $scope.getCellStyle = function (column) {
-        	  var cellStyle = cellStyles[column]
-        	  if (cellStyle) return cellStyle;
-        	  cellStyle = {overflow: "hidden"};
+    	  function getCellStyle(column) {
+        	  var cellStyle = {overflow: "hidden"};
         	  if(column < $scope.model.columns.length) {
         		  var w = getNumberFromPxString($scope.model.columns[column].width);
         		  if ($scope.model.columns[column].autoResize || w < 0) {
@@ -802,7 +862,6 @@ angular.module('servoyextraTable',['servoy']).directive('servoyextraTable', ["$l
         			  cellStyle.width = $scope.model.columns[column].width;
         		  }
         	  }
-        	  cellStyles[column] = cellStyle;
         	  return cellStyle;
     	  }
     	  // watch the table header if there are any column width changes/
