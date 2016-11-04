@@ -24,10 +24,11 @@
 						>
 
 -->
-		<div class="svy-sidenav svy-sidenav-header">
+	<div class="svy-sidenav">
+		<div class="svy-sidenav-header">
 			<i ng-click="slideMenu()" class="svy-action-slide fa fa-bars"></i>
 		</div>
-		<nav id={{::model.svyMarkupId}} class="svy-sidenav" ng-show="model.visible">		
+		<nav id={{::model.svyMarkupId}} class="svy-sidenav-content" ng-show="model.visible">		
 			<input ng-model="searchText" class="svy-searchbox"></input>
 			<!-- The main menu -->
 			<ul class="svy-sidenav-menu svy-sidenav-collapsed">
@@ -111,4 +112,5 @@
 				</li>	
 			</ul><!-- #main list -->
 		</nav> 
+	</div>
 <!-- #sidebar -->
