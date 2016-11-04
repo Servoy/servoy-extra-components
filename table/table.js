@@ -86,7 +86,6 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					return $scope.componentWidth;
 				}
 
-				var tableName = $element.attr('name');
 				var autoColumns = getAutoColumns();
 				var tableWidth = calculateTableWidth();
 
@@ -624,7 +623,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				function updateTableColumnStyleClass(columnIndex, style) {
 					if (!columnCSSRules[columnIndex]) {
 						var ss = document.styleSheets;
-						var clsName = "data-servoyextra-table[name='" + tableName + "'] .c" + columnIndex;
+						var clsName = "table[id='table_" + $scope.model.svyMarkupId + "'] .c" + columnIndex;
 						var targetStyleSheet;
 
 						for (var i = 0; i < ss.length; i++) {
@@ -687,13 +686,13 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					var tbodyOld = tbodyJQ[0];
 					var tbodyNew = document.createElement("TBODY");
 					updateTBodyStyle(tbodyNew);
+					for(var c = 0; c < columns.length; c++) {
+						updateTableColumnStyleClass(c, getCellStyle(c));
+					}
 					for (var r = 0; r < rows.length; r++) {
 						var tr = document.createElement("TR");
 						tbodyNew.appendChild(tr);
 						for (var c = 0; c < columns.length; c++) {
-							if (r == 0) {
-								updateTableColumnStyleClass(c, getCellStyle(c));
-							}
 							var column = columns[c];
 							var td = document.createElement("TD");
 							//  var tdStyle = $scope.getCellStyle(c);
@@ -923,17 +922,6 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 			link: function($scope, $element, $attrs) {
 				var model = $parse($attrs.modelInData)($scope);
 				$element.data('row_column', model);
-			}
-		}
-	}).directive('onFinishRenderRows', function($timeout) {
-		return {
-			restrict: 'A',
-			link: function(scope, element, attr) {
-				if (scope.$last === true) {
-					$timeout(function() {
-						scope.$emit(attr.onFinishRenderRows);
-					});
-				}
 			}
 		}
 	});
