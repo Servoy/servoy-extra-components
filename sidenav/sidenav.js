@@ -912,24 +912,24 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 			link: function($scope, $element, $attrs) { 
 				
 				var className = null;
-				var sidenav = $element.find("nav");
+				var sidenav = $element.find(".svy-sidenav");
 				var sidenavHeader = $element.find(".svy-sidenav-header");
+				var nav = $element.find("nav");
 				
 				// prevent animation at page refresh
 				if ($scope.model.open === false ) {
 				    sidenav.addClass('svy-slide-out');
-				    sidenavHeader.addClass('svy-slide-out');
 				}
 								
 				Object.defineProperty($scope.model,$sabloConstants.modelChangeNotifier, {configurable:true,value:function(property,value) {
 					switch(property) {
 						case "enabled":
 							if (value) {
-								sidenav.removeAttr("disabled");
-								sidenav.removeClass("svy-sidenav-disabled");
+								nav.removeAttr("disabled");
+								nav.removeClass("svy-sidenav-disabled");
 							} else {
-								sidenav.attr("disabled","disabled");
-								sidenav.addClass("svy-sidenav-disabled");
+								nav.attr("disabled","disabled");
+								nav.addClass("svy-sidenav-disabled");
 							}
 							break;
 						case "open":
@@ -968,7 +968,6 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 						break;
 				}
 				sidenav.addClass(slidePositionClass);
-				sidenavHeader.addClass(slidePositionClass);
 				
 				// animate slide menu
 				$scope.slideMenu = function () {
@@ -982,12 +981,10 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					if (open) {
 						if (sidenav.hasClass('svy-slide-out')) {
 							$animate.removeClass(sidenav, 'svy-slide-out');
-							$animate.removeClass(sidenavHeader, 'svy-slide-out');
 						}
 					} else {
 						if (!sidenav.hasClass('svy-slide-out')) {
 							$animate.addClass(sidenav, 'svy-slide-out');
-							$animate.addClass(sidenavHeader, 'svy-slide-out');
 						}
 					}
 				}
