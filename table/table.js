@@ -623,7 +623,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				function updateTableColumnStyleClass(columnIndex, style) {
 					if (!columnCSSRules[columnIndex]) {
 						var ss = document.styleSheets;
-						var clsName = "table[id='table_" + $scope.model.svyMarkupId + "'] .c" + columnIndex;
+						var clsName = "#table_" + $scope.model.svyMarkupId + " .c" + columnIndex;
 						var targetStyleSheet;
 
 						for (var i = 0; i < ss.length; i++) {
