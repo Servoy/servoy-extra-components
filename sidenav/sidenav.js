@@ -978,14 +978,20 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				}
 				
 				function animateSlideMenu(open) {
-					if (open) {
-						if (sidenav.hasClass('svy-slide-out')) {
-							$animate.removeClass(sidenav, 'svy-slide-out');
+					if ($scope.model.slidePosition && $scope.model.slidePosition != 'static') {
+						if (open) {
+							if (sidenav.hasClass('svy-slide-out')) {
+								$animate.removeClass(sidenav, 'svy-slide-out');
+							}
+						} else {
+							if (!sidenav.hasClass('svy-slide-out')) {
+								$animate.addClass(sidenav, 'svy-slide-out');
+							}
 						}
-					} else {
-						if (!sidenav.hasClass('svy-slide-out')) {
-							$animate.addClass(sidenav, 'svy-slide-out');
-						}
+					}
+					else {
+						$scope.model.open = true;
+						$scope.svyServoyapi.apply("open");
 					}
 				}
 				
