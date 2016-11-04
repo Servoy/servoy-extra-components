@@ -14,7 +14,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 				// this is true when next render of table contents / next scroll selection into view is also allowed to change page (if paging is
 				// used); false if it shouldn't change page, for example if the user has just changed to another page manually and table got rerendered
-				var changePageOnScrollIfNeeded = true;
+				var scrollNeeded = ($scope.model.lastSelectionFirstElement == -1); // when this is called due to a browser refresh don't necessarily go to selection; only force the scroll on initial show or if the selection changed (see selected indexes watch)
 
 				function getNumberFromPxString(s) {
 					var numberFromPxString = -1;
@@ -191,6 +191,9 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				}
 
 				function onTableRendered() {
+					adjustFoundsetViewportIfNeeded();
+					scrollIntoView();
+
 					if (!onTBodyScrollListener) {
 						onTBodyScrollListener = function() {
 							$timeout(function() {
@@ -211,11 +214,12 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					}
 				}
 
-				var unregTbody = $scope.$watch(function() {
+				var nonPagingPageSize = 200;
+				var unregTbodyScroll = $scope.$watch(function() {
 						return tbody.length;
 					}, function(newValue) {
 						if (newValue == 0) return;
-						unregTbody();
+						unregTbodyScroll();
 						if ($scope.model.pageSize == 0) {
 							// this is endless scrolling
 							var lastRequestedViewPortSize = 0;
@@ -223,30 +227,63 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								var viewportSize = $scope.model.foundset.viewPort.size;
 								if (viewportSize != lastRequestedViewPortSize && $scope.model.foundset.serverSize > viewportSize && (tbody.scrollTop() + tbody.height()) > (tbody[0].scrollHeight - tbody.height())) {
 									lastRequestedViewPortSize = viewportSize;
-									$scope.model.foundset.loadExtraRecordsAsync(nonePagingPageSize);
+									$scope.model.foundset.loadExtraRecordsAsync(nonPagingPageSize);
 								}
 							})
 						}
 					})
-				var nonePagingPageSize = 200;
 
 				function getPageForIndex(idx) {
 					return Math.floor(idx / $scope.model.pageSize) + 1;
 				}
 
-				$scope.$watch('model.foundset.serverSize', function(newValue, oldValue) {
-						if (newValue && newValue != oldValue) {
-							if (!$scope.showPagination()) {
-								var rowsToLoad = Math.min(newValue, $scope.model.pageSize ? $scope.model.pageSize : nonePagingPageSize)
-								if ($scope.model.foundset.viewPort.size < rowsToLoad)
-									$scope.model.foundset.loadExtraRecordsAsync(rowsToLoad - $scope.model.foundset.viewPort.size);
-							} else {
-								if ($scope.model.pageSize * ($scope.model.currentPage - 1) > newValue) {
-									$scope.model.currentPage = getPageForIndex(newValue);
+				function adjustFoundsetViewportIfNeeded() {
+					var serverSize = $scope.model.foundset.serverSize;
+					if ($scope.showPagination()) {
+						// paging mode only keeps data for the showing page
+						var neededVpStart = $scope.model.pageSize * ($scope.model.currentPage - 1);
+						if (neededVpStart > serverSize) {
+							// this page no longer exists; it is after serverSize; adjust current page and that watch on that will request the correct viewport
+							$scope.model.currentPage = getPageForIndex(serverSize - 1);
+						} else {
+							// see if bounds are slightly off target or completely off target - correct them if needed
+							var neededVpSize = Math.min($scope.model.pageSize, serverSize - neededVpStart);
+
+							var vpStart = $scope.model.foundset.viewPort.startIndex;
+							var vpSize = $scope.model.foundset.viewPort.size;
+
+							if (neededVpStart != vpStart || neededVpSize != vpSize) {
+								var neededVpEnd = neededVpStart + neededVpSize - 1;
+								var vpEnd = vpStart + vpSize - 1;
+
+								var intersectionStart = Math.max(neededVpStart, vpStart);
+								var intersectionEnd = Math.min(neededVpEnd, vpEnd);
+
+								if (intersectionStart <= intersectionEnd) {
+									// we already have some or all records that we need; request or trim only the needed rows
+									if (neededVpStart < intersectionStart) $scope.model.foundset.loadExtraRecordsAsync(intersectionStart - neededVpStart, true);
+									else if (neededVpStart > intersectionStart) $scope.model.foundset.loadLessRecordsAsync(neededVpStart - intersectionStart, true);
+
+									if (neededVpEnd < intersectionEnd) $scope.model.foundset.loadLessRecordsAsync(neededVpEnd - intersectionEnd, true);
+									else if (neededVpEnd > intersectionEnd) $scope.model.foundset.loadExtraRecordsAsync(intersectionEnd - neededVpEnd, true);
+
+									$scope.model.foundset.notifyChanged();
 								} else {
-									$scope.model.foundset.loadRecordsAsync($scope.model.pageSize * ($scope.model.currentPage - 1), $scope.model.pageSize);
+									// we have none of the needed records - just request the whole wanted viewport
+									$scope.model.foundset.loadRecordsAsync(neededVpStart, neededVpSize);
 								}
 							}
+						}
+					} else {
+						var rowsToLoad = Math.min(serverSize, $scope.model.pageSize ? $scope.model.pageSize : nonPagingPageSize)
+						if ($scope.model.foundset.viewPort.size < rowsToLoad)
+							$scope.model.foundset.loadExtraRecordsAsync(rowsToLoad - $scope.model.foundset.viewPort.size);
+					}
+				}
+
+				$scope.$watch('model.foundset.serverSize', function(newValue, oldValue) {
+						if (newValue && newValue != oldValue) {
+							adjustFoundsetViewportIfNeeded();
 						}
 					});
 				// watch the columns so that we can relay out the columns when width or size stuff are changed.
@@ -304,11 +341,13 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							if (oldValue && newValue && $scope.showPagination()) {
 								$scope.model.foundset.loadRecordsAsync($scope.model.pageSize * ($scope.model.currentPage - 1), $scope.model.pageSize);
 							}
-							$scope.model.foundset.setPreferredViewportSize(newValue)
 						}
+						$scope.model.foundset.setPreferredViewportSize(newValue)
 					});
 
 				$scope.$watch('model.foundset.viewPort', function(newValue, oldValue) {
+						// the following code is only for when user changes page in browser I think
+						// so we really did request the correct startIndex already
 						if ($scope.showPagination()) {
 							if ($scope.model.pageSize * ($scope.model.currentPage - 1) != newValue.startIndex) {
 								$scope.model.currentPage = getPageForIndex(newValue.startIndex);
@@ -352,12 +391,13 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							wrapper = null;
 						}
 					});
+
 				var previousSelectedChild = null; // this should be an array for multi select.
 				function scrollIntoView() {
 					var firstSelected = $scope.model.foundset.selectedRowIndexes[0];
 
 					if ($scope.showPagination()) {
-						if (changePageOnScrollIfNeeded && getPageForIndex(firstSelected) != $scope.model.currentPage) {
+						if (scrollNeeded && getPageForIndex(firstSelected) != $scope.model.currentPage) {
 							// we need to switch page in order to show selected row
 							$scope.model.currentPage = getPageForIndex(firstSelected);
 							return;
@@ -365,24 +405,28 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						firstSelected = firstSelected - ($scope.model.pageSize * ($scope.model.currentPage - 1));
 					}
 
-					var child = tbody.children().eq(firstSelected)
+					var child = (firstSelected >= 0 ? tbody.children().eq(firstSelected) : undefined); // eq negative idx is interpreted as n'th from the end of children list
 					if (previousSelectedChild) previousSelectedChild.className = "";
 					if (child.length > 0) {
 						var wrapperRect = wrapper.getBoundingClientRect();
 						var childRect = child[0].getBoundingClientRect();
-						child[0].className = $scope.model.selectionClass;
+						child[0].className = $scope.model.selectionClass; // TODO do this for all selected elements in case of multiselect? also clear for the old ones that are not longer selected
 						previousSelectedChild = child[0];
 						if (childRect.top < (wrapperRect.top + 10) || childRect.bottom > wrapperRect.bottom) {
 							child[0].scrollIntoView(!toBottom);
 						}
 					}
 
-					changePageOnScrollIfNeeded = false; // we did change page if it was needed, now reset the flag so that it is only set back to true on purpose
+					scrollNeeded = false; // we did change page if it was needed, now reset the flag so that it is only set back to true on purpose
 				}
 				$scope.$watch('model.foundset.selectedRowIndexes', function(newValue, oldValue) {
-						if (newValue != oldValue && $scope.model.foundset && newValue.length > 0) {
-							changePageOnScrollIfNeeded = true;
-							scrollIntoView();
+						// ignore value change triggered by the watch initially with the same value except for when it was a form re-show and the selected index changed meanwhile
+						if (newValue.length > 0) {
+							if ( (newValue != oldValue || $scope.model.lastSelectionFirstElement != newValue[0]) && $scope.model.foundset) {
+								scrollNeeded = true;
+								scrollIntoView();
+							}
+							$scope.model.lastSelectionFirstElement = newValue[0];
 						}
 					}, true);
 
@@ -639,6 +683,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								}
 							}
 						}
+						// else FOR INSERT also check after adjusting everything if scrollIntoView is still needed
 					}
 				}
 
@@ -710,7 +755,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					var tbodyNew = document.createElement("TBODY");
 
 					updateTBodyStyle(tbodyNew);
-					for(var c = 0; c < columns.length; c++) {
+					for (var c = 0; c < columns.length; c++) {
 						updateTableColumnStyleClass(c, getCellStyle(c));
 					}
 					for (var r = 0; r < rows.length; r++) {
@@ -755,7 +800,6 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 					tbody = $(tbodyNew);
 
-					scrollIntoView();
 					onTableRendered();
 
 					//    		  <tr ng-repeat="row in model.foundset.viewPort.rows" ng-class='getRowStyle(model.foundset.viewPort.rows.indexOf(row))' on-finish-render-rows="ngRowsRenderRepeatFinished">

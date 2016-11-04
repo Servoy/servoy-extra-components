@@ -20,7 +20,8 @@
 		"sortupClass": { "type": "styleclass", "default": "table-servoyextra-sort-up " },
 		"sortdownClass": { "type": "styleclass", "default": "table-servoyextra-sort-down " },
 		"sortColumnIndex": { "type": "int", "default": -1, "tags": { "scope": "runtime" }, "pushToServer": "shallow" },
-		"sortDirection": { "type": "string", "tags": { "scope": "runtime" }, "pushToServer": "shallow" }
+		"sortDirection": { "type": "string", "tags": { "scope": "runtime" }, "pushToServer": "shallow" },
+		"lastSelectionFirstElement": { "type": "int", "default": -1, "tags": { "scope": "private" }, "pushToServer": "shallow" }
 	},
 	"types": {
 		"column": {
@@ -34,7 +35,6 @@
 			"width": { "type": "string" },
 			"initialWidth": { "type": "string", "tags": { "scope": "runtime" } },
 			"autoResize": { "type": "boolean", "default": false }
-
 		}
 	},
 	"handlers": {
