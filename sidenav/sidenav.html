@@ -26,7 +26,7 @@
 -->
 	<div class="svy-sidenav">
 		<div class="svy-sidenav-header">
-			<i ng-click="slideMenu()" class="svy-action-slide fa fa-bars"></i>
+			<i ng-click="slideMenu()" class="svy-action-slide {{::model.iconOpenStyleClass}}"></i>
 		</div>
 		<nav id={{::model.svyMarkupId}} class="svy-sidenav-content" ng-show="model.visible">		
 			<input ng-model="searchText" class="svy-searchbox"></input>
