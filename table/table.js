@@ -110,7 +110,6 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						$scope.model.columns[i].width = header[0].style.maxWidth = header[0].style.minWidth = header[0].style.width;
 						updateTableColumnStyleClass(i, { width: $scope.model.columns[i].width, minWidth: $scope.model.columns[i].width, maxWidth: $scope.model.columns[i].width });
 					}
-
 					var resizer = $element.find(".JCLRgrips");
 					var resizerLeft = getNumberFromPxString($(resizer).css("left"));
 
@@ -120,6 +119,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						leftOffset += getNumberFromPxString($scope.model.columns[i].width);
 						$(colGrips.get(i)).css("left", leftOffset - resizerLeft + "px");
 					}
+					updateTBodyStyle($element.find('tbody')[0]);
 				}
 
 				$(window).on('resize', function() {
