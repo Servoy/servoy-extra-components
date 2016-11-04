@@ -407,7 +407,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 					var child = (firstSelected >= 0 ? tbody.children().eq(firstSelected) : undefined); // eq negative idx is interpreted as n'th from the end of children list
 					if (previousSelectedChild) previousSelectedChild.className = "";
-					if (child.length > 0) {
+					if (child && child.length > 0) {
 						var wrapperRect = wrapper.getBoundingClientRect();
 						var childRect = child[0].getBoundingClientRect();
 						child[0].className = $scope.model.selectionClass; // TODO do this for all selected elements in case of multiselect? also clear for the old ones that are not longer selected
