@@ -9,6 +9,13 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 			},
 			link: function($scope, $element, $attrs) {
 
+				var wrapper = $element.find(".tablewrapper")[0];
+				var tbody = $element.find("tbody");
+
+				// this is true when next render of table contents / next scroll selection into view is also allowed to change page (if paging is
+				// used); false if it shouldn't change page, for example if the user has just changed to another page manually and table got rerendered
+				var changePageOnScrollIfNeeded = true;
+
 				function getNumberFromPxString(s) {
 					var numberFromPxString = -1;
 					if (s) {
@@ -131,7 +138,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 										var deltaWidth = newComponentWidth - getComponentWidth();
 										if (deltaWidth != 0) {
 											$scope.componentWidth = newComponentWidth;
-											updateTBodyStyle($element.find('tbody')[0]);
+											updateTBodyStyle(tbody[0]);
 											if ($scope.model.columns && $scope.model.columns.length > 0) {
 												updateAutoColumnsWidth(deltaWidth);
 												$timeout(function() {
@@ -185,18 +192,16 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 				function onTableRendered() {
 					if (!onTBodyScrollListener) {
-						var tbl = $element.find("table:first");
-						var tblBody = tbl.find("tbody");
 						onTBodyScrollListener = function() {
 							$timeout(function() {
-								tableLeftOffset = -$(tblBody).scrollLeft();
+								tableLeftOffset = -tbody.scrollLeft();
 								var resizer = $element.find(".JCLRgrips");
 								if (resizer.get().length > 0) {
 									$(resizer).css("left", tableLeftOffset + "px");
 								}
 							});
 						}
-						$(tblBody).bind("scroll", onTBodyScrollListener);
+						tbody.bind("scroll", onTBodyScrollListener);
 					}
 					if ($scope.model.enableColumnResize) {
 						autoColumns = getAutoColumns();
@@ -207,13 +212,12 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				}
 
 				var unregTbody = $scope.$watch(function() {
-						return $element.find("tbody").length;
+						return tbody.length;
 					}, function(newValue) {
 						if (newValue == 0) return;
 						unregTbody();
 						if ($scope.model.pageSize == 0) {
 							// this is endless scrolling
-							var tbody = $element.find("tbody");
 							var lastRequestedViewPortSize = 0;
 							tbody.scroll(function(e) {
 								var viewportSize = $scope.model.foundset.viewPort.size;
@@ -225,15 +229,20 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						}
 					})
 				var nonePagingPageSize = 200;
-				$scope.$watch('model.foundset.serverSize', function(newValue) {
-						if (newValue) {
+
+				function getPageForIndex(idx) {
+					return Math.floor(idx / $scope.model.pageSize) + 1;
+				}
+
+				$scope.$watch('model.foundset.serverSize', function(newValue, oldValue) {
+						if (newValue && newValue != oldValue) {
 							if (!$scope.showPagination()) {
 								var rowsToLoad = Math.min(newValue, $scope.model.pageSize ? $scope.model.pageSize : nonePagingPageSize)
 								if ($scope.model.foundset.viewPort.size < rowsToLoad)
 									$scope.model.foundset.loadExtraRecordsAsync(rowsToLoad - $scope.model.foundset.viewPort.size);
 							} else {
 								if ($scope.model.pageSize * ($scope.model.currentPage - 1) > newValue) {
-									$scope.model.currentPage = Math.floor(newValue / $scope.model.pageSize) + 1;
+									$scope.model.currentPage = getPageForIndex(newValue);
 								} else {
 									$scope.model.foundset.loadRecordsAsync($scope.model.pageSize * ($scope.model.currentPage - 1), $scope.model.pageSize);
 								}
@@ -246,36 +255,36 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						configurable: true,
 						value: function(property, value) {
 							switch (property) {
-								case "columns":
-									var valueChanged = currentColumnLength != $scope.model.columns.length;
-									currentColumnLength = $scope.model.columns.length
-									if (!valueChanged) {
-										for (var i = 0; i < $scope.model.columns.length; i++) {
-											var iw = getNumberFromPxString($scope.model.columns[i].initialWidth);
-											if (iw > -1 && ($scope.model.columns[i].width != $scope.model.columns[i].initialWidth)) {
-												$scope.model.columns[i].initialWidth = $scope.model.columns[i].width;
-												if (!valueChanged) valueChanged = true;
-											}
+							case "columns":
+								var valueChanged = currentColumnLength != $scope.model.columns.length;
+								currentColumnLength = $scope.model.columns.length
+								if (!valueChanged) {
+									for (var i = 0; i < $scope.model.columns.length; i++) {
+										var iw = getNumberFromPxString($scope.model.columns[i].initialWidth);
+										if (iw > -1 && ($scope.model.columns[i].width != $scope.model.columns[i].initialWidth)) {
+											$scope.model.columns[i].initialWidth = $scope.model.columns[i].width;
+											if (!valueChanged) valueChanged = true;
 										}
 									}
+								}
 
-									if (valueChanged) {
-										autoColumns = getAutoColumns();
-										tableWidth = calculateTableWidth();
-										if ($scope.model.columns && $scope.model.columns.length > 0) {
-											updateAutoColumnsWidth(0);
-											$timeout(function() {
-													if ($scope.model.enableColumnResize) {
-														addColResizable(true);
-													} else {
-														for (var i = 0; i < $scope.model.columns.length; i++) {
-															updateTableColumnStyleClass(i, getCellStyle(i));
-														}
+								if (valueChanged) {
+									autoColumns = getAutoColumns();
+									tableWidth = calculateTableWidth();
+									if ($scope.model.columns && $scope.model.columns.length > 0) {
+										updateAutoColumnsWidth(0);
+										$timeout(function() {
+												if ($scope.model.enableColumnResize) {
+													addColResizable(true);
+												} else {
+													for (var i = 0; i < $scope.model.columns.length; i++) {
+														updateTableColumnStyleClass(i, getCellStyle(i));
 													}
-												}, 0);
-										}
+												}
+											}, 0);
 									}
-									break;
+								}
+								break;
 							}
 						}
 					});
@@ -284,23 +293,25 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						generateTemplate();
 					})
 
-				$scope.$watch('model.currentPage', function(newValue) {
-						if (newValue && $scope.showPagination()) {
+				$scope.$watch('model.currentPage', function(newValue, oldValue) {
+						if (newValue && newValue != oldValue && $scope.showPagination()) {
 							$scope.model.foundset.loadRecordsAsync($scope.model.pageSize * (newValue - 1), $scope.model.pageSize);
 						}
 					});
 
 				$scope.$watch('model.pageSize', function(newValue, oldValue) {
-						if (oldValue && newValue && $scope.showPagination()) {
-							$scope.model.foundset.loadRecordsAsync($scope.model.pageSize * ($scope.model.currentPage - 1), $scope.model.pageSize);
+						if (oldValue != newValue) {
+							if (oldValue && newValue && $scope.showPagination()) {
+								$scope.model.foundset.loadRecordsAsync($scope.model.pageSize * ($scope.model.currentPage - 1), $scope.model.pageSize);
+							}
+							$scope.model.foundset.setPreferredViewportSize(newValue)
 						}
-						$scope.model.foundset.setPreferredViewportSize(newValue)
 					});
 
 				$scope.$watch('model.foundset.viewPort', function(newValue, oldValue) {
 						if ($scope.showPagination()) {
 							if ($scope.model.pageSize * ($scope.model.currentPage - 1) != newValue.startIndex) {
-								$scope.model.currentPage = Math.floor(newValue.startIndex / $scope.model.pageSize) + 1;
+								$scope.model.currentPage = getPageForIndex(newValue.startIndex);
 							} else if (newValue.size < $scope.model.pageSize && $scope.model.foundset.serverSize > (newValue.startIndex + newValue.size)) {
 								$scope.model.foundset.loadRecordsAsync($scope.model.pageSize * ($scope.model.currentPage - 1), $scope.model.pageSize);
 							}
@@ -323,19 +334,37 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					});
 
 				var toBottom = false;
-				var tbody = null;
-				var wrapper = null;
 				$scope.$watch('model.visible', function(newValue) {
-						if (!newValue) {
+						if (newValue) {
+							wrapper = $element.find(".tablewrapper")[0];
+							tbody = $element.find("tbody");
+
+							// as model.visible is used in an ng-if aroung both these elements and that didn't execute yet, give it a chance to do so
+							if (! (wrapper && tbody)) $scope.$evalAsync(function() {
+									wrapper = $element.find(".tablewrapper")[0];
+									tbody = $element.find("tbody");
+								});
+
+							// TODO do we need to reinitialize anything else here as the elements were recreated
+						} else {
 							toBottom = false;
 							tbody = null;
 							wrapper = null;
 						}
-					})
+					});
 				var previousSelectedChild = null; // this should be an array for multi select.
 				function scrollIntoView() {
 					var firstSelected = $scope.model.foundset.selectedRowIndexes[0];
-					firstSelected = firstSelected - ($scope.model.pageSize * ($scope.model.currentPage - 1));
+
+					if ($scope.showPagination()) {
+						if (changePageOnScrollIfNeeded && getPageForIndex(firstSelected) != $scope.model.currentPage) {
+							// we need to switch page in order to show selected row
+							$scope.model.currentPage = getPageForIndex(firstSelected);
+							return;
+						}
+						firstSelected = firstSelected - ($scope.model.pageSize * ($scope.model.currentPage - 1));
+					}
+
 					var child = tbody.children().eq(firstSelected)
 					if (previousSelectedChild) previousSelectedChild.className = "";
 					if (child.length > 0) {
@@ -347,21 +376,15 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							child[0].scrollIntoView(!toBottom);
 						}
 					}
+
+					changePageOnScrollIfNeeded = false; // we did change page if it was needed, now reset the flag so that it is only set back to true on purpose
 				}
 				$scope.$watch('model.foundset.selectedRowIndexes', function(newValue, oldValue) {
-						if ($scope.model.foundset && $scope.model.foundset.selectedRowIndexes.length > 0) {
-							if (tbody == null || tbody.length == 0) {
-								wrapper = $element.find(".tablewrapper")[0];
-								tbody = $element.find("tbody");
-							}
-							if (tbody.children().length > 1) {
-								scrollIntoView();
-							} else {
-								$timeout(scrollIntoView, 200)
-							}
-
+						if (newValue != oldValue && $scope.model.foundset && newValue.length > 0) {
+							changePageOnScrollIfNeeded = true;
+							scrollIntoView();
 						}
-					}, true)
+					}, true);
 
 				$scope.getUrl = function(column, row) {
 					if (column && row) {
@@ -658,7 +681,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				var columnListener = null;
 				function generateTemplate() {
 					console.log("generate template")
-					var tbodyJQ = $element.find("tbody");
+					var tbodyJQ = tbody;
 					var tblHead = $element.find("thead");
 					if (tbodyJQ.length == 0 || $(tblHead).height() <= 0) {
 						console.log("generate template timeout")
@@ -685,6 +708,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					var formatFilter = $filter("formatFilter");
 					var tbodyOld = tbodyJQ[0];
 					var tbodyNew = document.createElement("TBODY");
+
 					updateTBodyStyle(tbodyNew);
 					for(var c = 0; c < columns.length; c++) {
 						updateTableColumnStyleClass(c, getCellStyle(c));
@@ -728,10 +752,9 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					}
 					tbodyOld.parentNode.replaceChild(tbodyNew, tbodyOld)
 					console.log("replaced")
+
 					tbody = $(tbodyNew);
-					if (wrapper == null) {
-						wrapper = $element.find(".tablewrapper")[0];
-					}
+
 					scrollIntoView();
 					onTableRendered();
 
