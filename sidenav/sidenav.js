@@ -8,7 +8,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				handlers: "=svyHandlers"
 			},
 			controller: function($scope, $element, $attrs) {
-
+				
 				/**
 				 * TODO
 				 * Unselect menuItem
@@ -28,8 +28,6 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 * 		Remove a selected/expanded node, node with same ID is added again before selection is changed. 
 				 * 			Force refresh Index when node is collapsed.
 				 *
-				 * isItemExpanded
-				 * isEnabled
 				 * isSelected
 				 * getParent
 				 * getItems
@@ -517,7 +515,12 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 * @return {Boolean}
 				 *  */
 				$scope.api.isMenuItemEnabled = function(menuItemId) {
-					return !isDisabled(menuItemId);
+					var disabled = isDisabled(menuItemId);
+					if (disabled === null) {
+						return false
+					} else {
+						return !disabled;
+					}
 				}
 
 				/***********************************************************************************
@@ -833,6 +836,11 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					var tree = $scope.model.menu;
 					/** @type {NavMenuItem} */
 					var node;
+					
+					if (!indexPath || !indexPath.length) {
+						return null;
+					}
+					
 					for (var i = 0; i < indexPath.length; i++) {
 						node = tree[indexPath[i]];
 						if (node.enabled == false) {
@@ -905,7 +913,14 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				
 				var className = null;
 				var sidenav = $element.find("nav");
+				var sidenavHeader = $element.find(".svy-sidenav-header");
 				
+				// prevent animation at page refresh
+				if ($scope.model.open === false ) {
+				    sidenav.addClass('svy-slide-out');
+				    sidenavHeader.addClass('svy-slide-out');
+				}
+								
 				Object.defineProperty($scope.model,$sabloConstants.modelChangeNotifier, {configurable:true,value:function(property,value) {
 					switch(property) {
 						case "enabled":
@@ -917,6 +932,9 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 								sidenav.addClass("svy-sidenav-disabled");
 							}
 							break;
+						case "open":
+							animateSlideMenu(value);
+						break;
 						case "styleClass":
 							if (className) sidenav.removeClass(className);
 							className = value;
@@ -932,6 +950,46 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				var modelChangFunction = $scope.model[$sabloConstants.modelChangeNotifier];
 				for (key in $scope.model) {
 					modelChangFunction(key,$scope.model[key]);
+				}
+				
+				// set menu side
+				var slidePositionClass;
+				switch($scope.model.slidePosition) {
+					case "right":
+						slidePositionClass = "svy-sidenav-right";
+						break;
+					case "static":
+						slidePositionClass = "svy-sidenav-static";
+					break;
+					case "left":
+						// default cascade
+					default : 
+						slidePositionClass = "svy-sidenav-left";
+						break;
+				}
+				sidenav.addClass(slidePositionClass);
+				sidenavHeader.addClass(slidePositionClass);
+				
+				// animate slide menu
+				$scope.slideMenu = function () {
+					
+					$scope.model.open = $scope.model.open === false ? true : false;
+					animateSlideMenu($scope.model.open);
+					$scope.svyServoyapi.apply("open");
+				}
+				
+				function animateSlideMenu(open) {
+					if (open) {
+						if (sidenav.hasClass('svy-slide-out')) {
+							$animate.removeClass(sidenav, 'svy-slide-out');
+							$animate.removeClass(sidenavHeader, 'svy-slide-out');
+						}
+					} else {
+						if (!sidenav.hasClass('svy-slide-out')) {
+							$animate.addClass(sidenav, 'svy-slide-out');
+							$animate.addClass(sidenavHeader, 'svy-slide-out');
+						}
+					}
 				}
 				
 			},

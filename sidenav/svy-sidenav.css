@@ -3,10 +3,16 @@
 	width: 100%;
 	height: 100%;
 	border-right: 1px solid #e6e6e6;
+	transition: transform cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+	overflow: hidden;
 }
 
 .svy-sidenav :focus {
 	outline: none;
+}
+
+.svy-sidenav-header {
+	position: relative;
 }
 
 /* All Sub Menu */
@@ -37,6 +43,7 @@
 	color: inherit;
 	padding: 10px 15px;
 	cursor: pointer;
+	margin-right: 20px;
 }
 
 .svy-sidenav-item:focus,
@@ -47,6 +54,7 @@
 
 .svy-sidenav li {
 	list-style-type: none;
+	position: relative;
 }
 
 .svy-sidenav-main a {
@@ -84,8 +92,11 @@
 
 .svy-sidenav-collapse-icon {
 	padding: 10px;
-	margin-right: -10px;
-	margin-top: -10px;
+    position: absolute;
+    top: 0;
+    right: 0;
+/* 	margin-right: -10px;
+	margin-top: -10px; */
 }
 
 /* Disabled */
@@ -104,7 +115,64 @@
 	cursor: default;
 }
 
-/* Animate the menu */
+/*******************************************
+ * Animate 
+ *
+ *******************************************/
+
+/* Animate nav */
+.svy-slide-out.svy-sidenav {
+	display: none;
+}
+
+.svy-slide-out.svy-sidenav-left {
+	transform: translatex(-100%);
+}
+
+.svy-slide-out.svy-sidenav-right {
+	transform: translatex(100%);
+}
+
+.svy-slide-out.svy-sidenav-static {
+	display:block;
+}
+
+.svy-slide-out.svy-slide-out-add,
+.svy-slide-out.svy-slide-out-remove {
+	display: block;
+}
+
+/* Animate nav header */
+.svy-action-slide {
+	float: left;
+	padding: 10px;
+	transition: inherit;
+}
+
+.svy-sidenav-left .svy-action-slide {
+	float: right;
+}
+
+.svy-slide-out.svy-sidenav-header.svy-sidenav-left,
+.svy-slide-out.svy-sidenav-header.svy-sidenav-right {
+    display: block;
+    overflow: visible;
+}
+
+.svy-slide-out.svy-sidenav-left .svy-action-slide {
+	transform: translatex(100%);
+}
+
+.svy-slide-out.svy-sidenav-right .svy-action-slide {
+	transform: translatex(-100%);
+}
+
+.svy-slide-out.svy-slide-out-add .svy-action-slide,
+.svy-slide-out.svy-slide-out-remove .svy-action-slide {
+	transform: initial;
+}
+
+/* Animate collapsible menu items */
 [class^="svy-sidenav-menu"].ng-enter, 
 [class^="svy-sidenav-menu"].ng-leave {
   	transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.35s;

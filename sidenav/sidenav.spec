@@ -17,7 +17,8 @@
 		"iconCollapseStyleClass"		: {"type" :"styleclass", "tags": { "scope" :"design" }, "default": "glyphicon glyphicon-chevron-down"},
 		"styleClassSelectedMenuItem"	: {"type" :"styleclass", "tags": { "scope" :"private" }},
 		"brandingTemplate"				: {"type" :"tagstring", "tags": { "scope" :"private" }, "default" : ""},
-		"verticalAlignment"				: {"type" :"string", "tags": {"scope": "private"},"values": [{"FIXED-TOP": "navbar-fixed-top"}, {"FIXED-BOTTOM": "navbar-fixed-bottom"}, {"STATIC": "navbar-static-top"}], "default" : "navbar-static-top"},
+		"slidePosition"					: {"type" :"string", "tags": {"scope": "design"},"values": [{"LEFT": "left"}, {"RIGHT": "right"}, {"STATIC": "static"}], "default" : "left"},
+		"open"							: {"type" :"boolean", "default" : true, "pushToServer": "allow", "tags": {}},
 		
 		"enabled"						: {"type" :"enabled", "default" : true, "blockingOn": false, "for": ["onMenuItemSelected","onMenuItemExpanded","onMenuItemCollapsed"]},
 		"animate"						: {"type" :"boolean", "default" : true, "tags": { "scope" :"design" }},

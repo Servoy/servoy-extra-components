@@ -8,13 +8,12 @@
 	svy-sidenav-menu3
 	svy-sidenav-menu4
 
+	svy-slide-out				the menu is slide out
 	svy-navitem-selected 		the active sub nav item
 	svy-sidenav-collapsed 		the open sub nav item
+	svy-sidenav-disabled		the item disabled
 	
 	TODO
-		enabled
-		collapsible
-		open api
 		sort on Text enable/disable
 		search is complicated (should search in child nodes)
 
@@ -25,6 +24,9 @@
 						>
 
 -->
+		<div class="svy-sidenav svy-sidenav-header">
+			<i ng-click="slideMenu()" class="svy-action-slide fa fa-bars"></i>
+		</div>
 		<nav id={{::model.svyMarkupId}} class="svy-sidenav" ng-show="model.visible">		
 			<input ng-model="searchText" class="svy-searchbox"></input>
 			<!-- The main menu -->
