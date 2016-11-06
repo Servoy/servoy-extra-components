@@ -430,16 +430,6 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						}
 					}, true);
 
-				$scope.getUrl = function(column, row) {
-					if (column && row) {
-						var index = $scope.model.foundset.viewPort.rows.indexOf(row)
-						if (index >= 0 && column.dataprovider && column.dataprovider[index] && column.dataprovider[index].url) {
-							return column.dataprovider[index].url;
-						}
-					}
-					return null;
-				}
-
 				$scope.hasNext = function() {
 					return $scope.model.foundset && $scope.model.currentPage < Math.ceil($scope.model.foundset.serverSize / $scope.model.pageSize);
 				}
@@ -662,9 +652,17 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							var children = tbody.children();
 							for (j = rowUpdate.startIndex; j <= rowUpdate.endIndex; j++) {
 								var trChildren = children.eq(j).children()
-								for (var c = columns.length; --c > 0;) {
+								for (var c = columns.length; --c >= 0;) {
 									var column = columns[c];
 									var td = trChildren.eq(c);
+									var tdClass = 'c' + c;
+									if (column.styleClass) {
+										tdClass += ' ' + column.styleClass;
+									}
+									if (column.styleClassDataprovider && column.styleClassDataprovider[j]) {
+										tdClass += ' ' + column.styleClassDataprovider[j];
+									}
+									td[0].className = tdClass;
 									var divChild = td.children("div");
 									if (divChild.length == 1) {
 										// its text node
@@ -675,7 +673,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 									} else {
 										var imgChild = td.children("img");
 										if (imgChild.length == 1) {
-
+											imgChild[0].setAttribute("src", column.dataprovider[j].url);
 										} else {
 											console.log("illegal state should be div or img")
 										}
@@ -764,10 +762,6 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						for (var c = 0; c < columns.length; c++) {
 							var column = columns[c];
 							var td = document.createElement("TD");
-							//  var tdStyle = $scope.getCellStyle(c);
-							//  for(var key in tdStyle){
-							// 	 td.style[key] = tdStyle[key];
-							//  }
 							$(td).data('row_column', { row: r, column: c });
 							var tdClass = 'c' + c;
 							if (column.styleClass) {
@@ -776,9 +770,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							if (column.styleClassDataprovider && column.styleClassDataprovider[r]) {
 								tdClass += ' ' + column.styleClassDataprovider[r];
 							}
-							if (tdClass) {
-								td.className = tdClass;
-							}
+							td.className = tdClass;
 							tr.appendChild(td);
 							if (column.dataprovider && column.dataprovider[r] && column.dataprovider[r].url) {
 								var img = document.createElement("IMG");
