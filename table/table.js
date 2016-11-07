@@ -261,11 +261,11 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 								if (intersectionStart <= intersectionEnd) {
 									// we already have some or all records that we need; request or trim only the needed rows
-									if (neededVpStart < intersectionStart) $scope.model.foundset.loadExtraRecordsAsync(intersectionStart - neededVpStart, true);
-									else if (neededVpStart > intersectionStart) $scope.model.foundset.loadLessRecordsAsync(neededVpStart - intersectionStart, true);
+									if (neededVpStart < vpStart) $scope.model.foundset.loadExtraRecordsAsync(neededVpStart - vpStart, true);
+									else if (neededVpStart > vpStart) $scope.model.foundset.loadLessRecordsAsync(neededVpStart - vpStart, true);
 
-									if (neededVpEnd < intersectionEnd) $scope.model.foundset.loadLessRecordsAsync(neededVpEnd - intersectionEnd, true);
-									else if (neededVpEnd > intersectionEnd) $scope.model.foundset.loadExtraRecordsAsync(intersectionEnd - neededVpEnd, true);
+									if (neededVpEnd < vpEnd) $scope.model.foundset.loadLessRecordsAsync(neededVpEnd - vpEnd, true);
+									else if (neededVpEnd > vpEnd) $scope.model.foundset.loadExtraRecordsAsync(neededVpEnd - vpEnd, true);
 
 									$scope.model.foundset.notifyChanged();
 								} else {
