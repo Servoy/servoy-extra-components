@@ -949,6 +949,11 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						skipOnce = false;
 					}
 				}
+				
+				var destroyListenerUnreg = $scope.$on("$destroy", function() {
+					destroyListenerUnreg();
+					delete $scope.model[$sabloConstants.modelChangeNotifier];
+				});
 
 				//implement api calls starts from here
 				/**
