@@ -319,7 +319,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 														updateTableColumnStyleClass(i, getCellStyle(i));
 													}
 												}
-												if (differentColumns) generateTemplate();
+												if (differentColumns) generateTemplate(true);
 											}, 0);
 									}
 								}
@@ -397,7 +397,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					});
 
 				var previousSelectedChild = null; // this should be an array for multi select.
-				function scrollIntoView() {
+				function scrollIntoView(onlySetSelection) {
 					var firstSelected = $scope.model.foundset.selectedRowIndexes[0];
 
 					if ($scope.showPagination()) {
@@ -416,7 +416,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						var childRect = child[0].getBoundingClientRect();
 						child[0].className = $scope.model.selectionClass; // TODO do this for all selected elements in case of multiselect? also clear for the old ones that are not longer selected
 						previousSelectedChild = child[0];
-						if (childRect.top < (wrapperRect.top + 10) || childRect.bottom > wrapperRect.bottom) {
+						if (!onlySetSelection && (childRect.top < (wrapperRect.top + 10) || childRect.bottom > wrapperRect.bottom)) {
 							child[0].scrollIntoView(!toBottom);
 						}
 					}
@@ -648,45 +648,61 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				}
 
 				function updateTable(changes) {
+					var startIndex = 100000000;
+					var endIndex = 0;
+					for (var i = 0; i < changes.length; i++) {
+						var rowUpdate = changes[i];
+						if (rowUpdate.startIndex < startIndex) startIndex = rowUpdate.startIndex;
+						var updateEndIndex = rowUpdate.endIndex;
+						// if insert then insert position to end are changed. endIndex == viewPort.size
+						if (rowUpdate.type == 1) updateEndIndex--;
+						if (rowUpdate.type == 2) updateEndIndex = $scope.model.foundset.viewPort.size - 1;
+						if (updateEndIndex > endIndex) endIndex = updateEndIndex;
+					}
+					
 					var formatFilter = $filter("formatFilter");
 					var columns = $scope.model.columns;
-					for (i = 0; i < changes.length; i++) {
-						var rowUpdate = changes[i];
-						if (rowUpdate.type == 0) { // 0 == CHANGE
-							var children = tbody.children();
-							for (j = rowUpdate.startIndex; j <= rowUpdate.endIndex; j++) {
-								var trChildren = children.eq(j).children()
-								for (var c = columns.length; --c >= 0;) {
-									var column = columns[c];
-									var td = trChildren.eq(c);
-									var tdClass = 'c' + c;
-									if (column.styleClass) {
-										tdClass += ' ' + column.styleClass;
-									}
-									if (column.styleClassDataprovider && column.styleClassDataprovider[j]) {
-										tdClass += ' ' + column.styleClassDataprovider[j];
-									}
-									td[0].className = tdClass;
-									var divChild = td.children("div");
-									if (divChild.length == 1) {
-										// its text node
-										var value = column.dataprovider ? column.dataprovider[j] : null;
-										value = getDisplayValue(value, column.valuelist);
-										value = formatFilter(value, column.format.display, column.format.type);
-										divChild.text(value)
-									} else {
-										var imgChild = td.children("img");
-										if (imgChild.length == 1) {
-											imgChild[0].setAttribute("src", column.dataprovider[j].url);
-										} else {
-											console.log("illegal state should be div or img")
-										}
-									}
+					var children = tbody.children();
+					for (var j = startIndex; j <= endIndex; j++) {
+						var trChildren = children.eq(j).children()
+						if (trChildren.length == 0) {
+							tbody[0].appendChild(createTableRow(columns,j,formatFilter));
+						}
+						else for (var c = columns.length; --c >= 0;) {
+							var column = columns[c];
+							var td = trChildren.eq(c);
+							td.data('row_column', { row: j, column: c });
+							var tdClass = 'c' + c;
+							if (column.styleClass) {
+								tdClass += ' ' + column.styleClass;
+							}
+							if (column.styleClassDataprovider && column.styleClassDataprovider[j]) {
+								tdClass += ' ' + column.styleClassDataprovider[j];
+							}
+							td[0].className = tdClass;
+							var divChild = td.children("div");
+							if (divChild.length == 1) {
+								// its text node
+								var value = column.dataprovider ? column.dataprovider[j] : null;
+								value = getDisplayValue(value, column.valuelist);
+								value = formatFilter(value, column.format.display, column.format.type);
+								divChild.text(value)
+							} else {
+								var imgChild = td.children("img");
+								if (imgChild.length == 1) {
+									imgChild[0].setAttribute("src", column.dataprovider[j].url);
+								} else {
+									console.log("illegal state should be div or img")
 								}
 							}
 						}
-						// else FOR INSERT also check after adjusting everything if scrollIntoView is still needed
 					}
+					if (children.length > $scope.model.foundset.viewPort.size) {
+						for(var d=$scope.model.foundset.viewPort.size;d<children.length;d++) {
+							children.eq(d).remove();
+						}
+					}
+					scrollIntoView(true);
 				}
 
 				var columnCSSRules = [];
@@ -736,7 +752,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					}
 				}
 				var columnListener = null;
-				function generateTemplate() {
+				function generateTemplate(full) {
 					console.log("generate template")
 					var tbodyJQ = tbody;
 					var tblHead = $element.find("thead");
@@ -762,50 +778,28 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						}
 						// todo check if the column listener is attached to 1 column? (if not then there are no columns wit dataproviders?)
 					}
-					var formatFilter = $filter("formatFilter");
-					var tbodyOld = tbodyJQ[0];
-					var tbodyNew = document.createElement("TBODY");
-
-					updateTBodyStyle(tbodyNew);
 					for (var c = 0; c < columns.length; c++) {
 						updateTableColumnStyleClass(c, getCellStyle(c));
 						columnStyleClasses[c] = columns[c].styleClass;
 					}
-					for (var r = 0; r < rows.length; r++) {
-						var tr = document.createElement("TR");
-						tbodyNew.appendChild(tr);
-						for (var c = 0; c < columns.length; c++) {
-							var column = columns[c];
-							var td = document.createElement("TD");
-							$(td).data('row_column', { row: r, column: c });
-							var tdClass = 'c' + c;
-							if (column.styleClass) {
-								tdClass += ' ' + column.styleClass;
-							}
-							if (column.styleClassDataprovider && column.styleClassDataprovider[r]) {
-								tdClass += ' ' + column.styleClassDataprovider[r];
-							}
-							td.className = tdClass;
-							tr.appendChild(td);
-							if (column.dataprovider && column.dataprovider[r] && column.dataprovider[r].url) {
-								var img = document.createElement("IMG");
-								img.setAttribute("src", column.dataprovider[r].url);
-								td.appendChild(img);
-							} else {
-								var div = document.createElement("DIV");
-								var value = column.dataprovider ? column.dataprovider[r] : null;
-								value = getDisplayValue(value, column.valuelist);
-								value = formatFilter(value, column.format.display, column.format.type);
-								var txt = document.createTextNode(value ? value : "");
-								div.appendChild(txt);
-								td.appendChild(div);
-							}
+					if (tbodyJQ.children().length == 0 || full){
+						var formatFilter = $filter("formatFilter");
+						var tbodyOld = tbodyJQ[0];
+						var tbodyNew = document.createElement("TBODY");
+						updateTBodyStyle(tbodyNew);
+						for (var r = 0; r < rows.length; r++) {
+							tbodyNew.appendChild(createTableRow(columns,r,formatFilter));
 						}
+						tbodyOld.parentNode.replaceChild(tbodyNew, tbodyOld)
+						tbody = $(tbodyNew);
+						console.log("replaced")
 					}
-					tbodyOld.parentNode.replaceChild(tbodyNew, tbodyOld)
-					console.log("replaced")
+					else {
+						updateTBodyStyle(tbodyJQ[0]);
+						updateTable([{startIndex:0,endIndex:$scope.model.foundset.viewPort.size-1,type:0}])
+						console.log("updated")
+					}
 
-					tbody = $(tbodyNew);
 
 					onTableRendered();
 
@@ -816,7 +810,42 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					//    	        </td>
 					//    		  </tr>
 				}
-
+				
+				function createTableRow(columns,row,formatFilter) {
+					var tr = document.createElement("TR");
+					if ($scope.model.foundset.selectedRowIndexes.indexOf(row) != -1) {
+						tr.className = $scope.model.selectionClass;
+					}
+					for (var c = 0; c < columns.length; c++) {
+						var column = columns[c];
+						var td = document.createElement("TD");
+						$(td).data('row_column', { row: row, column: c });
+						var tdClass = 'c' + c;
+						if (column.styleClass) {
+							tdClass += ' ' + column.styleClass;
+						}
+						if (column.styleClassDataprovider && column.styleClassDataprovider[row]) {
+							tdClass += ' ' + column.styleClassDataprovider[row];
+						}
+						td.className = tdClass;
+						tr.appendChild(td);
+						if (column.dataprovider && column.dataprovider[row] && column.dataprovider[row].url) {
+							var img = document.createElement("IMG");
+							img.setAttribute("src", column.dataprovider[row].url);
+							td.appendChild(img);
+						} else {
+							var div = document.createElement("DIV");
+							var value = column.dataprovider ? column.dataprovider[row] : null;
+							value = getDisplayValue(value, column.valuelist);
+							value = formatFilter(value, column.format.display, column.format.type);
+							var txt = document.createTextNode(value ? value : "");
+							div.appendChild(txt);
+							td.appendChild(div);
+						}
+					}
+					return tr;
+				}
+ 
 				var tableStyle = { };
 				$scope.getTableStyle = function() {
 					tableStyle.width = autoColumns.count > 0 ? getComponentWidth() + "px" : tableWidth + "px";
