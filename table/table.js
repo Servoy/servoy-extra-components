@@ -554,11 +554,6 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					}
 				}
 
-				$scope.getRowStyle = function(row) {
-					var isSelected = $scope.model.foundset.selectedRowIndexes && $scope.model.foundset.selectedRowIndexes.indexOf($scope.getRealRow(row)) != -1;
-					return isSelected ? $scope.model.selectionClass : " ";
-				}
-
 				$scope.keyPressed = function(event) {
 					var fs = $scope.model.foundset;
 					if (fs.selectedRowIndexes && fs.selectedRowIndexes.length > 0) {
@@ -1013,24 +1008,5 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 			},
 			templateUrl: 'servoyextra/table/table.html'
 		};
-	}]).filter('getDisplayValue', function() { // filter that takes the realValue as an input and returns the displayValue
-		return function(input, valuelist) {
-			if (valuelist) {
-				for (i = 0; i < valuelist.length; i++) {
-					if (input === valuelist[i].realValue) {
-						return valuelist[i].displayValue;
-					}
-				}
-			}
-			return input;
-		};
-	}).directive('modelInData', function($parse) {
-		return {
-			restrict: 'A',
-			link: function($scope, $element, $attrs) {
-				var model = $parse($attrs.modelInData)($scope);
-				$element.data('row_column', model);
-			}
-		}
-	});
+	}]);
 
