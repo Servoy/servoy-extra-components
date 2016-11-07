@@ -293,7 +293,8 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						value: function(property, value) {
 							switch (property) {
 							case "columns":
-								var valueChanged = currentColumnLength != $scope.model.columns.length;
+								var differentColumns = currentColumnLength != $scope.model.columns.length;
+								var valueChanged = differentColumns;
 								currentColumnLength = $scope.model.columns.length
 								if (!valueChanged) {
 									for (var i = 0; i < $scope.model.columns.length; i++) {
@@ -318,9 +319,12 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 														updateTableColumnStyleClass(i, getCellStyle(i));
 													}
 												}
+												if (differentColumns) generateTemplate();
 											}, 0);
 									}
 								}
+								// if the columns didn't change completely then test for the style class
+								if (!differentColumns) updateColumnStyleClass();
 								break;
 							}
 						}
@@ -720,7 +724,17 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						columnCSSRules[columnIndex].style[p] = style[p];
 					}
 				}
-
+				// cache for the current set style class names, used in the columns property watcher.
+				var columnStyleClasses = [];
+				function updateColumnStyleClass() {
+					var columns = $scope.model.columns;
+					for(var c=0;c<columns.length;c++) {
+						if (columns[c].styleClass != columnStyleClasses[c]) {
+							generateTemplate();
+							break;
+						} 
+					}
+				}
 				var columnListener = null;
 				function generateTemplate() {
 					console.log("generate template")
@@ -755,6 +769,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					updateTBodyStyle(tbodyNew);
 					for (var c = 0; c < columns.length; c++) {
 						updateTableColumnStyleClass(c, getCellStyle(c));
+						columnStyleClasses[c] = columns[c].styleClass;
 					}
 					for (var r = 0; r < rows.length; r++) {
 						var tr = document.createElement("TR");
