@@ -22,10 +22,11 @@
 .svy-sidenav-header,
 .svy-sidenav-content {
 	width: 100%;
-	color: inherit;
-	border-color: inherit;
 	position: relative;
 	overflow: hidden;
+	background: inherit;
+	color: inherit;
+	border-color: inherit;
 }
 
 /* Search field */
@@ -244,4 +245,44 @@
 [class^="svy-sidenav-menu"].ng-enter.ng-enter-active {
  	max-height: 200px;
  	overflow: hidden;
+}
+
+/* Side Toggle */
+
+.nav-hide-toggle .svy-sidenav-action-open {
+	display: none !important;
+}
+
+.nav-side-toggle .svy-sidenav-header {
+	overflow: visible;
+}
+
+.nav-side-toggle .svy-sidenav-action-open {
+	position: absolute;
+	top: 0;
+	background: inherit;
+	border: inherit;
+	border-style: solid;
+	border-width: 1px;
+	margin-top: -1px;
+}
+
+.nav-side-toggle.svy-sidenav-left .svy-sidenav-action-open {
+	border-left-width: 0;
+	right: 0;
+	-webkit-transform: translate(100%, 0);
+     -moz-transform: translate(100%, 0);
+      -ms-transform: translate(100%, 0);
+       -o-transform: translate(100%, 0);
+          transform: translate(100%, 0);
+}
+
+.nav-side-toggle.svy-sidenav-right .svy-sidenav-action-open {
+	border-right-width: 0;
+	left: 0;
+	-webkit-transform: translate(-100%, 0);
+     -moz-transform: translate(-100%, 0);
+      -ms-transform: translate(-100%, 0);
+       -o-transform: translate(-100%, 0);
+          transform: translate(-100%, 0);
 }

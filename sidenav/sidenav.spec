@@ -17,7 +17,7 @@
 		"iconCloseStyleClass"			: {"type" :"styleclass", "tags": { "scope" :"design" }, "default": "fa fa-bars"},
 		"iconExpandStyleClass"			: {"type" :"styleclass", "tags": { "scope" :"design" }, "default": "fa fa-caret-right"},
 		"iconCollapseStyleClass"		: {"type" :"styleclass", "tags": { "scope" :"design" }, "default": "fa fa-caret-down"},
-		"styleClass"					: {"type" :"styleclass", "tags": {"scope": "design"}},
+		"styleClass"					: {"type" :"styleclass", "tags": {"scope": "design"}, "values" : ["nav-hide-toggle", "nav-side-toggle"]},
 		"slidePosition"					: {"type" :"string", "tags": {"scope": "design"},"values": [{"LEFT": "left"}, {"RIGHT": "right"}, {"STATIC": "static"}], "default" : "left"},
 		
 		"open"							: {"type" :"boolean", "default" : true, "pushToServer": "allow"},
