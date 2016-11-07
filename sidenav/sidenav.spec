@@ -8,22 +8,21 @@
 				  {"name":"angular-animate.js", "version":"1.5.8", "url":"servoyextra/sidenav/angular-animate.min.js", "mimetype":"text/javascript"}],
 	"model":
 	{
-		"menu"					: {"type" :"MenuItem[]", "default" : [], "pushToServer": "allow", "tags": { "scope" :"runtime" }},
+		"menu"							: {"type" :"MenuItem[]", "default" : [], "pushToServer": "allow", "tags": { "scope" :"runtime" }},
+		
 		"selectedIndex"					: {"type" :"object", "tags": { "scope" :"private" }, "pushToServer" : "allow"},
 		"expandedIndex"					: {"type" :"object", "tags": { "scope" :"private" }, "pushToServer" : "allow"},
 		
-		
 		"iconOpenStyleClass"			: {"type" :"styleclass", "tags": { "scope" :"design" }, "default": "fa fa-bars"},
+		"iconCloseStyleClass"			: {"type" :"styleclass", "tags": { "scope" :"design" }, "default": "fa fa-bars"},
 		"iconExpandStyleClass"			: {"type" :"styleclass", "tags": { "scope" :"design" }, "default": "fa fa-caret-right"},
 		"iconCollapseStyleClass"		: {"type" :"styleclass", "tags": { "scope" :"design" }, "default": "fa fa-caret-down"},
-		"styleClassSelectedMenuItem"	: {"type" :"styleclass", "tags": { "scope" :"private" }},
-		"brandingTemplate"				: {"type" :"tagstring", "tags": { "scope" :"private" }, "default" : ""},
+		"styleClass"					: {"type" :"styleclass", "tags": {"scope": "design"}},
 		"slidePosition"					: {"type" :"string", "tags": {"scope": "design"},"values": [{"LEFT": "left"}, {"RIGHT": "right"}, {"STATIC": "static"}], "default" : "left"},
-		"open"							: {"type" :"boolean", "default" : true, "pushToServer": "allow", "tags": {}},
 		
+		"open"							: {"type" :"boolean", "default" : true, "pushToServer": "allow"},
 		"enabled"						: {"type" :"enabled", "default" : true, "blockingOn": false, "for": ["onMenuItemSelected","onMenuItemExpanded","onMenuItemCollapsed"]},
 		"animate"						: {"type" :"boolean", "default" : true, "tags": { "scope" :"design" }},
-		"styleClass"					: {"type" :"styleclass"},
 		
 		"size" 							: {"type" :"dimension",  "default" : {"width":260, "height":300}},
 		"location" 						: "point", 
@@ -69,6 +68,11 @@
 				{	"name": "level", "type": "int", "optional" : true }
 			],
 			"returns" : "MenuItem"
+		},
+		"getRootMenuItems": 
+		{
+			"parameters": [],
+			"returns" : "MenuItem[]"
 		},
 		"setRootMenuItems": 
 		{
@@ -184,7 +188,6 @@
     	"MenuItem": {
       		"id"					: {"type" : "object"},
       		"text"					: "tagstring",
-      		"icon"					: "media",
       		"iconStyleClass"		: "styleclass",
       		"styleClass"			: "styleclass",
       		"enabled"				: {"type" : "boolean", "default": true},

@@ -50,6 +50,10 @@ $scope.api.setRootMenuItems = function(menuItems) {
 	menuItems = $scope.model.menu;
 }
 
+$scope.api.getRootMenuItems = function(menuItems) {
+	var menuItems = $scope.model.menu;
+}
+
 /**
  * Returns the menuItem object
  * @public

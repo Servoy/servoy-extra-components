@@ -12,24 +12,15 @@
 	svy-navitem-selected 		the active sub nav item
 	svy-sidenav-collapsed 		the open sub nav item
 	svy-sidenav-disabled		the item disabled
-	
-	TODO
-		sort on Text enable/disable
-		search is complicated (should search in child nodes)
 
-				collapse node if disabled
-					<ul class="svy-sidenav-menu2" 
-						ng-class="selectedIndex[1] == $index && !(item.enabled==false) ? 'svy-sidenav-collapsed' : ''"
-						ng-if="selectedIndex[1] == $index"
-						>
-
+	svy-sidenav-action-open
 -->
 	<div class="svy-sidenav">
 		<div class="svy-sidenav-header">
-			<i ng-click="slideMenu()" class="svy-action-slide {{::model.iconOpenStyleClass}}"></i>
+			<!--<input ng-model="searchText" class="svy-searchbox"></input>-->
+			<i ng-click="slideMenu()" class="svy-sidenav-action-open"></i>
 		</div>
 		<nav id={{::model.svyMarkupId}} class="svy-sidenav-content" ng-show="model.visible">		
-			<input ng-model="searchText" class="svy-searchbox"></input>
 			<!-- The main menu -->
 			<ul class="svy-sidenav-menu svy-sidenav-collapsed">
 
