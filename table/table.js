@@ -12,11 +12,15 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				var wrapper = $element.find(".tablewrapper")[0];
 				var tbody = $element.find("tbody");
 				// the initial maximum of the rows to render (this should grow to the max ui view port)
-				var initialMaxRenderedRows = 20;
+				var initialMaxRenderedRows = 30;
 				// the current full maxRenderedRows (grows when scrolling down)
 				var maxRenderedRows = Math.min(initialMaxRenderedRows, $scope.model.pageSize);
 				// the extra data to be loaded if the viewport is fully rendered.
 				var nonPagingPageSize = 200;
+				// a variable that hols the last request viewport size (so it won't start looping when scrolling down)
+				var lastRequestedViewPortSize = 0;
+				// the start row index of the first rendred row
+				var firstRenderedRowIndex = 0;
 
 
 				// this is true when next render of table contents / next scroll selection into view is also allowed to change page (if paging is
@@ -226,6 +230,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				}
 
 				function adjustFoundsetViewportIfNeeded() {
+					return false;
 					var serverSize = $scope.model.foundset.serverSize;
 					if ($scope.showPagination()) {
 						// paging mode only keeps data for the showing page
@@ -320,6 +325,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 				$scope.$watch('model.foundset.viewPort.rows', function(newValue, oldValue) {
 						maxRenderedRows = Math.min(initialMaxRenderedRows, $scope.model.pageSize);
+						lastRequestedViewPortSize = 0;
 						generateTemplate();
 					})
 
@@ -396,8 +402,8 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							$scope.model.currentPage = getPageForIndex(firstSelected);
 							return;
 						}
-						firstSelected = firstSelected - ($scope.model.pageSize * ($scope.model.currentPage - 1));
 					}
+					firstSelected = firstSelected - firstRenderedRowIndex;
 
 					var child = (firstSelected >= 0 ? tbody.children().eq(firstSelected) : undefined); // eq negative idx is interpreted as n'th from the end of children list
 					if (previousSelectedChild) previousSelectedChild.className = "";
@@ -635,48 +641,65 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				function updateTable(changes) {
 					var startIndex = 100000000;
 					var endIndex = 0;
-					for (var i = 0; i < changes.length; i++) {
-						var rowUpdate = changes[i];
-						if (rowUpdate.startIndex < startIndex) startIndex = rowUpdate.startIndex;
-						var updateEndIndex = rowUpdate.endIndex;
-						// if insert then insert position to end are changed. endIndex == viewPort.size
-						if (rowUpdate.type == 1) updateEndIndex--;
-						if (rowUpdate.type == 2) updateEndIndex = $scope.model.foundset.viewPort.size - 1;
-						if (updateEndIndex > endIndex) endIndex = updateEndIndex;
+					var rowOffSet = 0;
+					if (changes) {
+						for (var i = 0; i < changes.length; i++) {
+							var rowUpdate = changes[i];
+							if (rowUpdate.startIndex < startIndex) startIndex = rowUpdate.startIndex;
+							var updateEndIndex = rowUpdate.endIndex;
+							// if insert then insert position to end are changed. endIndex == viewPort.size
+							if (rowUpdate.type == 1) updateEndIndex--;
+							if (rowUpdate.type == 2) updateEndIndex = $scope.model.foundset.viewPort.size - 1;
+							if (updateEndIndex > endIndex) endIndex = updateEndIndex;
+						}
+						endIndex = Math.min(maxRenderedRows-1, endIndex); // end index is inclusive
+					} else  {
+						var maxRows = Math.min(maxRenderedRows,  $scope.model.foundset.viewPort.rows.length) - 1;
+						var firstSelected = $scope.model.foundset.selectedRowIndexes?$scope.model.foundset.selectedRowIndexes[0]:0;
+						var formStartToSelection = firstSelected - $scope.model.foundset.viewPort.startIndex
+						if (formStartToSelection < $scope.model.foundset.viewPort.size && formStartToSelection> maxRows) {
+							// if the selection is in the viewport and the will not be rendered because it fall out of the max rows
+							// adjust the rowOffSet to render
+							rowOffSet = formStartToSelection - maxRows;
+						}
+						startIndex = 0;
+						endIndex = maxRows;
 					}
-					
-					endIndex = Math.min(maxRenderedRows-1, endIndex); // end index is inclusive
 					var formatFilter = $filter("formatFilter");
 					var columns = $scope.model.columns;
 					var children = tbody.children();
+					if (startIndex == 0) {
+						firstRenderedRowIndex = $scope.model.foundset.viewPort.startIndex + rowOffSet;
+					}
 					for (var j = startIndex; j <= endIndex; j++) {
+						var row = j + rowOffSet
 						var trChildren = children.eq(j).children()
 						if (trChildren.length == 0) {
-							tbody[0].appendChild(createTableRow(columns,j,formatFilter));
+							tbody[0].appendChild(createTableRow(columns,row,formatFilter));
 						}
 						else for (var c = columns.length; --c >= 0;) {
 							var column = columns[c];
 							var td = trChildren.eq(c);
-							td.data('row_column', { row: j, column: c });
+							td.data('row_column', { row: row, column: c });
 							var tdClass = 'c' + c;
 							if (column.styleClass) {
 								tdClass += ' ' + column.styleClass;
 							}
-							if (column.styleClassDataprovider && column.styleClassDataprovider[j]) {
-								tdClass += ' ' + column.styleClassDataprovider[j];
+							if (column.styleClassDataprovider && column.styleClassDataprovider[row]) {
+								tdClass += ' ' + column.styleClassDataprovider[row];
 							}
 							td[0].className = tdClass;
 							var divChild = td.children("div");
 							if (divChild.length == 1) {
 								// its text node
-								var value = column.dataprovider ? column.dataprovider[j] : null;
+								var value = column.dataprovider ? column.dataprovider[row] : null;
 								value = getDisplayValue(value, column.valuelist);
 								value = formatFilter(value, column.format.display, column.format.type);
 								divChild.text(value)
 							} else {
 								var imgChild = td.children("img");
 								if (imgChild.length == 1) {
-									imgChild[0].setAttribute("src", column.dataprovider[j].url);
+									imgChild[0].setAttribute("src", column.dataprovider[row].url);
 								} else {
 									console.log("illegal state should be div or img")
 								}
@@ -684,11 +707,11 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						}
 					}
 					if (children.length > maxRenderedRows) {
-						for(var i=children.length;--i>maxRenderedRows;) {
+						for(var i=children.length;--i>=maxRenderedRows;) {
 							children.eq(i).remove();
 						}
 					}
-					scrollIntoView(true);
+					scrollIntoView(changes != null);
 				}
 
 				var columnCSSRules = [];
@@ -774,13 +797,22 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						var tbodyNew = document.createElement("TBODY");
 						updateTBodyStyle(tbodyNew);
 						var maxRows = Math.min(maxRenderedRows, rows.length)
-						for (var r = 0; r < maxRows; r++) {
+						var firstSelected = $scope.model.foundset.selectedRowIndexes?$scope.model.foundset.selectedRowIndexes[0]:0;
+						var startRow = 0;
+						var formStartToSelection = firstSelected - $scope.model.foundset.viewPort.startIndex
+						if (formStartToSelection < $scope.model.foundset.viewPort.size && formStartToSelection> maxRows) {
+							// if the selection is in the viewport and the will not be rendered because it fall out of the max rows
+							// adjust the startRow to render
+							startRow = formStartToSelection - maxRows;
+							
+						}
+						firstRenderedRowIndex = $scope.model.foundset.viewPort.startIndex + startRow
+						for (var r = startRow; r < maxRows; r++) {
 							tbodyNew.appendChild(createTableRow(columns,r,formatFilter));
 						}
 						tbodyOld.parentNode.replaceChild(tbodyNew, tbodyOld)
 						tbody = $(tbodyNew);
 						console.log("replaced")
-						var lastRequestedViewPortSize = 0;
 						tbody.scroll(function(e) {
 							if ((tbody.scrollTop() + tbody.height()) > (tbody[0].scrollHeight - tbody.height())) {
 								var maxUISize = maxRenderedRows;
@@ -800,7 +832,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					}
 					else {
 						updateTBodyStyle(tbodyJQ[0]);
-						updateTable([{startIndex:0,endIndex:$scope.model.foundset.viewPort.size-1,type:0}])
+						updateTable(null)
 						console.log("updated")
 					}
 
