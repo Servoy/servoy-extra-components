@@ -12,7 +12,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				var wrapper = $element.find(".tablewrapper")[0];
 				var tbody = $element.find("tbody");
 				// the maximum of the rows to render (this should grow to the max ui view port)
-				var maxRenderedRows = 20;
+				var maxRenderedRows = Math.min(20, $scope.model.pageSize);
 				// the extra data to be loaded if the viewport is fully rendered.
 				var nonPagingPageSize = 200;
 
@@ -317,7 +317,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					});
 
 				$scope.$watch('model.foundset.viewPort.rows', function(newValue, oldValue) {
-						maxRenderedRows = 20;
+						maxRenderedRows = Math.min(20, $scope.model.pageSize);
 						generateTemplate();
 					})
 
@@ -332,8 +332,9 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							if (oldValue && newValue && $scope.showPagination()) {
 								$scope.model.foundset.loadRecordsAsync($scope.model.pageSize * ($scope.model.currentPage - 1), $scope.model.pageSize);
 							}
+							maxRenderedRows = Math.min(20, $scope.model.pageSize);
 						}
-						$scope.model.foundset.setPreferredViewportSize(nonPagingPageSize)
+						$scope.model.foundset.setPreferredViewportSize((newValue < 50 && newValue != 0)?newValue:nonPagingPageSize)
 					});
 
 				$scope.$watch('model.foundset.viewPort', function(newValue, oldValue) {
@@ -642,7 +643,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						if (updateEndIndex > endIndex) endIndex = updateEndIndex;
 					}
 					
-					endIndex = Math.min(maxRenderedRows, endIndex);
+					endIndex = Math.min(maxRenderedRows-1, endIndex); // end index is inclusive
 					var formatFilter = $filter("formatFilter");
 					var columns = $scope.model.columns;
 					var children = tbody.children();
@@ -781,7 +782,12 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						tbody.scroll(function(e) {
 							if ((tbody.scrollTop() + tbody.height()) > (tbody[0].scrollHeight - tbody.height())) {
 								var maxUISize = maxRenderedRows;
-								maxRenderedRows = Math.min(maxRenderedRows + 20, $scope.model.foundset.viewPort.size); 
+								if ($scope.model.pageSize > 0) {
+									maxRenderedRows = Math.min(maxRenderedRows + 20, $scope.model.pageSize);
+								}
+								else {
+									maxRenderedRows = Math.min(maxRenderedRows + 20, $scope.model.foundset.viewPort.size);
+								}
 								var viewportSize = $scope.model.foundset.viewPort.size;
 								if (viewportSize != lastRequestedViewPortSize && $scope.model.foundset.serverSize > viewportSize) {
 									lastRequestedViewPortSize = viewportSize;
