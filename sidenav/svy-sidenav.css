@@ -35,12 +35,12 @@
 }
 
 /* All Sub Menu */
-[class^="svy-sidenav-menu"] {
+.svy-sidenav-menu {
 	display: none;
 	color : #444;
 }
 
-[class^="svy-sidenav-menu"].svy-sidenav-collapsed {
+.svy-sidenav-menu.svy-sidenav-collapsed {
 	display: block;
 }
 /* Style list */
@@ -80,7 +80,7 @@
 	color: inherit;
 }
 
-.svy-sidenav-menu > li > .svy-sidenav-item {
+.svy-sidenav-item.sn-level-1 {
 	font-size: 16px;
 }
 
@@ -89,7 +89,7 @@
 	color: #2e6da4;
 }
 
-.svy-sidenav-menu > .svy-navitem-selected {
+.svy-navitem-selected.sn-level-1 {
 	border-left: 3px solid;
 }
 
@@ -114,7 +114,7 @@
 	
 }
 
-.svy-sidenav-disabled [class^="svy-sidenav-menu"],
+.svy-sidenav-disabled .svy-sidenav-menu,
 .svy-navitem-disabled {
 	color: #c6c6c6;
 }
@@ -226,8 +226,8 @@
 }
 
 /* Animate collapsible menu items */
-[class^="svy-sidenav-menu"].ng-enter, 
-[class^="svy-sidenav-menu"].ng-leave {
+.svy-sidenav-menu.ng-enter, 
+.svy-sidenav-menu.ng-leave {
 	-webkit-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.35s;
 	   -moz-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.35s;
 	    -ms-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.35s;
@@ -235,14 +235,14 @@
   	        transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.35s;
 }
 
-[class^="svy-sidenav-menu"].ng-enter,
-[class^="svy-sidenav-menu"].ng-leave.ng-leave-active {
+.svy-sidenav-menu.ng-enter,
+.svy-sidenav-menu.ng-leave.ng-leave-active {
   	max-height: 0px;
   	overflow: hidden;
 }
 
-[class^="svy-sidenav-menu"].ng-leave,
-[class^="svy-sidenav-menu"].ng-enter.ng-enter-active {
+.svy-sidenav-menu.ng-leave,
+.svy-sidenav-menu.ng-enter.ng-enter-active {
  	max-height: 200px;
  	overflow: hidden;
 }
