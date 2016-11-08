@@ -447,11 +447,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				}
 
 				$scope.getRealRow = function(row) {
-					var realRow = row;
-					if ($scope.showPagination()) {
-						realRow = realRow + $scope.model.pageSize * ($scope.model.currentPage - 1);
-					}
-					return realRow;
+					return firstRenderedRowIndex + row;
 				}
 
 				$scope.tableClicked = function(event, type) {
