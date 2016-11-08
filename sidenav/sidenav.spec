@@ -69,6 +69,14 @@
 			],
 			"returns" : "MenuItem"
 		},
+		"getParentMenuItem": 
+		{
+			"parameters": 
+			[
+				{	"name": "menuItemId",	"type": "object" }
+			],
+			"returns" : "MenuItem"
+		},
 		"getRootMenuItems": 
 		{
 			"parameters": [],

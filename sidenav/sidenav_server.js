@@ -50,8 +50,22 @@ $scope.api.setRootMenuItems = function(menuItems) {
 	menuItems = $scope.model.menu;
 }
 
-$scope.api.getRootMenuItems = function(menuItems) {
+/**
+ * Returns the root menu object
+ * @public
+ *
+ * @return {Array<{id: String|Number,
+ * 			text: String=,
+ * 			styleClass: String=,
+ * 			iconStyleClass: String=,
+ * 			enabled: Boolean=,
+ * 			data: Object=,
+ * 			menuItems: Array=,
+ * 			isDivider : Boolean=}>}
+ * */
+$scope.api.getRootMenuItems = function() {
 	var menuItems = $scope.model.menu;
+	return menuItems;
 }
 
 /**
@@ -71,6 +85,26 @@ $scope.api.getRootMenuItems = function(menuItems) {
  * */
 $scope.api.getMenuItem = function(menuItemId) {
 	return getNodeById(menuItemId, $scope.model.menu);
+}
+
+/**
+ * Returns the parent menuItem object of the menu item with id menuItemId
+ * @public
+ *
+ * @param {String|Number} menuItemId
+ *
+ * @return {{id: String|Number,
+ * 			text: String=,
+ * 			styleClass: String=,
+ * 			iconStyleClass: String=,
+ * 			enabled: Boolean=,
+ * 			data: Object=,
+ * 			menuItems: Array=,
+ * 			isDivider : Boolean=}}
+ * */
+$scope.api.getParentMenuItem = function(menuItemId) {
+	var parent = getParentNode(menuItemId, $scope.model.menu);
+	return parent;
 }
 
 /**
@@ -210,14 +244,7 @@ $scope.api.removeMenuItem = function(menuItemId) {
 *			isDivider : Boolean=}>} 
 */
 $scope.api.getSubMenuItems = function(menuItemId) {
-	/** @type {Array<{id: String|Number, 
-	* 			text: String=,
-	* 			styleClass: String=,
-	* 			iconStyleClass: String=,
-	* 			enabled: Boolean=,
-	* 			data: Object=,
-	*			menuItems: Array=,
-	*			isDivider : Boolean=}>} */
+	/** @type {Array<{id: String, text: String,styleClass: String=,iconStyleClass: String=,enabled: Boolean=,data: Object=,menuItems: Array=,isDivider : Boolean=}>} */
 	var menuItems;
 	var tree = $scope.model.menu;
 	var node = getNodeById(menuItemId, tree);
@@ -334,13 +361,16 @@ $scope.api.removeAllMenuItemsAtDepth = function(depth) {
 getNodeById = function(menuItemId, nodes) {
 	/** @type {{id: String, text: String,styleClass: String=,iconStyleClass: String=,enabled: Boolean=,data: Object=,menuItems: Array=,isDivider : Boolean=}} */
 	var node;
+	/** @type {{id: String, text: String,styleClass: String=,iconStyleClass: String=,enabled: Boolean=,data: Object=,menuItems: Array=,isDivider : Boolean=}} */
+	var subNode;
 	if (nodes) {
 		for (var i = 0; i < nodes.length; i++) { // search in each subtree
-			var subTree = nodes[i];
-			if (subTree.id == menuItemId) { // find the node
-				return subTree;
+		
+			subNode = nodes[i];
+			if (subNode.id == menuItemId) { // find the node
+				return subNode;
 			}
-			node = getNodeById(menuItemId, subTree.menuItems);
+			node = getNodeById(menuItemId, subNode.menuItems);
 			if (node) {
 				return node;
 			}
@@ -367,18 +397,21 @@ getNodeById = function(menuItemId, nodes) {
  * 			isDivider : Boolean=}}
  * */
 getNodeByIndexPath = function(path, nodes) {
+	
+	/** @type {{id: String, text: String,styleClass: String=,iconStyleClass: String=,enabled: Boolean=,data: Object=,menuItems: Array=,isDivider : Boolean=}} */
+	var node = null;
 	if (nodes) {
 		if (path && path.length === 1) {
-			return nodes[path[0]];
+			node = nodes[path[0]];
 		} else if (path && path.length) {
 			var subPathIndex = path[0];
 			var subtree = nodes[subPathIndex].menuItems;
-			return getNodeByIndexPath(path.slice(1, path.length), subtree);
+			node = getNodeByIndexPath(path.slice(1, path.length), subtree);
 		} else { // is the root
-			return nodes;
+			node = nodes;
 		}
 	}
-	return null;
+	return node;
 }
 
 /**
