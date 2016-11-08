@@ -658,6 +658,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							var formStartToSelection = firstSelected - vp.startIndex
 							// selection is in the viewport, try to make sure that is visible. 
 							rowOffSet = formStartToSelection - maxRenderedRows + 1;
+							if (rowOffSet < 0) rowOffSet = 0;
 						}
 						else {
 							children.eq(0)[0].scrollIntoView(false)
