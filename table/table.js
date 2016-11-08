@@ -11,8 +11,10 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 				var wrapper = $element.find(".tablewrapper")[0];
 				var tbody = $element.find("tbody");
-				// the maximum of the rows to render (this should grow to the max ui view port)
-				var maxRenderedRows = Math.min(20, $scope.model.pageSize);
+				// the initial maximum of the rows to render (this should grow to the max ui view port)
+				var initialMaxRenderedRows = 20;
+				// the current full maxRenderedRows (grows when scrolling down)
+				var maxRenderedRows = Math.min(initialMaxRenderedRows, $scope.model.pageSize);
 				// the extra data to be loaded if the viewport is fully rendered.
 				var nonPagingPageSize = 200;
 
@@ -317,7 +319,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					});
 
 				$scope.$watch('model.foundset.viewPort.rows', function(newValue, oldValue) {
-						maxRenderedRows = Math.min(20, $scope.model.pageSize);
+						maxRenderedRows = Math.min(initialMaxRenderedRows, $scope.model.pageSize);
 						generateTemplate();
 					})
 
@@ -332,7 +334,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							if (oldValue && newValue && $scope.showPagination()) {
 								$scope.model.foundset.loadRecordsAsync($scope.model.pageSize * ($scope.model.currentPage - 1), $scope.model.pageSize);
 							}
-							maxRenderedRows = Math.min(20, $scope.model.pageSize);
+							maxRenderedRows = Math.min(initialMaxRenderedRows, $scope.model.pageSize);
 						}
 						$scope.model.foundset.setPreferredViewportSize((newValue < 50 && newValue != 0)?newValue:nonPagingPageSize)
 					});
@@ -782,18 +784,17 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						tbody.scroll(function(e) {
 							if ((tbody.scrollTop() + tbody.height()) > (tbody[0].scrollHeight - tbody.height())) {
 								var maxUISize = maxRenderedRows;
+								maxRenderedRows = Math.min(maxRenderedRows + initialMaxRenderedRows, $scope.model.foundset.viewPort.size);
 								if ($scope.model.pageSize > 0) {
-									maxRenderedRows = Math.min(maxRenderedRows + 20, $scope.model.pageSize);
-								}
-								else {
-									maxRenderedRows = Math.min(maxRenderedRows + 20, $scope.model.foundset.viewPort.size);
+									maxRenderedRows = Math.min(maxRenderedRows, $scope.model.pageSize);
 								}
 								var viewportSize = $scope.model.foundset.viewPort.size;
-								if (viewportSize != lastRequestedViewPortSize && $scope.model.foundset.serverSize > viewportSize) {
+								if (viewportSize != lastRequestedViewPortSize && $scope.model.foundset.serverSize > viewportSize &&
+										(maxRenderedRows + initialMaxRenderedRows) > viewportSize) { // only load extra records when we are close to the viewport size what is rendered
 									lastRequestedViewPortSize = viewportSize;
 									$scope.model.foundset.loadExtraRecordsAsync(nonPagingPageSize);
 								}
-								updateTable([{startIndex:maxUISize,endIndex:maxRenderedRows-1,type:0}])
+								updateTable([{startIndex:maxUISize,endIndex:maxRenderedRows-1,type:0}]) // endIndex is inclusive
 							}
 						})
 					}
