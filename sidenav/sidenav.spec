@@ -158,7 +158,7 @@
 			],
 			"returns" : "boolean"
 		},
-		"removeAllMenuItemsAtDepth" : {
+		"clearMenuItems" : {
 			"parameters":[
 				{
 					"name": "depth",	

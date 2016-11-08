@@ -321,13 +321,24 @@ $scope.api.removeSubMenuItems = function(menuItemId) {
 }
 
 /**
- * Clears all sub-nodes at level.
- * If depth is equal to 1 all roots will be removed.
+ * Remove all the menu items. If depth is specified removes all the menu items at depth.
+ * If depth is equal to 1 all roots will be removed. Default depth is 1.
+ * 
  * @public
+ * 
+ * @example 
+ * <pre>
+ * // clear the whole menu removing all nodes. 
+ * elements.sidenav.clearMenuItems();
+ * 
+ * // clear menu at depth 2 removes the sub menu items of each root menu.
+ * elements.sidenav.clearMenuItems(2);
+ * </pre>
  *
- * @param {Number} depth 1-based
+ * @param {Number} [depth] 1-based. Default 1.
  *  */
-$scope.api.removeAllMenuItemsAtDepth = function(depth) {
+$scope.api.clearMenuItems = function(depth) {
+	if (!depth) depth = 1;
 	if (depth === 1) { // if level is one remove the root
 		$scope.model.menu = [];
 	} else { // remove all subnodes at level
