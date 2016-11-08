@@ -119,6 +119,15 @@
 			],
 			"returns" : "boolean"
 		},
+		"getSubMenuItems" :{
+			"parameters":[
+				{
+					"name": "menuItemId",	
+					"type": "object"
+				}
+			],
+			"returns" : "MenuItem[]"
+		},
 		"setSubMenuItems" :{
 			"parameters":[
 				{

@@ -171,6 +171,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					}
 
 					if (preventHandler != true && $scope.handlers.onMenuItemSelected) { // change selection only if onMenuItemSelected allows it
+						var menuItem = getNodeById(item.id , $scope.model.menu)
 						$scope.handlers.onMenuItemSelected(item, event).then(function(result) {
 								if (result == true) {
 									confirmSelection();

@@ -196,6 +196,38 @@ $scope.api.removeMenuItem = function(menuItemId) {
 }
 
 /**
+* Returns the sub menu items of the menu item with id 'menuItemId'
+* @public
+*
+* @param {String|Number} menuItemId
+* @return {Array<{id: String|Number, 
+* 			text: String=,
+* 			styleClass: String=,
+* 			iconStyleClass: String=,
+* 			enabled: Boolean=,
+* 			data: Object=,
+*			menuItems: Array=,
+*			isDivider : Boolean=}>} 
+*/
+$scope.api.getSubMenuItems = function(menuItemId) {
+	/** @type {Array<{id: String|Number, 
+	* 			text: String=,
+	* 			styleClass: String=,
+	* 			iconStyleClass: String=,
+	* 			enabled: Boolean=,
+	* 			data: Object=,
+	*			menuItems: Array=,
+	*			isDivider : Boolean=}>} */
+	var menuItems;
+	var tree = $scope.model.menu;
+	var node = getNodeById(menuItemId, tree);
+	if (node) {
+		menuItems = node.menuItems;
+	}
+	return menuItems;
+}
+
+/**
  * Set the menuItems as sub menu items of the menu item with id 'menuItemId'
  * Return false if menuItemId cannot be found.
  * @public
