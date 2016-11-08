@@ -22,6 +22,10 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				// the start row index of the first rendred row
 				var firstRenderedRowIndex = 0;
 
+				// used to avoid a situation where extra or less records are requested multiple times because previous load data requests have not yet arrived back from server to adjust viewport;
+				// for example if we calculate that we need 3 less records we send loadLess..(3) but if meanwhile an event happens on client that makes us check that again before we get the new
+				// viewport from server we don't want to end up requesting 3 less again (cause in the end our viewport will be 3 records shorter then we want it then)
+				var loadingRecordsPromise;
 
 				// this is true when next render of table contents / next scroll selection into view is also allowed to change page (if paging is
 				// used); false if it shouldn't change page, for example if the user has just changed to another page manually and table got rerendered
@@ -230,47 +234,58 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				}
 
 				function adjustFoundsetViewportIfNeeded() {
-					var serverSize = $scope.model.foundset.serverSize;
-					if ($scope.showPagination()) {
-						// paging mode only keeps data for the showing page
-						var neededVpStart = $scope.model.pageSize * ($scope.model.currentPage - 1);
-						if (neededVpStart > serverSize) {
-							// this page no longer exists; it is after serverSize; adjust current page and that watch on that will request the correct viewport
-							$scope.model.currentPage = getPageForIndex(serverSize - 1);
-						} else {
-							// see if bounds are slightly off target or completely off target - correct them if needed
-							var neededVpSize = Math.min($scope.model.pageSize, serverSize - neededVpStart);
+					var adjustFoundsetViewportImpl = function() {
+						var serverSize = $scope.model.foundset.serverSize;
+						if ($scope.showPagination()) {
+							// paging mode only keeps data for the showing page
+							var neededVpStart = $scope.model.pageSize * ($scope.model.currentPage - 1);
+							if (neededVpStart > serverSize) {
+								// this page no longer exists; it is after serverSize; adjust current page and that watch on that will request the correct viewport
+								$scope.model.currentPage = getPageForIndex(serverSize - 1);
+							} else {
+								// see if bounds are slightly off target or completely off target - correct them if needed
+								var neededVpSize = Math.min($scope.model.pageSize, serverSize - neededVpStart);
 
-							var vpStart = $scope.model.foundset.viewPort.startIndex;
-							var vpSize = $scope.model.foundset.viewPort.size;
+								var vpStart = $scope.model.foundset.viewPort.startIndex;
+								var vpSize = $scope.model.foundset.viewPort.size;
 
-							if (!(vpStart >= neededVpStart && (vpStart + vpSize) <= (neededVpStart + neededVpSize))) {
-								var neededVpEnd = neededVpStart + neededVpSize - 1;
-								var vpEnd = vpStart + vpSize - 1;
+								if (! (vpStart >= neededVpStart && (vpStart + vpSize) <= (neededVpStart + neededVpSize))) {
+									var neededVpEnd = neededVpStart + neededVpSize - 1;
+									var vpEnd = vpStart + vpSize - 1;
 
-								var intersectionStart = Math.max(neededVpStart, vpStart);
-								var intersectionEnd = Math.min(neededVpEnd, vpEnd);
+									var intersectionStart = Math.max(neededVpStart, vpStart);
+									var intersectionEnd = Math.min(neededVpEnd, vpEnd);
 
-								if (intersectionStart <= intersectionEnd) {
-									// we already have some or all records that we need; request or trim only the needed rows
-									if (neededVpStart < vpStart) $scope.model.foundset.loadExtraRecordsAsync(neededVpStart - vpStart, true);
-									else if (neededVpStart > vpStart) $scope.model.foundset.loadLessRecordsAsync(neededVpStart - vpStart, true);
+									if (intersectionStart <= intersectionEnd) {
+										// we already have some or all records that we need; request or trim only the needed rows
+										if (neededVpStart < vpStart) loadingRecordsPromise = $scope.model.foundset.loadExtraRecordsAsync(neededVpStart - vpStart, true);
+										else if (neededVpStart > vpStart) loadingRecordsPromise = $scope.model.foundset.loadLessRecordsAsync(neededVpStart - vpStart, true);
 
-									if (neededVpEnd < vpEnd) $scope.model.foundset.loadLessRecordsAsync(neededVpEnd - vpEnd, true);
-									else if (neededVpEnd > vpEnd) $scope.model.foundset.loadExtraRecordsAsync(neededVpEnd - vpEnd, true);
+										if (neededVpEnd < vpEnd) loadingRecordsPromise = $scope.model.foundset.loadLessRecordsAsync(neededVpEnd - vpEnd, true);
+										else if (neededVpEnd > vpEnd) loadingRecordsPromise = $scope.model.foundset.loadExtraRecordsAsync(neededVpEnd - vpEnd, true);
 
-									$scope.model.foundset.notifyChanged();
-								} else {
-									// we have none of the needed records - just request the whole wanted viewport
-									$scope.model.foundset.loadRecordsAsync(neededVpStart, neededVpSize);
+										$scope.model.foundset.notifyChanged();
+									} else {
+										// we have none of the needed records - just request the whole wanted viewport
+										loadingRecordsPromise = $scope.model.foundset.loadRecordsAsync(neededVpStart, neededVpSize);
+									}
 								}
 							}
+						} else {
+							var rowsToLoad = Math.min(serverSize, $scope.model.pageSize ? $scope.model.pageSize : nonPagingPageSize)
+							if ($scope.model.foundset.viewPort.size < rowsToLoad)
+								loadingRecordsPromise = $scope.model.foundset.loadExtraRecordsAsync(rowsToLoad - $scope.model.foundset.viewPort.size);
 						}
-					} else {
-						var rowsToLoad = Math.min(serverSize, $scope.model.pageSize ? $scope.model.pageSize : nonPagingPageSize)
-						if ($scope.model.foundset.viewPort.size < rowsToLoad)
-							$scope.model.foundset.loadExtraRecordsAsync(rowsToLoad - $scope.model.foundset.viewPort.size);
+						if (loadingRecordsPromise) {
+							loadingRecordsPromise.finally(function() {
+									loadingRecordsPromise = undefined;
+								});
+						}
 					}
+
+					// if we are already in the process of loading stuff, wait for it; see comment on loadingRecordsPromise declaration
+					if (loadingRecordsPromise) loadingRecordsPromise.finally(adjustFoundsetViewportImpl);
+					else adjustFoundsetViewportImpl();
 				}
 
 				$scope.$watch('model.foundset.serverSize', function(newValue, oldValue) {
@@ -337,22 +352,22 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				$scope.$watch('model.pageSize', function(newValue, oldValue) {
 						if (oldValue != newValue) {
 							if (oldValue && newValue && $scope.showPagination()) {
-								$scope.model.foundset.loadRecordsAsync($scope.model.pageSize * ($scope.model.currentPage - 1), $scope.model.pageSize);
+								adjustFoundsetViewportIfNeeded();
 							}
 							maxRenderedRows = Math.min(initialMaxRenderedRows, $scope.model.pageSize);
 						}
-						$scope.model.foundset.setPreferredViewportSize((newValue < 50 && newValue != 0)?newValue:nonPagingPageSize)
+						$scope.model.foundset.setPreferredViewportSize( (newValue < 50 && newValue != 0) ? newValue : nonPagingPageSize)
 					});
 
 				$scope.$watch('model.foundset.viewPort', function(newValue, oldValue) {
 						// the following code is only for when user changes page in browser I think
 						// so we really did request the correct startIndex already
-					console.log(newValue)
+						console.log(newValue)
 						if ($scope.showPagination()) {
 							if ($scope.model.pageSize * ($scope.model.currentPage - 1) != newValue.startIndex) {
 								$scope.model.currentPage = getPageForIndex(newValue.startIndex);
-							} else if (newValue.size < $scope.model.pageSize && $scope.model.foundset.serverSize > (newValue.startIndex + newValue.size)) {
-								$scope.model.foundset.loadRecordsAsync($scope.model.pageSize * ($scope.model.currentPage - 1), $scope.model.pageSize);
+							} else /* if (newValue.size < $scope.model.pageSize && $scope.model.foundset.serverSize > (newValue.startIndex + newValue.size)) */ {
+								adjustFoundsetViewportIfNeeded();
 							}
 						}
 					});
@@ -649,18 +664,17 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							if (rowUpdate.type == 2) updateEndIndex = $scope.model.foundset.viewPort.size - 1;
 							if (updateEndIndex > endIndex) endIndex = updateEndIndex;
 						}
-						endIndex = Math.min(maxRenderedRows-1, endIndex); // end index is inclusive
-					} else  {
+						endIndex = Math.min(maxRenderedRows - 1, endIndex); // end index is inclusive
+					} else {
 						var vp = $scope.model.foundset.viewPort;
-						maxRenderedRows = Math.min(maxRenderedRows,  vp.rows.length);
-						var firstSelected = $scope.model.foundset.selectedRowIndexes?$scope.model.foundset.selectedRowIndexes[0]:0;
+						maxRenderedRows = Math.min(maxRenderedRows, vp.rows.length);
+						var firstSelected = $scope.model.foundset.selectedRowIndexes ? $scope.model.foundset.selectedRowIndexes[0] : 0;
 						if (vp.startIndex < firstSelected && (vp.startIndex + vp.size) > firstSelected) {
 							var formStartToSelection = firstSelected - vp.startIndex
-							// selection is in the viewport, try to make sure that is visible. 
+							// selection is in the viewport, try to make sure that is visible.
 							rowOffSet = formStartToSelection - maxRenderedRows + 1;
 							if (rowOffSet < 0) rowOffSet = 0;
-						}
-						else {
+						} else {
 							children.eq(0)[0].scrollIntoView(false)
 						}
 						startIndex = 0;
@@ -675,42 +689,40 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						var row = j + rowOffSet
 						var trChildren = children.eq(j).children()
 						if (trChildren.length == 0) {
-							tbody[0].appendChild(createTableRow(columns,row,formatFilter));
-						}
-						else for (var c = columns.length; --c >= 0;) {
-							var column = columns[c];
-							var td = trChildren.eq(c);
-							td.data('row_column', { row: row, column: c });
-							var tdClass = 'c' + c;
-							if (column.styleClass) {
-								tdClass += ' ' + column.styleClass;
-							}
-							if (column.styleClassDataprovider && column.styleClassDataprovider[row]) {
-								tdClass += ' ' + column.styleClassDataprovider[row];
-							}
-							td[0].className = tdClass;
-							var divChild = td.children("div");
-							if (divChild.length == 1) {
-								// its text node
-								var value = column.dataprovider ? column.dataprovider[row] : null;
-								value = getDisplayValue(value, column.valuelist);
-								value = formatFilter(value, column.format.display, column.format.type);
-								divChild.text(value)
-							} else {
-								var imgChild = td.children("img");
-								if (imgChild.length == 1) {
-									if (!column.dataprovider || !column.dataprovider[row]) {
-										imgChild[0].setAttribute("src", "");
-									}
-									else imgChild[0].setAttribute("src", column.dataprovider[row].url);
+							tbody[0].appendChild(createTableRow(columns, row, formatFilter));
+						} else for (var c = columns.length; --c >= 0;) {
+								var column = columns[c];
+								var td = trChildren.eq(c);
+								td.data('row_column', { row: row, column: c });
+								var tdClass = 'c' + c;
+								if (column.styleClass) {
+									tdClass += ' ' + column.styleClass;
+								}
+								if (column.styleClassDataprovider && column.styleClassDataprovider[row]) {
+									tdClass += ' ' + column.styleClassDataprovider[row];
+								}
+								td[0].className = tdClass;
+								var divChild = td.children("div");
+								if (divChild.length == 1) {
+									// its text node
+									var value = column.dataprovider ? column.dataprovider[row] : null;
+									value = getDisplayValue(value, column.valuelist);
+									value = formatFilter(value, column.format.display, column.format.type);
+									divChild.text(value)
 								} else {
-									console.log("illegal state should be div or img")
+									var imgChild = td.children("img");
+									if (imgChild.length == 1) {
+										if (!column.dataprovider || !column.dataprovider[row]) {
+											imgChild[0].setAttribute("src", "");
+										} else imgChild[0].setAttribute("src", column.dataprovider[row].url);
+									} else {
+										console.log("illegal state should be div or img")
+									}
 								}
 							}
-						}
 					}
 					if (children.length > maxRenderedRows) {
-						for(var i=children.length;--i>=maxRenderedRows;) {
+						for (var i = children.length; --i >= maxRenderedRows;) {
 							children.eq(i).remove();
 						}
 					}
@@ -756,11 +768,11 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				var columnStyleClasses = [];
 				function updateColumnStyleClass() {
 					var columns = $scope.model.columns;
-					for(var c=0;c<columns.length;c++) {
+					for (var c = 0; c < columns.length; c++) {
 						if (columns[c].styleClass != columnStyleClasses[c]) {
 							generateTemplate();
 							break;
-						} 
+						}
 					}
 				}
 				var columnListener = null;
@@ -794,30 +806,30 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						updateTableColumnStyleClass(c, getCellStyle(c));
 						columnStyleClasses[c] = columns[c].styleClass;
 					}
-					if (tbodyJQ.children().length == 0 || full){
+					if (tbodyJQ.children().length == 0 || full) {
 						var formatFilter = $filter("formatFilter");
 						var tbodyOld = tbodyJQ[0];
 						var tbodyNew = document.createElement("TBODY");
 						updateTBodyStyle(tbodyNew);
 						maxRenderedRows = Math.min(maxRenderedRows, rows.length)
-						var firstSelected = $scope.model.foundset.selectedRowIndexes?$scope.model.foundset.selectedRowIndexes[0]:0;
+						var firstSelected = $scope.model.foundset.selectedRowIndexes ? $scope.model.foundset.selectedRowIndexes[0] : 0;
 						var startRow = 0;
 						var formStartToSelection = firstSelected - $scope.model.foundset.viewPort.startIndex
-						if (formStartToSelection < $scope.model.foundset.viewPort.size && formStartToSelection> maxRenderedRows) {
+						if (formStartToSelection < $scope.model.foundset.viewPort.size && formStartToSelection > maxRenderedRows) {
 							// if the selection is in the viewport and the will not be rendered because it fall out of the max rows
 							// adjust the startRow to render
 							startRow = formStartToSelection - maxRenderedRows;
-							
+
 						}
 						firstRenderedRowIndex = $scope.model.foundset.viewPort.startIndex + startRow
 						for (var r = startRow; r < maxRenderedRows; r++) {
-							tbodyNew.appendChild(createTableRow(columns,r,formatFilter));
+							tbodyNew.appendChild(createTableRow(columns, r, formatFilter));
 						}
 						tbodyOld.parentNode.replaceChild(tbodyNew, tbodyOld)
 						tbody = $(tbodyNew);
 						console.log("replaced")
 						tbody.scroll(function(e) {
-							if ((tbody.scrollTop() + tbody.height()) > (tbody[0].scrollHeight - tbody.height())) {
+							if ( (tbody.scrollTop() + tbody.height()) > (tbody[0].scrollHeight - tbody.height())) {
 								// scroll down behavior
 								// calculate max size that can be get, default none paging is that serverSize.
 								var maxSize = $scope.model.foundset.serverSize;
@@ -828,29 +840,29 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 									var neededVpSize = Math.min($scope.model.pageSize, maxSize - neededVpStart);
 									maxSize = neededVpStart + neededVpSize;
 								}
-								if ( (firstRenderedRowIndex -  $scope.model.foundset.viewPort.startIndex) + maxRenderedRows < maxSize ) {
+								if ( (firstRenderedRowIndex - $scope.model.foundset.viewPort.startIndex) + maxRenderedRows < maxSize) {
 									var maxUISize = maxRenderedRows;
 									maxRenderedRows = Math.min(maxRenderedRows + initialMaxRenderedRows, $scope.model.foundset.viewPort.size);
 									if ($scope.model.pageSize > 0) {
 										maxRenderedRows = Math.min(maxRenderedRows, maxSize - firstRenderedRowIndex);
 									}
 									var viewportSize = $scope.model.foundset.viewPort.size;
-									if (viewportSize != lastRequestedViewPortSize && maxSize > viewportSize &&
-											(maxRenderedRows + initialMaxRenderedRows) > viewportSize) { // only load extra records when we are close to the viewport size what is rendered
+									if (viewportSize != lastRequestedViewPortSize && maxSize > viewportSize && (maxRenderedRows + initialMaxRenderedRows) > viewportSize) { // only load extra records when we are close to the viewport size what is rendered
 										lastRequestedViewPortSize = viewportSize;
-										$scope.model.foundset.loadExtraRecordsAsync(nonPagingPageSize);
+										loadingRecordsPromise = $scope.model.foundset.loadExtraRecordsAsync(nonPagingPageSize);
+										loadingRecordsPromise.finally(function() {
+											loadingRecordsPromise = undefined;
+										});
 									}
-									updateTable([{startIndex:maxUISize,endIndex:maxRenderedRows-1,type:0}]) // endIndex is inclusive
+									updateTable([{ startIndex: maxUISize, endIndex: maxRenderedRows - 1, type: 0 }]) // endIndex is inclusive
 								}
 							}
 						})
-					}
-					else {
+					} else {
 						updateTBodyStyle(tbodyJQ[0]);
 						updateTable(null)
 						console.log("updated")
 					}
-
 
 					onTableRendered();
 
@@ -861,8 +873,8 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					//    	        </td>
 					//    		  </tr>
 				}
-				
-				function createTableRow(columns,row,formatFilter) {
+
+				function createTableRow(columns, row, formatFilter) {
 					var tr = document.createElement("TR");
 					if ($scope.model.foundset.selectedRowIndexes.indexOf(row) != -1) {
 						tr.className = $scope.model.selectionClass;
@@ -896,7 +908,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					}
 					return tr;
 				}
- 
+
 				var tableStyle = { };
 				$scope.getTableStyle = function() {
 					tableStyle.width = autoColumns.count > 0 ? getComponentWidth() + "px" : tableWidth + "px";
@@ -1044,11 +1056,11 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						skipOnce = false;
 					}
 				}
-				
+
 				var destroyListenerUnreg = $scope.$on("$destroy", function() {
-					destroyListenerUnreg();
-					delete $scope.model[$sabloConstants.modelChangeNotifier];
-				});
+						destroyListenerUnreg();
+						delete $scope.model[$sabloConstants.modelChangeNotifier];
+					});
 
 				//implement api calls starts from here
 				/**
