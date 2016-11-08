@@ -9,45 +9,36 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 			},
 			controller: function($scope, $element, $attrs) {
 				
+				/** 
+				 * API CHANGES
+				 * addMenuItem returns the index.
+				 * removeAllMenuItemsAtDepth -> clearMenuItems(level)
+				 * 
+				 *  
+				 *  */
+				
 				/**
 				 * TODO
-				 * Unselect menuItem
+				 * searchBox
+				 * unselect menuItem
 				 * call onMenuItemCollapse when another node is expanded
 				 * addDivider
 				 * clearSelection
-				 * autoselect next level
 				 * mediaIcon
-				 * slideIn/slideOut
-				 * reStyle
+				 * autogenerate IDs
 				 * 
+				 * HTML text
 				 * Addition to the text (badge) HTML
 				 * 
+				 * FIXME
 				 * Scan nodes to report duplicate ID.
 				 * Possible Conflicts with Node Edit.
-				 * 		Selection if i add an item in between
 				 * 		Remove a selected/expanded node, node with same ID is added again before selection is changed. 
 				 * 			Force refresh Index when node is collapsed.
 				 *
 				 * isSelected
 				 * getParent
 				 * getItems
-				 *
-				 * DONE
-				 * animate
-				 * visible
-				 * divider
-				 * iconClass
-				 * enable
-				 * collapse/expand
-				 * select
-				 *
-				 *
-				 * API
-				 * init
-				 * add/remove nodes
-				 * add/remove subNodes
-				 * enable nodes
-				 * getNode
 				 *
 				 *  */
 
@@ -58,7 +49,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 * Selection triggers node expand
 				 * Expanding a node does not trigger a selection
 				 *
-				 * Selection can be canceled if onMenuItemSelected returns false
+				 * Selection can be cancelled if onMenuItemSelected returns false
 				 *
 				 * NOTE: what happen if a node is removed ?
 				 * read all anchestor, check if node still exists
@@ -506,8 +497,9 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				/**
 				 * Client Side API
 				 * 
-				 * Returns true if the menuItem and the parent menuItem are enabled. <br/>
-				 * <i>NOTE: The method returns false if any anchestor of the menuItem is not enabled; if the property enabled of the menuItem is set to true, but has a parent with the enabled property set to false, then isMenuItemEnabled returns false. </i><br/>
+				 * Returns true if the menuItem and all it's ancestors are enabled. <br/>
+				 * Return false if menuItemId cannot be found.
+				 * <i>NOTE: The method returns false if any ancestor of the menuItem is not enabled; if the property enabled of the menuItem is set to true, but has a parent with the enabled property set to false, then isMenuItemEnabled returns false. </i><br/>
 				 * @public 
 				 * 
 				 * @param {String|Number} menuItemId
@@ -742,7 +734,6 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					}
 					$scope.selectedIndex = newSelectedIndex;
 
-					console.log(levels);
 					storeSelectedIndex();
 				}
 

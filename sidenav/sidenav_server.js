@@ -208,7 +208,9 @@ $scope.api.removeMenuItem = function(menuItemId) {
  * 			enabled: Boolean=,
  * 			data: Object=,
  *			menuItems: Array=,
- *			isDivider : Boolean=}>} menuItems
+ *			isDivider : Boolean=}>} menuItems  is an array of MenuItem objects. 
+ *									Each MenuItem object should set the required properties 'id', which uniquely identifies the menuItem object in menu, and 'text' property. 
+ *									The MenuItem may contain the optional properties 'styleClass', 'iconStyleClass', 'data', 'enabled', 'menuItems', 'isDivider'.
  *
  * @example <pre>var menuItems = [{
   id: 10,
