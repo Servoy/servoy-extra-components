@@ -325,7 +325,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 				$scope.$watch('model.currentPage', function(newValue, oldValue) {
 						if (newValue && newValue != oldValue && $scope.showPagination()) {
-							$scope.model.foundset.loadRecordsAsync($scope.model.pageSize * (newValue - 1), $scope.model.pageSize);
+							adjustFoundsetViewportIfNeeded();
 						}
 					});
 
@@ -372,7 +372,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							wrapper = $element.find(".tablewrapper")[0];
 							tbody = $element.find("tbody");
 
-							// as model.visible is used in an ng-if aroung both these elements and that didn't execute yet, give it a chance to do so
+							// as model.visible is used in an ng-if around both these elements and that didn't execute yet, give it a chance to do so
 							if (! (wrapper && tbody)) $scope.$evalAsync(function() {
 									wrapper = $element.find(".tablewrapper")[0];
 									tbody = $element.find("tbody");
