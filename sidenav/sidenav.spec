@@ -108,7 +108,8 @@
 				},
 				{
 					"name": "menuItemId",	
-					"type": "object"
+					"type": "object",
+					"optional" : true
 				},
 				{
 					"name": "index",
@@ -162,7 +163,8 @@
 			"parameters":[
 				{
 					"name": "depth",	
-					"type": "int"
+					"type": "int",
+					"optional" : true
 				}]
 		},
 		"setMenuItemEnabled": 
