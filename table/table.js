@@ -230,7 +230,6 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				}
 
 				function adjustFoundsetViewportIfNeeded() {
-					return false;
 					var serverSize = $scope.model.foundset.serverSize;
 					if ($scope.showPagination()) {
 						// paging mode only keeps data for the showing page
@@ -245,7 +244,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							var vpStart = $scope.model.foundset.viewPort.startIndex;
 							var vpSize = $scope.model.foundset.viewPort.size;
 
-							if (neededVpStart != vpStart || neededVpSize != vpSize) {
+							if (!(vpStart >= neededVpStart && (vpStart + vpSize) <= (neededVpStart + neededVpSize))) {
 								var neededVpEnd = neededVpStart + neededVpSize - 1;
 								var vpEnd = vpStart + vpSize - 1;
 
@@ -348,6 +347,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				$scope.$watch('model.foundset.viewPort', function(newValue, oldValue) {
 						// the following code is only for when user changes page in browser I think
 						// so we really did request the correct startIndex already
+					console.log(newValue)
 						if ($scope.showPagination()) {
 							if ($scope.model.pageSize * ($scope.model.currentPage - 1) != newValue.startIndex) {
 								$scope.model.currentPage = getPageForIndex(newValue.startIndex);
@@ -635,6 +635,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				}
 
 				function updateTable(changes) {
+					var children = tbody.children();
 					var startIndex = 100000000;
 					var endIndex = 0;
 					var rowOffSet = 0;
@@ -650,20 +651,22 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						}
 						endIndex = Math.min(maxRenderedRows-1, endIndex); // end index is inclusive
 					} else  {
-						var maxRows = Math.min(maxRenderedRows,  $scope.model.foundset.viewPort.rows.length) - 1;
+						var vp = $scope.model.foundset.viewPort;
+						maxRenderedRows = Math.min(maxRenderedRows,  vp.rows.length);
 						var firstSelected = $scope.model.foundset.selectedRowIndexes?$scope.model.foundset.selectedRowIndexes[0]:0;
-						var formStartToSelection = firstSelected - $scope.model.foundset.viewPort.startIndex
-						if (formStartToSelection < $scope.model.foundset.viewPort.size && formStartToSelection> maxRows) {
-							// if the selection is in the viewport and the will not be rendered because it fall out of the max rows
-							// adjust the rowOffSet to render
-							rowOffSet = formStartToSelection - maxRows;
+						if (vp.startIndex < firstSelected && (vp.startIndex + vp.size) > firstSelected) {
+							var formStartToSelection = firstSelected - vp.startIndex
+							// selection is in the viewport, try to make sure that is visible. 
+							rowOffSet = formStartToSelection - maxRenderedRows + 1;
+						}
+						else {
+							children.eq(0)[0].scrollIntoView(false)
 						}
 						startIndex = 0;
-						endIndex = maxRows;
+						endIndex = maxRenderedRows - 1;
 					}
 					var formatFilter = $filter("formatFilter");
 					var columns = $scope.model.columns;
-					var children = tbody.children();
 					if (startIndex == 0) {
 						firstRenderedRowIndex = $scope.model.foundset.viewPort.startIndex + rowOffSet;
 					}
@@ -695,7 +698,10 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							} else {
 								var imgChild = td.children("img");
 								if (imgChild.length == 1) {
-									imgChild[0].setAttribute("src", column.dataprovider[row].url);
+									if (!column.dataprovider || !column.dataprovider[row]) {
+										imgChild[0].setAttribute("src", "");
+									}
+									else imgChild[0].setAttribute("src", column.dataprovider[row].url);
 								} else {
 									console.log("illegal state should be div or img")
 								}
@@ -792,18 +798,18 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						var tbodyOld = tbodyJQ[0];
 						var tbodyNew = document.createElement("TBODY");
 						updateTBodyStyle(tbodyNew);
-						var maxRows = Math.min(maxRenderedRows, rows.length)
+						maxRenderedRows = Math.min(maxRenderedRows, rows.length)
 						var firstSelected = $scope.model.foundset.selectedRowIndexes?$scope.model.foundset.selectedRowIndexes[0]:0;
 						var startRow = 0;
 						var formStartToSelection = firstSelected - $scope.model.foundset.viewPort.startIndex
-						if (formStartToSelection < $scope.model.foundset.viewPort.size && formStartToSelection> maxRows) {
+						if (formStartToSelection < $scope.model.foundset.viewPort.size && formStartToSelection> maxRenderedRows) {
 							// if the selection is in the viewport and the will not be rendered because it fall out of the max rows
 							// adjust the startRow to render
-							startRow = formStartToSelection - maxRows;
+							startRow = formStartToSelection - maxRenderedRows;
 							
 						}
 						firstRenderedRowIndex = $scope.model.foundset.viewPort.startIndex + startRow
-						for (var r = startRow; r < maxRows; r++) {
+						for (var r = startRow; r < maxRenderedRows; r++) {
 							tbodyNew.appendChild(createTableRow(columns,r,formatFilter));
 						}
 						tbodyOld.parentNode.replaceChild(tbodyNew, tbodyOld)
@@ -811,18 +817,30 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						console.log("replaced")
 						tbody.scroll(function(e) {
 							if ((tbody.scrollTop() + tbody.height()) > (tbody[0].scrollHeight - tbody.height())) {
-								var maxUISize = maxRenderedRows;
-								maxRenderedRows = Math.min(maxRenderedRows + initialMaxRenderedRows, $scope.model.foundset.viewPort.size);
+								// scroll down behavior
+								// calculate max size that can be get, default none paging is that serverSize.
+								var maxSize = $scope.model.foundset.serverSize;
 								if ($scope.model.pageSize > 0) {
-									maxRenderedRows = Math.min(maxRenderedRows, $scope.model.pageSize);
+									// paging mode calculate max size of the current viewPort
+									var neededVpStart = $scope.model.pageSize * ($scope.model.currentPage - 1);
+									// see if bounds are slightly off target or completely off target - correct them if needed
+									var neededVpSize = Math.min($scope.model.pageSize, maxSize - neededVpStart);
+									maxSize = neededVpStart + neededVpSize;
 								}
-								var viewportSize = $scope.model.foundset.viewPort.size;
-								if (viewportSize != lastRequestedViewPortSize && $scope.model.foundset.serverSize > viewportSize &&
-										(maxRenderedRows + initialMaxRenderedRows) > viewportSize) { // only load extra records when we are close to the viewport size what is rendered
-									lastRequestedViewPortSize = viewportSize;
-									$scope.model.foundset.loadExtraRecordsAsync(nonPagingPageSize);
+								if ( (firstRenderedRowIndex -  $scope.model.foundset.viewPort.startIndex) + maxRenderedRows < maxSize ) {
+									var maxUISize = maxRenderedRows;
+									maxRenderedRows = Math.min(maxRenderedRows + initialMaxRenderedRows, $scope.model.foundset.viewPort.size);
+									if ($scope.model.pageSize > 0) {
+										maxRenderedRows = Math.min(maxRenderedRows, maxSize - firstRenderedRowIndex);
+									}
+									var viewportSize = $scope.model.foundset.viewPort.size;
+									if (viewportSize != lastRequestedViewPortSize && maxSize > viewportSize &&
+											(maxRenderedRows + initialMaxRenderedRows) > viewportSize) { // only load extra records when we are close to the viewport size what is rendered
+										lastRequestedViewPortSize = viewportSize;
+										$scope.model.foundset.loadExtraRecordsAsync(nonPagingPageSize);
+									}
+									updateTable([{startIndex:maxUISize,endIndex:maxRenderedRows-1,type:0}]) // endIndex is inclusive
 								}
-								updateTable([{startIndex:maxUISize,endIndex:maxRenderedRows-1,type:0}]) // endIndex is inclusive
 							}
 						})
 					}
