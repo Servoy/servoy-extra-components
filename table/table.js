@@ -873,7 +873,14 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 										lastRequestedViewPortStartIndex = startIndex;
 										var extraPage = Math.min(50, $scope.model.foundset.viewPort.startIndex);
 										loadingRecordsPromise = $scope.model.foundset.loadExtraRecordsAsync(-extraPage);
-										loadingRecordsPromise.finally(function() {
+										loadingRecordsPromise.then(function(){
+											var startIndex = $scope.model.foundset.viewPort.startIndex;
+											var currentRenderedRows = maxRenderedRows;
+											maxRenderedRows = Math.min(maxRenderedRows + initialMaxRenderedRows, $scope.model.foundset.viewPort.size);
+											var addedRows = maxRenderedRows - currentRenderedRows;
+											var offset = firstRenderedRowIndex - addedRows - startIndex;
+											updateTable(null,offset);
+										}).finally(function() {
 											loadingRecordsPromise = undefined;
 										});
 									} 
