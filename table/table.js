@@ -872,8 +872,10 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 											(firstRenderedRowIndex- startIndex) < 20) {
 										lastRequestedViewPortStartIndex = startIndex;
 										var extraPage = Math.min(50, $scope.model.foundset.viewPort.startIndex);
-										$scope.model.foundset.loadExtraRecordsAsync(-extraPage);
-										
+										loadingRecordsPromise = $scope.model.foundset.loadExtraRecordsAsync(-extraPage);
+										loadingRecordsPromise.finally(function() {
+											loadingRecordsPromise = undefined;
+										});
 									} 
 									updateTable(null,offset);
 								}
