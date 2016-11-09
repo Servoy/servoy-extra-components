@@ -52,9 +52,9 @@
 				"type": "record",
 				"optional": true
 			}, {
-				"name":"event",
-				"type":"JSEvent",
-				"optional":"true"
+				"name": "event",
+				"type": "JSEvent",
+				"optional": true
 			}]
 		},
 		"onCellRightClick": {
@@ -71,9 +71,9 @@
 				"type": "record",
 				"optional": true
 			}, {
-				"name":"event",
-				"type":"JSEvent",
-				"optional":"true"
+				"name": "event",
+				"type": "JSEvent",
+				"optional": true
 			}]
 		},
 		"onHeaderClick": {
@@ -84,9 +84,9 @@
 				"name": "sortdirection",
 				"type": "string"
 			}, {
-				"name":"event",
-				"type":"JSEvent",
-				"optional":"true"
+				"name": "event",
+				"type": "JSEvent",
+				"optional": true
 			}],
 			"returns": "string"
 		},
