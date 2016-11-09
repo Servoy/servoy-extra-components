@@ -365,7 +365,6 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				$scope.$watch('model.foundset.viewPort', function(newValue, oldValue) {
 						// the following code is only for when user changes page in browser I think
 						// so we really did request the correct startIndex already
-						console.log(newValue)
 						if ($scope.showPagination()) {
 							if ($scope.model.pageSize * ($scope.model.currentPage - 1) != newValue.startIndex) {
 								$scope.model.currentPage = getPageForIndex(newValue.startIndex);
@@ -465,7 +464,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				}
 
 				$scope.getRealRow = function(row) {
-					return firstRenderedRowIndex + row;
+					return $scope.model.foundset.viewPort.startIndex + row;
 				}
 
 				$scope.tableClicked = function(event, type) {
@@ -656,7 +655,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					var children = tbody.children();
 					var startIndex = 100000000;
 					var endIndex = 0;
-					var rowOffSet = 0;
+					var rowOffSet = offset?offset:0;
 					var childToScrollTo = null;
 					var insertIndex = -1;
 					if (changes) {
@@ -852,7 +851,6 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						}
 						tbodyOld.parentNode.replaceChild(tbodyNew, tbodyOld)
 						tbody = $(tbodyNew);
-						console.log("replaced")
 						tbody.scroll(function(e) {
 							if (tbody.scrollTop() < 10) {
 								// scroll up behavior
@@ -900,9 +898,10 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 									maxSize = neededVpStart + neededVpSize;
 								}
 								if ( (firstRenderedRowIndex + maxRenderedRows) < maxSize ) {
+									var currentStartIndex = firstRenderedRowIndex - $scope.model.foundset.viewPort.startIndex;
 									var viewportSize = $scope.model.foundset.viewPort.size;
 									var maxUISize = maxRenderedRows;
-									maxRenderedRows = Math.min(maxRenderedRows + initialMaxRenderedRows, viewportSize);
+									maxRenderedRows = Math.min(maxRenderedRows + initialMaxRenderedRows, viewportSize-currentStartIndex);
 									var currentLoaded = $scope.model.foundset.viewPort.startIndex + viewportSize;
 									if (lastRequestedViewPortSize != viewportSize && currentLoaded < maxSize && (currentLoaded -(firstRenderedRowIndex + maxRenderedRows)) < 20) {
 										lastRequestedViewPortSize = viewportSize;
@@ -911,7 +910,8 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 											loadingRecordsPromise = undefined;
 										});
 									}
-									updateTable([{ startIndex: maxUISize, endIndex: maxRenderedRows - 1, type: 0 }]) // endIndex is inclusive
+									// call update table with the previous start index (of the ui childen) and then new one, and give the current firstRenderedRowIndex as the offset to start from
+									updateTable([{ startIndex: maxUISize, endIndex: maxRenderedRows - 1, type: 0 }],firstRenderedRowIndex) // endIndex is inclusive
 								}
 							}
 						})
