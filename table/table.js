@@ -802,7 +802,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				function generateTemplate(full) {
 					var columns = $scope.model.columns;
 					console.log("generate template")
-					if (!columns) return;
+					if (!columns || columns.length == 0) return;
 					var tbodyJQ = tbody;
 					var tblHead = $element.find("thead");
 					if (tbodyJQ.length == 0 || $(tblHead).height() <= 0) {
@@ -923,13 +923,6 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					}
 
 					onTableRendered();
-
-					//    		  <tr ng-repeat="row in model.foundset.viewPort.rows" ng-class='getRowStyle(model.foundset.viewPort.rows.indexOf(row))' on-finish-render-rows="ngRowsRenderRepeatFinished">
-					//    		    <td ng-style="getCellStyle(model.columns.indexOf(column))" model-in-data="{row:row,column:column}" ng-class="column.styleClass + ' ' + column.styleClassDataprovider[model.foundset.viewPort.rows.indexOf(row)]" ng-repeat="column in model.columns" >
-					//    		    	<img ng-show="getUrl(column,row) != null" ng-src="{{getUrl(column,row)}}"></img>
-					//    		    	<div ng-bind='column.dataprovider[model.foundset.viewPort.rows.indexOf(row)]| getDisplayValue:column.valuelist | formatFilter:column.format.display:column.format.type' ng-show="getUrl(column,row) === null"></div>
-					//    	        </td>
-					//    		  </tr>
 				}
 
 				function createTableRow(columns, row, formatFilter) {
@@ -1046,15 +1039,15 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				// if that happens flush the cellStyles cache
 				$scope.$watch(function() {
 						var array = "";
-						if (!$scope.model.columns) return array;
+						var columns = $scope.model.columns;
+						if (!columns || columns.length == 0) return array;
 						var tbl = $element.find("table:first");
 						var headers = tbl.find("th");
-						for (var column = $scope.model.columns.length; --column;) {
+						for (var column = columns.length; --column>=0;) {
 							array += $(headers.get(column)).outerWidth(false);
 						}
 						return array;
 					}, function(newValue, oldValue) {
-						cellStyles = [];
 						columnStyleCache = [];
 					})
 
