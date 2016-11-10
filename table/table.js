@@ -800,7 +800,9 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				}
 				var columnListener = null;
 				function generateTemplate(full) {
+					var columns = $scope.model.columns;
 					console.log("generate template")
+					if (!columns) return;
 					var tbodyJQ = tbody;
 					var tblHead = $element.find("thead");
 					if (tbodyJQ.length == 0 || $(tblHead).height() <= 0) {
@@ -809,7 +811,6 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						return;
 					}
 					var rows = $scope.model.foundset.viewPort.rows;
-					var columns = $scope.model.columns;
 
 					if (columnListener == null) {
 						for (var c = 0; c < columns.length; c++) {
@@ -957,7 +958,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							var div = document.createElement("DIV");
 							var value = column.dataprovider ? column.dataprovider[row] : null;
 							value = getDisplayValue(value, column.valuelist);
-							value = formatFilter(value, column.format.display, column.format.type);
+							if (column.format) value = formatFilter(value, column.format.display, column.format.type);
 							var txt = document.createTextNode(value ? value : "");
 							div.appendChild(txt);
 							td.appendChild(div);
@@ -1045,6 +1046,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				// if that happens flush the cellStyles cache
 				$scope.$watch(function() {
 						var array = "";
+						if (!$scope.model.columns) return array;
 						var tbl = $element.find("table:first");
 						var headers = tbl.find("th");
 						for (var column = $scope.model.columns.length; --column;) {
