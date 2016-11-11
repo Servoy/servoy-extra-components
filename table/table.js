@@ -658,18 +658,25 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					var rowOffSet = offset?offset:0;
 					var childToScrollTo = null;
 					var insertIndex = -1;
+					var vp = $scope.model.foundset.viewPort;
+					
 					if (changes) {
+						if (firstRenderedRowIndex + maxRenderedRows > vp.startIndex + vp.size) {
+							maxRenderedRows = vp.startIndex + vp.size - firstRenderedRowIndex;
+						}
 						// this is hit when row/column viewport updates are happening. we just need to rerender the changed area
 						for (var i = 0; i < changes.length; i++) {
 							var rowUpdate = changes[i];
 							if (rowUpdate.startIndex < startIndex) startIndex = rowUpdate.startIndex;
 							var updateEndIndex = rowUpdate.endIndex;
-							// if insert then insert position to end are changed. endIndex == viewPort.size
+							// if insert then insert position end by convention really means new viewport size; endIndex == viewPort.size
 							if (rowUpdate.type == 1) {
 								updateEndIndex--;
 								insertIndex = rowUpdate.startIndex;
 							}
-							if (rowUpdate.type == 2) updateEndIndex = $scope.model.foundset.viewPort.size - 1;
+							if (rowUpdate.type == 2) {
+								updateEndIndex = vp.size - 1; // update all
+							}
 							if (updateEndIndex > endIndex) endIndex = updateEndIndex;
 						}
 						endIndex = Math.min(maxRenderedRows - 1, endIndex); // end index is inclusive
@@ -678,11 +685,10 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						startIndex = 0;
 						endIndex = maxRenderedRows - 1;
 						rowOffSet = offset;
-						var difference = firstRenderedRowIndex - $scope.model.foundset.viewPort.startIndex + rowOffSet
+						var difference = firstRenderedRowIndex - vp.startIndex + rowOffSet
 						childToScrollTo = children.eq(difference)[0];
 					} else {
 						// called when a "full" render needs to be done
-						var vp = $scope.model.foundset.viewPort;
 						maxRenderedRows = Math.min(maxRenderedRows, vp.rows.length);
 						var firstSelected = $scope.model.foundset.selectedRowIndexes ? $scope.model.foundset.selectedRowIndexes[0] : 0;
 						if (vp.startIndex < firstSelected && (vp.startIndex + vp.size) > firstSelected) {
@@ -702,10 +708,10 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						if (insertIndex > -1) {
 							// if an insert was done on startIndex = 0;
 							// the rows are added in front of the index.
-							rowOffSet = firstRenderedRowIndex - $scope.model.foundset.viewPort.startIndex
+							rowOffSet = firstRenderedRowIndex - vp.startIndex
 							endIndex = maxRenderedRows - 1;
 						} 
-						else firstRenderedRowIndex = $scope.model.foundset.viewPort.startIndex + rowOffSet;
+						else firstRenderedRowIndex = vp.startIndex + rowOffSet;
 					}
 					for (var j = startIndex; j <= endIndex; j++) {
 						var row = j + rowOffSet
