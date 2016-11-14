@@ -146,7 +146,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					updateTBodyStyle($element.find('tbody')[0]);
 				}
 
-				$(window).on('resize', function() {
+				var windowResizeHandler = function() {
 						if (resizeTimeout) $timeout.cancel(resizeTimeout);
 						if ($scope.model.columns) {
 							resizeTimeout = $timeout(function() {
@@ -172,7 +172,8 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 									})
 								}, 50);
 						}
-					});
+				}
+				$(window).on('resize', windowResizeHandler);
 
 				function addColResizable(cleanPrevious) {
 					var tbl = $element.find("table:first");
@@ -1109,6 +1110,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				}
 
 				var destroyListenerUnreg = $scope.$on("$destroy", function() {
+						$(window).off('resize', windowResizeHandler);
 						destroyListenerUnreg();
 						delete $scope.model[$sabloConstants.modelChangeNotifier];
 					});
