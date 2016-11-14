@@ -17,6 +17,7 @@
 		"enableColumnResize": { "type": "boolean", "default": false },
 		"enableSort": { "type": "boolean", "default": true },
 		"responsiveHeight": { "type": "int", "default": 300 },
+		"minRowHeight": { "type": "string", "default": "25px","tags": { "scope": "design" } },
 		"sortupClass": { "type": "styleclass", "default": "table-servoyextra-sort-up " },
 		"sortdownClass": { "type": "styleclass", "default": "table-servoyextra-sort-down " },
 		"sortColumnIndex": { "type": "int", "default": -1, "tags": { "scope": "runtime" }, "pushToServer": "shallow" },

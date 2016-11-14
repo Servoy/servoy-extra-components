@@ -780,12 +780,14 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							var rules = targetStyleSheet.cssRules || targetStyleSheet.rules;
 							targetStyleSheet.insertRule(clsName + '{}', rules.length);
 							columnCSSRules[columnIndex] = rules[rules.length - 1];
+							columnCSSRules[columnIndex].style["height"] = $scope.model.minRowHeight;
 						}
 					}
 
 					for (var p in style) {
 						columnCSSRules[columnIndex].style[p] = style[p];
 					}
+					
 				}
 				// cache for the current set style class names, used in the columns property watcher.
 				var columnStyleClasses = [];
