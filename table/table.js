@@ -445,7 +445,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								scrollNeeded = true;
 								var newFirstSelectedValue = newValue[0];
 								// first check if the selected row is in the current ui viewport.
-								if (newFirstSelectedValue < firstRenderedRowIndex || newFirstSelectedValue > (firstRenderedRowIndex + maxRenderedRows)) {
+								if (tbody && tbody.children() >0 && (newFirstSelectedValue < firstRenderedRowIndex || newFirstSelectedValue > (firstRenderedRowIndex + maxRenderedRows))) {
 									// its not in the current ui viewport, check if it is in the current data viewport
 									var vp = $scope.model.foundset.viewPort;
 									if (newFirstSelectedValue < vp.startIndex || newFirstSelectedValue > (vp.startIndex + vp.size) ) {
