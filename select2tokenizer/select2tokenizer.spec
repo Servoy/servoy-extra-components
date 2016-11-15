@@ -20,7 +20,7 @@
 		{
 			"name": "select2-autotokenizer.css",
 			"version": "1.0.0",
-			"url": "servoyextra/select2tokenizer/css/select2-totokenizer.css",
+			"url": "servoyextra/select2tokenizer/css/select2-tokenizer.css",
 			"mimetype": "text/css"
 		}
 	],
@@ -29,7 +29,9 @@
 		"dataProviderID": { "type":"dataprovider", "pushToServer": "allow","tags": { "scope" :"design" }, "ondatachange": { "onchange":"onDataChangeMethodID" , "callback":"onDataChangeCallback"}},
 		"valuelistID": { "type" : "valuelist", "tags": { "scope" :"design", "logWhenOverMax" : false }, "for": "dataProviderID", "default":"autoVL" , "max" : 100}, 
 		"visible" : {"type":"visible", "default":true},
-        "allowNewEntries": {"type": "boolean", "tags": {"scope" : "design"}}, 
+        "allowNewEntries": {"type": "boolean", "default": false, "tags": {"scope" : "design"}}, 
+        "closeOnSelect": {"type": "boolean", "default": true, "tags": {"scope" : "design"}}, 
+        "selectOnClose": {"type": "boolean", "default": false, "tags": {"scope" : "design"}}, 
         "noMatchesFoundText": {"type": "tagstring", "default": "No matches found", "tags": {"scope" : "design"}},
         "tabSeq" : {"type" :"tabseq", "tags": { "scope" :"design" }}, 
         "placeholderText" : {"type": "tagstring", "default" : "Select...", "tags": {"scope" : "design"}}, 

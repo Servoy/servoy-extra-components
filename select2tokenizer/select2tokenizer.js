@@ -93,8 +93,10 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 				
 				var options = { };
 				// placeholder
-				if ($scope.model.placeholderText) options.placeholder = $scope.model.placeholderText;
 				options.multiple = true;
+				options.selectOnClose = $scope.model.closeOnSelect;
+				options.closeOnSelect = $scope.model.selectOnClose;
+				if ($scope.model.placeholderText) options.placeholder = $scope.model.placeholderText;
 				
 				// options.tokenSeparators = [',', ' '];
 //				$scope.model.allowNewEntries ? options.tags = tags : options.data = tags;
@@ -147,16 +149,16 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 					});
 					
 					// TODO fix tabsequence
-//					$scope.$evalAsync( function () {
-//						// find input
-//						var input = $element.find('input');
-//						if (!input.length) {
-//							$log.warn('selec2-autoTokenizer: cannot find input !!');
-//						}
-//						
-//						// add tabSequence
-//						// addTabSeq(input, $scope, $scope.model.tabSeq);
-//					});
+					$scope.$evalAsync( function () {
+						// find input
+						var input = $element.find('input');
+						if (!input.length) {
+							$log.warn('selec2-autoTokenizer: cannot find input !!');
+						}
+						
+						// add tabSequence
+						addTabSeq(input, $scope, $scope.model.tabSeq);
+					});
 											
 				} else {
 					$log.error('selec2-autoTokenizer: cannot find tokenizer in DOM');
