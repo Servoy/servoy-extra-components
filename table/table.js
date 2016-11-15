@@ -963,7 +963,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 										});
 									}
 									// call update table with the previous start index (of the ui childen) and then new one, and give the current firstRenderedRowIndex as the offset to start from
-									updateTable([{ startIndex: maxUISize, endIndex: maxRenderedRows - 1, type: 0 }], currentStartIndex) // endIndex is inclusive
+									updateTable([{ startIndex: currentStartIndex+maxUISize, endIndex: currentStartIndex+maxRenderedRows - 1, type: 0 }], currentStartIndex) // endIndex is inclusive
 								}
 							}
 						})
