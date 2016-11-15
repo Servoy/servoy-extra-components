@@ -20,7 +20,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				// a variable that hols the last request viewport size (so it won't start looping when scrolling down)
 				var lastRequestedViewPortSize = 0;
 				var lastRequestedViewPortStartIndex = 0;
-				// the start row index of the first rendred row
+				// the start row index of the first rendred row - relative to start of foundset (so not to any viewport)
 				var firstRenderedRowIndex = 0;
 
 				// used to avoid a situation where extra or less records are requested multiple times because previous load data requests have not yet arrived back from server to adjust viewport;
@@ -274,14 +274,15 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								}
 							}
 						} else {
+							$scope.model.currentPage = 1; // just to be sure - we are not paging so we are on fist "page"
 							var rowsToLoad = Math.min(serverSize, $scope.model.pageSize ? $scope.model.pageSize : nonPagingPageSize)
 							if ($scope.model.foundset.viewPort.size < rowsToLoad)
 								loadingRecordsPromise = $scope.model.foundset.loadExtraRecordsAsync(rowsToLoad - $scope.model.foundset.viewPort.size);
 						}
 						if (loadingRecordsPromise) {
 							loadingRecordsPromise.finally(function() {
-									loadingRecordsPromise = undefined;
-								});
+								loadingRecordsPromise = undefined;
+							});
 						}
 					}
 
@@ -653,109 +654,135 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 				function updateTable(changes, offset) {
 					var children = tbody.children();
-					var startIndex = 100000000;
-					var endIndex = 0;
-					var rowOffSet = offset?offset:0;
-					var childToScrollTo = null;
-					var insertIndex = -1;
+					var childrenListChanged = false;
+					var startIndex = 100000000; // relative to rendered/UI viewport
+					var endIndex = 0; // relative to rendered/UI viewport
+					var rowOffSet = offset ? offset : 0; // offset of firstRenderedRowIndex in/relative to model.foundset.viewport
+					var childIdxToScrollTo = -1;
+					var alignToTopWhenScrolling = false;
 					var vp = $scope.model.foundset.viewPort;
 					
 					if (changes) {
-						if (firstRenderedRowIndex + maxRenderedRows > vp.startIndex + vp.size) {
-							maxRenderedRows = vp.startIndex + vp.size - firstRenderedRowIndex;
-						}
-						// this is hit when row/column viewport updates are happening. we just need to rerender the changed area
+						// this is hit when row/column viewport updates are happening. we just need to re-render/add/remove the affected TDs in rendered viewport
+						// note that TDs are always relative to firstRenderedRowIndex of foundset (so the rendered viewport))
+
+						// first make sure render/UI viewport bounds do not exceed model.foundset.viewport bounds;
+						// any further corrections in NEEDED row bounds for display are done afterwards - if needed - in the scroll listener
+						firstRenderedRowIndex = Math.max(firstRenderedRowIndex, vp.startIndex);
+						maxRenderedRows = Math.min(maxRenderedRows, vp.startIndex + vp.size - firstRenderedRowIndex);
+						rowOffSet = firstRenderedRowIndex - vp.startIndex;
+
 						for (var i = 0; i < changes.length; i++) {
-							var rowUpdate = changes[i];
-							if (rowUpdate.startIndex < startIndex) startIndex = rowUpdate.startIndex;
-							var updateEndIndex = rowUpdate.endIndex;
-							// if insert then insert position end by convention really means new viewport size; endIndex == viewPort.size
+							var rowUpdate = changes[i]; // rowUpdate indexes are obviously relative to model.foundset.viewport
+							if (rowUpdate.startIndex < rowOffSet + startIndex) startIndex = rowUpdate.startIndex - rowOffSet;
+							var updateEndIndex = rowUpdate.endIndex - rowOffSet;
+							
 							if (rowUpdate.type == 1) {
+								// insert
+								// if it's an insert then insert position end by convention really means "new viewport size" not the endIndex; endIndex == viewPort.size (that is what the server sends for insert operations)
 								updateEndIndex--;
-								insertIndex = rowUpdate.startIndex;
-							}
-							if (rowUpdate.type == 2) {
-								updateEndIndex = vp.size - 1; // update all
+							} else if (rowUpdate.type == 2) {
+								// delete
+								updateEndIndex = vp.size - 1 - rowOffSet; // update all after startIndex
 							}
 							if (updateEndIndex > endIndex) endIndex = updateEndIndex;
 						}
-						endIndex = Math.min(maxRenderedRows - 1, endIndex); // end index is inclusive
+						endIndex = Math.min(maxRenderedRows - 1, endIndex); // we don't need to re-render more rows after rendered viewport
+						startIndex = Math.max(0, startIndex); // we don't need to re-render more rows before rendered viewport
 					} else if (offset >= 0) {
-						// offset is give when scolling up, so new rows will be appended (prepended visually)
+						// offset is given when scrolling up, so new rows will be appended (prepended visually)
 						startIndex = 0;
 						endIndex = maxRenderedRows - 1;
-						rowOffSet = offset;
-						var difference = firstRenderedRowIndex - vp.startIndex + rowOffSet
-						childToScrollTo = children.eq(difference)[0];
+						
+						// keep scroll at first element of currently first rendered element
+						childIdxToScrollTo = firstRenderedRowIndex - vp.startIndex - rowOffSet; // so oldRowOffset - newRowOffset basically as firstRenderedRowIndex will be updated a few lines below
+						alignToTopWhenScrolling = true;
+
+						firstRenderedRowIndex = vp.startIndex + rowOffSet; // update firstRenderedRowIndex to render newly fetched records on top
 					} else {
 						// called when a "full" render needs to be done
-						maxRenderedRows = Math.min(maxRenderedRows, vp.rows.length);
+						maxRenderedRows = Math.min(maxRenderedRows, vp.size);
 						var firstSelected = $scope.model.foundset.selectedRowIndexes ? $scope.model.foundset.selectedRowIndexes[0] : 0;
 						if (vp.startIndex < firstSelected && (vp.startIndex + vp.size) > firstSelected) {
-							var formStartToSelection = firstSelected - vp.startIndex
+							var formStartToSelection = firstSelected - vp.startIndex;
 							// selection is in the viewport, try to make sure that is visible.
-							rowOffSet = formStartToSelection - maxRenderedRows + 1;
+							rowOffSet = formStartToSelection - (maxRenderedRows / 2); // try to center selection in rendered/UI viewport
+							
+							// correct bounds if selection it too close to top or bottom of viewport to be really centered
 							if (rowOffSet < 0) rowOffSet = 0;
+							else if (rowOffSet + maxRenderedRows > vp.size) rowOffSet = vp.size - maxRenderedRows;
+							
+							childIdxToScrollTo = formStartToSelection - rowOffSet; // new selected row rendered index
 						} else {
-							children.eq(0)[0].scrollIntoView(false)
+							childIdxToScrollTo = 0;
 						}
 						startIndex = 0;
 						endIndex = maxRenderedRows - 1;
+						
+						firstRenderedRowIndex = vp.startIndex + rowOffSet;
 					}
+					
+
 					var formatFilter = $filter("formatFilter");
 					var columns = $scope.model.columns;
-					if (startIndex == 0) {
-						if (insertIndex > -1) {
-							// if an insert was done on startIndex = 0;
-							// the rows are added in front of the index.
-							rowOffSet = firstRenderedRowIndex - vp.startIndex
-							endIndex = maxRenderedRows - 1;
-						} 
-						else firstRenderedRowIndex = vp.startIndex + rowOffSet;
-					}
 					for (var j = startIndex; j <= endIndex; j++) {
-						var row = j + rowOffSet
-						var trChildren = children.eq(j).children()
+						var rowIdxInFoundsetViewport = j + rowOffSet; // index relative to foundset prop.'s viewport array?! but why rowOffset
+						var trChildren = children.eq(j).children(); // we should get child relative to really rendered rows viewport
 						if (trChildren.length == 0) {
-							tbody[0].appendChild(createTableRow(columns, row, formatFilter));
+							// as trChildren is relative to rendered viewport, it can only grow (have missing rows) or shrink at the end; if changes
+							// happen before it, the data is updated in those cells, no real dom Node inserts have to happen in specific indexes in
+							// the rendered viewpot
+							tbody[0].appendChild(createTableRow(columns, rowIdxInFoundsetViewport, formatFilter));
+							childrenListChanged = true;
 						} else for (var c = columns.length; --c >= 0;) {
 								var column = columns[c];
 								var td = trChildren.eq(c);
-								td.data('row_column', { row: row, column: c });
+								td.data('row_column', { row: rowIdxInFoundsetViewport, column: c });
 								var tdClass = 'c' + c;
 								if (column.styleClass) {
 									tdClass += ' ' + column.styleClass;
 								}
-								if (column.styleClassDataprovider && column.styleClassDataprovider[row]) {
-									tdClass += ' ' + column.styleClassDataprovider[row];
+								if (column.styleClassDataprovider && column.styleClassDataprovider[rowIdxInFoundsetViewport]) {
+									tdClass += ' ' + column.styleClassDataprovider[rowIdxInFoundsetViewport];
 								}
 								td[0].className = tdClass;
 								var divChild = td.children("div");
 								if (divChild.length == 1) {
 									// its text node
-									var value = column.dataprovider ? column.dataprovider[row] : null;
+									var value = column.dataprovider ? column.dataprovider[rowIdxInFoundsetViewport] : null;
 									value = getDisplayValue(value, column.valuelist);
 									value = formatFilter(value, column.format.display, column.format.type);
 									divChild.text(value)
 								} else {
 									var imgChild = td.children("img");
 									if (imgChild.length == 1) {
-										if (!column.dataprovider || !column.dataprovider[row]) {
+										if (!column.dataprovider || !column.dataprovider[rowIdxInFoundsetViewport]) {
 											imgChild[0].setAttribute("src", "");
-										} else imgChild[0].setAttribute("src", column.dataprovider[row].url);
+										} else imgChild[0].setAttribute("src", column.dataprovider[rowIdxInFoundsetViewport].url);
 									} else {
 										console.log("illegal state should be div or img")
 									}
 								}
 							}
 					}
+					
+					if (childrenListChanged) {
+						childrenListChanged = false;
+						children = tbody.children();
+					}
 					if (children.length > maxRenderedRows) {
 						for (var i = children.length; --i >= maxRenderedRows;) {
 							children.eq(i).remove();
+							childrenListChanged = true;
 						}
 					}
+
+					if (childrenListChanged) {
+						childrenListChanged = false;
+						children = tbody.children();
+					}
 					scrollIntoView(changes != null || offset >= 0);
-					if (childToScrollTo) childToScrollTo.scrollIntoView(true)
+					if (childIdxToScrollTo >= 0) children.eq(childIdxToScrollTo)[0].scrollIntoView(alignToTopWhenScrolling);
 				}
 
 				var columnCSSRules = [];
@@ -859,41 +886,40 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						tbodyOld.parentNode.replaceChild(tbodyNew, tbodyOld)
 						tbody = $(tbodyNew);
 						tbody.scroll(function(e) {
+							var vp = $scope.model.foundset.viewPort;
 							if (tbody.scrollTop() < 10) {
 								// scroll up behavior
 								// for none paging the minimal row index is 0
 								var minimalRowIndex = 0;
-								if ($scope.model.pageSize > 0) {
+								if ($scope.showPagination()) {
 									// paging mode calculate max size of the current viewPort
 									minimalRowIndex = $scope.model.pageSize * ($scope.model.currentPage - 1);
 								}
 								// check if the current first rendered row index is bigger then what the minimal would be
 								if (firstRenderedRowIndex > minimalRowIndex) {
-									var startIndex = $scope.model.foundset.viewPort.startIndex;
-									var currentRenderedRows = maxRenderedRows;
-									maxRenderedRows = Math.min(maxRenderedRows + initialMaxRenderedRows, $scope.model.foundset.viewPort.size);
-									var addedRows = maxRenderedRows - currentRenderedRows;
-									var offset = firstRenderedRowIndex - addedRows - startIndex
-									if (lastRequestedViewPortStartIndex != startIndex && startIndex > minimalRowIndex &&
-											(firstRenderedRowIndex- startIndex) < 20) {
+									var startIndex = vp.startIndex;
+									var maxRenderedRowsBefore = maxRenderedRows;
+									maxRenderedRows = Math.min(maxRenderedRows + initialMaxRenderedRows, vp.size);
+									var addedRows = maxRenderedRows - maxRenderedRowsBefore;
+									var offset = Math.max(0, firstRenderedRowIndex - addedRows - startIndex);
+									if (lastRequestedViewPortStartIndex != startIndex && startIndex > minimalRowIndex && (firstRenderedRowIndex - startIndex) < 20) {
 										lastRequestedViewPortStartIndex = startIndex;
-										var extraPage = Math.min(50, $scope.model.foundset.viewPort.startIndex);
+										var extraPage = Math.min(50, vp.startIndex);
 										loadingRecordsPromise = $scope.model.foundset.loadExtraRecordsAsync(-extraPage);
-										loadingRecordsPromise.then(function(){
-											var startIndex = $scope.model.foundset.viewPort.startIndex;
-											var currentRenderedRows = maxRenderedRows;
-											maxRenderedRows = Math.min(maxRenderedRows + initialMaxRenderedRows, $scope.model.foundset.viewPort.size);
-											var addedRows = maxRenderedRows - currentRenderedRows;
-											var offset = firstRenderedRowIndex - addedRows - startIndex;
-											updateTable(null,offset);
+										loadingRecordsPromise.then(function() {
+											maxRenderedRowsBefore = maxRenderedRows;
+											maxRenderedRows = Math.min(maxRenderedRows + initialMaxRenderedRows, vp.size); // adjust again just in case server made corrections to the viewport that we requested
+											addedRows = maxRenderedRows - maxRenderedRowsBefore;
+											offset = Math.max(0, firstRenderedRowIndex - addedRows - vp.startIndex);
+											updateTable(null, offset); // this can/will update firstRenderedRowIndex to match the given offset
 										}).finally(function() {
 											loadingRecordsPromise = undefined;
 										});
-									} 
-									updateTable(null,offset);
+									}
+									updateTable(null, offset);
 								}
-								
-							} else if ((tbody.scrollTop() + tbody.height()) > (tbody[0].scrollHeight - tbody.height())) {
+
+							} else if ( (tbody.scrollTop() + tbody.height()) > (tbody[0].scrollHeight - tbody.height())) {
 								// scroll down behavior
 								// calculate max size that can be get, default none paging is that serverSize.
 								var maxSize = $scope.model.foundset.serverSize;
@@ -904,13 +930,13 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 									var neededVpSize = Math.min($scope.model.pageSize, maxSize - neededVpStart);
 									maxSize = neededVpStart + neededVpSize;
 								}
-								if ( (firstRenderedRowIndex + maxRenderedRows) < maxSize ) {
-									var currentStartIndex = firstRenderedRowIndex - $scope.model.foundset.viewPort.startIndex;
-									var viewportSize = $scope.model.foundset.viewPort.size;
+								if ( (firstRenderedRowIndex + maxRenderedRows) < maxSize) {
+									var currentStartIndex = firstRenderedRowIndex - vp.startIndex;
+									var viewportSize = vp.size;
 									var maxUISize = maxRenderedRows;
-									maxRenderedRows = Math.min(maxRenderedRows + initialMaxRenderedRows, viewportSize-currentStartIndex);
-									var currentLoaded = $scope.model.foundset.viewPort.startIndex + viewportSize;
-									if (lastRequestedViewPortSize != viewportSize && currentLoaded < maxSize && (currentLoaded -(firstRenderedRowIndex + maxRenderedRows)) < 20) {
+									maxRenderedRows = Math.min(maxRenderedRows + initialMaxRenderedRows, viewportSize - currentStartIndex);
+									var currentLoaded = vp.startIndex + viewportSize;
+									if (lastRequestedViewPortSize != viewportSize && currentLoaded < maxSize && (currentLoaded - (firstRenderedRowIndex + maxRenderedRows)) < 20) {
 										lastRequestedViewPortSize = viewportSize;
 										loadingRecordsPromise = $scope.model.foundset.loadExtraRecordsAsync(nonPagingPageSize);
 										loadingRecordsPromise.finally(function() {
@@ -918,7 +944,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 										});
 									}
 									// call update table with the previous start index (of the ui childen) and then new one, and give the current firstRenderedRowIndex as the offset to start from
-									updateTable([{ startIndex: maxUISize, endIndex: maxRenderedRows - 1, type: 0 }],currentStartIndex) // endIndex is inclusive
+									updateTable([{ startIndex: maxUISize, endIndex: maxRenderedRows - 1, type: 0 }], currentStartIndex) // endIndex is inclusive
 								}
 							}
 						})
@@ -1049,7 +1075,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						if (!columns || columns.length == 0) return array;
 						var tbl = $element.find("table:first");
 						var headers = tbl.find("th");
-						for (var column = columns.length; --column>=0;) {
+						for (var column = columns.length; --column >= 0;) {
 							array += $(headers.get(column)).outerWidth(false);
 						}
 						return array;
