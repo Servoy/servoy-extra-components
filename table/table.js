@@ -146,7 +146,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					updateTBodyStyle($element.find('tbody')[0]);
 				}
 
-				$(window).on('resize', function() {
+				var windowResizeHandler = function() {
 						if (resizeTimeout) $timeout.cancel(resizeTimeout);
 						if ($scope.model.columns) {
 							resizeTimeout = $timeout(function() {
@@ -172,7 +172,8 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 									})
 								}, 50);
 						}
-					});
+				}
+				$(window).on('resize', windowResizeHandler);
 
 				function addColResizable(cleanPrevious) {
 					var tbl = $element.find("table:first");
@@ -563,59 +564,52 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 					}
 				}
+				
+				function getFirstVisibleChild() {
+					var tbodyBounds = tbody[0].getBoundingClientRect();
+					var children = tbody.children()
+					for(var i=0;i<children.length;i++) {
+						var childBounds = children[i].getBoundingClientRect();
+						if (childBounds.top >= tbodyBounds.top) {
+							return children[i];
+						}
+					}
+				}
+				function getLastVisibleChild() {
+					var tbodyBounds = tbody[0].getBoundingClientRect();
+					var children = tbody.children()
+					for(var i=0;i<children.length;i++) {
+						var childBounds = children[i].getBoundingClientRect();
+						if (childBounds.bottom >= tbodyBounds.bottom) {
+							if (i > 0) return children[i-1]
+							return children[i];
+						}
+					}
+					return children[children.length-1]
+				}
 
 				$scope.keyPressed = function(event) {
 					var fs = $scope.model.foundset;
 					if (fs.selectedRowIndexes && fs.selectedRowIndexes.length > 0) {
 						var selection = fs.selectedRowIndexes[0];
-						if (event.keyCode == 34 || event.keyCode == 33) {
-							var firstSelected = $scope.model.foundset.selectedRowIndexes[0];
-							firstSelected = firstSelected - ($scope.model.pageSize * ($scope.model.currentPage - 1));
-							var child = tbody.children().eq(firstSelected)
-							if (child.length > 0) {
-								var childBounds = child[0].getBoundingClientRect();
-								var tbodyBounds = tbody[0].getBoundingClientRect();
-								if (event.keyCode == 34) {
-									if (childBounds.top <= (tbodyBounds.top + childBounds.height - 5)) {
-										var newTopChild = null;
-										var totalHeight = childBounds.height / 2;
-										var numberOfItems = 0;
-										var children = tbody.children().slice(firstSelected);
-										for (; numberOfItems < children.length; numberOfItems++) {
-											var childHeight = children[numberOfItems].getBoundingClientRect().height;
-											totalHeight += childHeight;
-											if (totalHeight > tbodyBounds.height) {
-												newTopChild = children[numberOfItems];
-												break;
-											}
-										}
-										if (newTopChild != null) {
-											newTopChild.scrollIntoView(true);
-											fs.selectedRowIndexes = [firstSelected + numberOfItems];
-										}
-									} else {
-										child[0].scrollIntoView(true);
-									}
-								} else if (childBounds.bottom <= (tbodyBounds.bottom - childBounds.height + 5)) {
-									child[0].scrollIntoView(false);
-								} else {
-									var newTopChild = null;
-									var totalHeight = childBounds.height / 2;
-									var numberOfItems = firstSelected;
-									var children = tbody.children();
-									for (; numberOfItems > 0; numberOfItems--) {
-										var childHeight = children[numberOfItems].getBoundingClientRect().height;
-										totalHeight += childHeight;
-										if (totalHeight > tbodyBounds.height) {
-											newTopChild = children[numberOfItems];
-											break;
-										}
-									}
-									if (newTopChild != null) {
-										newTopChild.scrollIntoView(false);
-										fs.selectedRowIndexes = [numberOfItems];
-									}
+						if (event.keyCode == 33) {
+							var child = getFirstVisibleChild();
+							if (child) {
+								var row_column = $(child).children().eq(0).data("row_column");
+								if (row_column) {
+									fs.selectedRowIndexes = [row_column.row];
 								}
+								child.scrollIntoView(false);
+							}
+						}
+						else if (event.keyCode == 34) {
+							var child = getLastVisibleChild();
+							if (child) {
+								var row_column = $(child).children().eq(0).data("row_column");
+								if (row_column) {
+									fs.selectedRowIndexes = [row_column.row];
+								}
+								child.scrollIntoView(true);
 							}
 						} else if (event.keyCode == 38) {
 							if (selection > 0) {
@@ -813,12 +807,14 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							var rules = targetStyleSheet.cssRules || targetStyleSheet.rules;
 							targetStyleSheet.insertRule(clsName + '{}', rules.length);
 							columnCSSRules[columnIndex] = rules[rules.length - 1];
+							columnCSSRules[columnIndex].style["height"] = $scope.model.minRowHeight;
 						}
 					}
 
 					for (var p in style) {
 						columnCSSRules[columnIndex].style[p] = style[p];
 					}
+					
 				}
 				// cache for the current set style class names, used in the columns property watcher.
 				var columnStyleClasses = [];
@@ -1142,6 +1138,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				}
 
 				var destroyListenerUnreg = $scope.$on("$destroy", function() {
+						$(window).off('resize', windowResizeHandler);
 						destroyListenerUnreg();
 						delete $scope.model[$sabloConstants.modelChangeNotifier];
 					});
