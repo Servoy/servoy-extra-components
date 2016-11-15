@@ -613,7 +613,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					var fs = $scope.model.foundset;
 					if (fs.selectedRowIndexes && fs.selectedRowIndexes.length > 0) {
 						var selection = fs.selectedRowIndexes[0];
-						if (event.keyCode == 33) {
+						if (event.keyCode == 33) { // PAGE UP KEY
 							var child = getFirstVisibleChild();
 							if (child) {
 								var row_column = $(child).children().eq(0).data("row_column");
@@ -623,7 +623,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								child.scrollIntoView(false);
 							}
 						}
-						else if (event.keyCode == 34) {
+						else if (event.keyCode == 34) { // PAGE DOWN KEY
 							var child = getLastVisibleChild();
 							if (child) {
 								var row_column = $(child).children().eq(0).data("row_column");
@@ -632,7 +632,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								}
 								child.scrollIntoView(true);
 							}
-						} else if (event.keyCode == 38) {
+						} else if (event.keyCode == 38) { // ARROW UP KEY
 							if (selection > 0) {
 								fs.selectedRowIndexes = [selection - 1];
 								if ( (fs.viewPort.startIndex) <= selection - 1) {
@@ -640,7 +640,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								} else $scope.modifyPage(-1);
 							}
 							event.preventDefault();
-						} else if (event.keyCode == 40) {
+						} else if (event.keyCode == 40) { // ARROW DOWN KEY
 							if (selection < fs.serverSize - 1) {
 								fs.selectedRowIndexes = [selection + 1];
 								if ( (fs.viewPort.startIndex + fs.viewPort.size) > selection + 1) {
@@ -648,7 +648,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								} else $scope.modifyPage(1);
 							}
 							event.preventDefault();
-						} else if (event.keyCode == 13) {
+						} else if (event.keyCode == 13) { // ENTER KEY
 							if ($scope.handlers.onCellClick) {
 								$scope.handlers.onCellClick(selection + 1, null, fs.viewPort.rows[selection])
 							}
@@ -728,8 +728,10 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							else if (rowOffSet + maxRenderedRows > vp.size) rowOffSet = vp.size - maxRenderedRows;
 							
 							childIdxToScrollTo = formStartToSelection - rowOffSet; // new selected row rendered index
+							alignToTopWhenScrolling = !toBottom;
 						} else {
 							childIdxToScrollTo = 0;
+							alignToTopWhenScrolling = !toBottom;
 						}
 						startIndex = 0;
 						endIndex = maxRenderedRows - 1;
