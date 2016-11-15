@@ -206,14 +206,13 @@
 	"types": {
     	"MenuItem": {
       		"id"					: {"type" : "object"},
-      		"text"					: "tagstring",
-      		"iconStyleClass"		: "styleclass",
-      		"styleClass"			: "styleclass",
+      		"text"					: {"type" : "tagstring"},
+      		"iconStyleClass"		: {"type" : "styleclass"},
+      		"styleClass"			: {"type" : "styleclass"},
       		"enabled"				: {"type" : "boolean", "default": true},
-      		"data"					: "object",
-      		"menuItems"				: "MenuItem[]",
-      		
-      		"isDivider"				: "boolean"
+      		"data"					: {"type" : "object"},
+      		"menuItems"				: {"type": "MenuItem[]"},
+      		"isDivider"				: {"type" : "boolean", "default": false}
     	}
 	}
 }
