@@ -618,7 +618,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							if (child) {
 								var row_column = $(child).children().eq(0).data("row_column");
 								if (row_column) {
-									fs.selectedRowIndexes = [row_column.row];
+									fs.selectedRowIndexes = [fs.viewPort.startIndex + row_column.row];
 								}
 								child.scrollIntoView(false);
 							}
@@ -628,7 +628,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							if (child) {
 								var row_column = $(child).children().eq(0).data("row_column");
 								if (row_column) {
-									fs.selectedRowIndexes = [row_column.row];
+									fs.selectedRowIndexes = [fs.viewPort.startIndex + row_column.row];
 								}
 								child.scrollIntoView(true);
 							}
