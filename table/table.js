@@ -443,7 +443,28 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						if (newValue.length > 0) {
 							if ( (newValue != oldValue || $scope.model.lastSelectionFirstElement != newValue[0]) && $scope.model.foundset) {
 								scrollNeeded = true;
-								scrollIntoView();
+								var newFirstSelectedValue = newValue[0];
+								// first check if the selected row is in the current ui viewport.
+								if (newFirstSelectedValue < firstRenderedRowIndex || newFirstSelectedValue > (firstRenderedRowIndex + maxRenderedRows)) {
+									// its not in the current ui viewport, check if it is in the current data viewport
+									var vp = $scope.model.foundset.viewPort;
+									if (newFirstSelectedValue < vp.startIndex || newFirstSelectedValue > (vp.startIndex + vp.size) ) {
+										// selection is not inside the viewport, request another viewport around the selection.
+										var newStart = newFirstSelectedValue - 25;
+										if (newStart + 50 > $scope.model.foundset.serverSize) {
+											newStart = $scope.model.foundset.serverSize - 50;
+										}
+										if (newStart < 0) newStart = 0;
+										$scope.model.foundset.loadRecordsAsync(newStart, 50).then(function() {
+											updateTable(null);
+										})
+									}
+									else {
+										updateTable(null);
+									}
+									
+								}
+								else scrollIntoView();
 							}
 							$scope.model.lastSelectionFirstElement = newValue[0];
 						}
@@ -807,7 +828,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							var rules = targetStyleSheet.cssRules || targetStyleSheet.rules;
 							targetStyleSheet.insertRule(clsName + '{}', rules.length);
 							columnCSSRules[columnIndex] = rules[rules.length - 1];
-							columnCSSRules[columnIndex].style["height"] = $scope.model.minRowHeight;
+							columnCSSRules[columnIndex].style["height"] = $scope.model.minRowHeight
 						}
 					}
 
