@@ -342,7 +342,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					});
 
 				$scope.$watch('model.foundset.viewPort.rows', function(newValue, oldValue) {
-						maxRenderedRows = Math.min(initialMaxRenderedRows, $scope.model.pageSize);
+						maxRenderedRows = $scope.model.pageSize > 0?Math.min(initialMaxRenderedRows, $scope.model.pageSize):initialMaxRenderedRows;
 						lastRequestedViewPortSize = 0;
 						lastRequestedViewPortStartIndex = 0;
 						generateTemplate();
@@ -359,7 +359,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							if (oldValue && newValue && $scope.showPagination()) {
 								adjustFoundsetViewportIfNeeded();
 							}
-							maxRenderedRows = Math.min(initialMaxRenderedRows, $scope.model.pageSize);
+							maxRenderedRows = $scope.model.pageSize > 0?Math.min(initialMaxRenderedRows, $scope.model.pageSize):initialMaxRenderedRows;
 						}
 						$scope.model.foundset.setPreferredViewportSize( (newValue < 50 && newValue != 0) ? newValue : nonPagingPageSize)
 					});
