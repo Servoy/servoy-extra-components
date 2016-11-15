@@ -2,6 +2,7 @@
 	"name": "servoyextra-sidenav",
 	"displayName": "sidenav",
 	"version": 1,
+	"icon": "servoyextra/sidenav/bars.png",
 	"definition": "servoyextra/sidenav/sidenav.js",
 	"serverscript" : "servoyextra/sidenav/sidenav_server.js",
 	"libraries": [{"name":"svy-sidenav.css", "version":"1", "url":"servoyextra/sidenav/svy-sidenav.css", "mimetype":"text/css"},
