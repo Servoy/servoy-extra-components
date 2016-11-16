@@ -1,5 +1,5 @@
 angular.module('servoyextraSelect2tokenizer',['servoy'])
-.directive('servoyextraSelect2tokenizer', ['$log', '$sabloConstants', '$compile', function($log, $sabloConstants, $compile) {
+.directive('servoyextraSelect2tokenizer', ['$log', '$sabloConstants', '$compile', '$timeout', function($log, $sabloConstants, $compile, $timeout) {
 	return {
 		restrict: 'E',
 		scope: {
@@ -19,6 +19,8 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 			var tags = [];			// the array of valuelistItems
 			var hashMap = {}; 		// contains the realValue to be resolved in displayValue
 			var searchText;			// the last search text
+			var tabIndex;
+			var observer;
 
 			var wrapper = $element.find('.svy-select2-autotokenizer');
 			var tokenizer = $element.find('.svy-select2');
@@ -81,6 +83,9 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 			var destroyListenerUnreg = $scope.$on("$destroy", function() {
 				destroyListenerUnreg();
 				delete $scope.model[$sabloConstants.modelChangeNotifier];
+				if (observer) {
+					observer.disconnect();
+				}
 			});
 			
 			// data can already be here, if so call the modelChange function so that it is initialized correctly.
@@ -94,8 +99,8 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 				var options = { };
 				// placeholder
 				options.multiple = true;
-				options.selectOnClose = $scope.model.closeOnSelect;
-				options.closeOnSelect = $scope.model.selectOnClose;
+				options.selectOnClose = $scope.model.selectOnClose;
+				options.closeOnSelect = $scope.model.closeOnSelect;
 				if ($scope.model.placeholderText) options.placeholder = $scope.model.placeholderText;
 				
 				// options.tokenSeparators = [',', ' '];
@@ -123,12 +128,14 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 				if (tokenizer && tokenizer.length) {
 					// remove old listeners
 					tokenizer.off("change");
+					tokenizer.off("select2:open");
+					tokenizer.off("select2:close");
 					
 					// init the select 2
 					tokenizer.select2(options);
 					tokenizer.on("change", function(e) {
 							onChange(e);
-						});
+					});
 					
 					// called each time the dropdown is open
 					tokenizer.on("select2:open", function(e) {
@@ -147,18 +154,9 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 							$scope.handlers.onFocusLostMethodID(e)
 						}
 					});
-					
-					// TODO fix tabsequence
-					$scope.$evalAsync( function () {
-						// find input
-						var input = $element.find('input');
-						if (!input.length) {
-							$log.warn('selec2-autoTokenizer: cannot find input !!');
-						}
-						
-						// add tabSequence
-						addTabSeq(input, $scope, $scope.model.tabSeq);
-					});
+
+					// init the tabSequence		
+					$scope.$evalAsync(initTabSequence);
 											
 				} else {
 					$log.error('selec2-autoTokenizer: cannot find tokenizer in DOM');
@@ -187,13 +185,62 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 				}
 			}
 			
-			function addTabSeq (input, scope, tabSeq) {
-				// FIXME has to be done costantly
+			function initTabSequence() {
+			    addTabSeq($scope, $scope.model.tabSeq);
+				
+			    // start an observer to get mutation on the selected element
+				observer = new MutationObserver(function(mutations) {
+					mutations.forEach(function(mutation) {
+				    if (mutation.addedNodes.length && mutation.addedNodes[0].classList.contains('select2-search')) {
+					    $timeout(setTabSeq);
+				    }
+				  });    
+				});
+					
+				var obsConfig = { attributes: false, childList: true, characterData: false };						
+				var target = $element.find("ul.select2-selection__rendered");
+				observer.observe(target[0], obsConfig);
+			}
+			
+			function addTabSeq (scope, tabSeq) {
+				
+				// add and evaluate sablo-tabseq on the input field
+				var input = $element.find('input');
 				if (input && input !== []) {
 					if (!isNaN(tabSeq) && tabSeq > -1 ) {
+						// set the tabSeq on the input field
 						input.attr("sablo-tabseq", tabSeq); 
 						$compile(input)(scope);
+						
+						// persist the tabSeq in an internal var
+						$scope.$evalAsync(function () {
+							tabIndex = input.attr("tabindex");
+							$log.debug("store tabIndex value " + tabIndex);
+							setTabSeq();
+						});
+					} else {
+						tabIndex = -1;
+						setTabSeq();
 					}
+				} else {
+					$log.warn('selec2-autoTokenizer: addTabSeq cannot find input !');
+				}
+			}
+			
+			function setTabSeq () {
+			
+				// update the tabSequence value of the input field.
+				var input = $element.find('input');				
+				$log.debug('set tab index to: ' +tabIndex);
+				
+				if (input && input !== []) {
+					if (!isNaN(tabIndex) && tabIndex > -1 ) {
+						input.attr('tabindex', tabIndex);
+					} else {
+						input.attr('tabindex', -1);
+					}
+				} else {
+					$log.warn('selec2-autoTokenizer: setTabSeq cannot find input !');
 				}
 			}
 			
@@ -384,7 +431,6 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 			}
 
 			$scope.api.onDataChangeCallback = function(event, returnval) {
-			     console.log("onDataChangeCallback")
 			     var stringValue = typeof returnval == 'string'
 			     if (!returnval || stringValue) {
 						wrapper.addClass('ng-invalid');
