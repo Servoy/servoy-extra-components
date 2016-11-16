@@ -126,6 +126,11 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 				}
 
 				if (tokenizer && tokenizer.length) {
+					
+					// listen for focus to set tabIndex
+					wrapper.unbind('focus')
+					wrapper.bind('focus', setFocus)
+					
 					// remove old listeners
 					tokenizer.off("change");
 					tokenizer.off("select2:open");
@@ -154,14 +159,39 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 							$scope.handlers.onFocusLostMethodID(e)
 						}
 					});
-
-					// init the tabSequence		
-					$scope.$evalAsync(initTabSequence);
 											
 				} else {
 					$log.error('selec2-autoTokenizer: cannot find tokenizer in DOM');
 				}
 
+			}
+			
+			function setFocus(e) {
+				if (tabIndex === null || tabIndex === undefined) {
+					tabIndex = wrapper.attr("tabindex");
+					
+					// use the reserved gap
+					if (tabIndex > -1) {
+						tabIndex = parseInt(tabIndex) + 1;
+					}
+				}
+				var input = $element.find('input');
+				if (input[0]) {
+					resetInputTabIndex(input);
+					input[0].focus();
+				} else {
+					$log.warn("select-2autoTokenizer: cannot set focus on field")
+				}
+			}
+			
+			function resetInputTabIndex(input) {
+				if (!input) input = $element.find('input');
+				if (input[0]) {
+					console.log(tabIndex)
+					input.attr("tabindex", tabIndex);
+				} else {
+					$log.warn("select-2autoTokenizer: cannot set focus on field")
+				}
 			}
 			
 			/**
