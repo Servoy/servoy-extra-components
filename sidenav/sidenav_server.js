@@ -54,14 +54,7 @@ $scope.api.setRootMenuItems = function(menuItems) {
  * Returns the root menu object
  * @public
  *
- * @return {Array<{id: String|Number,
- * 			text: String=,
- * 			styleClass: String=,
- * 			iconStyleClass: String=,
- * 			enabled: Boolean=,
- * 			data: Object=,
- * 			menuItems: Array=,
- * 			isDivider : Boolean=}>}
+ * @return {Array<servoyextra-sidenav.MenuItem>}
  * */
 $scope.api.getRootMenuItems = function() {
 	var menuItems = $scope.model.menu;
@@ -74,17 +67,10 @@ $scope.api.getRootMenuItems = function() {
  *
  * @param {String|Number} menuItemId
  *
- * @return {{id: String|Number,
- * 			text: String=,
- * 			styleClass: String=,
- * 			iconStyleClass: String=,
- * 			enabled: Boolean=,
- * 			data: Object=,
- * 			menuItems: Array=,
- * 			isDivider : Boolean=}}
+ * @return {servoyextra-sidenav.MenuItem}
  * */
 $scope.api.getMenuItem = function(menuItemId) {
-	return getNodeById(menuItemId, $scope.model.menu);
+	return  getNodeById(menuItemId, $scope.model.menu);
 }
 
 /**
@@ -93,14 +79,7 @@ $scope.api.getMenuItem = function(menuItemId) {
  *
  * @param {String|Number} menuItemId
  *
- * @return {{id: String|Number,
- * 			text: String=,
- * 			styleClass: String=,
- * 			iconStyleClass: String=,
- * 			enabled: Boolean=,
- * 			data: Object=,
- * 			menuItems: Array=,
- * 			isDivider : Boolean=}}
+ * @return {servoyextra-sidenav.MenuItem}
  * */
 $scope.api.getParentMenuItem = function(menuItemId) {
 	var parent = getParentNode(menuItemId, $scope.model.menu);
@@ -234,17 +213,10 @@ $scope.api.removeMenuItem = function(menuItemId) {
 * @public
 *
 * @param {String|Number} menuItemId
-* @return {Array<{id: String|Number, 
-* 			text: String=,
-* 			styleClass: String=,
-* 			iconStyleClass: String=,
-* 			enabled: Boolean=,
-* 			data: Object=,
-*			menuItems: Array=,
-*			isDivider : Boolean=}>} 
+* @return {Array<servoyextra-sidenav.MenuItem>} 
 */
 $scope.api.getSubMenuItems = function(menuItemId) {
-	/** @type {Array<{id: String, text: String,styleClass: String=,iconStyleClass: String=,enabled: Boolean=,data: Object=,menuItems: Array=,isDivider : Boolean=}>} */
+	/** @type {Array<servoyextra-sidenav.MenuItem>} */
 	var menuItems;
 	var tree = $scope.model.menu;
 	var node = getNodeById(menuItemId, tree);
@@ -361,18 +333,11 @@ $scope.api.clearMenuItems = function(depth) {
  * @param {String|Number} menuItemId
  * @param {Array} nodes
  *
- * @return {{id: String|Number,
- * 			text: String=,
- * 			styleClass: String=,
- * 			iconStyleClass: String=,
- * 			enabled: Boolean=,
- * 			data: Object=,
- * 			menuItems: Array=,
- * 			isDivider : Boolean=}} */
+ * @return {servoyextra-sidenav.MenuItem} */
 getNodeById = function(menuItemId, nodes) {
-	/** @type {{id: String, text: String,styleClass: String=,iconStyleClass: String=,enabled: Boolean=,data: Object=,menuItems: Array=,isDivider : Boolean=}} */
+	/** @type {servoyextra-sidenav.MenuItem} */
 	var node;
-	/** @type {{id: String, text: String,styleClass: String=,iconStyleClass: String=,enabled: Boolean=,data: Object=,menuItems: Array=,isDivider : Boolean=}} */
+	/** @type {servoyextra-sidenav.MenuItem} */
 	var subNode;
 	if (nodes) {
 		for (var i = 0; i < nodes.length; i++) { // search in each subtree
@@ -398,18 +363,11 @@ getNodeById = function(menuItemId, nodes) {
  * @param {Array<Number>} path
  * @param {Array} nodes
  *
- * @return {{id: String|Number, 
- * 			text: String=,
- * 			styleClass: String=,
- * 			iconStyleClass: String=,
- * 			enabled: Boolean=,
- * 			data: Object=,
- * 			menuItems: Array=,
- * 			isDivider : Boolean=}}
+ * @return {servoyextra-sidenav.MenuItem}
  * */
 getNodeByIndexPath = function(path, nodes) {
 	
-	/** @type {{id: String, text: String,styleClass: String=,iconStyleClass: String=,enabled: Boolean=,data: Object=,menuItems: Array=,isDivider : Boolean=}} */
+	/** @type {servoyextra-sidenav.MenuItem} */
 	var node = null;
 	if (nodes) {
 		if (path && path.length === 1) {
@@ -460,14 +418,7 @@ getPathToNode = function(idOrNode, nodes, key) {
  * @param {String|Number} menuItemId
  * @param {Array} nodes
  *
- * @return {{id: String|Number,
- * 			text: String=, 
- * 			styleClass: String=, 
- * 			iconStyleClass: String=, 
- * 			enabled: Boolean=, 
- * 			data: Object=,
- * 			menuItems: Array=,
- * 			isDivider : Boolean=}} */
+ * @return {servoyextra-sidenav.MenuItem} */
 getParentNode = function(menuItemId, nodes) {
 	var indexPath = getPathToNode(menuItemId, nodes);
 	if (indexPath && indexPath.length > 1) {
@@ -485,14 +436,8 @@ getParentNode = function(menuItemId, nodes) {
  * @param {Array} nodes
  *
  *
- * @return {{id: String|Number,
- * 			text: String=,
- * 			styleClass: String=,
- * 			iconStyleClass: String=,
- * 			enabled: Boolean=,
- * 			data: Object=,
- * 			menuItems: Array=,
- * 			isDivider : Boolean=}} */
+ * @return {servoyextra-sidenav.MenuItem} 
+ * */
 getParentNodeByIndexPath = function(indexPath, nodes) {
 	if (indexPath && indexPath.length > 1) {
 		return getNodeByIndexPath(indexPath.slice(0, indexPath.length - 1), nodes);

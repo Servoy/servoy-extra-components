@@ -311,14 +311,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 * 
 				 * @param {Number} [level] if level is provided search for the selected menu item at level.
 				 * 
-				 * @return {{id: String|Number ,
-	  				text: String=,
-	  				styleClass: String=,
-	  				iconStyleClass: String=,
-	  				enabled: Boolean=,
-	  				data: Object=,
-	  				menuItems: Array=,
-	  				isDivider : Boolean=}}
+				 * @return {servoyextra-sidenav.MenuItem}
 				 * */
 				$scope.api.getSelectedMenuItem = function(level) {
 					// TODO if level is greater then selected level, what should return ?
