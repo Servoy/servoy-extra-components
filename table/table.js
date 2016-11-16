@@ -799,7 +799,16 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						children = tbody.children();
 					}
 					scrollIntoView(changes != null || offset >= 0);
-					if (childIdxToScrollTo >= 0) children.eq(childIdxToScrollTo)[0].scrollIntoView(alignToTopWhenScrolling);
+					if (childIdxToScrollTo >= 0) {
+						var scrollToChild = children.eq(childIdxToScrollTo)[0];
+						if (scrollToChild) {
+							var tbodyBounds = tbody[0].getBoundingClientRect();
+							var childBounds = scrollToChild.getBoundingClientRect();
+							if (childBounds.top < tbodyBounds.top || childBounds.bottom > tbodyBounds.bottom) {
+								scrollToChild.scrollIntoView(alignToTopWhenScrolling);
+							}
+						}
+					}
 				}
 
 				var columnCSSRules = [];
