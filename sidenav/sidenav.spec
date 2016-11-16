@@ -34,20 +34,20 @@
 	{
 	        "onMenuItemSelected" 		: {
 										        "parameters" : [
-										        	{ "name" : "menuItem", "type" : "MenuItem" },
+										        	{ "name" : "menuItemId", "type" : "object" },
 										            { "name" : "event", "type" : "JSEvent" }
 										        ],
 										        "returns" : "boolean"
 										  },
 			"onMenuItemExpanded" 		: {
 										        "parameters" : [
-										        	{ "name" : "menuItem", "type" : "MenuItem" },
+										        	{ "name" : "menuItemId", "type" : "object" },
 										            { "name" : "event", "type" : "JSEvent" }
 										        ]
 										  },
 			"onMenuItemCollapsed" 		: {
 										        "parameters" : [
-										        	{ "name" : "menuItem", "type" : "MenuItem" },
+										        	{ "name" : "menuItemId", "type" : "object" },
 										            { "name" : "event", "type" : "JSEvent" }
 										        ]
 										  }
@@ -212,7 +212,7 @@
       		"styleClass"			: {"type" : "styleclass"},
       		"enabled"				: {"type" : "boolean", "default": true},
       		"data"					: {"type" : "object"},
-      		"menuItems"				: {"type": "MenuItem[]"},
+      		"menuItems"				: {"type" : "MenuItem[]"},
       		"isDivider"				: {"type" : "boolean", "default": false}
     	}
 	}

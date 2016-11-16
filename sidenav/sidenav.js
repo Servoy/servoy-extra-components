@@ -1,4 +1,4 @@
-angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoyextraSidenav', ["$animate", "$sabloConstants", function($animate, $sabloConstants) {
+angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoyextraSidenav', ['$animate', '$sabloConstants', '$log',  function($animate, $sabloConstants, $log) {
 		return {
 			restrict: 'E',
 			scope: {
@@ -151,7 +151,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				/**
 				 * @param {Number} level
 				 * @param {Number} index
-				 * @param {NavMenuItem} item
+				 * @param {servoyextra-sidenav.MenuItem} item
 				 * @param {Object} [event]
 				 * @param {Object} [preventHandler]
 				 *
@@ -171,14 +171,13 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					}
 
 					if (preventHandler != true && $scope.handlers.onMenuItemSelected) { // change selection only if onMenuItemSelected allows it
-						var menuItem = getNodeById(item.id , $scope.model.menu)
-						$scope.handlers.onMenuItemSelected(item, event).then(function(result) {
+						$scope.handlers.onMenuItemSelected(item.id, event).then(function(result) {
 								if (result == true) {
 									confirmSelection();
 								}
 							}, function(err) { // Error: "Oops something went wrong"
 								// TODO use logging instead
-								console.log(err);
+								$log.error(err);
 							});
 					} else {
 						confirmSelection();
@@ -215,7 +214,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				/**
 				 * @param {Number} level
 				 * @param {Number} index
-				 * @param {NavMenuItem} item
+				 * @param {servoyextra-sidenav.MenuItem} item
 				 * @param {Object} [event]
 				 * @param {Object} [preventHandler]
 				 *
@@ -241,13 +240,13 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 
 					// if is expanded
 					if (preventHandler != true && $scope.handlers.onMenuItemExpanded) { // change selection only if onMenuItemSelected allows it
-						$scope.handlers.onMenuItemExpanded(item, event).then(function(result) {
+						$scope.handlers.onMenuItemExpanded(item.id, event).then(function(result) {
 								// if (result == true) {
 								setExpandedIndex(level, index, item);
 								// }
 							}, function(err) { // Error: "Oops something went wrong"
 								// TODO use logging instead
-								console.log(err);
+								$log.error(err);
 							});
 					} else {
 						setExpandedIndex(level, index, item);
@@ -259,7 +258,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				/**
 				 * @param {Number} level
 				 * @param {Number} index
-				 * @param {NavMenuItem} item
+				 * @param {servoyextra-sidenav.MenuItem} item
 				 * @param {Object} [event]
 				 * @param {Object} [preventHandler]
 				 *
@@ -284,13 +283,13 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 
 					// call handler onMenuItemCollapsed
 					if (preventHandler != true && $scope.handlers.onMenuItemCollapsed) {
-						$scope.handlers.onMenuItemCollapsed(item, event).then(function(result) {
+						$scope.handlers.onMenuItemCollapsed(item.id, event).then(function(result) {
 								// if (result == true) {
 								clearExpandedIndex(level - 1);
 								// }
 							}, function(err) { // Error: "Oops something went wrong"
 								// TODO use logging instead
-								console.log(err);
+								$log.error(err);
 							});
 					} else {
 						clearExpandedIndex(level - 1);
@@ -519,12 +518,12 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 * @param {String|Number} nodeId
 				 * @param {Array} nodes
 				 *
-				 * @return {NavMenuItem}
+				 * @return {servoyextra-sidenav.MenuItem}
 				 * */
 				getNodeById = function(nodeId, nodes) {
 					if (nodes) {
 						for (var i = 0; i < nodes.length; i++) { // search in each subtree
-							/** @type {NavMenuItem} */
+							/** @type {servoyextra-sidenav.MenuItem} */
 							var subTree = nodes[i];
 							// TODO use type equality or not ?
 							if (subTree.id == nodeId) { // find the node
@@ -545,10 +544,10 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 * @param {Array<Number>} path
 				 * @param {Array} nodes
 				 *
-				 * @return {NavMenuItem}
+				 * @return {servoyextra-sidenav.MenuItem}
 				 * */
 				getNodeByIndexPath = function(path, nodes) {
-					/** @type {NavMenuItem} */
+					/** @type {servoyextra-sidenav.MenuItem} */
 					var node = null;
 					if (nodes) {
 						if (path && path.length === 1) {
@@ -558,7 +557,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 							var subtree = nodes[subPathIndex].menuItems;
 							node = getNodeByIndexPath(path.slice(1, path.length), subtree);
 						} else { // is the root
-							console.log("there is no path")
+							$log.warn("there is no path")
 							node = nodes;
 						}
 					}
@@ -629,7 +628,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 * Returns the parent node
 				 *
 				 * @param {String|Number} nodeId
-				 * @return NavMenuItem
+				 * @return {servoyextra-sidenav.MenuItem}
 				 * */
 				getParentNode = function(nodeId) {
 					var anchestors = getNodeAnchestors(nodeId);
@@ -657,14 +656,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 * Returns the selected node up-to level
 				 *
 				 * @param {Number} [level] 1-based
-				 * @return {{id: String|Number ,
-  				text: String=,
-  				styleClass: String=,
-  				iconStyleClass: String=,
-  				enabled: Boolean=,
-  				data: Object=,
-  				menuItems: Array=,
-  				isDivider : Boolean=}}
+				 * @return {servoyextra-sidenav.MenuItem}
 				 * */
 				getSelectedNode = function(level) {
 					var levels = $scope.selectedIndex;
@@ -699,7 +691,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 *
 				 * @param {Number} [level] 1-based target level
 				 * @param {Number} index value
-				 * @param {NavMenuItem} item
+				 * @param {servoyextra-sidenav.MenuItem} item
 				 *
 				 * */
 				setSelectedIndex = function(level, index, item) {
@@ -754,7 +746,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 *
 				 * @param {Number} [level] 1-based target level
 				 * @param {Number} index value
-				 * @param {NavMenuItem} item the expanded node
+				 * @param {servoyextra-sidenav.MenuItem} item the expanded node
 				 *
 				 * */
 				setExpandedIndex = function(level, index, item) {
@@ -819,7 +811,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					// TODO refactor: use getNodeAnchestors
 					var indexPath = getPathToNode(nodeId, $scope.model.menu);
 					var tree = $scope.model.menu;
-					/** @type {NavMenuItem} */
+					/** @type {servoyextra-sidenav.MenuItem} */
 					var node;
 					
 					if (!indexPath || !indexPath.length) {
