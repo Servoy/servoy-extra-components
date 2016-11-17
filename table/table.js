@@ -890,30 +890,23 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				var columnListener = null;
 				function generateTemplate(full) {
 					var columns = $scope.model.columns;
-					console.log("generate template")
 					if (!columns || columns.length == 0) return;
 					var tbodyJQ = tbody;
 					var tblHead = $element.find("thead");
 					if (tbodyJQ.length == 0 || $(tblHead).height() <= 0) {
-						console.log("generate template timeout")
 						if ($element.closest("body").length > 0) $timeout(generateTemplate);
 						return;
 					}
 					var rows = $scope.model.foundset.viewPort.rows;
 
 					if (columnListener == null) {
-						for (var c = 0; c < columns.length; c++) {
-							if (columns[c].dataprovider) {
-								columnListener = function(changes) {
-									$scope.$evalAsync(function() {
-										updateTable(changes)
-									})
-								}
-								columns[c].dataprovider.addChangeListener(columnListener);
-								break;
-							}
+						
+						columnListener = function(changes) {
+							$scope.$evalAsync(function() {
+								updateTable(changes)
+							})
 						}
-						// todo check if the column listener is attached to 1 column? (if not then there are no columns wit dataproviders?)
+						$scope.model.foundset.addChangeListener(columnListener)
 					}
 					for (var c = 0; c < columns.length; c++) {
 						updateTableColumnStyleClass(c, getCellStyle(c));
@@ -1007,7 +1000,6 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					} else {
 						updateTBodyStyle(tbodyJQ[0]);
 						updateTable(null)
-						console.log("updated")
 					}
 
 					onTableRendered();
@@ -1199,6 +1191,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 				var destroyListenerUnreg = $scope.$on("$destroy", function() {
 						$(window).off('resize', windowResizeHandler);
+						$scope.model.foundset.removeChangeListener(columnListener)
 						destroyListenerUnreg();
 						delete $scope.model[$sabloConstants.modelChangeNotifier];
 					});
