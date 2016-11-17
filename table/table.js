@@ -784,17 +784,24 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 									tdClass += ' ' + column.styleClassDataprovider[rowIdxInFoundsetViewport];
 								}
 								td[0].className = tdClass;
+								var value = column.dataprovider ? column.dataprovider[rowIdxInFoundsetViewport] : null;
+								var imageMode = value?value.url:false;
 								var divChild = td.children("div");
+								if (imageMode && divChild.length == 1) {
+									divChild.remove();
+									var img = document.createElement("IMG");
+									td[0].appendChild(img);
+									divChild = td.children("div");
+								}
 								if (divChild.length == 1) {
 									// its text node
-									var value = column.dataprovider ? column.dataprovider[rowIdxInFoundsetViewport] : null;
 									value = getDisplayValue(value, column.valuelist);
 									value = formatFilter(value, column.format.display, column.format.type);
 									divChild.text(value)
 								} else {
 									var imgChild = td.children("img");
 									if (imgChild.length == 1) {
-										if (!column.dataprovider || !column.dataprovider[rowIdxInFoundsetViewport]) {
+										if (!value) {
 											imgChild[0].setAttribute("src", "");
 										} else imgChild[0].setAttribute("src", column.dataprovider[rowIdxInFoundsetViewport].url);
 									} else {
