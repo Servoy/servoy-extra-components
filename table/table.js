@@ -653,6 +653,27 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								$scope.handlers.onCellClick(selection + 1, null, fs.viewPort.rows[selection])
 							}
 						}
+						else if (event.keyCode == 36) { // HOME
+							fs.requestSelectionUpdate([0]);
+							event.preventDefault()
+							event.stopPropagation();
+						}
+						else if (event.keyCode == 35) { // END
+							if (fs.viewPort.startIndex + fs.viewPort.size < fs.serverSize) {
+								function loadMore() {
+									var currentServerSize = fs.serverSize;
+									$scope.model.foundset.loadRecordsAsync(fs.serverSize-50, 50).then(function() {
+										if (currentServerSize == fs.serverSize)
+											fs.requestSelectionUpdate([fs.serverSize-1]);
+										else loadMore();
+									})
+								}
+								loadMore();
+							}
+							else fs.requestSelectionUpdate([fs.serverSize-1]);
+							event.preventDefault();
+							event.stopPropagation();
+						}
 					}
 				}
 
