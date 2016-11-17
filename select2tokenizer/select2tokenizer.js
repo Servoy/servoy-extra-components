@@ -411,15 +411,15 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 			}
 			
 			function isTypeString() {
-				return  !$scope.model.dataProviderID || $scope.model.dataProviderID.constructor.name === "String"
+				return  !$scope.model.dataProviderID || $scope.model.dataProviderID.constructor.name === "String" || typeof($scope.model.dataProviderID) === "string";
 			} 
 			
 			function isTypeNan() {
-				return  $scope.model.dataProviderID.constructor.name === "Number"
+				return  $scope.model.dataProviderID.constructor.name === "Number" || typeof($scope.model.dataProviderID) === "number";
 			}
 			
 			function isTypeBoolean() {
-				return  $scope.model.dataProviderID.constructor.name === "Boolean"
+				return  $scope.model.dataProviderID.constructor.name === "Boolean" || typeof($scope.model.dataProviderID) === "boolean";
 			}
 
 			function onChange(e) {
