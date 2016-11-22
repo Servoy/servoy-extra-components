@@ -12,7 +12,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				var wrapper = $element.find(".tablewrapper")[0];
 				var tbody = $element.find("tbody");
 				// the initial maximum of the rows to render (this should grow to the max ui view port)
-				var initialMaxRenderedRows = 30;
+				var initialMaxRenderedRows = 80; // this should be calculated for now this value is nicer for bigger list (that show already 20+ rows by default)
 				// the current full maxRenderedRows (grows when scrolling down)
 				var maxRenderedRows = Math.min(initialMaxRenderedRows, $scope.model.pageSize);
 				// the extra data to be loaded if the viewport is fully rendered.
@@ -698,7 +698,9 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					var alignToTopWhenScrolling = false;
 					var vp = $scope.model.foundset.viewPort;
 					
-					if (changes) {
+					// if there are changes but the firstRenderedRowIndex of hte last time doesn't fit at all in this index anymore
+					// then the viewport is completely changed and we do need a full render
+					if (changes && (vp.startIndex >= firstRenderedRowIndex && firstRenderedRowIndex <= (vp.startIndex + vp.size))) {
 						// this is hit when row/column viewport updates are happening. we just need to re-render/add/remove the affected TDs in rendered viewport
 						// note that TDs are always relative to firstRenderedRowIndex of foundset (so the rendered viewport))
 
@@ -750,7 +752,29 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							
 							childIdxToScrollTo = formStartToSelection - rowOffSet; // new selected row rendered index
 							alignToTopWhenScrolling = !toBottom;
-						} else {
+						} else if (vp.startIndex > 0) {
+							// if the vp.startIndex bigger then null and not the minimal page start index:
+							var minimalRowIndex = 0;
+							if ($scope.showPagination()) {
+								// paging mode calculate max size of the current viewPort
+								minimalRowIndex = $scope.model.pageSize * ($scope.model.currentPage - 1);
+							}
+							if (vp.startIndex == minimalRowIndex) {
+								// this start index of the viewport is the start of a new page, just start to render there
+								childIdxToScrollTo = 0;
+								alignToTopWhenScrolling = !toBottom;
+							}
+							else {
+								// selection is not in the view, vp.startIndex is not the start of a page the just show the middle of the current page
+								// so that it does not scroll.
+								rowOffSet = vp.size/2 - maxRenderedRows / 2;
+								if (rowOffSet < 0) rowOffSet = 0;
+								else if (rowOffSet + maxRenderedRows > vp.size) rowOffSet = vp.size - maxRenderedRows;
+								childIdxToScrollTo = rowOffSet; // new selected row rendered index
+								alignToTopWhenScrolling = !toBottom;
+							}
+						}
+						else {
 							childIdxToScrollTo = 0;
 							alignToTopWhenScrolling = !toBottom;
 						}
@@ -924,7 +948,10 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						if (formStartToSelection < $scope.model.foundset.viewPort.size && formStartToSelection > maxRenderedRows) {
 							// if the selection is in the viewport and the will not be rendered because it fall out of the max rows
 							// adjust the startRow to render
-							startRow = formStartToSelection - maxRenderedRows + 1;
+							startRow = formStartToSelection - maxRenderedRows/2 + 1;
+							if (startRow + maxRenderedRows > $scope.model.foundset.viewPort.size) {
+								startRow = $scope.model.foundset.viewPort.size - maxRenderedRows;
+							}
 
 						}
 						firstRenderedRowIndex = $scope.model.foundset.viewPort.startIndex + startRow
