@@ -147,31 +147,31 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				}
 
 				var windowResizeHandler = function() {
-						if (resizeTimeout) $timeout.cancel(resizeTimeout);
-						if ($scope.model.columns) {
-							resizeTimeout = $timeout(function() {
-									$scope.$apply(function() {
-										var newComponentWidth = $element.parent().outerWidth(false);
-										var deltaWidth = newComponentWidth - getComponentWidth();
-										if (deltaWidth != 0) {
-											$scope.componentWidth = newComponentWidth;
-											updateTBodyStyle(tbody[0]);
-											if ($scope.model.columns && $scope.model.columns.length > 0) {
-												updateAutoColumnsWidth(deltaWidth);
-												$timeout(function() {
-														if ($scope.model.enableColumnResize) {
-															addColResizable(true);
-														} else {
-															for (var i = 0; i < $scope.model.columns.length; i++) {
-																updateTableColumnStyleClass(i, getCellStyle(i));
-															}
+					if (resizeTimeout) $timeout.cancel(resizeTimeout);
+					if ($scope.model.columns) {
+						resizeTimeout = $timeout(function() {
+								$scope.$apply(function() {
+									var newComponentWidth = $element.parent().outerWidth(false);
+									var deltaWidth = newComponentWidth - getComponentWidth();
+									if (deltaWidth != 0) {
+										$scope.componentWidth = newComponentWidth;
+										updateTBodyStyle(tbody[0]);
+										if ($scope.model.columns && $scope.model.columns.length > 0) {
+											updateAutoColumnsWidth(deltaWidth);
+											$timeout(function() {
+													if ($scope.model.enableColumnResize) {
+														addColResizable(true);
+													} else {
+														for (var i = 0; i < $scope.model.columns.length; i++) {
+															updateTableColumnStyleClass(i, getCellStyle(i));
 														}
-													}, 0);
-											}
+													}
+												}, 0);
 										}
-									})
-								}, 50);
-						}
+									}
+								})
+							}, 50);
+					}
 				}
 				$(window).on('resize', windowResizeHandler);
 
@@ -342,7 +342,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					});
 
 				$scope.$watch('model.foundset.viewPort.rows', function(newValue, oldValue) {
-						maxRenderedRows = $scope.model.pageSize > 0?Math.min(initialMaxRenderedRows, $scope.model.pageSize):initialMaxRenderedRows;
+						maxRenderedRows = $scope.model.pageSize > 0 ? Math.min(initialMaxRenderedRows, $scope.model.pageSize) : initialMaxRenderedRows;
 						lastRequestedViewPortSize = 0;
 						lastRequestedViewPortStartIndex = 0;
 						generateTemplate();
@@ -359,7 +359,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							if (oldValue && newValue && $scope.showPagination()) {
 								adjustFoundsetViewportIfNeeded();
 							}
-							maxRenderedRows = $scope.model.pageSize > 0?Math.min(initialMaxRenderedRows, $scope.model.pageSize):initialMaxRenderedRows;
+							maxRenderedRows = $scope.model.pageSize > 0 ? Math.min(initialMaxRenderedRows, $scope.model.pageSize) : initialMaxRenderedRows;
 						}
 						$scope.model.foundset.setPreferredViewportSize( (newValue < 50 && newValue != 0) ? newValue : nonPagingPageSize)
 					});
@@ -445,10 +445,10 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								scrollNeeded = true;
 								var newFirstSelectedValue = newValue[0];
 								// first check if the selected row is in the current ui viewport.
-								if (tbody && tbody.children().length >0 && (newFirstSelectedValue < firstRenderedRowIndex || newFirstSelectedValue > (firstRenderedRowIndex + maxRenderedRows))) {
+								if (tbody && tbody.children().length > 0 && (newFirstSelectedValue < firstRenderedRowIndex || newFirstSelectedValue > (firstRenderedRowIndex + maxRenderedRows))) {
 									// its not in the current ui viewport, check if it is in the current data viewport
 									var vp = $scope.model.foundset.viewPort;
-									if (newFirstSelectedValue < vp.startIndex || newFirstSelectedValue > (vp.startIndex + vp.size) ) {
+									if (newFirstSelectedValue < vp.startIndex || newFirstSelectedValue > (vp.startIndex + vp.size)) {
 										// selection is not inside the viewport, request another viewport around the selection.
 										var newStart = newFirstSelectedValue - 25;
 										if (newStart + 50 > $scope.model.foundset.serverSize) {
@@ -458,13 +458,11 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 										$scope.model.foundset.loadRecordsAsync(newStart, 50).then(function() {
 											updateTable(null);
 										})
-									}
-									else {
+									} else {
 										updateTable(null);
 									}
-									
-								}
-								else scrollIntoView();
+
+								} else scrollIntoView();
 							}
 							$scope.model.lastSelectionFirstElement = newValue[0];
 						}
@@ -585,11 +583,11 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 					}
 				}
-				
+
 				function getFirstVisibleChild() {
 					var tbodyBounds = tbody[0].getBoundingClientRect();
 					var children = tbody.children()
-					for(var i=0;i<children.length;i++) {
+					for (var i = 0; i < children.length; i++) {
 						var childBounds = children[i].getBoundingClientRect();
 						if (childBounds.top >= tbodyBounds.top) {
 							return children[i];
@@ -599,14 +597,14 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				function getLastVisibleChild() {
 					var tbodyBounds = tbody[0].getBoundingClientRect();
 					var children = tbody.children()
-					for(var i=0;i<children.length;i++) {
+					for (var i = 0; i < children.length; i++) {
 						var childBounds = children[i].getBoundingClientRect();
 						if (childBounds.bottom >= tbodyBounds.bottom) {
-							if (i > 0) return children[i-1]
+							if (i > 0) return children[i - 1]
 							return children[i];
 						}
 					}
-					return children[children.length-1]
+					return children[children.length - 1]
 				}
 
 				$scope.keyPressed = function(event) {
@@ -622,8 +620,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								}
 								child.scrollIntoView(false);
 							}
-						}
-						else if (event.keyCode == 34) { // PAGE DOWN KEY
+						} else if (event.keyCode == 34) { // PAGE DOWN KEY
 							var child = getLastVisibleChild();
 							if (child) {
 								var row_column = $(child).children().eq(0).data("row_column");
@@ -652,25 +649,22 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							if ($scope.handlers.onCellClick) {
 								$scope.handlers.onCellClick(selection + 1, null, fs.viewPort.rows[selection])
 							}
-						}
-						else if (event.keyCode == 36) { // HOME
+						} else if (event.keyCode == 36) { // HOME
 							fs.requestSelectionUpdate([0]);
 							event.preventDefault()
 							event.stopPropagation();
-						}
-						else if (event.keyCode == 35) { // END
+						} else if (event.keyCode == 35) { // END
 							if (fs.viewPort.startIndex + fs.viewPort.size < fs.serverSize) {
 								function loadMore() {
 									var currentServerSize = fs.serverSize;
-									$scope.model.foundset.loadRecordsAsync(fs.serverSize-50, 50).then(function() {
+									$scope.model.foundset.loadRecordsAsync(fs.serverSize - 50, 50).then(function() {
 										if (currentServerSize == fs.serverSize)
-											fs.requestSelectionUpdate([fs.serverSize-1]);
+											fs.requestSelectionUpdate([fs.serverSize - 1]);
 										else loadMore();
 									})
 								}
 								loadMore();
-							}
-							else fs.requestSelectionUpdate([fs.serverSize-1]);
+							} else fs.requestSelectionUpdate([fs.serverSize - 1]);
 							event.preventDefault();
 							event.stopPropagation();
 						}
@@ -697,7 +691,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					var childIdxToScrollTo = -1;
 					var alignToTopWhenScrolling = false;
 					var vp = $scope.model.foundset.viewPort;
-					
+
 					// if there are changes but the firstRenderedRowIndex of hte last time doesn't fit at all in this index anymore
 					// then the viewport is completely changed and we do need a full render
 					if (changes && (vp.startIndex >= firstRenderedRowIndex && firstRenderedRowIndex <= (vp.startIndex + vp.size))) {
@@ -714,7 +708,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							var rowUpdate = changes[i]; // rowUpdate indexes are obviously relative to model.foundset.viewport
 							if (rowUpdate.startIndex < rowOffSet + startIndex) startIndex = rowUpdate.startIndex - rowOffSet;
 							var updateEndIndex = rowUpdate.endIndex - rowOffSet;
-							
+
 							if (rowUpdate.type == 1) {
 								// insert
 								// if it's an insert then insert position end by convention really means "new viewport size" not the endIndex; endIndex == viewPort.size (that is what the server sends for insert operations)
@@ -731,7 +725,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						// offset is given when scrolling up, so new rows will be appended (prepended visually)
 						startIndex = 0;
 						endIndex = maxRenderedRows - 1;
-						
+
 						// keep scroll at first element of currently first rendered element
 						childIdxToScrollTo = firstRenderedRowIndex - vp.startIndex - rowOffSet; // so oldRowOffset - newRowOffset basically as firstRenderedRowIndex will be updated a few lines below
 						alignToTopWhenScrolling = true;
@@ -745,11 +739,11 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							var formStartToSelection = firstSelected - vp.startIndex;
 							// selection is in the viewport, try to make sure that is visible.
 							rowOffSet = formStartToSelection - (maxRenderedRows / 2); // try to center selection in rendered/UI viewport
-							
+
 							// correct bounds if selection it too close to top or bottom of viewport to be really centered
 							if (rowOffSet < 0) rowOffSet = 0;
 							else if (rowOffSet + maxRenderedRows > vp.size) rowOffSet = vp.size - maxRenderedRows;
-							
+
 							childIdxToScrollTo = formStartToSelection - rowOffSet; // new selected row rendered index
 							alignToTopWhenScrolling = !toBottom;
 						} else if (vp.startIndex > 0) {
@@ -763,27 +757,22 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								// this start index of the viewport is the start of a new page, just start to render there
 								childIdxToScrollTo = 0;
 								alignToTopWhenScrolling = !toBottom;
-							}
-							else {
+							} else {
 								// selection is not in the view, vp.startIndex is not the start of a page the just show the middle of the current page
 								// so that it does not scroll.
-								rowOffSet = vp.size/2 - maxRenderedRows / 2;
-								if (rowOffSet < 0) rowOffSet = 0;
-								else if (rowOffSet + maxRenderedRows > vp.size) rowOffSet = vp.size - maxRenderedRows;
-								childIdxToScrollTo = rowOffSet; // new selected row rendered index
+								rowOffSet = vp.size / 2 - maxRenderedRows / 2; // this can't be < 0 or rowOffSet + maxRenderedRows can't be > vp.size because maxRenderedRows <= vp.size (see above where maxRenderedRows is assigned)
+								childIdxToScrollTo = maxRenderedRows / 2; // scroll to middle of rendered rows to avoid re-rendering as much as possible
 								alignToTopWhenScrolling = !toBottom;
 							}
-						}
-						else {
+						} else {
 							childIdxToScrollTo = 0;
 							alignToTopWhenScrolling = !toBottom;
 						}
 						startIndex = 0;
 						endIndex = maxRenderedRows - 1;
-						
+
 						firstRenderedRowIndex = vp.startIndex + rowOffSet;
 					}
-					
 
 					var formatFilter = $filter("formatFilter");
 					var columns = $scope.model.columns;
@@ -809,7 +798,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								}
 								td[0].className = tdClass;
 								var value = column.dataprovider ? column.dataprovider[rowIdxInFoundsetViewport] : null;
-								var imageMode = value?value.url:false;
+								var imageMode = value ? value.url : false;
 								var divChild = td.children("div");
 								if (imageMode && divChild.length == 1) {
 									divChild.remove();
@@ -834,7 +823,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								}
 							}
 					}
-					
+
 					if (childrenListChanged) {
 						childrenListChanged = false;
 						children = tbody.children();
@@ -898,7 +887,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					for (var p in style) {
 						columnCSSRules[columnIndex].style[p] = style[p];
 					}
-					
+
 				}
 				// cache for the current set style class names, used in the columns property watcher.
 				var columnStyleClasses = [];
@@ -924,7 +913,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					var rows = $scope.model.foundset.viewPort.rows;
 
 					if (columnListener == null) {
-						
+
 						columnListener = function(changes) {
 							$scope.$evalAsync(function() {
 								updateTable(changes)
@@ -948,7 +937,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						if (formStartToSelection < $scope.model.foundset.viewPort.size && formStartToSelection > maxRenderedRows) {
 							// if the selection is in the viewport and the will not be rendered because it fall out of the max rows
 							// adjust the startRow to render
-							startRow = formStartToSelection - maxRenderedRows/2 + 1;
+							startRow = formStartToSelection - maxRenderedRows / 2 + 1;
 							if (startRow + maxRenderedRows > $scope.model.foundset.viewPort.size) {
 								startRow = $scope.model.foundset.viewPort.size - maxRenderedRows;
 							}
@@ -1020,7 +1009,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 										});
 									}
 									// call update table with the previous start index (of the ui childen) and then new one, and give the current firstRenderedRowIndex as the offset to start from
-									updateTable([{ startIndex: currentStartIndex+maxUISize, endIndex: currentStartIndex+maxRenderedRows - 1, type: 0 }], currentStartIndex) // endIndex is inclusive
+									updateTable([{ startIndex: currentStartIndex + maxUISize, endIndex: currentStartIndex + maxRenderedRows - 1, type: 0 }], currentStartIndex) // endIndex is inclusive
 								}
 							}
 						})
