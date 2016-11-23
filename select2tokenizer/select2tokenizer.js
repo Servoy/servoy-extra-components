@@ -9,6 +9,12 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 			svyServoyapi: '='
 		},
 		link: function($scope, $element, $attrs) {
+			/* 
+			| .select2-selection__choice      | select2 selector. style the tag |
+			| .select2-results__option        | select2 selector. style the option in dropdown |
+			| .select2-results__option--highlighted   | select2 selector. style the highlighted option in dropdown |
+			| .select2-container--default .select2-results__option[aria-selected=true] | select2 selector. style the disabled option in dropdown | 
+			 */
 			
 			var MAX_LENGTH = 100;
 			var SEPARATOR = {
@@ -97,6 +103,8 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 			function initTokanizer() {
 				
 				var options = { };
+				//options.containerCssClass = "custom-red"
+				//options.dropdownCssClass = "custom-red"
 				// placeholder
 				options.multiple = true;
 				options.selectOnClose = $scope.model.selectOnClose;
