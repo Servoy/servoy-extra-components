@@ -4,6 +4,7 @@
 	"version": 1,
 	"icon": "servoycore/portal/portal.gif",
 	"definition": "servoyextra/table/table.js",
+	"serverscript": "servoyextra/table/table_server.js",
 	"libraries": [{ "name": "servoyextra-table-css", "version": "1.0", "url": "servoyextra/table/table.css", "mimetype": "text/css" }, { "name": "colResizable", "version": "1.7", "url": "servoyextra/table/js/colResizable-1.7.js", "mimetype": "text/javascript" }],
 	"model": {
 		"columns": { "type": "column[]", "droppable": true, "pushToServer": "shallow", "elementConfig": { "pushToServer": "shallow" } },
@@ -116,6 +117,37 @@
 
 			"delayUntilFormLoad": true,
 			"globalExclusive": true
-		}
+		},
+		 "getColumnsCount": {
+	            "returns": "int"
+	     },
+	     "getColumn": {
+		      "parameters": [{
+					"name": "index",
+					"type": "int"
+				}],
+	            "returns": "column"
+	     },
+	     "newColumn": {
+		      "parameters": [{
+		      		"name": "dataprovider",
+					"type": "string",
+		      	},{
+					"name": "index",
+					"type": "int",
+					"optional": true
+				}],
+	            "returns": "column"
+	     },
+	     "removeColumn": {
+		      "parameters": [{
+					"name": "index",
+					"type": "int"
+				}],
+	            "returns": "boolean"
+	     },
+	     "removeAllColumns": {
+	            "returns": "boolean"
+	     }
 	}
 }
