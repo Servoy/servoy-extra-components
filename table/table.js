@@ -427,14 +427,14 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					var child = (firstSelected >= 0 ? tbody.children().eq(firstSelected) : undefined); // eq negative idx is interpreted as n'th from the end of children list
 					if (previousSelectedChild) previousSelectedChild.className = "";
 					if (child && child.length > 0) {
-						var wrapperRect = wrapper.getBoundingClientRect();
-						var tblHead = $element.find("thead");
-						var headRect = tblHead[0].getBoundingClientRect();
-						var childRect = child[0].getBoundingClientRect();
 						child[0].className = $scope.model.selectionClass; // TODO do this for all selected elements in case of multiselect? also clear for the old ones that are not longer selected
 						previousSelectedChild = child[0];
-						if (!onlySetSelection && (childRect.top < (headRect.bottom) || childRect.bottom > wrapperRect.bottom)) {
-							child[0].scrollIntoView(!toBottom);
+						if (!onlySetSelection){
+							var wrapperRect = tbody[0].getBoundingClientRect();
+							var childRect = child[0].getBoundingClientRect();
+							if (Math.floor(childRect.top) < Math.floor(wrapperRect.top) || Math.floor(childRect.bottom) > Math.floor(wrapperRect.bottom)) {
+								child[0].scrollIntoView(!toBottom);
+							}
 						}
 					}
 
@@ -616,6 +616,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						if (event.keyCode == 33) { // PAGE UP KEY
 							var child = getFirstVisibleChild();
 							if (child) {
+								if (child.previousSibling) child  = child.previousSibling;
 								var row_column = $(child).children().eq(0).data("row_column");
 								if (row_column) {
 									fs.selectedRowIndexes = [fs.viewPort.startIndex + row_column.row];
@@ -625,9 +626,14 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						} else if (event.keyCode == 34) { // PAGE DOWN KEY
 							var child = getLastVisibleChild();
 							if (child) {
+								// if this is the last visible child we should get the child after that to make visible.
+								if (child.nextSibling) child  = child.nextSibling;
 								var row_column = $(child).children().eq(0).data("row_column");
 								if (row_column) {
-									fs.selectedRowIndexes = [fs.viewPort.startIndex + row_column.row];
+									var newSelection = fs.viewPort.startIndex + row_column.row
+									if (newSelection != fs.selectedRowIndexes) {
+										fs.selectedRowIndexes = [newSelection];
+									}
 								}
 								child.scrollIntoView(true);
 							}
