@@ -428,10 +428,12 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					if (previousSelectedChild) previousSelectedChild.className = "";
 					if (child && child.length > 0) {
 						var wrapperRect = wrapper.getBoundingClientRect();
+						var tblHead = $element.find("thead");
+						var headRect = tblHead[0].getBoundingClientRect();
 						var childRect = child[0].getBoundingClientRect();
 						child[0].className = $scope.model.selectionClass; // TODO do this for all selected elements in case of multiselect? also clear for the old ones that are not longer selected
 						previousSelectedChild = child[0];
-						if (!onlySetSelection && (childRect.top < (wrapperRect.top + 10) || childRect.bottom > wrapperRect.bottom)) {
+						if (!onlySetSelection && (childRect.top < (headRect.bottom) || childRect.bottom > wrapperRect.bottom)) {
 							child[0].scrollIntoView(!toBottom);
 						}
 					}
