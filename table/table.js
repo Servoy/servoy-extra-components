@@ -210,6 +210,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 				function onTableRendered() {
 					adjustFoundsetViewportIfNeeded();
+					updateSelection($scope.model.foundset.selectedRowIndexes, null);
 					scrollIntoView();
 
 					if (!onTBodyScrollListener) {
@@ -804,7 +805,11 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					var columns = $scope.model.columns;
 					for (var j = startIndex; j <= endIndex; j++) {
 						var rowIdxInFoundsetViewport = j + rowOffSet; // index relative to foundset prop.'s viewport array?! but why rowOffset
-						var trChildren = children.eq(j).children(); // we should get child relative to really rendered rows viewport
+						var trElement = children.eq(j);
+						if(trElement.get(0)) {
+							trElement.get(0).className = $scope.model.foundset.selectedRowIndexes.indexOf(firstRenderedRowIndex + j) != -1 ? $scope.model.selectionClass : "";
+						}  
+						var trChildren = trElement.children(); // we should get child relative to really rendered rows viewport
 						if (trChildren.length == 0) {
 							// as trChildren is relative to rendered viewport, it can only grow (have missing rows) or shrink at the end; if changes
 							// happen before it, the data is updated in those cells, no real dom Node inserts have to happen in specific indexes in
@@ -1049,9 +1054,6 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 				function createTableRow(columns, row, formatFilter) {
 					var tr = document.createElement("TR");
-					if ($scope.model.foundset.selectedRowIndexes.indexOf(row) != -1) {
-						tr.className = $scope.model.selectionClass;
-					}
 					for (var c = 0; c < columns.length; c++) {
 						var column = columns[c];
 						var td = document.createElement("TD");
