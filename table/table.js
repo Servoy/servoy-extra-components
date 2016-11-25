@@ -478,6 +478,28 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					return $scope.model.pageSize && $scope.model.foundset && $scope.model.foundset.serverSize > $scope.model.pageSize;
 				}
 
+				var isPaginationVisible = false;
+				$scope.isPaginationVisible = function() {
+					var isPaginationVisibleNew = $scope.showPagination();
+					if(isPaginationVisible != isPaginationVisibleNew) {
+						isPaginationVisible = isPaginationVisibleNew;
+						$timeout(function() {
+							if(tbody[0]) {
+								if ($scope.showPagination()) {
+									var pagination = $element.find("ul:first");
+									if (pagination.get().length > 0) {
+										tbody[0].style['marginBottom'] = ($(pagination).height() + 2) + "px";
+									}
+								}
+								else {
+									tbody[0].style['marginBottom'] = "";
+								}
+							}
+						}, 0);
+					} 
+					return isPaginationVisible; 
+				}
+
 				$scope.modifyPage = function(count) {
 					var pages = Math.ceil($scope.model.foundset.serverSize / $scope.model.pageSize)
 					var newPage = $scope.model.currentPage + count;

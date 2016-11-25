@@ -11,7 +11,7 @@
 	  <tbody>
 	  </tbody>
 	</table>
-	<ul class="svy-pagination pagination svy-nomargin" ng-if="showPagination()">
+	<ul class="svy-pagination pagination svy-nomargin" ng-if="isPaginationVisible()">
 	  <li ng-class="model.currentPage == 1 ? 'disabled' : ''"><a href="#" ng-click="modifyPage(-1)" tabindex="-1">&laquo;</a></li>
 	  <li class="disabled"><a href="#" tabindex="-1">{{model.currentPage}}</a></li>
 	  <li ng-class="hasNext() ? '' : 'disabled'"><a href="#" ng-click="modifyPage(1)" tabindex="-1">&raquo;</a></li>
