@@ -210,6 +210,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 				function onTableRendered() {
 					adjustFoundsetViewportIfNeeded();
+					updateSelection($scope.model.foundset.selectedRowIndexes, null);
 					scrollIntoView();
 
 					if (!onTBodyScrollListener) {
@@ -411,7 +412,6 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						}
 					});
 
-				var previousSelectedChild = null; // this should be an array for multi select.
 				function scrollIntoView(onlySetSelection) {
 					var firstSelected = $scope.model.foundset.selectedRowIndexes[0];
 
@@ -425,10 +425,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					firstSelected = firstSelected - firstRenderedRowIndex;
 
 					var child = (firstSelected >= 0 ? tbody.children().eq(firstSelected) : undefined); // eq negative idx is interpreted as n'th from the end of children list
-					if (previousSelectedChild) previousSelectedChild.className = "";
 					if (child && child.length > 0) {
-						child[0].className = $scope.model.selectionClass; // TODO do this for all selected elements in case of multiselect? also clear for the old ones that are not longer selected
-						previousSelectedChild = child[0];
 						if (!onlySetSelection){
 							var wrapperRect = tbody[0].getBoundingClientRect();
 							var childRect = child[0].getBoundingClientRect();
@@ -444,27 +441,30 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						// ignore value change triggered by the watch initially with the same value except for when it was a form re-show and the selected index changed meanwhile
 						if (newValue.length > 0) {
 							if ( (newValue != oldValue || $scope.model.lastSelectionFirstElement != newValue[0]) && $scope.model.foundset) {
-								scrollNeeded = true;
-								var newFirstSelectedValue = newValue[0];
-								// first check if the selected row is in the current ui viewport.
-								if (tbody && tbody.children().length > 0 && (newFirstSelectedValue < firstRenderedRowIndex || newFirstSelectedValue > (firstRenderedRowIndex + maxRenderedRows))) {
-									// its not in the current ui viewport, check if it is in the current data viewport
-									var vp = $scope.model.foundset.viewPort;
-									if (newFirstSelectedValue < vp.startIndex || newFirstSelectedValue > (vp.startIndex + vp.size)) {
-										// selection is not inside the viewport, request another viewport around the selection.
-										var newStart = newFirstSelectedValue - 25;
-										if (newStart + 50 > $scope.model.foundset.serverSize) {
-											newStart = $scope.model.foundset.serverSize - 50;
-										}
-										if (newStart < 0) newStart = 0;
-										$scope.model.foundset.loadRecordsAsync(newStart, 50).then(function() {
+								updateSelection(newValue, oldValue);
+								if($scope.model.lastSelectionFirstElement != newValue[0]) {
+									scrollNeeded = true;
+									var newFirstSelectedValue = newValue[0];
+									// first check if the selected row is in the current ui viewport.
+									if (tbody && tbody.children().length > 0 && (newFirstSelectedValue < firstRenderedRowIndex || newFirstSelectedValue > (firstRenderedRowIndex + maxRenderedRows))) {
+										// its not in the current ui viewport, check if it is in the current data viewport
+										var vp = $scope.model.foundset.viewPort;
+										if (newFirstSelectedValue < vp.startIndex || newFirstSelectedValue > (vp.startIndex + vp.size)) {
+											// selection is not inside the viewport, request another viewport around the selection.
+											var newStart = newFirstSelectedValue - 25;
+											if (newStart + 50 > $scope.model.foundset.serverSize) {
+												newStart = $scope.model.foundset.serverSize - 50;
+											}
+											if (newStart < 0) newStart = 0;
+											$scope.model.foundset.loadRecordsAsync(newStart, 50).then(function() {
+												updateTable(null);
+											})
+										} else {
 											updateTable(null);
-										})
-									} else {
-										updateTable(null);
-									}
+										}
 
-								} else scrollIntoView();
+									} else scrollIntoView();
+								}
 							}
 							$scope.model.lastSelectionFirstElement = newValue[0];
 						}
@@ -533,9 +533,9 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							} else if (event.shiftKey) {
 								var start = -1;
 								if ($scope.model.foundset.selectedRowIndexes) {
-									for (var i = 0; i < $scope.model.foundset.selectedRowIndexes.length; i++) {
-										if (start == -1 || start > $scope.model.foundset.selectedRowIndexes[i]) {
-											start = $scope.model.foundset.selectedRowIndexes[i];
+									for (var j = 0; j < $scope.model.foundset.selectedRowIndexes.length; j++) {
+										if (start == -1 || start > $scope.model.foundset.selectedRowIndexes[j]) {
+											start = $scope.model.foundset.selectedRowIndexes[j];
 										}
 									}
 								}
@@ -545,8 +545,8 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 									start = realRow;
 								}
 								newSelection = []
-								for (var i = start; i <= stop; i++) {
-									newSelection.push(i);
+								for (var n = start; n <= stop; n++) {
+									newSelection.push(n);
 								}
 							}
 							//    				 }
@@ -712,6 +712,33 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					return input;
 				}
 
+				function updateTableRowSelectionClass(rowsFoundsetIdxArray, rowSelectionClass) {
+					var trChildren = tbody.children();
+					if(trChildren) {
+						for(var i = 0; i < rowsFoundsetIdxArray.length; i++) {
+							var trIndex = rowsFoundsetIdxArray[i] - firstRenderedRowIndex;
+							if(trIndex < trChildren.length) {
+								trChildren.eq(trIndex).get(0).className = rowSelectionClass;
+							}
+						}
+					}
+				}
+
+				function updateSelection(newValue, oldValue) {
+					if(oldValue) {
+						var toUnselect = oldValue.filter(function (i) {
+							return !newValue || newValue.indexOf(i) < 0;
+						})
+						updateTableRowSelectionClass(toUnselect, "");
+					}					
+					if(newValue) {
+						var toSelect = newValue.filter(function (i) {
+							return !oldValue || oldValue.indexOf(i) < 0;
+						})
+						updateTableRowSelectionClass(toSelect, $scope.model.selectionClass);
+					}
+				}
+
 				function updateTable(changes, offset) {
 					var children = tbody.children();
 					var childrenListChanged = false;
@@ -808,7 +835,11 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					var columns = $scope.model.columns;
 					for (var j = startIndex; j <= endIndex; j++) {
 						var rowIdxInFoundsetViewport = j + rowOffSet; // index relative to foundset prop.'s viewport array?! but why rowOffset
-						var trChildren = children.eq(j).children(); // we should get child relative to really rendered rows viewport
+						var trElement = children.eq(j);
+						if(trElement.get(0)) {
+							trElement.get(0).className = $scope.model.foundset.selectedRowIndexes.indexOf(firstRenderedRowIndex + j) != -1 ? $scope.model.selectionClass : "";
+						}  
+						var trChildren = trElement.children(); // we should get child relative to really rendered rows viewport
 						if (trChildren.length == 0) {
 							// as trChildren is relative to rendered viewport, it can only grow (have missing rows) or shrink at the end; if changes
 							// happen before it, the data is updated in those cells, no real dom Node inserts have to happen in specific indexes in
@@ -1053,9 +1084,6 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 				function createTableRow(columns, row, formatFilter) {
 					var tr = document.createElement("TR");
-					if ($scope.model.foundset.selectedRowIndexes.indexOf(row) != -1) {
-						tr.className = $scope.model.selectionClass;
-					}
 					for (var c = 0; c < columns.length; c++) {
 						var column = columns[c];
 						var td = document.createElement("TD");
