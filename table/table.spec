@@ -131,7 +131,7 @@
 	     "newColumn": {
 		      "parameters": [{
 		      		"name": "dataprovider",
-					"type": "string",
+					"type": "string"
 		      	},{
 					"name": "index",
 					"type": "int",
