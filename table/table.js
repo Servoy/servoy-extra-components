@@ -583,38 +583,6 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						scrollToSelectionNeeded = false; // we did change page if it was needed, now reset the flag so that it is only set back to true on purpose
 					}
 				}
-				$scope.$watch('model.foundset.selectedRowIndexes', function(newValue, oldValue) {
-						// ignore value change triggered by the watch initially with the same value except for when it was a form re-show and the selected index changed meanwhile
-						if (newValue.length > 0) {
-							if ( (newValue != oldValue || $scope.model.lastSelectionFirstElement != newValue[0]) && $scope.model.foundset) {
-								updateSelection(newValue, oldValue);
-								if ($scope.model.lastSelectionFirstElement != newValue[0]) {
-									scrollNeeded = true;
-									var newFirstSelectedValue = newValue[0];
-									// first check if the selected row is in the current ui viewport.
-									if (tbody && tbody.children().length > 0 && (newFirstSelectedValue < firstRenderedRowIndex || newFirstSelectedValue > (firstRenderedRowIndex + maxRenderedRows))) {
-										// its not in the current ui viewport, check if it is in the current data viewport
-										var vp = $scope.model.foundset.viewPort;
-										if (newFirstSelectedValue < vp.startIndex || newFirstSelectedValue > (vp.startIndex + vp.size)) {
-											// selection is not inside the viewport, request another viewport around the selection.
-											var newStart = newFirstSelectedValue - 25;
-											if (newStart + 50 > $scope.model.foundset.serverSize) {
-												newStart = $scope.model.foundset.serverSize - 50;
-											}
-											if (newStart < 0) newStart = 0;
-											$scope.model.foundset.loadRecordsAsync(newStart, 50).then(function() {
-												updateTable(null);
-											})
-										} else {
-											updateTable(null);
-										}
-
-									} else scrollIntoView();
-								}
-							}
-							$scope.model.lastSelectionFirstElement = newValue[0];
-						}
-					}, true);
 
 				$scope.hasNext = function() {
 					return $scope.model.foundset && $scope.model.currentPage < Math.ceil($scope.model.foundset.serverSize / $scope.model.pageSize);
@@ -868,7 +836,34 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					return input;
 				}
 
-				function updateTable(changes, offset) {
+				function updateTableRowSelectionClass(rowsFoundsetIdxArray, rowSelectionClass) {
+					var trChildren = tbody.children();
+					if (trChildren) {
+						for (var i = 0; i < rowsFoundsetIdxArray.length; i++) {
+							var trIndex = rowsFoundsetIdxArray[i] - renderedStartIndex;
+							if (trIndex >= 0 && trIndex < trChildren.length) {
+								trChildren.eq(trIndex).get(0).className = rowSelectionClass;
+							}
+						}
+					}
+				}
+
+				function updateSelection(newValue, oldValue) {
+					if (oldValue) {
+						var toUnselect = oldValue.filter(function(i) {
+							return !newValue || newValue.indexOf(i) < 0;
+						})
+						updateTableRowSelectionClass(toUnselect, "");
+					}
+					if (newValue) {
+						var toSelect = newValue.filter(function(i) {
+							return !oldValue || oldValue.indexOf(i) < 0;
+						})
+						updateTableRowSelectionClass(toSelect, $scope.model.selectionClass);
+					}
+				}
+
+				function updateRenderedRows(changes, offset) {
 					var children = tbody.children();
 					var childrenListChanged = false;
 					var startIndex = 100000000; // relative to rendered/UI viewport
@@ -974,7 +969,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						var rowIdxInFoundsetViewport = j + rowOffSet; // index relative to foundset prop.'s viewport array?! but why rowOffset
 						var trElement = children.eq(j);
 						if (trElement.get(0)) {
-							trElement.get(0).className = $scope.model.foundset.selectedRowIndexes.indexOf(firstRenderedRowIndex + j) != -1 ? $scope.model.selectionClass : "";
+							trElement.get(0).className = $scope.model.foundset.selectedRowIndexes.indexOf(renderedStartIndex + j) != -1 ? $scope.model.selectionClass : "";
 						}
 						var trChildren = trElement.children(); // we should get child relative to really rendered rows viewport
 						if (trChildren.length == 0) {
