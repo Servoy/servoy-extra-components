@@ -240,7 +240,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 				function onTableRendered() {
 					updateSelection($scope.model.foundset.selectedRowIndexes, null);
-					scrollIntoViewAndSetSelection();
+					scrollToSelectionIfNeeded();
 					adjustLoadedRowsIfNeeded();
 
 					if (!onTBodyScrollListener) {
@@ -393,9 +393,9 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						if (newValue.length > 0) {
 							if ( (newValue != oldValue || $scope.model.lastSelectionFirstElement != newValue[0]) && $scope.model.foundset) {
 								updateSelection(newValue, oldValue);
-								if($scope.model.lastSelectionFirstElement != newValue[0]) {
-								scrollToSelectionNeeded = true;
-								scrollIntoViewAndSetSelection();
+								if ($scope.model.lastSelectionFirstElement != newValue[0]) {
+									scrollToSelectionNeeded = true;
+									scrollToSelectionIfNeeded();
 								}
 							}
 							$scope.model.lastSelectionFirstElement = newValue[0];
@@ -524,10 +524,10 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						}
 					});
 
-				function scrollIntoViewAndSetSelection(onlySetSelection) {
+				function scrollToSelectionIfNeeded() {
 					var firstSelected = $scope.model.foundset.selectedRowIndexes.length == 1 ? $scope.model.foundset.selectedRowIndexes[0] : -1; // we do not scroll to selection if there is no selected record (serverSize is probably 0) or we have multi-select with more then one or 0 selected records
 
-					if (firstSelected >= 0 && scrollToSelectionNeeded && !onlySetSelection) {
+					if (firstSelected >= 0 && scrollToSelectionNeeded) {
 						// we must scroll to selection; see if we need to load/render other records in order to do this
 						if ($scope.showPagination() && getPageForIndex(firstSelected) != $scope.model.currentPage) {
 							// we need to switch page in order to show selected row
@@ -556,14 +556,14 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 											neededVpSize = Math.min(batchSizeForLoadingMoreRows, allowedStart + allowedSize - neededVpStart);
 										}
 
-										if ($log.debugEnabled && $log.debugLevel === $log.SPAM) $log.debug("svy extra table * scrollIntoViewAndSetSelection will do what is needed to have new loaded viewport of (" + neededVpStart + ", " + neededVpSize + ")");
+										if ($log.debugEnabled && $log.debugLevel === $log.SPAM) $log.debug("svy extra table * scrollToSelectionIfNeeded will do what is needed to have new loaded viewport of (" + neededVpStart + ", " + neededVpSize + ")");
 										newLoadPromise = smartLoadNeededViewport(neededVpStart, neededVpSize);
 										newLoadPromise.then(function() {
 											updateRenderedRows(null);
 										});
 
 										return newLoadPromise;
-									}, scrollIntoViewAndSetSelection); // it will have onlySetSelection param undefined which is fine, that is the case when in this branch
+									}, scrollToSelectionIfNeeded);
 							} else {
 								updateRenderedRows(null); // this will center rendered rows and scroll position change might load more needed records around the already-present selected row
 							}
@@ -575,14 +575,12 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 					var child = (firstSelectedRelativeToRendered >= 0 ? tbody.children().eq(firstSelectedRelativeToRendered) : undefined); // eq negative idx is interpreted as n'th from the end of children list
 					if (child && child.length > 0) {
-\						if (!onlySetSelection) {
-							var wrapperRect = tbody[0].getBoundingClientRect();
-							var childRect = child[0].getBoundingClientRect();
-							if (Math.floor(childRect.top) < Math.floor(wrapperRect.top) || Math.floor(childRect.bottom) > Math.floor(wrapperRect.bottom)) {
-								child[0].scrollIntoView(!toBottom);
-							}
-							scrollToSelectionNeeded = false; // we did change page if it was needed, now reset the flag so that it is only set back to true on purpose
+						var wrapperRect = tbody[0].getBoundingClientRect();
+						var childRect = child[0].getBoundingClientRect();
+						if (Math.floor(childRect.top) < Math.floor(wrapperRect.top) || Math.floor(childRect.bottom) > Math.floor(wrapperRect.bottom)) {
+							child[0].scrollIntoView(!toBottom);
 						}
+						scrollToSelectionNeeded = false; // we did change page if it was needed, now reset the flag so that it is only set back to true on purpose
 					}
 				}
 				$scope.$watch('model.foundset.selectedRowIndexes', function(newValue, oldValue) {
@@ -590,7 +588,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						if (newValue.length > 0) {
 							if ( (newValue != oldValue || $scope.model.lastSelectionFirstElement != newValue[0]) && $scope.model.foundset) {
 								updateSelection(newValue, oldValue);
-								if($scope.model.lastSelectionFirstElement != newValue[0]) {
+								if ($scope.model.lastSelectionFirstElement != newValue[0]) {
 									scrollNeeded = true;
 									var newFirstSelectedValue = newValue[0];
 									// first check if the selected row is in the current ui viewport.
@@ -629,23 +627,22 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				var isPaginationVisible = false;
 				$scope.isPaginationVisible = function() {
 					var isPaginationVisibleNew = $scope.showPagination();
-					if(isPaginationVisible != isPaginationVisibleNew) {
+					if (isPaginationVisible != isPaginationVisibleNew) {
 						isPaginationVisible = isPaginationVisibleNew;
 						$timeout(function() {
-							if(tbody[0]) {
-								if ($scope.showPagination()) {
-									var pagination = $element.find("ul:first");
-									if (pagination.get().length > 0) {
-										tbody[0].style['marginBottom'] = ($(pagination).height() + 2) + "px";
+								if (tbody[0]) {
+									if ($scope.showPagination()) {
+										var pagination = $element.find("ul:first");
+										if (pagination.get().length > 0) {
+											tbody[0].style['marginBottom'] = ($(pagination).height() + 2) + "px";
+										}
+									} else {
+										tbody[0].style['marginBottom'] = "";
 									}
 								}
-								else {
-									tbody[0].style['marginBottom'] = "";
-								}
-							}
-						}, 0);
-					} 
-					return isPaginationVisible; 
+							}, 0);
+					}
+					return isPaginationVisible;
 				}
 
 				$scope.modifyPage = function(count) {
@@ -787,7 +784,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						if (event.keyCode == 33) { // PAGE UP KEY
 							var child = getFirstVisibleChild();
 							if (child) {
-								if (child.previousSibling) child  = child.previousSibling;
+								if (child.previousSibling) child = child.previousSibling;
 								var row_column = $(child).children().eq(0).data("row_column");
 								if (row_column) {
 									fs.selectedRowIndexes = [fs.viewPort.startIndex + row_column.row];
@@ -798,7 +795,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							var child = getLastVisibleChild();
 							if (child) {
 								// if this is the last visible child we should get the child after that to make visible.
-								if (child.nextSibling) child  = child.nextSibling;
+								if (child.nextSibling) child = child.nextSibling;
 								var row_column = $(child).children().eq(0).data("row_column");
 								if (row_column) {
 									fs.selectedRowIndexes = [fs.viewPort.startIndex + row_column.row];
@@ -976,9 +973,9 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					for (var j = startIndex; j <= endIndex; j++) {
 						var rowIdxInFoundsetViewport = j + rowOffSet; // index relative to foundset prop.'s viewport array?! but why rowOffset
 						var trElement = children.eq(j);
-						if(trElement.get(0)) {
+						if (trElement.get(0)) {
 							trElement.get(0).className = $scope.model.foundset.selectedRowIndexes.indexOf(firstRenderedRowIndex + j) != -1 ? $scope.model.selectionClass : "";
-						}  
+						}
 						var trChildren = trElement.children(); // we should get child relative to really rendered rows viewport
 						if (trChildren.length == 0) {
 							// as trChildren is relative to rendered viewport, it can only grow (have missing rows) or shrink at the end; if changes
@@ -1044,7 +1041,6 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						children = tbody.children();
 					}
 
-					scrollIntoViewAndSetSelection(true); // doesn't scroll, just updates selection painting because of that true which means "only update selection"
 					if (childIdxToScrollTo >= 0) {
 
 						var scrollToChild = children.eq(childIdxToScrollTo)[0];
