@@ -8,7 +8,7 @@
 	"model": {
 		"columns": { "type": "column[]", "droppable": true, "pushToServer": "shallow", "elementConfig": { "pushToServer": "shallow" } },
 		"currentPage": { "type": "int", "default": 1, "tags": { "scope": "runtime" }, "pushToServer": "shallow" },
-		"foundset": { "type": "foundset", "pushToServer": "allow", "initialPreferredViewPortSize": 50, "sendSelectionViewportInitially": true },
+		"foundset": { "type": "foundset", "pushToServer": "allow", "initialPreferredViewPortSize": 160, "sendSelectionViewportInitially": true },
 		"pageSize": { "type": "int", "default": 20 },
 		"styleClass": { "type": "styleclass", "tags": { "scope": "design" }, "default": "table", "values": ["table", "table-striped", "table-bordered", "table-hover", "table-condensed"] },
 		"selectionClass": { "type": "styleclass", "default": "table-servoyextra-selected " },
