@@ -267,6 +267,13 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					return Math.floor(Math.max(idx, 0) / $scope.model.pageSize) + 1;
 				}
 
+				function setCurrentPage(newCurrentPage) {
+					if ($scope.model.currentPage != newCurrentPage) {
+						$scope.model.currentPage = newCurrentPage;
+						renderedSize = getInitialRenderSize(); // when we change page make sure rendered rows will be as many as needed again (just in case for example previously rendered rows were just a few of last page)
+					}
+				}
+
 				// this function also adjusts current page if needed (if it's after the foundset size for example)
 				function calculateAllowedLoadedDataBounds() {
 					var allowedStart;
@@ -279,14 +286,15 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						allowedStart = $scope.model.pageSize * ($scope.model.currentPage - 1);
 						if (allowedStart >= serverSize) {
 							// this page no longer exists; it is after serverSize; adjust current page and that watch on that will request the correct viewport
-							$scope.model.currentPage = getPageForIndex(serverSize - 1);
+							setCurrentPage(getPageForIndex(serverSize - 1));
 							allowedStart = $scope.model.pageSize * ($scope.model.currentPage - 1);
 						}
 
 						allowedSize = Math.min($scope.model.pageSize, serverSize - allowedStart);
 					} else {
 						// table is not going to show/use pages; so we can think of it as one big page
-						$scope.model.currentPage = 1; // just to be sure - we are not paging so we are on first "page"
+						setCurrentPage(1); // just to be sure - we are not paging so we are on first "page"
+
 						allowedStart = 0;
 						allowedSize = serverSize;
 					}
@@ -341,7 +349,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							neededVpSize = Math.min(batchSizeForLoadingMoreRows, allowedSize);
 						}
 
-						if (! (vpStart >= neededVpStart && (vpStart + vpSize) <= (neededVpStart + neededVpSize))) {
+						if (vpStart != neededVpStart || vpSize != neededVpSize) {
 							if ($log.debugEnabled && $log.debugLevel === $log.SPAM) $log.debug("svy extra table * adjustLoadedRowsIfNeeded will do what is needed to have new loaded viewport of (" + neededVpStart + ", " + neededVpSize + ")");
 							newLoadingPromise = smartLoadNeededViewport(neededVpStart, neededVpSize);
 						}
@@ -458,7 +466,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					})
 
 				$scope.$watch('model.currentPage', function(newValue, oldValue) {
-						if (newValue && newValue != oldValue && $scope.showPagination()) {
+						if (newValue && newValue != oldValue) {
 							adjustLoadedRowsIfNeeded(); // load needed records from new page if needed
 						}
 					});
@@ -470,7 +478,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 							if (oldValue && newValue && $scope.showPagination()) {
 								// page size has changed; try to show the page for which we have loaded records
-								$scope.model.currentPage = getPageForIndex($scope.model.foundset.viewPort.startIndex);
+								setCurrentPage(getPageForIndex($scope.model.foundset.viewPort.startIndex));
 								adjustLoadedRowsIfNeeded(); // load more rows if needed according to new page bounds
 							}
 						}
@@ -478,15 +486,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					});
 
 				$scope.$watch('model.foundset.viewPort', function(newValue, oldValue) {
-						// the following code is only for when user changes page in browser I think
-						// so we really did request the correct startIndex already
-						if ($scope.showPagination()) {
-							if ($scope.model.pageSize * ($scope.model.currentPage - 1) != newValue.startIndex) {
-								$scope.model.currentPage = getPageForIndex(newValue.startIndex);
-							} else /* if (newValue.size < $scope.model.pageSize && $scope.model.foundset.serverSize > (newValue.startIndex + newValue.size)) */ {
-								adjustLoadedRowsIfNeeded();
-							}
-						}
+						adjustLoadedRowsIfNeeded();
 					});
 
 				$scope.$watch('model.foundset.sortColumns', function(newValue, oldValue) {
@@ -531,7 +531,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						// we must scroll to selection; see if we need to load/render other records in order to do this
 						if ($scope.showPagination() && getPageForIndex(firstSelected) != $scope.model.currentPage) {
 							// we need to switch page in order to show selected row
-							$scope.model.currentPage = getPageForIndex(firstSelected);
+							setCurrentPage(getPageForIndex(firstSelected));
 						}
 
 						// check if the selected row is in the current ui viewport.
@@ -560,6 +560,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 										newLoadPromise = smartLoadNeededViewport(neededVpStart, neededVpSize);
 										newLoadPromise.then(function() {
 											updateRenderedRows(null);
+											scrollToSelectionNeeded = false; // now reset the flag so that it is only set back to true on purpose; the updateRenderedRows above normally scrolled to selection
 										});
 
 										return newLoadPromise;
@@ -574,13 +575,13 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					var firstSelectedRelativeToRendered = firstSelected - renderedStartIndex;
 
 					var child = (firstSelectedRelativeToRendered >= 0 ? tbody.children().eq(firstSelectedRelativeToRendered) : undefined); // eq negative idx is interpreted as n'th from the end of children list
-					if (child && child.length > 0) {
+					if (child && child.length > 0 && child[0]) {
 						var wrapperRect = tbody[0].getBoundingClientRect();
 						var childRect = child[0].getBoundingClientRect();
 						if (Math.floor(childRect.top) < Math.floor(wrapperRect.top) || Math.floor(childRect.bottom) > Math.floor(wrapperRect.bottom)) {
 							child[0].scrollIntoView(!toBottom);
 						}
-						scrollToSelectionNeeded = false; // we did change page if it was needed, now reset the flag so that it is only set back to true on purpose
+						scrollToSelectionNeeded = false; // now reset the flag so that it is only set back to true on purpose
 					}
 				}
 
@@ -617,7 +618,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					var pages = Math.ceil($scope.model.foundset.serverSize / $scope.model.pageSize)
 					var newPage = $scope.model.currentPage + count;
 					if (newPage >= 1 && newPage <= pages) {
-						$scope.model.currentPage = newPage;
+						setCurrentPage(newPage);
 					}
 				}
 
@@ -876,7 +877,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 					// if there are changes but the renderedStartIndex of the last time doesn't fit at all in this index anymore
 					// then the viewport is completely changed and we do need a full render
-					if (changes && (renderedStartIndex >= vp.startIndex && renderedStartIndex <= (vp.startIndex + vp.size))) {
+					if (changes && (renderedStartIndex >= vp.startIndex && renderedStartIndex < (vp.startIndex + vp.size))) {
 						// this is hit when row/column viewport updates are happening. we just need to re-render/add/remove the affected TDs in rendered viewport
 						// note that TDs are always relative to renderedStartIndex of foundset (so the rendered viewport))
 
@@ -1113,6 +1114,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 						columnListener = function(changes) {
 							$scope.$evalAsync(function() {
+								adjustLoadedRowsIfNeeded();
 								updateRenderedRows(changes);
 							})
 						}
