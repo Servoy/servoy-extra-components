@@ -19,6 +19,11 @@
 	outline: none;
 }
 
+/* Overflow auto in anchored forms */
+.svy-wrapper .svy-sidenav {
+    overflow-y: auto;
+}
+
 .svy-sidenav-header,
 .svy-sidenav-content {
 	width: 100%;
