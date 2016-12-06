@@ -134,8 +134,7 @@
  *
  *******************************************/
 
-/* Animate nav */
-.svy-slide-out {
+.svy-sidenav.svy-slide-out {
 	overflow: visible;
 	border-width: 0px; /* reset the border of svy-sidenav */
 	height: 0;
