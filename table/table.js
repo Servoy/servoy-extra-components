@@ -24,7 +24,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				// the start row index of the first rendered row - relative to start of foundset (so not to any viewport)
 				var renderedStartIndex = 0;
 				// the number rendered rows
-				var renderedSize = getInitialRenderSize();
+				var renderedSize = -1;
 
 				// used to avoid a situation where extra or less records are requested multiple times because previous load data requests have not yet arrived back from server to adjust viewport;
 				// for example if we calculate that we need 3 less records we send loadLess..(3) but if meanwhile an event happens on client that makes us check that again before we get the new
@@ -34,6 +34,8 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				// this is true when next render of table contents / next scroll selection into view should scroll to selection;
 				// false if it shouldn't change page/load records around selection, for example if the user has just changed to another page manually and table got re-rendered, or browser page refresh
 				var scrollToSelectionNeeded = ($scope.model.lastSelectionFirstElement == -1); // when this is called due to a browser refresh don't necessarily go to selection; only force the scroll on initial show or if the selection changed (see selected indexes watch)
+				if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+					$log.debug("svy extra table * initially scrollToSelectionNeeded = " + scrollToSelectionNeeded);
 
 				function getInitialRenderSize() {
 					return $scope.model.pageSize > 0 ? Math.min(batchSizeForRenderingMoreRows, $scope.model.pageSize) : batchSizeForRenderingMoreRows;
@@ -270,7 +272,8 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				function setCurrentPage(newCurrentPage) {
 					if ($scope.model.currentPage != newCurrentPage) {
 						$scope.model.currentPage = newCurrentPage;
-						renderedSize = getInitialRenderSize(); // when we change page make sure rendered rows will be as many as needed again (just in case for example previously rendered rows were just a few of last page)
+						renderedStartIndex = 0;
+						renderedSize = -1; // when we change page make sure rendered rows will be as many as needed again (just in case for example previously rendered rows were just a few of last page)
 					}
 				}
 
@@ -301,6 +304,21 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					return { startIdx: allowedStart, size: allowedSize };
 				}
 
+				// tries to center new interval of desired size around old interval without going past allowed bounds
+				function centerIntervalAroundOldIntervalIfPossible(oldStartIdx, oldSize, allowedStartIdx, allowedSize, newDesiredSize) {
+					// try to compute center start index and compute size (if it doesn't fit in the beginning slide towards end of allowed as much as possible)
+					var computedStart = Math.max(oldStartIdx - (newDesiredSize - oldSize) / 2, allowedStartIdx);
+					var computedSize = Math.min(newDesiredSize, allowedStartIdx + allowedSize - computedStart);
+
+					// if newDesiredSize is still not reached, see if we can slide the interval towards the beginning of allowed
+					if (computedSize < newDesiredSize && computedStart > allowedStartIdx) {
+						computedStart = Math.max(allowedStartIdx + allowedSize - newDesiredSize, allowedStartIdx);
+						computedSize = Math.min(newDesiredSize, allowedStartIdx + allowedSize - computedStart);
+					}
+
+					return [computedStart, computedSize];
+				}
+
 				function adjustLoadedRowsIfNeeded() {
 					runWhenThereIsNoPendingLoadRequest(function() {
 						var newLoadingPromise; // return value if this function calls any loadXYZ methods on the foundset property
@@ -321,32 +339,32 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						var allowedStart = allowedBounds.startIdx;
 						var allowedSize = allowedBounds.size;
 
-						// if loaded viewport bounds are not inside allowed bounds, or if too few rows are loaded, calculate the correct neededVpStart and neededVpSize
-						// first shrink loaded to allowed bounds if needed
-						neededVpStart = Math.min(allowedStart + allowedSize - 1, Math.max(vpStart, allowedStart));
-						neededVpSize = Math.max(0, Math.min(allowedSize - (neededVpStart - allowedStart), vpSize - (neededVpStart - vpStart)));
-
-						// now the 'shrinked to allowed bounds' loaded rows could be 0 in which case we need to load first rows of the allowed interval
-						// or they could be only a few in which case we just need to check if it's enough of them or not (compared to batchSizeForLoadingMoreRows)
-						if (neededVpSize > 0) {
-							// all is ok, just make sure that minimum batchSizeForLoadingMoreRows are already loaded; if not, then load some more
-							if (neededVpSize < batchSizeForLoadingMoreRows) {
-								// center on currently loaded viewport and load more rows so that batchSizeForLoadingMoreRows is reached
-
-								// try to center start index and compute size (if it doesn't fit in the beginning slide towards end of allowed as much as possible)
-								neededVpStart = Math.max(vpStart - (batchSizeForLoadingMoreRows - vpSize) / 2, allowedStart);
-								neededVpSize = Math.min(batchSizeForLoadingMoreRows, allowedStart + allowedSize - neededVpStart);
-
-								// if batchSizeForLoadingMoreRows is still not reached, see if we can slide the loaded viewport towards the beginning of allowed
-								if (neededVpSize < batchSizeForLoadingMoreRows && neededVpStart > allowedStart) {
-									neededVpStart = Math.max(allowedStart + allowedSize - batchSizeForLoadingMoreRows, allowedStart);
-									neededVpSize = Math.min(batchSizeForLoadingMoreRows, allowedStart + allowedSize - neededVpStart);
-								}
-							} // else needed bounds are already ok, we have at least the loaded batch size records already loaded
-						} else {
-							// loaded bounds are completely outside of current allowed interval (page in this case); request default new one at start of page
+						if ($scope.showPagination() && ( (vpStart < allowedStart && vpStart + vpSize <= allowedStart) || (vpStart >= allowedStart + allowedSize && vpStart + vpSize > allowedStart + allowedSize))) {
+							// if the viewport is completely outside of the current page - load first batch of the page, don't try to make best quest closest to current viewport
 							neededVpStart = allowedStart;
 							neededVpSize = Math.min(batchSizeForLoadingMoreRows, allowedSize);
+						} else {
+							// if loaded viewport bounds are not inside allowed bounds, or if too few rows are loaded, calculate the correct neededVpStart and neededVpSize
+							// first shrink loaded to allowed bounds if needed
+							neededVpStart = Math.min(allowedStart + allowedSize - 1, Math.max(vpStart, allowedStart));
+							neededVpSize = Math.max(0, Math.min(allowedSize - (neededVpStart - allowedStart), vpSize - (neededVpStart - vpStart)));
+
+							// now the 'shrinked to allowed bounds' loaded rows could be 0 in which case we need to load first rows of the allowed interval
+							// or they could be only a few in which case we just need to check if it's enough of them or not (compared to batchSizeForLoadingMoreRows)
+							if (neededVpSize > 0) {
+								// all is ok, just make sure that minimum batchSizeForLoadingMoreRows are already loaded; if not, then load some more
+								if (neededVpSize < batchSizeForLoadingMoreRows) {
+									// center on currently loaded viewport and load more rows so that batchSizeForLoadingMoreRows is reached
+
+									var computedInterval = centerIntervalAroundOldIntervalIfPossible(vpStart, vpSize, allowedStart, allowedSize, batchSizeForLoadingMoreRows);
+									neededVpStart = computedInterval[0];
+									neededVpSize = computedInterval[1];
+								} // else needed bounds are already ok, we have at least the loaded batch size records already loaded
+							} else {
+								// loaded bounds are completely outside of current allowed interval (page in this case); request default new one at start of page
+								neededVpStart = allowedStart;
+								neededVpSize = Math.min(batchSizeForLoadingMoreRows, allowedSize);
+							}
 						}
 
 						if (vpStart != neededVpStart || vpSize != neededVpSize) {
@@ -403,6 +421,8 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								updateSelection(newValue, oldValue);
 								if ($scope.model.lastSelectionFirstElement != newValue[0]) {
 									scrollToSelectionNeeded = true;
+									if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+										$log.debug("svy extra table * selectedRowIndexes watch; scrollToSelectionNeeded = true");
 									scrollToSelectionIfNeeded();
 								}
 							}
@@ -461,7 +481,6 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 				$scope.$watch('model.foundset.viewPort.rows', function(newValue, oldValue) {
 						// full viewport update (it changed by reference); start over with renderedSize
-						renderedSize = getInitialRenderSize();
 						generateTemplate();
 					})
 
@@ -474,7 +493,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				$scope.$watch('model.pageSize', function(newValue, oldValue) {
 						if (oldValue != newValue) {
 							// start over with renderedSize
-							renderedSize = getInitialRenderSize();
+							renderedSize = -1;
 
 							if (oldValue && newValue && $scope.showPagination()) {
 								// page size has changed; try to show the page for which we have loaded records
@@ -525,9 +544,11 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					});
 
 				function scrollToSelectionIfNeeded() {
+					if (!scrollToSelectionNeeded) return;
+
 					var firstSelected = $scope.model.foundset.selectedRowIndexes.length == 1 ? $scope.model.foundset.selectedRowIndexes[0] : -1; // we do not scroll to selection if there is no selected record (serverSize is probably 0) or we have multi-select with more then one or 0 selected records
 
-					if (firstSelected >= 0 && scrollToSelectionNeeded) {
+					if (firstSelected >= 0) {
 						// we must scroll to selection; see if we need to load/render other records in order to do this
 						if ($scope.showPagination() && getPageForIndex(firstSelected) != $scope.model.currentPage) {
 							// we need to switch page in order to show selected row
@@ -546,21 +567,14 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 										var allowedSize = allowedBounds.size;
 
 										// center on the selection if possible, if not try to load 'batchSizeForLoadingMoreRows' anyway in total
-										// first try to center (nd if it doesn't fit in the beginning slide towards end of allowed as much as possible
-										var neededVpStart = Math.max(firstSelected - batchSizeForLoadingMoreRows / 2, allowedStart);
-										var neededVpSize = Math.min(batchSizeForLoadingMoreRows, allowedStart + allowedSize - neededVpStart);
-
-										// if batchSizeForLoadingMoreRows is still not reached, see if we can slide the viewport towards the beginning of allowed
-										if (neededVpSize < batchSizeForLoadingMoreRows && neededVpStart > allowedStart) {
-											neededVpStart = Math.max(allowedStart + allowedSize - batchSizeForLoadingMoreRows, allowedStart);
-											neededVpSize = Math.min(batchSizeForLoadingMoreRows, allowedStart + allowedSize - neededVpStart);
-										}
+										var computedInterval = centerIntervalAroundOldIntervalIfPossible(firstSelected, 0, allowedStart, allowedSize, batchSizeForLoadingMoreRows);
+										var neededVpStart = computedInterval[0];
+										var neededVpSize = computedInterval[1];
 
 										if ($log.debugEnabled && $log.debugLevel === $log.SPAM) $log.debug("svy extra table * scrollToSelectionIfNeeded will do what is needed to have new loaded viewport of (" + neededVpStart + ", " + neededVpSize + ")");
 										newLoadPromise = smartLoadNeededViewport(neededVpStart, neededVpSize);
 										newLoadPromise.then(function() {
 											updateRenderedRows(null);
-											scrollToSelectionNeeded = false; // now reset the flag so that it is only set back to true on purpose; the updateRenderedRows above normally scrolled to selection
 										});
 
 										return newLoadPromise;
@@ -568,21 +582,24 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							} else {
 								updateRenderedRows(null); // this will center rendered rows and scroll position change might load more needed records around the already-present selected row
 							}
+						} else {
+							// really scroll to selection; it should be already there
+							var firstSelectedRelativeToRendered = firstSelected - renderedStartIndex;
+
+							var child = (firstSelectedRelativeToRendered >= 0 ? tbody.children().eq(firstSelectedRelativeToRendered) : undefined); // eq negative idx is interpreted as n'th from the end of children list
+							if (child && child.length > 0 && child[0]) {
+								var wrapperRect = tbody[0].getBoundingClientRect();
+								var childRect = child[0].getBoundingClientRect();
+								if (Math.floor(childRect.top) < Math.floor(wrapperRect.top) || Math.floor(childRect.bottom) > Math.floor(wrapperRect.bottom)) {
+									child[0].scrollIntoView(!toBottom);
+								}
+								scrollToSelectionNeeded = false; // now reset the flag so that it is only set back to true on purpose
+								if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+									$log.debug("svy extra table * scrollToSelectionIfNeeded; scroll done, scrollToSelectionNeeded = false");
+							}
 						}
 					}
 
-					// now update painted selection and see if we should really scroll
-					var firstSelectedRelativeToRendered = firstSelected - renderedStartIndex;
-
-					var child = (firstSelectedRelativeToRendered >= 0 ? tbody.children().eq(firstSelectedRelativeToRendered) : undefined); // eq negative idx is interpreted as n'th from the end of children list
-					if (child && child.length > 0 && child[0]) {
-						var wrapperRect = tbody[0].getBoundingClientRect();
-						var childRect = child[0].getBoundingClientRect();
-						if (Math.floor(childRect.top) < Math.floor(wrapperRect.top) || Math.floor(childRect.bottom) > Math.floor(wrapperRect.bottom)) {
-							child[0].scrollIntoView(!toBottom);
-						}
-						scrollToSelectionNeeded = false; // now reset the flag so that it is only set back to true on purpose
-					}
 				}
 
 				$scope.hasNext = function() {
@@ -622,8 +639,12 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					}
 				}
 
-				$scope.getRealRow = function(row) {
-					return $scope.model.foundset.viewPort.startIndex + row;
+				function getFoundsetIndexFromViewportIndex(idx) {
+					return $scope.model.foundset.viewPort.startIndex + idx;
+				}
+
+				function getViewportIndexFromFoundsetIndex(idx) {
+					return idx - $scope.model.foundset.viewPort.startIndex;
 				}
 
 				$scope.tableClicked = function(event, type) {
@@ -631,18 +652,18 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					for (var i = elements.length; --i > 0;) {
 						var row_column = $(elements[i]).data("row_column");
 						if (row_column) {
-							var rowIndex = row_column.row;
 							var columnIndex = row_column.column;
-							var realRow = $scope.getRealRow(rowIndex);
-							var newSelection = [realRow];
+							var idxInFs = row_column.idxInFs;
+							var idxInViewport = getViewportIndexFromFoundsetIndex(idxInFs);
+							var newSelection = [idxInFs];
 							//    				 if($scope.model.foundset.multiSelect) {
 							if (event.ctrlKey) {
 								newSelection = $scope.model.foundset.selectedRowIndexes ? $scope.model.foundset.selectedRowIndexes.slice() : [];
-								var realRowIdx = newSelection.indexOf(realRow);
-								if (realRowIdx == -1) {
-									newSelection.push(realRow);
+								var idxInSelected = newSelection.indexOf(idxInFs);
+								if (idxInSelected == -1) {
+									newSelection.push(idxInFs);
 								} else if (newSelection.length > 1) {
-									newSelection.splice(realRowIdx, 1);
+									newSelection.splice(idxInSelected, 1);
 								}
 							} else if (event.shiftKey) {
 								var start = -1;
@@ -653,10 +674,10 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 										}
 									}
 								}
-								var stop = realRow;
-								if (start > realRow) {
+								var stop = idxInFs;
+								if (start > idxInFs) {
 									stop = start;
-									start = realRow;
+									start = idxInFs;
 								}
 								newSelection = []
 								for (var n = start; n <= stop; n++) {
@@ -667,11 +688,11 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 							$scope.model.foundset.requestSelectionUpdate(newSelection);
 							if (type == 1 && $scope.handlers.onCellClick) {
-								$scope.handlers.onCellClick(realRow + 1, columnIndex, $scope.model.foundset.viewPort.rows[rowIndex], event);
+								$scope.handlers.onCellClick(idxInFs + 1, columnIndex, $scope.model.foundset.viewPort.rows[idxInViewport], event);
 							}
 
 							if (type == 2 && $scope.handlers.onCellRightClick) {
-								$scope.handlers.onCellRightClick(realRow + 1, columnIndex, $scope.model.foundset.viewPort.rows[rowIndex], event);
+								$scope.handlers.onCellRightClick(idxInFs + 1, columnIndex, $scope.model.foundset.viewPort.rows[idxInViewport], event);
 							}
 						}
 					}
@@ -722,28 +743,42 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					}
 				}
 
-				function getFirstVisibleChild(giveRenderIndex) {
+				function getRowIndexInViewport(rowElement) {
+					if (rowElement) {
+						// take the index in loaded viewport from dom element (to make sure we really target the same row
+						// no matter the values of renderedSize and renderedStartIndex (they might have been altered before for rendering))
+						// something else alreaady and then they are out-of-sync with child elements already)
+						// so we can't rely on the fact that the Nth DOM child is the Nth relative to renderedStartIndex in some cases
+						var row_column = $(rowElement).children().eq(0).data("row_column");
+						if (row_column) {
+							return getViewportIndexFromFoundsetIndex(row_column.idxInFs);
+						}
+					}
+					return -1;
+				}
+
+				function getFirstVisibleChild() {
 					var tbodyBounds = tbody[0].getBoundingClientRect();
 					var children = tbody.children()
 					for (var i = 0; i < children.length; i++) {
 						var childBounds = children[i].getBoundingClientRect();
 						if (childBounds.top >= tbodyBounds.top) {
-							return giveRenderIndex ? i : children[i];
+							return children[i];
 						}
 					}
-					if (giveRenderIndex) return -1;
 				}
-				function getLastVisibleChild(giveRenderIndex) {
+
+				function getLastVisibleChild() {
 					var tbodyBounds = tbody[0].getBoundingClientRect();
 					var children = tbody.children()
 					for (var i = 0; i < children.length; i++) {
 						var childBounds = children[i].getBoundingClientRect();
 						if (childBounds.bottom >= tbodyBounds.bottom) {
-							if (i > 0) return giveRenderIndex ? i - 1 : children[i - 1]
-							return giveRenderIndex ? i : children[i];
+							if (i > 0) return children[i - 1]
+							return children[i];
 						}
 					}
-					return giveRenderIndex ? children.length - 1 : children[children.length - 1]
+					return children[children.length - 1]
 				}
 
 				$scope.keyPressed = function(event) {
@@ -756,7 +791,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								if (child.previousSibling) child = child.previousSibling;
 								var row_column = $(child).children().eq(0).data("row_column");
 								if (row_column) {
-									fs.selectedRowIndexes = [fs.viewPort.startIndex + row_column.row];
+									fs.selectedRowIndexes = [row_column.idxInFs];
 								}
 								child.scrollIntoView(false);
 							}
@@ -767,7 +802,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								if (child.nextSibling) child = child.nextSibling;
 								var row_column = $(child).children().eq(0).data("row_column");
 								if (row_column) {
-									fs.selectedRowIndexes = [fs.viewPort.startIndex + row_column.row];
+									fs.selectedRowIndexes = [row_column.idxInFs];
 								}
 								child.scrollIntoView(true);
 							}
@@ -864,7 +899,36 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					}
 				}
 
+				function correctRenderViewportIfNeeded() {
+					var changed = false;
+					// don't allow rendered rows to shrink to less then 1 batch size due to foundset updates - as we might end up showing only on row
+					// from a page for example while the page should actually be full of rows
+					var vp = $scope.model.foundset.viewPort;
+					var minRenderSize = Math.min(getInitialRenderSize(), vp.size);
+					if (renderedSize < minRenderSize) {
+						// the rendered viewport has to be greater - we have more rows, use them
+						// center new rendered viewport around current/old rendered viewport
+						var computedInterval = centerIntervalAroundOldIntervalIfPossible(renderedStartIndex, renderedSize, vp.startIndex, vp.size, minRenderSize);
+						if (renderedStartIndex != computedInterval[0]) {
+							renderedStartIndex = computedInterval[0];
+							changed = true;
+						}
+						if (renderedSize != computedInterval[1]) {
+							renderedSize = computedInterval[1];
+							changed = true;
+						}
+					}
+
+					if (changed && $log.debugEnabled && $log.debugLevel === $log.SPAM)
+						$log.debug("svy extra table * correctRenderViewportIfNeeded did correct rendered interval to " + renderedStartIndex + ", " + renderedSize);
+
+					return changed;
+				}
+
 				function updateRenderedRows(changes, offset) {
+					if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+						$log.debug("svy extra table * updateRenderedRows called with " + JSON.stringify(changes, offset));
+
 					var children = tbody.children();
 					var childrenListChanged = false;
 					var startIndex = 100000000; // relative to rendered/UI viewport
@@ -874,6 +938,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					var alignToTopWhenScrolling = false;
 					var forceScroll = false;
 					var vp = $scope.model.foundset.viewPort;
+					var correctRenderedBoundsAtEnd = false; // if rendered rows needed correction update them all again (I don't call this at the beginning of the method if we have arguments because that might affect what changes and offset were supposed to do based on current renderStartIndex and renderedSize; so I don't want to correct those here but rather at the end)
 
 					// if there are changes but the renderedStartIndex of the last time doesn't fit at all in this index anymore
 					// then the viewport is completely changed and we do need a full render
@@ -905,55 +970,66 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						}
 						endIndex = Math.min(renderedSize - 1, endIndex); // we don't need to re-render more rows after rendered viewport
 						startIndex = Math.max(0, startIndex); // we don't need to re-render more rows before rendered viewport
+
+						correctRenderedBoundsAtEnd = true;
 					} else if (offset >= 0) {
 						// offset is given when scrolling up, so new rows will be appended (prepended visually)
 						startIndex = 0;
 						endIndex = renderedSize - 1;
 
 						// keep scroll at first visible row; render index of that row will be higher because we are about to render more rows from top
-						childIdxToScrollTo = getFirstVisibleChild(true);
-						if (childIdxToScrollTo) childIdxToScrollTo += renderedSize - children.length;
+						var firstVisibleChild = getFirstVisibleChild(); // get first visible DOM node
+						// take the index in loaded viewport from dom element (to make sure we really target the same row
+						// no matter what renderedSize and renderedStartIndex are (they might have been altered before calling this method))
+						// so we can't rely on the fact that the Nth DOM child is the Nth relative to renderedStartIndex
+						var indexInViewport = getRowIndexInViewport(firstVisibleChild);
+						if (indexInViewport >= 0) {
+							childIdxToScrollTo = indexInViewport - rowOffSet; // child will be relative to rendered obviously
+							if (childIdxToScrollTo < 0 || childIdxToScrollTo >= renderedSize) childIdxToScrollTo = 0; // should never happen
+							alignToTopWhenScrolling = true;
+							forceScroll = true;
+						} else childIdxToScrollTo = renderedSize >= 0 ? 0 : -1;
+
 						alignToTopWhenScrolling = true;
 						forceScroll = true;
 
 						renderedStartIndex = vp.startIndex + rowOffSet; // update renderedStartIndex to render newly fetched records on top
+
+						correctRenderedBoundsAtEnd = true;
 					} else {
 						// called when a "full" render needs to be done
-						renderedSize = Math.min(renderedSize, vp.size);
+						correctRenderViewportIfNeeded();
 						var firstSelected = $scope.model.foundset.selectedRowIndexes ? $scope.model.foundset.selectedRowIndexes[0] : 0;
-						if (vp.startIndex < firstSelected && (vp.startIndex + vp.size) > firstSelected) {
-							var formStartToSelection = firstSelected - vp.startIndex;
-							// selection is in the viewport, try to make sure that is visible.
-							rowOffSet = formStartToSelection - (renderedSize / 2); // try to center selection in rendered/UI viewport
 
-							// correct bounds if selection it too close to top or bottom of viewport to be really centered
-							if (rowOffSet < 0) rowOffSet = 0;
-							else if (rowOffSet + renderedSize > vp.size) rowOffSet = vp.size - renderedSize;
+						if (scrollToSelectionNeeded && vp.startIndex <= firstSelected && (vp.startIndex + vp.size) > firstSelected) {
+							var formStartToSelection = firstSelected - vp.startIndex;
+							// selection is in the viewport, try to make sure that is visible and centered in rendered viewport
+							var computedInterval = centerIntervalAroundOldIntervalIfPossible(formStartToSelection, 0, 0, vp.size, renderedSize);
+							rowOffSet = computedInterval[0];
+							renderedSize = computedInterval[1];
 
 							childIdxToScrollTo = formStartToSelection - rowOffSet; // new selected row rendered index
 							alignToTopWhenScrolling = !toBottom;
-						} else if (vp.startIndex > 0) {
-							// if the vp.startIndex bigger then null and not the minimal page start index:
-							var minimalRowIndex = 0;
-							if ($scope.showPagination()) {
-								// paging mode calculate max size of the current viewPort
-								minimalRowIndex = $scope.model.pageSize * ($scope.model.currentPage - 1);
-							}
-							if (vp.startIndex == minimalRowIndex) {
-								// this start index of the viewport is the start of a new page, just start to render there
-								childIdxToScrollTo = 0;
-								alignToTopWhenScrolling = !toBottom;
-							} else {
-								// selection is not in the view, vp.startIndex is not the start of a page; then just show the middle
-								// currently rendered rows (it might avoid this way that the scroll operation triggers another render)
-								rowOffSet = vp.size / 2 - renderedSize / 2; // this can't be < 0 or rowOffSet + maxRenderedRows can't be > vp.size because maxRenderedRows <= vp.size (see above where maxRenderedRows is assigned)
-								childIdxToScrollTo = renderedSize / 2; // scroll to middle of rendered rows to avoid re-rendering as much as possible
-								alignToTopWhenScrolling = !toBottom;
-							}
+							scrollToSelectionNeeded = false; // now reset the flag so that it is only set back to true on purpose
+							if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+								$log.debug("svy extra table * updateRenderedRows; scroll will be done, scrollToSelectionNeeded = false");
 						} else {
-							childIdxToScrollTo = 0;
-							alignToTopWhenScrolling = !toBottom;
+							// re-render all and try to keep scroll as it was before
+							rowOffSet = renderedStartIndex - vp.startIndex; // try to center selection in rendered/UI viewport
+
+							var firstVisibleChild = getFirstVisibleChild(); // get first visible DOM node
+							// take the index in loaded viewport from dom element (to make sure we really target the same row
+							// no matter what renderedSize and renderedStartIndex are (they might have been altered before calling this method))
+							// so we can't rely on the fact that the Nth DOM child is the Nth relative to renderedStartIndex
+							var indexInViewport = getRowIndexInViewport(firstVisibleChild);
+							if (indexInViewport >= 0) {
+								childIdxToScrollTo = indexInViewport - rowOffSet; // child will be relative to rendered obviously
+								if (childIdxToScrollTo < 0 || childIdxToScrollTo >= renderedSize) childIdxToScrollTo = 0; // in case previously shown element will no longer be a part of rendered viewport
+							} else childIdxToScrollTo = 0;
+							alignToTopWhenScrolling = true;
+							forceScroll = true;
 						}
+
 						startIndex = 0;
 						endIndex = renderedSize - 1;
 
@@ -963,26 +1039,28 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					var formatFilter = $filter("formatFilter");
 					var columns = $scope.model.columns;
 
-					if ($log.debugEnabled && $log.debugLevel === $log.SPAM && startIndex <= endIndex)
-						$log.debug("svy extra table * updateRenderedRows will rerender from " + (rowOffSet + startIndex) + " up to " + (rowOffSet + endIndex));
+					if ($log.debugEnabled && $log.debugLevel === $log.SPAM) {
+						$log.debug("svy extra table * updateRenderedRows; renderedStartIndex = " + renderedStartIndex + " & renderedSize = " + renderedSize);
+						if (startIndex <= endIndex) $log.debug("svy extra table * updateRenderedRows will rerender from (relative to viewport) " + (rowOffSet + startIndex) + " up to " + (rowOffSet + endIndex));
+					}
 
 					for (var j = startIndex; j <= endIndex; j++) {
 						var rowIdxInFoundsetViewport = j + rowOffSet; // index relative to foundset prop.'s viewport array?! but why rowOffset
 						var trElement = children.eq(j);
-						if (trElement.get(0)) {
-							trElement.get(0).className = $scope.model.foundset.selectedRowIndexes.indexOf(renderedStartIndex + j) != -1 ? $scope.model.selectionClass : "";
-						}
 						var trChildren = trElement.children(); // we should get child relative to really rendered rows viewport
 						if (trChildren.length == 0) {
 							// as trChildren is relative to rendered viewport, it can only grow (have missing rows) or shrink at the end; if changes
 							// happen before it, the data is updated in those cells, no real dom Node inserts have to happen in specific indexes in
 							// the rendered viewpot
-							tbody[0].appendChild(createTableRow(columns, rowIdxInFoundsetViewport, formatFilter));
+							trElement = createTableRow(columns, rowIdxInFoundsetViewport, formatFilter);
+							tbody[0].appendChild(trElement);
+							trElement = $(trElement);
 							childrenListChanged = true;
-						} else for (var c = columns.length; --c >= 0;) {
+						} else {
+							for (var c = columns.length; --c >= 0;) {
 								var column = columns[c];
 								var td = trChildren.eq(c);
-								td.data('row_column', { row: rowIdxInFoundsetViewport, column: c });
+								td.data('row_column', { idxInFs: getFoundsetIndexFromViewportIndex(rowIdxInFoundsetViewport), column: c });
 								var tdClass = 'c' + c;
 								if (column.styleClass) {
 									tdClass += ' ' + column.styleClass;
@@ -1016,6 +1094,10 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 									}
 								}
 							}
+						}
+						if (trElement.get(0)) {
+							trElement.get(0).className = $scope.model.foundset.selectedRowIndexes.indexOf(renderedStartIndex + j) != -1 ? $scope.model.selectionClass : "";
+						}
 					}
 
 					if (childrenListChanged) {
@@ -1047,6 +1129,10 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								scrollToChild.scrollIntoView(alignToTopWhenScrolling);
 							}
 						}
+					}
+
+					if (correctRenderedBoundsAtEnd) {
+						if (correctRenderViewportIfNeeded()) updateRenderedRows(null);
 					}
 				}
 
@@ -1100,6 +1186,10 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				}
 				var columnListener = null;
 				function generateTemplate(full) {
+					if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+						$log.debug("svy extra table * generateTemplate called");
+					correctRenderViewportIfNeeded();
+
 					var columns = $scope.model.columns;
 					if (!columns || columns.length == 0) return;
 					var tbodyJQ = tbody;
@@ -1129,12 +1219,12 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						var tbodyOld = tbodyJQ[0];
 						var tbodyNew = document.createElement("TBODY");
 						updateTBodyStyle(tbodyNew);
-						renderedSize = Math.min(renderedSize, rows.length)
+						renderedSize = Math.min(renderedSize, rows.length);
 						var firstSelected = $scope.model.foundset.selectedRowIndexes ? $scope.model.foundset.selectedRowIndexes[0] : 0;
 						var startRow = 0;
 						var formStartToSelection = firstSelected - $scope.model.foundset.viewPort.startIndex
 						if (formStartToSelection < $scope.model.foundset.viewPort.size && formStartToSelection > renderedSize) {
-							// if the selection is in the viewport and the will not be rendered because it fall out of the max rows
+							// if the selection is in the viewport and it will not be rendered because it falls out of the max rows
 							// adjust the startRow to render
 							startRow = formStartToSelection - renderedSize / 2 + 1;
 							if (startRow + renderedSize > $scope.model.foundset.viewPort.size) {
@@ -1244,28 +1334,28 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					onTableRendered();
 				}
 
-				function createTableRow(columns, row, formatFilter) {
+				function createTableRow(columns, idxInLoaded, formatFilter) {
 					var tr = document.createElement("TR");
 					for (var c = 0; c < columns.length; c++) {
 						var column = columns[c];
 						var td = document.createElement("TD");
-						$(td).data('row_column', { row: row, column: c });
+						$(td).data('row_column', { idxInFs: getFoundsetIndexFromViewportIndex(idxInLoaded), column: c });
 						var tdClass = 'c' + c;
 						if (column.styleClass) {
 							tdClass += ' ' + column.styleClass;
 						}
-						if (column.styleClassDataprovider && column.styleClassDataprovider[row]) {
-							tdClass += ' ' + column.styleClassDataprovider[row];
+						if (column.styleClassDataprovider && column.styleClassDataprovider[idxInLoaded]) {
+							tdClass += ' ' + column.styleClassDataprovider[idxInLoaded];
 						}
 						td.className = tdClass;
 						tr.appendChild(td);
-						if (column.dataprovider && column.dataprovider[row] && column.dataprovider[row].url) {
+						if (column.dataprovider && column.dataprovider[idxInLoaded] && column.dataprovider[idxInLoaded].url) {
 							var img = document.createElement("IMG");
-							img.setAttribute("src", column.dataprovider[row].url);
+							img.setAttribute("src", column.dataprovider[idxInLoaded].url);
 							td.appendChild(img);
 						} else {
 							var div = document.createElement("DIV");
-							var value = column.dataprovider ? column.dataprovider[row] : null;
+							var value = column.dataprovider ? column.dataprovider[idxInLoaded] : null;
 							value = getDisplayValue(value, column.valuelist);
 							if (column.format) value = formatFilter(value, column.format.display, column.format.type);
 							var txt = document.createTextNode(value ? value : "");
