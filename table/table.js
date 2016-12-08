@@ -905,7 +905,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					// from a page for example while the page should actually be full of rows
 					var vp = $scope.model.foundset.viewPort;
 					var minRenderSize = Math.min(getInitialRenderSize(), vp.size);
-					if (renderedSize < minRenderSize) {
+					if (renderedSize < minRenderSize || renderedSize > vp.size) {
 						// the rendered viewport has to be greater - we have more rows, use them
 						// center new rendered viewport around current/old rendered viewport
 						var computedInterval = centerIntervalAroundOldIntervalIfPossible(renderedStartIndex, renderedSize, vp.startIndex, vp.size, minRenderSize);
