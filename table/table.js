@@ -758,6 +758,9 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				}
 
 				function getFirstVisibleChild() {
+					if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+						$log.debug("svy extra table * getFirstVisibleChild called");
+
 					var tbodyBounds = tbody[0].getBoundingClientRect();
 					var children = tbody.children()
 					for (var i = 0; i < children.length; i++) {
@@ -905,9 +908,16 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					// from a page for example while the page should actually be full of rows
 					var vp = $scope.model.foundset.viewPort;
 					var minRenderSize = Math.min(getInitialRenderSize(), vp.size);
-					if (renderedSize < minRenderSize || renderedSize > vp.size) {
-						// the rendered viewport has to be greater - we have more rows, use them
-						// center new rendered viewport around current/old rendered viewport
+
+					if ((renderedStartIndex < vp.startIndex && renderedStartIndex + renderedSize <= vp.startIndex) || (renderedStartIndex >= vp.startIndex + vp.size && renderedStartIndex + renderedSize > vp.startIndex + vp.size)) {
+						// rendered rows are completely outside the loaded rows; set size to -1 so we will correct them & start fresh with a maximum of minRenderSize rows rendered
+						renderedStartIndex = 0;
+						renderedSize = -1;
+					}
+					if (renderedSize < minRenderSize || renderedStartIndex < vp.startIndex || renderedStartIndex + renderedSize > vp.startIndex + vp.size) {
+						// 1. the rendered viewport has to be greater - we have more rows, use them
+						// 2. the rendered viewport is outside of the loaded rows; so put it inside the loaded rows
+						// center new rendered viewport around current/old rendered viewport as much as possible
 						var computedInterval = centerIntervalAroundOldIntervalIfPossible(renderedStartIndex, renderedSize, vp.startIndex, vp.size, minRenderSize);
 						if (renderedStartIndex != computedInterval[0]) {
 							renderedStartIndex = computedInterval[0];
