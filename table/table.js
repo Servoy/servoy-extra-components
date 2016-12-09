@@ -228,7 +228,6 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					// don't want JColResize to change the column width on window resize
 					$(window).unbind('resize.JColResizer');
 					// update the model with the right px values
-					var tbl = $element.find("table:first");
 					var headers = tbl.find("th");
 					if ($(headers).is(":visible")) {
 						for (var i = 0; i < $scope.model.columns.length; i++) {
@@ -237,6 +236,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								updateTableColumnStyleClass(i, { width: $scope.model.columns[i].width, minWidth: $scope.model.columns[i].width, maxWidth: $scope.model.columns[i].width });
 							}
 						}
+						updateTBodyStyle(tbl.find("tbody")[0]);
 					}
 				}
 
