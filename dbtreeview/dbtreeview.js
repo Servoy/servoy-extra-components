@@ -176,9 +176,10 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
     	function getRelatedFoundSetCallback(dfd ,item, sort, level) {
     		return function(rfoundsetinfo) {
     			if(rfoundsetinfo) {
+					var foundsetNRelation = getBinding(rfoundsetinfo.foundsetdatasource).nrelationname;
 					foundset_manager.getFoundSet(
 							rfoundsetinfo.foundsethash,
-							getDataproviders(rfoundsetinfo.foundsetdatasource, rfoundsetinfo.foundsetpk), sort).then(
+							getDataproviders(rfoundsetinfo.foundsetdatasource, rfoundsetinfo.foundsetpk), sort, foundsetNRelation).then(
 									function(rfoundset) {
 										if(foundsetChangeWatches[rfoundsetinfo.foundsethash] != undefined) {
 											foundsetChangeWatches[rfoundsetinfo.foundsethash]();
@@ -276,17 +277,28 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 		    			}
 		    			else
 	    				{
-		    				item.lazy = true;
-		    				item.folder = true;
-		    				
-		    				var sort = binding.childsortdataprovider ? foundset.viewPort.rows[i][binding.childsortdataprovider]: null
-		    						
-		    				item.data.getChildren = {
-									foundsethash: foundsethash,
-									sort: sort,
-									rowid: foundset.viewPort.rows[i]._svyRowId,
-									relation: binding.nrelationname,
-									level: level+1
+							var hasChildren = true;
+							if(foundset_manager.getFoundSetChildRelationInfo) {
+								var foundSetChildRelationInfo = foundset_manager.getFoundSetChildRelationInfo(foundsethash, binding.nrelationname);
+								if(foundSetChildRelationInfo && !foundSetChildRelationInfo[foundset.viewPort.rows[i]._svyRowId]) {
+									item.lazy = false;
+									item.folder = false;
+									hasChildren = false;
+								}
+							}
+							if(hasChildren) {
+								item.lazy = true;
+								item.folder = true;
+
+								var sort = binding.childsortdataprovider ? foundset.viewPort.rows[i][binding.childsortdataprovider]: null
+										
+								item.data.getChildren = {
+										foundsethash: foundsethash,
+										sort: sort,
+										rowid: foundset.viewPort.rows[i]._svyRowId,
+										relation: binding.nrelationname,
+										level: level+1
+								}
 							}
 	    				}
 	    			}
@@ -316,7 +328,8 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
     	}
     	
     	function loadRoot(nr) {
-				foundset_manager.getFoundSet($scope.model.roots[nr].foundsethash, getDataproviders($scope.model.roots[nr].foundsetdatasource, $scope.model.roots[nr].foundsetpk)).then(
+				var foundsetNRelation = getBinding($scope.model.roots[nr].foundsetdatasource).nrelationname;
+				foundset_manager.getFoundSet($scope.model.roots[nr].foundsethash, getDataproviders($scope.model.roots[nr].foundsetdatasource, $scope.model.roots[nr].foundsetpk), null, foundsetNRelation).then(
 						function(foundset) {
 							if(foundsetChangeWatches[$scope.model.roots[nr].foundsethash] != undefined) {
 								foundsetChangeWatches[$scope.model.roots[nr].foundsethash]();
