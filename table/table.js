@@ -1467,6 +1467,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						columnStyleCache = [];
 					})
 
+				var currentSortClass = [];
 				$scope.getSortClass = function(column) {
 					var sortClass = "table-servoyextra-sort-hide";
 					if ($scope.model.enableSort) {
@@ -1492,6 +1493,10 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						if (direction) {
 							sortClass = "table-servoyextra-sort-show-" + direction + " " + $scope.model["sort" + direction + "Class"];
 						}
+					}
+					if(currentSortClass.length <= column || currentSortClass[column] != sortClass) {
+						$timeout(function() { updateTBodyStyle(tbody[0]); }, 0);
+						currentSortClass[column] = sortClass;
 					}
 					return sortClass;
 				}
