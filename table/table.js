@@ -1468,6 +1468,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					})
 
 				var currentSortClass = [];
+				var sortClassUpdateTimer;
 				$scope.getSortClass = function(column) {
 					var sortClass = "table-servoyextra-sort-hide";
 					if ($scope.model.enableSort) {
@@ -1495,7 +1496,8 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						}
 					}
 					if(currentSortClass.length <= column || currentSortClass[column] != sortClass) {
-						$timeout(function() { updateTBodyStyle(tbody[0]); }, 0);
+						if(sortClassUpdateTimer) $timeout.cancel(sortClassUpdateTimer);
+						sortClassUpdateTimer = $timeout(function() { updateTBodyStyle(tbody[0]); }, 50);
 						currentSortClass[column] = sortClass;
 					}
 					return sortClass;
