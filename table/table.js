@@ -37,11 +37,11 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				// this is true when next render of table contents / next scroll selection into view should scroll to selection;
 				// false if it shouldn't change page/load records around selection, for example if the user has just changed to another page manually and table got re-rendered, or browser page refresh
 				var scrollToSelectionNeeded = ($scope.model.lastSelectionFirstElement == -1); // when this is called due to a browser refresh don't necessarily go to selection; only force the scroll on initial show or if the selection changed (see selected indexes watch)
-				
+
 				// some coefficients that decide the batch sizes for rendering and loading based on visible area row count; we can play with these to see if we can have a smoother scroll feeling
 				var magicRenderBatchQ = 1.3;
 				var magicLoadBatchQ = 2;
-				
+
 				if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
 					$log.debug("svy extra table * initially scrollToSelectionNeeded = " + scrollToSelectionNeeded);
 
@@ -486,6 +486,24 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							updateTopAndBottomEmptySpace();
 						}
 					});
+
+				$scope.$watch('model.foundset.viewPort.startIndex', function(newValue, oldValue) {
+						if (newValue && newValue != oldValue) {
+							// handle a situation where only startIndex and server size got updated due to a delete of rows before the currently loaded viewport,
+							// when the viewport is at the end of the foundset; we check if the foundset index stored in rows matches the new indexes
+							// to avoid calling update if it was only a normal viewport change
+
+							// I am using evalAsync here so that this executes hopefully after the evalAsync from foundsetListener
+							// TODO as this is a very specific scenario and not nice impl., please remove this watch and evalAsync as part of SVY-10706 (do it through the listener instead)
+							$scope.$evalAsync(function() {
+								var vp = $scope.model.foundset.viewPort;
+								if (renderedStartIndex < vp.startIndex || renderedStartIndex + renderedSize > vp.startIndex + vp.size) {
+									updateRenderedRows(null);
+								}
+							});
+						}
+					});
+
 				// watch the columns so that we can relay out the columns when width or size stuff are changed.
 				var currentColumnLength = $scope.model.columns ? $scope.model.columns.length : 0;
 				Object.defineProperty($scope.model, $sabloConstants.modelChangeNotifier, {
@@ -796,7 +814,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					}
 				}
 
-				function getRowIndexInViewport(rowElement) {
+				function getRowIndexInFoundset(rowElement) {
 					if (rowElement) {
 						// take the index in loaded viewport from dom element (to make sure we really target the same row
 						// no matter the values of renderedSize and renderedStartIndex (they might have been altered before for rendering))
@@ -804,7 +822,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						// so we can't rely on the fact that the Nth DOM child is the Nth relative to renderedStartIndex in some cases
 						var row_column = $(rowElement).children().eq(0).data("row_column");
 						if (row_column) {
-							return getViewportIndexFromFoundsetIndex(row_column.idxInFs);
+							return row_column.idxInFs;
 						}
 					}
 					return -1;
@@ -1011,9 +1029,9 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					var averageRowHeight;
 					if (renderedSize > 0) {
 						var children = tbody.children();
-						var firstChild = children.eq((topSpaceDiv ? 1 : 0))[0];
+						var firstChild = children.eq( (topSpaceDiv ? 1 : 0))[0];
 						var lastChild = children.eq(children.length - 1 - (bottomSpaceDiv ? 1 : 0))[0];
-						averageRowHeight = Math.floor((lastChild.offsetTop + lastChild.offsetHeight - firstChild.offsetTop) / renderedSize);
+						averageRowHeight = Math.floor( (lastChild.offsetTop + lastChild.offsetHeight - firstChild.offsetTop) / renderedSize);
 					} else {
 						averageRowHeight = 25; // it won't be relevant anyway; it is equal to the default minRowHeight from .spec
 					}
@@ -1208,10 +1226,13 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								// take the index in loaded viewport from dom element (to make sure we really target the same row
 								// no matter what renderedSize and renderedStartIndex are (they might have been altered before calling this method))
 								// so we can't rely on the fact that the Nth DOM child is the Nth relative to renderedStartIndex
-								var indexInViewport = getRowIndexInViewport(firstVisibleChild);
-								if (indexInViewport >= 0) {
-									var idxOfRowInRendered = indexInViewport - rowOffSet; // child will be relative to rendered obviously
-									if (idxOfRowInRendered < 0 || idxOfRowInRendered >= renderedSize) childIdxToScrollTo = 0; // in case previously shown element will no longer be a part of rendered viewport
+								var indexInFoundset = getRowIndexInFoundset(firstVisibleChild);
+								if (indexInFoundset >= 0) {
+									var indexInViewport = getViewportIndexFromFoundsetIndex(indexInFoundset);
+									if (indexInViewport >= 0) {
+										var idxOfRowInRendered = indexInViewport - rowOffSet; // child will be relative to rendered obviously
+										if (idxOfRowInRendered < 0 || idxOfRowInRendered >= renderedSize) childIdxToScrollTo = 0; // in case previously shown element will no longer be a part of rendered viewport
+									} else childIdxToScrollTo = 0;
 								} else childIdxToScrollTo = 0;
 
 								if (childIdxToScrollTo == 0) {
@@ -1394,7 +1415,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						}
 					}
 				}
-				var columnListener = null;
+				var foundsetListener = null;
 				function generateTemplate(full) {
 					if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
 						$log.debug("svy extra table * generateTemplate called");
@@ -1410,15 +1431,15 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					}
 					var rows = $scope.model.foundset.viewPort.rows;
 
-					if (columnListener == null) {
+					if (foundsetListener == null) {
 
-						columnListener = function(changes) {
+						foundsetListener = function(changes) {
 							$scope.$evalAsync(function() {
 								adjustLoadedRowsIfNeeded();
 								updateRenderedRows(changes);
 							})
 						}
-						$scope.model.foundset.addChangeListener(columnListener)
+						$scope.model.foundset.addChangeListener(foundsetListener)
 					}
 					for (var c = 0; c < columns.length; c++) {
 						updateTableColumnStyleClass(c, getCellStyle(c));
@@ -1753,7 +1774,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 				var destroyListenerUnreg = $scope.$on("$destroy", function() {
 						$(window).off('resize', windowResizeHandler);
-						$scope.model.foundset.removeChangeListener(columnListener)
+						$scope.model.foundset.removeChangeListener(foundsetListener)
 						destroyListenerUnreg();
 						delete $scope.model[$sabloConstants.modelChangeNotifier];
 					});
