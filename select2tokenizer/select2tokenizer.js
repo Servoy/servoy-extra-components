@@ -153,6 +153,8 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 					tokenizer.off("change");
 					tokenizer.off("select2:open");
 					tokenizer.off("select2:close");
+					tokenizer.off("select2:opening");
+					tokenizer.off("select2:unselecting");
 					
 					// init the select 2
 					tokenizer.select2(options);
@@ -177,6 +179,25 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 							$scope.handlers.onFocusLostMethodID(e)
 						}
 					});
+					
+					// prevent dropdown open when unselecting a tag
+					var unselecting;
+					if ($scope.model.openOnUnselect != true) {
+						tokenizer.on('select2:opening', function (e) {
+						    if (unselecting) {    
+						    	unselecting = false;
+						        e.preventDefault();
+						    }
+						});
+						tokenizer.on('select2:unselecting', function (e) {
+							unselecting = true;
+							
+							// use timeout to reset unselection to false.
+					    	$timeout(function () {
+						    	unselecting = false;
+					    	});
+						});
+					}
 											
 				} else {
 					$log.error('selec2-autoTokenizer: cannot find tokenizer in DOM');
