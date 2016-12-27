@@ -42,7 +42,7 @@
            
         "valueSeparator" : {"type" :"string", "tags" : {"scope" :"private"}, "values" : [{"NEW_LINE":"new_line"}, {"COMMA": "comma"}], "default" : "new_line"},    
         "maximumSelectionSize": {"type": "int", "tags": { "scope" :"private" }},
-        "size" : {"type" :"dimension",  "default" : {"width":140, "height":33}}, 
+        "size" : {"type" :"dimension",  "default" : {"width":140, "height":32}}, 
         "location" : "point"
 
 	},

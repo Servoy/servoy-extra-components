@@ -97,6 +97,23 @@
 }
 
 /* Small select2-sm */
+.svy-select2-autotokenizer.select2-sm,
+.svy-wrapper > * > .svy-select2-autotokenizer.select2-sm .svy-select2-autotokenizer-container > ul {
+	font-size: 14px;
+}
+
+.svy-wrapper > * > .svy-select2-autotokenizer.select2-sm .svy-select2-autotokenizer-container {
+	font-size: 0; /* reset the empty space after ul */
+}
+
+.svy-select2-autotokenizer.select2-sm .svy-select2-autotokenizer-container .select2-selection__choice,
+.svy-select2-autotokenizer.select2-sm .svy-select2-autotokenizer-container .select2-search--inline .select2-search__field {
+	margin-top: 5px;
+}
+
+.svy-select2-autotokenizer-dropdown.select2-sm {
+	font-size: 14px;
+}
 
 /* eXtra Small - select2-xs*/
 .svy-select2-autotokenizer.select2-xs,
