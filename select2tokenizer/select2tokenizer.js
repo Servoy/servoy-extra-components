@@ -80,6 +80,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 						
 						break;
 					case "styleClass":
+						// TODO watch for changes in styleclass and edit dropdown styleclass
 						if (className) wrapper.removeClass(className);
 						className = value;
 						if(className) wrapper.addClass(className);
@@ -102,7 +103,16 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 							
 			function initTokanizer() {
 				
-				var options = { };
+				var options = { 
+					containerCssClass: "svy-select2-autotokenizer-container",
+					dropdownCssClass: "svy-select2-autotokenizer-dropdown"
+				};
+				
+				// add styleclass to dropdown
+				if ($scope.model.styleClass) {
+					options.dropdownCssClass += " " + $scope.model.styleClass;
+				}
+				
 				//options.containerCssClass = "custom-red"
 				//options.dropdownCssClass = "custom-red"
 				// placeholder

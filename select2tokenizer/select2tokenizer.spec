@@ -8,7 +8,7 @@
 		{
 			"name": "select2.js",
 			"version": "4.0.0",
-			"url": "servoyextra/select2tokenizer/js/select2.min.js",
+			"url": "servoyextra/select2tokenizer/js/select2.full.min.js",
 			"mimetype": "text/javascript"
 		},
 		{
@@ -36,7 +36,7 @@
         "tabSeq" : {"type" :"tabseq", "tags": { "scope" :"design" }}, 
         "placeholderText" : {"type": "tagstring", "default" : "Select...", "tags": {"scope" : "design"}}, 
         "toolTipText" : {"type" : "tagstring"}, 
-        "styleClass" : {"type": "styleclass"},
+        "styleClass" : {"type": "styleclass", "values" : ["select2-xs", "select2-sm", "select2-md", "select2-lg"], "default": "select2-sm"},
         "enabled" : { "type": "enabled", "blockingOn": false, "default": true, "for": ["dataProviderID","onDataChangeMethodID"] },
         "readOnly" : { "type": "protected", "blockingOn": true, "default": false,"for": ["dataProviderID","onDataChangeMethodID"], "tags": { "scope" :"runtime" } },
            

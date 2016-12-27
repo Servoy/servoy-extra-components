@@ -42,6 +42,10 @@
 }
 
 /* selected values should be scrollable */
+.svy-select2-autotokenizer .svy-select2-autotokenizer-container {
+	min-height: initial;
+}
+
 .svy-select2-autotokenizer .select2-container-multi .select2-choices {
 	height: 100% !important;
 	overflow-y: auto;
@@ -50,4 +54,66 @@
 	max-width: 95%;
 	box-sizing: border-box;
 	overflow: hidden;
+}
+
+/* Applicable Style Classes */
+
+/* Large select2-lg */
+.svy-select2-autotokenizer.select2-lg,
+.svy-wrapper > * > .svy-select2-autotokenizer.select2-lg .svy-select2-autotokenizer-container > ul {
+	font-size: 18px;
+}
+
+.svy-wrapper > * > .svy-select2-autotokenizer.select2-lg .svy-select2-autotokenizer-container {
+	font-size: 0; /* reset the empty space after ul */
+}
+
+.svy-select2-autotokenizer.select2-lg .svy-select2-autotokenizer-container .select2-selection__choice,
+.svy-select2-autotokenizer.select2-lg .svy-select2-autotokenizer-container .select2-search--inline .select2-search__field {
+	margin-top: 8px;
+}
+
+.svy-select2-autotokenizer-dropdown.select2-lg {
+	font-size: 18px;
+}
+
+/* Medium select2-md */
+.svy-select2-autotokenizer.select2-md,
+.svy-wrapper > * > .svy-select2-autotokenizer.select2-md .svy-select2-autotokenizer-container > ul {
+	font-size: 16px;
+}
+
+.svy-wrapper > * > .svy-select2-autotokenizer.select2-md .svy-select2-autotokenizer-container {
+	font-size: 0; /* reset the empty space after ul */
+}
+
+.svy-select2-autotokenizer.select2-md .svy-select2-autotokenizer-container .select2-selection__choice,
+.svy-select2-autotokenizer.select2-md .svy-select2-autotokenizer-container .select2-search--inline .select2-search__field {
+	margin-top: 6px;
+}
+
+.svy-select2-autotokenizer-dropdown.select2-md {
+	font-size: 16px;
+}
+
+/* Small select2-sm */
+
+/* eXtra Small - select2-xs*/
+.svy-select2-autotokenizer.select2-xs,
+.svy-wrapper > * > .svy-select2-autotokenizer.select2-xs .svy-select2-autotokenizer-container > ul {
+	font-size: 12px;
+}
+
+.svy-wrapper > * > .svy-select2-autotokenizer.select2-xs .svy-select2-autotokenizer-container {
+	font-size: 0; /* reset the empty space after ul */
+}
+
+.svy-select2-autotokenizer.select2-xs .svy-select2-autotokenizer-container .select2-selection__choice,
+.svy-select2-autotokenizer.select2-xs .svy-select2-autotokenizer-container .select2-search--inline .select2-search__field {
+	margin-top: 2px;
+	line-height: normal;
+}
+
+.svy-select2-autotokenizer-dropdown.select2-xs {
+	font-size: 12px;
 }
