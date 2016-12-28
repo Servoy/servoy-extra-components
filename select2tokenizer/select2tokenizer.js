@@ -15,7 +15,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 			| .select2-results__option--highlighted   | select2 selector. style the highlighted option in dropdown |
 			| .select2-container--default .select2-results__option[aria-selected=true] | select2 selector. style the disabled option in dropdown | 
 			 */
-			
+						
 			var MAX_LENGTH = 100;
 			var SEPARATOR = {
 				COMMA: "comma",
@@ -351,7 +351,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 				  			// TODO compare uppercase
 				  			
 				  			// if there is a match
-				  			if (list[i].displayValue.indexOf(searchTerm) > -1) {
+				  			if (list[i].displayValue.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1) {
 				  				results.push(list[i])
 				  			}
 				  		}
@@ -531,6 +531,10 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 			}
 			
 			
+		/** 
+		 * @deprecated
+		 * This fuction is setting the validity using ngModel; ngModel can be used only on input field.
+		 * */
 		$scope.api.onDataChangeCallbac2k = function(event, returnval) {
 			var stringValue = typeof returnval == 'string'
 				if(returnval === false || stringValue) {
