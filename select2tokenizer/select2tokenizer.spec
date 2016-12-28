@@ -33,6 +33,7 @@
         "closeOnSelect": {"type": "boolean", "default": true, "tags": {"scope" : "design"}}, 
         "selectOnClose": {"type": "boolean", "default": false, "tags": {"scope" : "design"}}, 
         "openOnUnselect": {"type": "boolean", "default": true, "tags": {"scope" : "design"}}, 
+        "clearSearchTextOnSelect": {"type": "boolean", "default": false, "tags": {"scope" : "design"}}, 
         "noMatchesFoundText": {"type": "tagstring", "default": "No matches found", "tags": {"scope" : "design"}},
         "tabSeq" : {"type" :"tabseq", "tags": { "scope" :"design" }}, 
         "placeholderText" : {"type": "tagstring", "default" : "Select...", "tags": {"scope" : "design"}}, 

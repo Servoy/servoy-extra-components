@@ -153,6 +153,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 					tokenizer.off("change");
 					tokenizer.off("select2:open");
 					tokenizer.off("select2:close");
+					tokenizer.off("select2:select");
 					tokenizer.off("select2:opening");
 					tokenizer.off("select2:unselecting");
 					
@@ -179,6 +180,22 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 							$scope.handlers.onFocusLostMethodID(e)
 						}
 					});
+					
+					// reset the searchText when an option is selected. has effect only when closeOnSelect is false
+					if ($scope.model.closeOnSelect == false && $scope.model.clearSearchTextOnSelect == true) {
+						tokenizer.on("select2:select", function(e) {
+							// clear the input value
+							// instance.dropdown.$search.val("");
+							$element.find('input').val("");
+						
+							// reset searchText
+							searchText = null;
+							
+							// update filtered list
+							var instance = tokenizer.data('select2');
+							instance.trigger('query', {term:""});
+						});
+					}
 					
 					// prevent dropdown open when unselecting a tag
 					var unselecting;
