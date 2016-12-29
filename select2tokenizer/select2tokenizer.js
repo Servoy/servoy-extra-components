@@ -24,7 +24,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 			
 			var tags = [];			// the array of valuelistItems
 			var hashMap = {}; 		// contains the realValue to be resolved in displayValue
-			var searchText;			// the last search text
+			var searchText = "";			// the last search text
 			var tabIndex;
 			var observer;
 
@@ -174,7 +174,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 					tokenizer.on("select2:close", function(e) {
 						
 						// reset searchText
-						searchText = null;
+						searchText = "";
 						
 						if ($scope.handlers.onFocusLostMethodID) {
 							$scope.handlers.onFocusLostMethodID(e)
@@ -191,7 +191,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 								searchField.val("");
 
 								// reset searchText
-								searchText = null;
+								searchText = "";
 
 								// update filtered list
 								// instance.dropdown.$search.val("");
@@ -338,11 +338,13 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 			function queryValuelist(params, querySuccess, queryFailure) {
 				  var searchTerm = params.data.term;
 				  if (searchTerm === undefined) searchTerm = "";
+				  console.log(searchTerm);
 				  
 				  var $request;
 				  // TODO avoid query request if i already have the results in list
-				  // if there is only one result or contains searchterm AND subset already available client side
-				  if ((tags.length === 1 && tags[0].text === searchText) || (searchTerm.indexOf(searchText, 0) > -1 && tags.length < MAX_LENGTH)) {
+				  // if searchText is contained in SearchTerm AND if there is only one result in list OR subset already available client side
+				  if ((searchTerm.length > searchText.length && searchTerm.indexOf(searchText, 0) > -1) && ((tags.length === 1 && tags[0].text === searchText) || tags.length < MAX_LENGTH)) {
+					$log.debug("subset already on clientside " + searchTerm);
 				  	// pointless to search for more values
 				  	var promise = new Promise(function (resolve, vailure) {
 				  		// filter on valuelist
