@@ -184,16 +184,20 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 					// reset the searchText when an option is selected. has effect only when closeOnSelect is false
 					if ($scope.model.closeOnSelect == false && $scope.model.clearSearchTextOnSelect == true) {
 						tokenizer.on("select2:select", function(e) {
-							// clear the input value
-							// instance.dropdown.$search.val("");
-							$element.find('input').val("");
-						
-							// reset searchText
-							searchText = null;
-							
-							// update filtered list
-							var instance = tokenizer.data('select2');
-							instance.trigger('query', {term:""});
+							var searchField = $element.find('input');
+							var text = searchField.val();
+							if (text) {		// only if there is searchText;
+								// clear searchBox
+								searchField.val("");
+
+								// reset searchText
+								searchText = null;
+
+								// update filtered list
+								// instance.dropdown.$search.val("");
+								var instance = tokenizer.data('select2');
+								instance.trigger('query', { term: "" });
+							}
 						});
 					}
 					
