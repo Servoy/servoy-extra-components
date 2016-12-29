@@ -1,5 +1,5 @@
-angular.module('servoyextraSelect2tokenizer',['servoy'])
-.directive('servoyextraSelect2tokenizer', ['$log', '$sabloConstants', '$compile', '$timeout', function($log, $sabloConstants, $compile, $timeout) {
+angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
+.directive('servoyextraSelect2tokenizer', ['$diacritics', '$log', '$sabloConstants', '$compile', '$timeout', function($diacritics, $log, $sabloConstants, $compile, $timeout) {
 	return {
 		restrict: 'E',
 		scope: {
@@ -352,12 +352,12 @@ angular.module('servoyextraSelect2tokenizer',['servoy'])
 				  		var list = $scope.model.valuelistID;
 				  		for (var i = 0; list && i < list.length; i++) {
 				  			
-				  			// TODO implement diatrics (see in select2.js diatrics module)
 				  			// TODO strip comma dots and other symbols
-				  			// TODO compare uppercase
+				  			var strippedDisplayValue = $diacritics.stripDiacritics(list[i].displayValue).toLowerCase();
+				  			var stippedTerm = $diacritics.stripDiacritics(searchTerm).toLowerCase();
 				  			
-				  			// if there is a match
-				  			if (list[i].displayValue.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1) {
+				  			// Check if the text contains the term
+				  			if (strippedDisplayValue.indexOf(stippedTerm) > -1) {
 				  				results.push(list[i])
 				  			}
 				  		}

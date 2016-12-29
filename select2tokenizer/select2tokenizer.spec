@@ -6,14 +6,20 @@
 	"definition": "servoyextra/select2tokenizer/select2tokenizer.js",
 	"libraries": [
 		{
+			"name": "diacritics.js",
+			"version": "1.0.0",
+			"url": "servoyextra/select2tokenizer/diacritics.js",
+			"mimetype": "text/javascript"
+		},
+		{
 			"name": "select2.js",
-			"version": "4.0.0",
+			"version": "4.0.3",
 			"url": "servoyextra/select2tokenizer/js/select2.full.min.js",
 			"mimetype": "text/javascript"
 		},
 		{
 			"name": "select2.css",
-			"version": "4.0.0",
+			"version": "4.0.3",
 			"url": "servoyextra/select2tokenizer/css/select2.min.css",
 			"mimetype": "text/css"
 		},
