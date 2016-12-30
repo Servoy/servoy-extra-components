@@ -947,11 +947,18 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				sidenav.addClass(slidePositionClass);
 				
 				// animate slide menu
-				$scope.slideMenu = function () {
+				$scope.slideMenu = function (event) {
 					
+					// toggle the menu
+					var wasOpen = $scope.model.open;
 					$scope.model.open = $scope.model.open === false ? true : false;
 					animateSlideMenu($scope.model.open);
 					$scope.svyServoyapi.apply("open");
+					
+					// event on menu open
+					if ($scope.handlers.onOpenToggled && wasOpen != $scope.model.open) {
+						$scope.handlers.onOpenToggled(event);
+					}
 				}
 				
 				function animateSlideMenu(open) {

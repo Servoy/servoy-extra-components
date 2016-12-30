@@ -18,7 +18,7 @@
 	<div class="svy-sidenav">
 		<div class="svy-sidenav-header">
 			<!--<input ng-model="searchText" class="svy-searchbox"></input>-->
-			<i ng-click="slideMenu()" class="svy-sidenav-action-open"></i>
+			<i ng-click="slideMenu($event)" class="svy-sidenav-action-open"></i>
 		</div>
 		<nav id={{::model.svyMarkupId}} class="svy-sidenav-content" ng-show="model.visible">		
 			<!-- The main menu -->

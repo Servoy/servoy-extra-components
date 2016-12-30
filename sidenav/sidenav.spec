@@ -50,6 +50,11 @@
 										        	{ "name" : "menuItemId", "type" : "object" },
 										            { "name" : "event", "type" : "JSEvent" }
 										        ]
+										  },
+			"onOpenToggled" 			: {
+										        "parameters" : [
+										            { "name" : "event", "type" : "JSEvent" }
+										        ]
 										  }
 	},
 	"api":
