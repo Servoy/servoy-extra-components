@@ -1143,8 +1143,9 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 					var children = tbody.children(); // contains rendered rows + optionally the top empty space and bottom empty space rows
 					var childrenListChanged = false;
-					var startIndex = 100000000; // relative to rendered/UI viewport
-					var endIndex = 0; // relative to rendered/UI viewport
+					var startIndex = 100000000; // starting point where rows need to be updated relative to new rendered/UI viewport
+					var endIndex = 0; // end index of rows to be updated relative to new rendered/UI viewport
+					var newRowsToBeRenderedBefore = 0; // number of rows to be added/rendered before previously rendered ones
 					var rowOffSet = offset ? offset : 0; // offset of renderedStartIndex in/relative to model.foundset.viewport
 
 					var childIdxToScrollTo = -1; // relative to rendered rows
@@ -1187,10 +1188,11 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 						correctRenderedBoundsAtEnd = true;
 					} else if (offset >= 0) {
-						// offset is given when scrolling up, so new rows will be appended (prepended visually)
-						startIndex = 0;
-						endIndex = renderedSize - 1;
-						renderedStartIndex = vp.startIndex + rowOffSet; // update renderedStartIndex to render newly fetched records on top
+						// offset is given when scrolling up, so new rows will be prepended; see how many (old offset - newOffset)
+						newRowsToBeRenderedBefore = (renderedStartIndex - vp.startIndex) - offset; // this should always be > 0
+
+						renderedStartIndex = vp.startIndex + offset; // update renderedStartIndex; renderedSize was already updated by scroll handler code...
+						
 						correctRenderedBoundsAtEnd = true;
 					} else {
 						// called when a "full" render needs to be done
@@ -1258,30 +1260,43 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 					var topEmptySpaceRowCount = (topSpaceDiv ? 1 : 0); // access the correct index for rows if we have the empty space row present
 					var bottomEmptySpaceRowCount = (bottomSpaceDiv ? 1 : 0);
+
+					function updateRowSelectionClassName(trEl, idxInFoundset) {
+						trEl.className = $scope.model.foundset.selectedRowIndexes.indexOf(idxInFoundset) != -1 ? $scope.model.selectionClass : "";
+					}
+
+					if (newRowsToBeRenderedBefore > 0) {
+						var beforeEl = children.eq(topEmptySpaceRowCount); // dom element before which the new rows should be appended (first row rendered previously if any is available, otherwise bottom space div or null)
+						if (!beforeEl || beforeEl.length == 0) beforeEl = null; // append last (before == null) as there is nothing after it
+						else beforeEl = beforeEl[0]; // get DOM node in front of which we should insert
+						
+						// rows will be prepended to current ones on top
+						for (var j = 0; j < newRowsToBeRenderedBefore; j++) {
+							// as trChildren is relative to rendered viewport, it can only grow (have missing rows) or shrink at the end; if changes
+							// happen before it, the data is updated in those cells, no real dom Node inserts have to happen in specific indexes in
+							// the rendered viewpot
+							var insertedEl = createTableRow(columns, j + rowOffSet, formatFilter);
+							tbody[0].insertBefore(insertedEl, beforeEl);
+							updateRowSelectionClassName(insertedEl, renderedStartIndex + j);
+						}
+						
+						children = tbody.children();
+						childrenListChanged = false;
+					}
+					
 					for (var j = startIndex; j <= endIndex; j++) {
 						var rowIdxInFoundsetViewport = j + rowOffSet;
 						var trElement = children.eq(j + topEmptySpaceRowCount);
 
-						if (bottomSpaceDiv && trElement.is(bottomSpaceDiv.parent())) {
-							bottomSpaceDiv.parent().remove(); // remove and ignore bottom free space div so we can append rows where we should not after it (I don't see an insert at index option in DOM element APIs)
-							bottomSpaceDiv = null;
-							bottomEmptySpaceRowCount = 0;
-							children = tbody.children();
-							childrenListChanged = false;
-							trElement = children.eq(j + topEmptySpaceRowCount);
-
-							if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
-								$log.debug("svy extra table * updateRenderedRows temporarily removed bottom empty space row");
-						}
-
+						var bottomSpaceRowReached = (bottomSpaceDiv && (!trElement || trElement.length == 0 || trElement.is(bottomSpaceDiv.parent())));
 						var trChildren = trElement.children();
-						if (trChildren.length == 0) {
-							// as trChildren is relative to rendered viewport, it can only grow (have missing rows) or shrink at the end; if changes
-							// happen before it, the data is updated in those cells, no real dom Node inserts have to happen in specific indexes in
-							// the rendered viewpot
+						if (bottomSpaceRowReached || trChildren.length == 0) {
+							// if we reached the end (bottomSpaceDiv if available or really there are no more <tr>s then create the newly rendered row(s) as needed and append or insert them before bottom space div row)
 							trElement = createTableRow(columns, rowIdxInFoundsetViewport, formatFilter);
 
-							tbody[0].appendChild(trElement);
+							if (bottomSpaceRowReached) tbody[0].insertBefore(trElement, bottomSpaceDiv.parent()[0]);
+							else tbody[0].appendChild(trElement);
+								
 							trElement = $(trElement);
 							childrenListChanged = true;
 						} else {
@@ -1323,9 +1338,8 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								}
 							}
 						}
-						if (trElement.get(0)) {
-							trElement.get(0).className = $scope.model.foundset.selectedRowIndexes.indexOf(renderedStartIndex + j) != -1 ? $scope.model.selectionClass : "";
-						}
+						
+						if (trElement.get(0)) updateRowSelectionClassName(trElement.get(0), renderedStartIndex + j);
 					}
 
 					if (childrenListChanged) {
