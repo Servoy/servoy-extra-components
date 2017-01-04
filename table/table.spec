@@ -97,6 +97,13 @@
 			}],
 			"returns": "string"
 		},
+		"onColumnResize": {
+			"parameters": [{
+				"name": "event",
+				"type": "JSEvent",
+				"optional": true
+			}]
+		},
 		"onFocusGainedMethodID": {
 
 			"parameters": [{

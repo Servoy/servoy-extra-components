@@ -163,7 +163,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				var onTBodyScrollListener = null;
 				var resizeTimeout = null;
 
-				function onColumnResize() {
+				function onColumnResize(event) {
 					var table = $element.find("table:first");
 					var headers = table.find("th");
 
@@ -190,6 +190,10 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						$(colGrips.get(i)).css("left", leftOffset - resizerLeft + "px");
 					}
 					updateTBodyStyle($element.find('tbody')[0]);
+
+					if($scope.handlers.onColumnResize) {
+						$scope.handlers.onColumnResize(event);
+					}
 				}
 
 				var windowResizeHandler = function() {
@@ -240,7 +244,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						resizeMode: "fit",
 						onResize: function(e) {
 							$scope.$apply(function() {
-								onColumnResize();
+								onColumnResize(e);
 							})
 						},
 						removePadding: false
