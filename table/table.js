@@ -151,7 +151,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				$scope.componentWidth = 0;
 				function getComponentWidth() {
 					if (!$scope.componentWidth) {
-						$scope.componentWidth = $element.parent().outerWidth(false);
+						$scope.componentWidth = $element.parent().width();
 					}
 					return $scope.componentWidth;
 				}
@@ -201,7 +201,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					resizeTimeout = $timeout(function() {
 							$scope.$apply(function() {
 								if ($scope.model.columns) {
-									var newComponentWidth = $element.parent().outerWidth(false);
+									var newComponentWidth = $element.parent().width();
 									var deltaWidth = newComponentWidth - getComponentWidth();
 									if (deltaWidth != 0) {
 										$scope.componentWidth = newComponentWidth;
