@@ -385,7 +385,14 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 			 * */
 			function isSearchTermMatching(itemText, searchTerm) {
 				
-	  			// TODO strip comma dots and other symbols
+	  			// ignore comma and dots
+	  			if (searchTerm.indexOf(',')) {
+					itemText = itemText.replace(/,/g, '');
+	  			}
+	  			if (searchTerm.indexOf('.')) {
+					itemText = itemText.replace(/\./g, '');
+	  			}
+				
 	  			var strippedItemTextValue = $diacritics.stripDiacritics(itemText).toLowerCase();
 	  			var stippedSearchTerm = $diacritics.stripDiacritics(searchTerm).toLowerCase();
 				
