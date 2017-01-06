@@ -247,7 +247,6 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 			function resetInputTabIndex(input) {
 				if (!input) input = $element.find('input');
 				if (input[0]) {
-					console.log(tabIndex)
 					input.attr("tabindex", tabIndex);
 				} else {
 					$log.warn("select-2autoTokenizer: cannot set focus on field")
@@ -338,7 +337,6 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 			function queryValuelist(params, querySuccess, queryFailure) {
 				  var searchTerm = params.data.term;
 				  if (searchTerm === undefined) searchTerm = "";
-				  console.log(searchTerm);
 				  
 				  var $request;
 				  // TODO avoid query request if i already have the results in list
@@ -351,13 +349,9 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 				  		var results = [];
 				  		var list = $scope.model.valuelistID;
 				  		for (var i = 0; list && i < list.length; i++) {
-				  			
-				  			// TODO strip comma dots and other symbols
-				  			var strippedDisplayValue = $diacritics.stripDiacritics(list[i].displayValue).toLowerCase();
-				  			var stippedTerm = $diacritics.stripDiacritics(searchTerm).toLowerCase();
-				  			
+				  							  			
 				  			// Check if the text contains the term
-				  			if (strippedDisplayValue.indexOf(stippedTerm) > -1) {
+				  			if (isSearchTermMatching(list[i].displayValue, searchTerm)) {
 				  				results.push(list[i])
 				  			}
 				  		}
@@ -368,6 +362,12 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 				  	$request = promise.then(querySuccess, queryFailure);
 					  
 				  } else {
+					  
+					  // use wildcard if setting allow
+					  if ($scope.model.containSearchText) {
+						  searchTerm = "%" + searchTerm;
+					  }
+					  
 					  // reduce the valuelist
 				      $request = $scope.model.valuelistID.filterList(searchTerm);
 				      $request.then(querySuccess, queryFailure);
@@ -376,6 +376,24 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 				  // update searchTerm
 				  searchText = searchTerm;
 			      return $request;
+			}
+			
+			/** 
+			 * @param {String} itemText
+			 * @param {String} searchTerm
+			 * returns true if searchTerm is matching itemText depending on 
+			 * */
+			function isSearchTermMatching(itemText, searchTerm) {
+				
+	  			// TODO strip comma dots and other symbols
+	  			var strippedItemTextValue = $diacritics.stripDiacritics(itemText).toLowerCase();
+	  			var stippedSearchTerm = $diacritics.stripDiacritics(searchTerm).toLowerCase();
+				
+				if ($scope.model.containSearchText) {	// is contained
+					return strippedItemTextValue.indexOf(stippedSearchTerm) > -1
+				} else {	// starts with
+					return strippedItemTextValue.indexOf(stippedSearchTerm) === 0;
+				}
 			}
 			
 			// provess the updated valuelist
@@ -514,7 +532,6 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 					// apply change to dataProviderID
 					if ($scope.model.dataProviderID != dpValue) {
 						$scope.model.dataProviderID = dpValue;
-						// console.log(dpValue);
 						$scope.svyServoyapi.apply('dataProviderID');
 					}
 				} else { // TODO
