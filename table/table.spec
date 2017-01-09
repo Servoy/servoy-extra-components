@@ -13,6 +13,7 @@
 		"pageSize": { "type": "int", "default": 20 },
 		"styleClass": { "type": "styleclass", "tags": { "scope": "design" }, "default": "table", "values": ["table", "table-striped", "table-bordered", "table-hover", "table-condensed"] },
 		"selectionClass": { "type": "styleclass", "default": "table-servoyextra-selected " },
+		"rowStyleClassDataprovider": { "type": "dataprovider", "forFoundset": "foundset" },
 		"tabSeq": { "type": "tabseq", "tags": { "scope": "design" } },
 		"visible": "visible",
 		"enableColumnResize": { "type": "boolean", "default": false },
