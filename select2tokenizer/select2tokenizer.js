@@ -386,10 +386,10 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 			function isSearchTermMatching(itemText, searchTerm) {
 				
 	  			// ignore comma and dots
-	  			if (searchTerm.indexOf(',')) {
+	  			if (searchTerm.indexOf(',') === -1) {
 					itemText = itemText.replace(/,/g, '');
 	  			}
-	  			if (searchTerm.indexOf('.')) {
+	  			if (searchTerm.indexOf('.') === -1) {
 					itemText = itemText.replace(/\./g, '');
 	  			}
 				
