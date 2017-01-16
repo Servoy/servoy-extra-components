@@ -27,6 +27,22 @@ angular.module('servoyextraTextfieldgroup',['servoy']).directive('servoyextraTex
 			$scope.api.isValid = function() {
 				return !$scope.showError
 			}
+        	
+			
+			$scope.api.requestFocus = function(mustExecuteOnFocusGainedMethod) {
+				var input = $element.find('input');
+				if (mustExecuteOnFocusGainedMethod === false && $scope.handlers.onFocusGainedMethodID)
+				{
+					input.unbind('focus');
+					input[0].focus();
+					input.bind('focus', $scope.handlers.onFocusGainedMethodID)
+				}
+				else
+				{
+					input[0].focus();
+				}
+			}
+			
         },
       templateUrl: 'servoyextra/textfieldgroup/textfieldgroup.html'
     };

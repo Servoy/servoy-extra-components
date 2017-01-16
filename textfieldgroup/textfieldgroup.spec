@@ -80,7 +80,16 @@
 	{
 		"isValid": {
 	            "returns": "boolean"
-	        }
+	     },
+	     "requestFocus" : {
+	     	"parameters":[
+								{
+						          "name":"mustExecuteOnFocusGainedMethod",
+								  "type":"boolean",
+								  "optional": true
+								}
+							 ]
+	     }
 	}
 
 }

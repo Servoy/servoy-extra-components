@@ -27,6 +27,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 			var searchText = "";			// the last search text
 			var tabIndex;
 			var observer;
+			var executeOnFocusGained = true;
 
 			var wrapper = $element.find('.svy-select2-autotokenizer');
 			var tokenizer = $element.find('.svy-select2');
@@ -165,9 +166,10 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 					
 					// called each time the dropdown is open
 					tokenizer.on("select2:open", function(e) {
-						if ($scope.handlers.onFocusGainedMethodID) {
+						if (executeOnFocusGained && $scope.handlers.onFocusGainedMethodID) {
 							$scope.handlers.onFocusGainedMethodID(e)
 						}
+						executeOnFocusGained = true;
 					});
 					
 					// called each time an element is unselected or the dropdown is closed
@@ -558,6 +560,14 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 			       // ngModel.$setValidity("", true);
 					wrapper.removeClass('ng-invalid');
 			    }
+			}
+			
+			$scope.api.requestFocus = function(mustExecuteOnFocusGainedMethod) {
+				var input = $element.find('input');
+					input[0].focus();
+					executeOnFocusGained = mustExecuteOnFocusGainedMethod !== false;
+					tokenizer.trigger("select2:opening");
+					// TODO open the dropdown
 			}
 			
 			
