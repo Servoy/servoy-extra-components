@@ -172,7 +172,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 
 					if (preventHandler != true && $scope.handlers.onMenuItemSelected) { // change selection only if onMenuItemSelected allows it
 						$scope.handlers.onMenuItemSelected(item.id, event).then(function(result) {
-								if (result == true) {
+								if (result !== false) {
 									confirmSelection();
 								}
 							}, function(err) { // Error: "Oops something went wrong"
@@ -876,7 +876,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 * @return {JSEvent}
 				 * */
 				createJSEvent = function() {
-					var element = $("#" + $scope.model.svyMarkupId);
+					var element = $element;
 					var offset = element.offset();
 					var x = offset.left;
 					var y = offset.top;
