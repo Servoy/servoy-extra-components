@@ -19,7 +19,12 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 		$scope.$watch('model.jsDataSet', function(newValue) {
 			if($scope.model.jsDataSet) {
 				treeJSON = toTreeJSON($scope.model.jsDataSet);
-				initTree();
+				if(theTree) {
+					theTree.reload(treeJSON);
+				}
+				else {
+					initTree();
+				}
 			}
 		})    	
     	
