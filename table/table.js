@@ -979,12 +979,11 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					if (trChildren) {
 						for (var i = 0; i < rowsFoundsetIdxArray.length; i++) {
 							var trIndex = rowsFoundsetIdxArray[i] - renderedStartIndex;
-							if (trIndex >= 0 && trIndex < trChildren.length - (topSpaceDiv ? 1 : 0) - (bottomSpaceDiv ? 1 : 0)) {
+							if (trIndex >= (topSpaceDiv ? 1 : 0) && trIndex < trChildren.length - (bottomSpaceDiv ? 1 : 0)) {
 								var tr = trChildren.eq(trIndex + (topSpaceDiv ? 1 : 0)).get(0);
 								if($scope.model.rowStyleClassDataprovider && $scope.model.rowStyleClassDataprovider[rowsFoundsetIdxArray[i]]) {
 									tr.className = $scope.model.rowStyleClassDataprovider[rowsFoundsetIdxArray[i]] + ' ' + rowSelectionClass;
-								}
-								else {
+								} else {
 									tr.className = rowSelectionClass;
 								}
 							}
