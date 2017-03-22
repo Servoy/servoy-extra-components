@@ -22,4 +22,24 @@ Eager to fix a bug or introduce a new feature? Clone the repository and issue a 
 
 # License
 
-servoy-extra-components is licensed under the MIT license
+servoy-extra-components contains 3rd party software with the following licenses:
+
+Font Awsome (<http://fontawesome.io/license/>):
+  + Font License
+
+    Applies to all desktop and webfont files in the following directories: */font-awesome/fonts/, textfieldgroup/fonts/.
+    License: SIL OFL 1.1
+    URL: http://scripts.sil.org/OFL
+
+  + Code License
+
+    Applies to all CSS and LESS files in the following directories: font-awesome/lib/, textfieldgroup/lib/.
+    License: MIT License
+    URL: http://opensource.org/licenses/mit-license.html
+
+
+Select2 - The MIT License (MIT) (<https://github.com/select2/select2/blob/master/LICENSE.md>)
+
+JQuery Fancytree - The MIT License (MIT) (<http://plugins.jquery.com/fancytree/>)
+
+Angular Animate Module - The MIT License (MIT) (<https://github.com/angular/bower-angular-animate/blob/master/LICENSE.md>)
