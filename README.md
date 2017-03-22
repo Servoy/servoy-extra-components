@@ -40,6 +40,8 @@ Font Awsome (<http://fontawesome.io/license/>):
 
 Select2 - The MIT License (MIT) (<https://github.com/select2/select2/blob/master/LICENSE.md>)
 
-JQuery Fancytree - The MIT License (MIT) (<http://plugins.jquery.com/fancytree/>)
+JQuery Fancytree - MIT (<http://plugins.jquery.com/fancytree/>)
 
-Angular Animate Module - The MIT License (MIT) (<https://github.com/angular/bower-angular-animate/blob/master/LICENSE.md>)
+Angular Animate Module - MIT (<https://github.com/angular/bower-angular-animate/blob/master/LICENSE.md>)
+
+The rest of the content is licensed under the MIT License.
