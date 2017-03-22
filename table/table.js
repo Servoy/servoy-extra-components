@@ -12,19 +12,26 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				var tbody = $element.find("tbody");
 				var topSpaceDiv, bottomSpaceDiv;
 
-				var performanceSettings = $scope.model.performanceSettings ? $scope.model.performanceSettings : { minBatchSizeForRenderingMoreRows: 10, minBatchSizeForLoadingMoreRows: 20 }; // by default don't allow too small caches even if the height of the table is very small
+				var performanceSettings = $scope.model.performanceSettings ? $scope.model.performanceSettings : {
+					minBatchSizeForRenderingMoreRows: 10,
+					minBatchSizeForLoadingMoreRows: 20, // by default don't allow too small caches even if the height of the table is very small; also limit the rendered rows and loaded rows to a big amount, but still limited
+					maxRenderedRows: 450,
+					maxLoadedRows: 1000,
+					fastScrollRenderThresholdFactor : 3.0,
+					fastScrollLoadThresholdFactor : 2.3
+				};
 
 				// the number of rows to render in a batch (it renders one batch then when needed renders one more batch on top or bottom and so on)
 				// this should be set to at least the UI viewPort when we start calculating that
 				var batchSizeForRenderingMoreRows = Math.max(26, performanceSettings.minBatchSizeForRenderingMoreRows); // this should be calculated for now this value is nicer for bigger list (that show already 20+ rows by default)
 				// the number of extra rows to be loaded (before/after) if the rendered rows get too close to the loaded rows bounds when scrolling
-				// when you change this initial value please update the .spec as well - config option "initialPreferredViewPortSize" on the foundset property should match getPreferredInitialViewportSize
+				// when you change this initial value please update the .spec as well - config option "initialPreferredViewPortSize" on the foundset property should match getInitialPreferredLoadedSize
 				var batchSizeForLoadingMoreRows = Math.max(52, performanceSettings.minBatchSizeForLoadingMoreRows) // this should be higher then batchSizeForRenderingMoreRows because when we load more rows we should load enough to at least be able to render one more batch of rendered rows; so when that one (batchSizeForRenderingMoreRows) is calculated adjust this one as well
 				// just for logging purposes
 				var oldAverageRowHeight = 25;
 
-				// RENDERED bounds: the rendered rows are actually present in DOM with all data in them; rendered rows can be only a part of the LOADED viewport (so what model.foundset.viewport has)
-				// the start row index of the first rendered row - relative to start of foundset (so not to any viewport)
+				// RENDERED bounds (relative to foundset start (so not to any viewport)): the rendered rows are actually present in DOM with all data in them;
+				// rendered rows can be only a part of the LOADED viewport (so what model.foundset.viewport has);
 				var renderedStartIndex = 0;
 				// the number rendered rows
 				var renderedSize = -1;
@@ -52,7 +59,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 				// this is actually the preferred viewport size that the server will send automatically when foundset data completely changes
 				// it should be maximum pageSize if that is > 0 or (when we implement it) -1 (so auto paging)
-				function getPreferredInitialViewportSize() {
+				function getInitialPreferredLoadedSize() {
 					var potentialInitialViewportSize = Math.floor(batchSizeForLoadingMoreRows * 2.5);
 					return ($scope.model.pageSize > 0 && $scope.model.pageSize < potentialInitialViewportSize) ? $scope.model.pageSize : potentialInitialViewportSize;
 				}
@@ -70,11 +77,12 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						if (!loadingRecordsPromise) {
 							var newLoadingRecordsPromise = fToExec(); // the function can return another promise if it did a new loadXYZ request on foundset property
 							if (!loadingRecordsPromise) loadingRecordsPromise = newLoadingRecordsPromise; // but fToExec might also call inside it another runWhenThereIsNoPendingLoadRequest that will execute right away and might have set the loadingRecordsPromise already; we don't want that one to get lost
-							else if (loadingRecordsPromise !== newLoadingRecordsPromise) $log.warn("svy extra table * runWhenThereIsNoPendingLoadRequest - it seems that one of the functions that executed both calls runWhenThereIsNoPendingLoadRequest that gives a promise as well as returns a different promise - the returned promise will be ignored..."); // this else should never happen in how it is used here in table.js
+							else if (loadingRecordsPromise !== newLoadingRecordsPromise && newLoadingRecordsPromise)
+								$log.warn("svy extra table * runWhenThereIsNoPendingLoadRequest - it seems that one of the functions both executed call(s) to runWhenThereIsNoPendingLoadRequest that sets a new promise as well as returned a different promise - the returned promise will be ignored..."); // this else should never happen in how it is used here in table.js
 							
 							//if ($log.debugEnabled && $log.debugLevel === $log.SPAM) $log.debug("svy extra table * runWhenThereIsNoPendingLoadRequest pending exec executed; new loadingPromise is " + (loadingRecordsPromise ? "SET" : "still NOT SET"));
 
-							if (loadingRecordsPromise) loadingRecordsPromise.finally(function() {
+							if (loadingRecordsPromise) return loadingRecordsPromise.finally(function() {
 									// when we are done loading stuff, clear the promise so we know we aren't waiting for a load;
 									// (hmm here we rely on finally blocks that are registered on the same promise being called in the order they in which they were registered (so undefined is set before any new fToExec that was waiting can set it to the new value))
 									loadingRecordsPromise = undefined;
@@ -82,12 +90,12 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								});
 						} else {
 							// probably more functions were waiting to exec after previous load and one of the others already executed and requested another load... so wait for the new load
-							loadingRecordsPromise.finally(checkLoadingAndRun);
+							return loadingRecordsPromise.finally(checkLoadingAndRun);
 						}
 					}
 
 					if (loadingRecordsPromise && delayedFunc) fToExec = delayedFunc;
-					checkLoadingAndRun();
+					return checkLoadingAndRun();
 				}
 
 				function getNumberFromPxString(s) {
@@ -412,9 +420,9 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						var allowedSize = allowedBounds.size;
 
 						if ($scope.showPagination() && ( (vpStart < allowedStart && vpStart + vpSize <= allowedStart) || (vpStart >= allowedStart + allowedSize && vpStart + vpSize > allowedStart + allowedSize))) {
-							// if the viewport is completely outside of the current page - load first batch of the page, don't try to make best quest closest to current viewport
+							// if the viewport is completely outside of the current page - load first batch of the page, don't try to make best guess closest to current viewport
 							neededVpStart = allowedStart;
-							neededVpSize = Math.min(getPreferredInitialViewportSize(), allowedSize); // initial load loads more then scroll load batch size
+							neededVpSize = Math.min(getInitialPreferredLoadedSize(), allowedSize); // initial load loads more then scroll load batch size
 						} else {
 							// if loaded viewport bounds are not inside allowed bounds, or if too few rows are loaded, calculate the correct neededVpStart and neededVpSize
 							// first shrink loaded to allowed bounds if needed
@@ -422,20 +430,20 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							neededVpSize = Math.max(0, Math.min(allowedSize - (neededVpStart - allowedStart), vpSize - (neededVpStart - vpStart)));
 
 							// now the 'shrinked to allowed bounds' loaded rows could be 0 in which case we need to load first rows of the allowed interval
-							// or they could be only a few in which case we just need to check if it's enough of them or not (compared to batchSizeForLoadingMoreRows)
+							// or they could be only a few in which case we just need to check if it's enough of them or not (compared to getInitialPreferredLoadedSize())
 							if (neededVpSize > 0) {
-								// all is ok, just make sure that minimum getPreferredInitialViewportSize() are already loaded; if not, then load some more
-								if (neededVpSize < getPreferredInitialViewportSize()) {
-									// center on currently loaded viewport and load more rows so that getPreferredInitialViewportSize() is reached
+								// all is ok, just make sure that minimum getInitialPreferredLoadedSize() are already loaded; if not, then load some more
+								if (neededVpSize < getInitialPreferredLoadedSize()) {
+									// center on currently loaded viewport and load more rows so that getInitialPreferredLoadedSize() is reached
 
-									var computedInterval = centerIntervalAroundOldIntervalIfPossible(vpStart, vpSize, allowedStart, allowedSize, getPreferredInitialViewportSize());
+									var computedInterval = centerIntervalAroundOldIntervalIfPossible(vpStart, vpSize, allowedStart, allowedSize, getInitialPreferredLoadedSize());
 									neededVpStart = computedInterval[0];
 									neededVpSize = computedInterval[1];
 								} // else needed bounds are already ok, we have at least the loaded batch size records already loaded
 							} else {
 								// loaded bounds are completely outside of current allowed interval (page in this case); request default new one at start of page
 								neededVpStart = allowedStart;
-								neededVpSize = Math.min(getPreferredInitialViewportSize(), allowedSize); // initial load loads more then scroll load batch size
+								neededVpSize = Math.min(getInitialPreferredLoadedSize(), allowedSize); // initial load loads more then scroll load batch size
 							}
 						}
 
@@ -586,7 +594,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								adjustLoadedRowsIfNeeded(); // load more rows if needed according to new page bounds
 							}
 						}
-						$scope.model.foundset.setPreferredViewportSize(getPreferredInitialViewportSize());
+						$scope.model.foundset.setPreferredViewportSize(getInitialPreferredLoadedSize());
 					});
 
 				$scope.$watch('model.foundset.viewPort', function(newValue, oldValue) {
@@ -653,13 +661,13 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 										var allowedStart = allowedBounds.startIdx;
 										var allowedSize = allowedBounds.size;
 
-										// center on the selection if possible, if not try to load 'getPreferredInitialViewportSize()' anyway in total
-										var computedInterval = centerIntervalAroundOldIntervalIfPossible(firstSelected, 0, allowedStart, allowedSize, getPreferredInitialViewportSize());
+										// center on the selection if possible, if not try to load 'getInitialPreferredLoadedSize()' anyway in total
+										var computedInterval = centerIntervalAroundOldIntervalIfPossible(firstSelected, 0, allowedStart, allowedSize, getInitialPreferredLoadedSize());
 										var neededVpStart = computedInterval[0];
 										var neededVpSize = computedInterval[1];
 
 										if ($log.debugEnabled && $log.debugLevel === $log.SPAM) $log.debug("svy extra table * scrollToSelectionIfNeeded will do what is needed to have new loaded viewport of (" + neededVpStart + ", " + neededVpSize + ")");
-										newLoadPromise = smartLoadNeededViewport(neededVpStart, neededVpSize);
+										var newLoadPromise = smartLoadNeededViewport(neededVpStart, neededVpSize);
 										newLoadPromise.then(function() {
 											updateRenderedRows(null);
 										});
@@ -844,17 +852,32 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					return -1;
 				}
 
+				/**
+				 * Tries to find and return the first row element in the visible viewport.
+				 * 
+				 * If due to a scroll operation there is some blank space (records that are being loaded to be rendered but not yet there)
+				 * on top, then it WILL NOT return that first visible row (that is somewhere in the middle of the visible area). 
+				 */
 				function getFirstVisibleChild() {
-					if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
-						$log.debug("svy extra table * getFirstVisibleChild called");
-
 					var tbodyScrollTop = tbody.scrollTop();
 					var children = tbody.children()
 					for (var i = (topSpaceDiv ? 1 : 0); i < children.length - (bottomSpaceDiv ? 1 : 0); i++) {
 						if (children[i].offsetTop >= tbodyScrollTop) {
-							return children[i];
+							if (children[i].offsetTop - tbodyScrollTop < getAverageRowHeight() * 1.1)
+							{
+								if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+									$log.debug("svy extra table * getFirstVisibleChild; found the first visible row...");
+								return children[i];
+							} else {
+								if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+									$log.debug("svy extra table * getFirstVisibleChild; found first visible row - but it is LOWER then expected... blank space on top - probably waiting for rows to load or render there");
+								return;
+							}
 						}
 					}
+					
+					if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+						$log.debug("svy extra table * getFirstVisibleChild; DID NOT find the first visible row...");
 				}
 
 				function getLastVisibleChild() {
@@ -881,6 +904,8 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								if (row_column) {
 									fs.selectedRowIndexes = [row_column.idxInFs];
 								}
+								if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+									$log.debug("svy extra table * keyPressed; scroll on PG UP");
 								child.scrollIntoView(false);
 							}
 						} else if (event.keyCode == 34) { // PAGE DOWN KEY
@@ -892,6 +917,8 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								if (row_column) {
 									fs.selectedRowIndexes = [row_column.idxInFs];
 								}
+								if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+									$log.debug("svy extra table * keyPressed; scroll on PG DOWN");
 								child.scrollIntoView(true);
 							}
 						} else if (event.keyCode == 38) { // ARROW UP KEY
@@ -919,9 +946,8 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								function loadFirstRecordsIfNeeded() {
 									// this can be executed delayed, after pending loads finish, so do check again if we still need to load bottom of foundset
 									if (fs.viewPort.startIndex > 0) {
-										var newLoadPromise = $scope.model.foundset.loadRecordsAsync(0, Math.min(fs.serverSize, getPreferredInitialViewportSize()));
+										var newLoadPromise = $scope.model.foundset.loadRecordsAsync(0, Math.min(fs.serverSize, getInitialPreferredLoadedSize()));
 										newLoadPromise.then(function() {
-											// just in case server side foundset was not fully loaded and now that we accessed last part of it it already loaded more records
 											runWhenThereIsNoPendingLoadRequest(loadFirstRecordsIfNeeded);
 										});
 										return newLoadPromise;
@@ -941,7 +967,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								function loadLastRecordsIfNeeded() {
 									// this can be executed delayed, after pending loads finish, so do check again if we still need to load bottom of foundset
 									if (fs.viewPort.startIndex + fs.viewPort.size < fs.serverSize) {
-										var firstIndexToLoad = Math.max(0, fs.serverSize - getPreferredInitialViewportSize());
+										var firstIndexToLoad = Math.max(0, fs.serverSize - getInitialPreferredLoadedSize());
 										var newLoadPromise = $scope.model.foundset.loadRecordsAsync(firstIndexToLoad, fs.serverSize - firstIndexToLoad)
 										newLoadPromise.then(function() {
 											// just in case server side foundset was not fully loaded and now that we accessed last part of it it already loaded more records
@@ -981,7 +1007,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							var trIndex = rowsFoundsetIdxArray[i] - renderedStartIndex;
 							if (trIndex >= (topSpaceDiv ? 1 : 0) && trIndex < trChildren.length - (bottomSpaceDiv ? 1 : 0)) {
 								var tr = trChildren.eq(trIndex + (topSpaceDiv ? 1 : 0)).get(0);
-								if($scope.model.rowStyleClassDataprovider && $scope.model.rowStyleClassDataprovider[rowsFoundsetIdxArray[i]]) {
+								if ($scope.model.rowStyleClassDataprovider && $scope.model.rowStyleClassDataprovider[rowsFoundsetIdxArray[i]]) {
 									tr.className = $scope.model.rowStyleClassDataprovider[rowsFoundsetIdxArray[i]] + ' ' + rowSelectionClass;
 								} else {
 									tr.className = rowSelectionClass;
@@ -1005,8 +1031,49 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						updateTableRowSelectionClass(toSelect, $scope.model.selectionClass);
 					}
 				}
+				
+				function getVisibleArea() {
+					// foundsetSize or pageSize     -> scrollHeightPX
+					// visibleSize                  -> visibleAreaHeightPX
+					// visibleStartIndex            -> visibleAreaScrollStartPX + previousPages
+					var scrollHeightPX = tbody[0].scrollHeight;
+					var visibleAreaHeightPX = tbody.height();
+					var visibleAreaScrollStartPX = tbody.scrollTop();
+					
+					var visibleViewportStart;
+					var visibleViewportSize;
+					var fs = $scope.model.foundset;
 
-				function correctRenderViewportIfNeeded() {
+					// calculate values as if scrollbar was not there for now
+					if ($scope.showPagination()) {
+						// table is using pages; so visible index is previous pages, what we add now + offset in current page (which we add later if scrollbar is present)
+						visibleViewportStart = $scope.model.pageSize * ($scope.model.currentPage - 1);
+						visibleViewportSize = Math.min($scope.model.pageSize, fs.serverSize - visibleViewportStart);
+					} else {
+						visibleViewportStart = 0;
+						visibleViewportSize = fs.serverSize;
+					}
+
+					// if scrollbar is there, adjust values
+					// so we have a scrollbar and content is scrolled; add that scroll offset into visibleViewportStart and compute visibleAreaSize based on scroll height
+
+					// visibleAreaScrollStartPX ... visibleViewportStart(?) 
+					// scrollHeightPX           ... visibleViewportSize (current which means all rows that would be in the scrollable area)
+					visibleViewportStart += Math.floor(visibleAreaScrollStartPX * (visibleViewportSize / scrollHeightPX));
+
+					// visibleAreaHeightPX ... visibleViewportSize(?)
+					// scrollHeightPX      ... visibleViewportSize (current which means all rows that would be in the scrollable area)
+					visibleViewportSize = Math.ceil(visibleAreaHeightPX * (visibleViewportSize / scrollHeightPX));
+
+					if ($log.debugEnabled && $log.debugLevel === $log.SPAM) {
+						$log.debug("svy extra table * getVisibleArea: " + visibleViewportStart + ", " + visibleViewportSize);
+						$log.debug("svy extra table * getVisibleArea scrollTop: " + tbody.scrollTop());
+					}
+					
+					return [visibleViewportStart, visibleViewportSize];
+				}
+
+				function adjustRenderedViewportIfNeeded() {
 					var changed = false;
 					// don't allow rendered rows to shrink to less then 1 batch size due to foundset updates - as we might end up showing only one row
 					// from a page for example while the page should actually be full of rows
@@ -1020,11 +1087,13 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					var correctedLoadedSize = Math.min(vp.startIndex + vp.size, allowedBounds.startIdx + allowedBounds.size) - correctedLoadedStartIdx;
 					var minRenderSize = Math.min(getInitialRenderSize(), correctedLoadedSize);
 
-					if ( (renderedStartIndex < correctedLoadedStartIdx && renderedStartIndex + renderedSize <= correctedLoadedStartIdx) || (renderedStartIndex >= correctedLoadedStartIdx + correctedLoadedSize && renderedStartIndex + renderedSize > correctedLoadedStartIdx + correctedLoadedSize)) {
+					if ( (renderedStartIndex < correctedLoadedStartIdx && renderedStartIndex + renderedSize <= correctedLoadedStartIdx)
+							|| (renderedStartIndex >= correctedLoadedStartIdx + correctedLoadedSize && renderedStartIndex + renderedSize > correctedLoadedStartIdx + correctedLoadedSize)) {
 						// rendered rows are completely outside the loaded rows; set size to -1 so we will correct them & start fresh with a maximum of minRenderSize rows rendered
 						renderedStartIndex = 0;
 						renderedSize = -1;
 					}
+					
 					if (renderedSize < minRenderSize || renderedStartIndex < correctedLoadedStartIdx || renderedStartIndex + renderedSize > correctedLoadedStartIdx + correctedLoadedSize) {
 						// 1. the rendered viewport has to be greater - we have more rows, use them
 						// OR
@@ -1040,20 +1109,152 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							changed = true;
 						}
 					}
-
+					
 					if (changed && $log.debugEnabled && $log.debugLevel === $log.SPAM)
-						$log.debug("svy extra table * correctRenderViewportIfNeeded did correct rendered interval to " + renderedStartIndex + ", " + renderedSize);
+						$log.debug("svy extra table * adjustRenderedViewportIfNeeded did correct the rendered interval to " + renderedStartIndex + ", " + renderedSize);
 
 					return changed;
+				}
+				
+				/**
+				 * IMPORTANT: Only call this once you are SURE that the top and bottom spacing divs and the scroll position is correct!
+				 * This method relies on scroll position to do it's job properly.
+				 * 
+				 * It will shrink the rendered viewport to initial preferred rendered size around the current visible area. (depending also on what rows are loaded)
+				 * 
+				 * @param {boolean} onlyIfMaxLimitReached if true, it will only shrink the rendered viewport it it passed max rendered size; if false it will force-shrink it anyway.
+				 * @return {boolean} true if it shrinked the rendered viewport or false otherwise.
+				 */
+				function shrinkRenderedViewport(onlyIfMaxLimitReached) {
+					// don't allow rendered rows to grow more then maxRenderedSize to avoid sluggish browser UI due to a too large DOM
+					var changed = false;
+					
+					var vp = $scope.model.foundset.viewPort;
+					var allowedBounds = calculateAllowedLoadedDataBounds(); // { startIdx, size }
+					var correctedLoadedStartIdx = Math.max(vp.startIndex, allowedBounds.startIdx);
+					var correctedLoadedSize = Math.min(vp.startIndex + vp.size, allowedBounds.startIdx + allowedBounds.size) - correctedLoadedStartIdx;
+					var minRenderSize = Math.min(getInitialRenderSize(), correctedLoadedSize);
+
+					if (!onlyIfMaxLimitReached || renderedSize > performanceSettings.maxRenderedRows) {
+						// remove some rendered rows as we have too many; keep rendered the ones that are really visible
+
+						if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+							$log.debug("svy extra table * shrinkRenderedViewport will reset rendered rows viewport as "
+								+ (onlyIfMaxLimitReached ? "maxRenderedRows limit was passed (" + renderedSize + ")" : "user jumped fast to a non-rendered section of the list"));
+						
+						renderedSize = minRenderSize; // currently as this correction will do full re-render we will just revert to minRenderSize instead of lowering the current renderedSize; this could I guess be enhanced in the future by just lowering the renderedSize - but then we also need to do granular remove of some rendered rows, not full rerender
+						var visibleViewport = getVisibleArea(); // [startIndex, size]
+						
+						var computedInterval = centerIntervalAroundOldIntervalIfPossible(visibleViewport[0], visibleViewport[1], correctedLoadedStartIdx, correctedLoadedSize, renderedSize);
+						if (renderedStartIndex != computedInterval[0]) {
+							renderedStartIndex = computedInterval[0];
+							changed = true;
+						}
+						if (renderedSize != computedInterval[1]) {
+							renderedSize = computedInterval[1];
+							changed = true;
+						}
+					}
+					
+					
+					if (changed) {
+						if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+							$log.debug("svy extra table * shrinkRenderedViewport did correct the rendered interval to " + renderedStartIndex + ", " + renderedSize);
+
+						// full update; but keep scroll position to avoid weird UI jump effects or loss of scroll knob grab (differs from browser to browser)
+						runAndKeepScrollTopPosition(function() {
+							updateRenderedRows(null);
+						});
+
+					}
+					
+					return changed;
+				}
+				
+				function runAndKeepScrollTopPosition(func) {
+					var prevScrollTop = tbody.scrollTop();
+					
+					func();
+					
+					if (tbody.scrollTop() != prevScrollTop) {
+						if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+							$log.debug("svy extra table * runAndKeepScrollTopPosition scrollTop has changed after execution; restoring... (" + prevScrollTop + ", " + tbody.scrollTop() + ")");
+						tbody.scrollTop(prevScrollTop);
+					}
+				}
+
+				/**
+				 * Calls shrinkLoadedViewportNow(true), only if there are no pending load records operations on the foundset.
+				 * If we are still waiting for server to apply a loaded records operation, this call will do nothing.
+				 * 
+				 * @see shrinkLoadedViewportNow(keepMaxLoadedRows)
+				 */
+				function shrinkLoadedViewportIfNeeded() {
+					runWhenThereIsNoPendingLoadRequest(function() {
+						return shrinkLoadedViewportNow(true);
+					}, function() {
+						if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+							$log.debug("svy extra table * shrinkLoadedViewportIfNeeded will be ignored as there was a pending load operation on the foundset (this message is delayed)");
+					});
+				}
+				
+				/**
+				 * IMPORTANT: Only call this once you are SURE that the top and bottom spacing divs and the scroll position is correct!
+				 * This method relies on scroll position to do it's job properly.
+				 * 
+				 * This method might call fs.loadXYZ(...) directly so be sure to always call it from inside a "runWhenThereIsNoPendingLoadRequest".
+				 * 
+				 * @param {boolean} keepMaxLoadedRows if true, it will shrink loaded viewport only if it passes max loaded rows, and it will
+				 *                                    shrink it to max loaded rows; if false it will force-shrink the loaded viewport to initial size
+				 *                                    around the visible area
+				 * @return {promise} null if no foundSet load operation was triggered, or the promise returned by the foundSet load operation otherwise.
+				 */
+				function shrinkLoadedViewportNow(keepMaxLoadedRows) {
+					// don't allow loaded rows to grow more then maxRenderedSize to avoid sluggish browser UI due to a too large DOM
+					var promise;
+					
+					var vp = $scope.model.foundset.viewPort;
+					var allowedBounds = calculateAllowedLoadedDataBounds(); // { startIdx, size }
+					
+					if (!keepMaxLoadedRows || vp.size > performanceSettings.maxLoadedRows) {
+						// we need to shrink loaded rows
+						if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+							$log.debug("svy extra table * shrinkLoadedViewportNow will shrink loaded rows; "
+								+ (keepMaxLoadedRows ? "maxLoadedRows limit was passed (" + vp.size + ")" : "user jumped fast to a non-loaded section of the list"));
+
+						var visibleViewport = getVisibleArea(); // [startIndex, size]
+						
+						if (keepMaxLoadedRows) {
+							// so a fs.loadLess... will happen, not a full reload;
+							if (visibleViewport[0] - vp.startIndex > vp.startIndex + vp.size - visibleViewport[0] - visibleViewport[1]) {
+								// load less records in the beginning (at least to match maxLoadedRows but even more if possible to avoid frequent load calls to server just for discarding loaded rows (limit it though to 200 to still keep data))
+								promise = $scope.model.foundset.loadLessRecordsAsync(
+									Math.max(vp.size - performanceSettings.maxLoadedRows, Math.min(200, Math.floor((renderedStartIndex - vp.startIndex) / 2)))); // positive int
+							} else {
+								// load less records at the end (at least to match maxLoadedRows but even more if possible to avoid frequent load calls to server just for discarding loaded rows (limit it though to 200 to still keep data))
+								promise = $scope.model.foundset.loadLessRecordsAsync(
+									-Math.max(vp.size - performanceSettings.maxLoadedRows,
+										Math.min(200, Math.floor((vp.startIndex + vp.size - renderedStartIndex - renderedSize) / 2)))); // negative int
+							}
+						} else {
+							var newLoadedSize = Math.min(getInitialPreferredLoadedSize(), allowedBounds.size);	
+							var computedInterval = centerIntervalAroundOldIntervalIfPossible(visibleViewport[0], visibleViewport[1], allowedBounds.startIdx, allowedBounds.size, newLoadedSize);
+							
+							promise = smartLoadNeededViewport(computedInterval[0], computedInterval[1]);
+						}
+					}
+					
+					return promise;
 				}
 
 				function getAverageRowHeight() {
 					var averageRowHeight;
-					if (renderedSize > 0) {
-						var children = tbody.children();
+					var children = tbody.children();
+					var realRowCount = children.length - (topSpaceDiv ? 1 : 0) - (bottomSpaceDiv ? 1 : 0);
+					if (realRowCount > 0) {
 						var firstChild = children.eq( (topSpaceDiv ? 1 : 0))[0];
 						var lastChild = children.eq(children.length - 1 - (bottomSpaceDiv ? 1 : 0))[0];
-						averageRowHeight = Math.floor( (lastChild.offsetTop + lastChild.offsetHeight - firstChild.offsetTop) / renderedSize);
+						averageRowHeight = Math.round( (lastChild.offsetTop + lastChild.offsetHeight - firstChild.offsetTop) / realRowCount);
 					} else {
 						averageRowHeight = 25; // it won't be relevant anyway; it is equal to the default minRowHeight from .spec
 					}
@@ -1129,21 +1330,9 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 					if (renderedStartIndex + renderedSize < allowedBounds.startIdx + allowedBounds.size) {
 						// there are records on top that are not yet rendered; add an empty div as the first row to simulate the height
+						spacingRowsAddedOrRemoved = addBottomSpacingDivIfNotPresent();
+						
 						// that the non-rendered rows should use - for more natural scrolling; if we already have that div just recalculate it's height
-						if (!bottomSpaceDiv) {
-							var bottomTR = document.createElement("tr");
-							var bottomTD = document.createElement("td");
-							bottomSpaceDiv = document.createElement("div");
-							bottomTD.appendChild(bottomSpaceDiv);
-							bottomTR.appendChild(bottomTD);
-							tbody.append(bottomTR);
-
-							bottomSpaceDiv = $(bottomSpaceDiv);
-							spacingRowsAddedOrRemoved = true;
-
-							if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
-								$log.debug("svy extra table * updateTopAndBottomEmptySpace added bottom empty space row");
-						}
 						var previousBottomHeight;
 						if ($log.debugEnabled && $log.debugLevel === $log.SPAM) previousBottomHeight = bottomSpaceDiv.height();
 
@@ -1160,6 +1349,25 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							$log.debug("svy extra table * updateTopAndBottomEmptySpace removed bottom empty space row");
 					}
 
+					return spacingRowsAddedOrRemoved;
+				}
+				
+				function addBottomSpacingDivIfNotPresent() {
+					var spacingRowsAddedOrRemoved = false;
+					if (!bottomSpaceDiv) {
+						var bottomTR = document.createElement("tr");
+						var bottomTD = document.createElement("td");
+						bottomSpaceDiv = document.createElement("div");
+						bottomTD.appendChild(bottomSpaceDiv);
+						bottomTR.appendChild(bottomTD);
+						tbody.append(bottomTR);
+
+						bottomSpaceDiv = $(bottomSpaceDiv);
+						spacingRowsAddedOrRemoved = true;
+
+						if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+							$log.debug("svy extra table * updateTopAndBottomEmptySpace added bottom empty space row");
+					}
 					return spacingRowsAddedOrRemoved;
 				}
 
@@ -1180,7 +1388,10 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					var forceScroll = false;
 
 					var vp = $scope.model.foundset.viewPort;
-					var correctRenderedBoundsAtEnd = false; // if rendered rows needed correction update them all again (I don't call this at the beginning of the method if we have arguments because that might affect what changes and offset were supposed to do based on current renderStartIndex and renderedSize; so I don't want to correct those here but rather at the end)
+					var correctRenderedBoundsAtEnd = false; // if rendered rows needed correction update them all again
+					// (we don't call this at the beginning of the method if we have arguments because that might affect what changes
+					// and offset were supposed to do based on current renderStartIndex and renderedSize; so I don't want to correct
+					// those here but rather at the end); full render does call adjustRenderedViewportIfNeeded() anyway first so it shouldn't do it at end again
 
 					// if there are changes but the renderedStartIndex of the last time doesn't fit at all in this index anymore
 					// then the viewport is completely changed and we do need a full render
@@ -1234,7 +1445,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						correctRenderedBoundsAtEnd = true;
 					} else {
 						// called when a "full" render needs to be done
-						correctRenderViewportIfNeeded();
+						adjustRenderedViewportIfNeeded();
 						var firstSelected = $scope.model.foundset.selectedRowIndexes ? $scope.model.foundset.selectedRowIndexes[0] : 0;
 
 						if (scrollToSelectionNeeded && vp.startIndex <= firstSelected && (vp.startIndex + vp.size) > firstSelected) {
@@ -1261,7 +1472,6 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							rowOffSet = renderedStartIndex - vp.startIndex;
 
 							if (renderedSize > 0) {
-								// if previously first visible child is no longer part of the rendered rows after full re-render, scroll to top rendered row (changing page relies of this to show first row in new page)
 								var firstVisibleChild = getFirstVisibleChild(); // get first visible DOM node
 								// take the index in loaded viewport from dom element (to make sure we really target the same row
 								// no matter what renderedSize and renderedStartIndex are (they might have been altered before calling this method))
@@ -1271,9 +1481,10 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 									var indexInViewport = getViewportIndexFromFoundsetIndex(indexInFoundset);
 									if (indexInViewport >= 0) {
 										var idxOfRowInRendered = indexInViewport - rowOffSet; // child will be relative to rendered obviously
-										if (idxOfRowInRendered < 0 || idxOfRowInRendered >= renderedSize) childIdxToScrollTo = 0; // in case previously shown element will no longer be a part of rendered viewport
-									} else childIdxToScrollTo = 0;
-								} else childIdxToScrollTo = 0;
+										// if previously first visible child is no longer part of the rendered rows after full re-render, scroll to top rendered row (changing page relies of this to show first row in new page)
+										if (idxOfRowInRendered < 0 || idxOfRowInRendered >= renderedSize) childIdxToScrollTo = 0;
+									} else childIdxToScrollTo = 0; // should this ever happen?
+								} else childIdxToScrollTo = -1; // we can't find a 'first' row to scroll to... don't do anything then (we could keep scroll top in absolute or percentage in the future if needed)
 
 								if (childIdxToScrollTo == 0) {
 									alignToTopWhenScrolling = true;
@@ -1394,9 +1605,28 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						children = tbody.children();
 					}
 					if (children.length - topEmptySpaceRowCount - bottomEmptySpaceRowCount > renderedSize) {
+						// START HACK (this is currently only useful for dodging an unwanted jump in Chrome)
+						// before really removing rows from the DOM, if there are spacing divs (so not all rows in the list were rendered) increase one of the spacing
+						// divs in order to not shrink the scrollbar (this produces annoying scroll experience - if this update happens during a user drag of the scroll
+						// knob); for example if maxRenderedRows was reached during a scrolldown this loop below will probably remove hundreds of DOM rows => in chrome
+						// the result is that even if we do adjust top and bottom spacing div afterwards, the scroll jumps to last items although you were maybe at 50%;
+						// in Edge, browser simply discontinues the scroll in this situation (like you are no longer holding the mouse button pressed on the knob - you
+						// have to grab it again to be able to scroll)
+						var firstRemovedChildIndex = renderedSize + topEmptySpaceRowCount;
+						var lastRemovedChildIndex = children.length - bottomEmptySpaceRowCount - 1;
+						if (firstRemovedChildIndex <= lastRemovedChildIndex) {
+							var heightThatWillBeRemoved = children.eq(lastRemovedChildIndex).position().top + children.eq(lastRemovedChildIndex).height()
+															- children.eq(firstRemovedChildIndex).position().top;
+							
+							addBottomSpacingDivIfNotPresent();
+							if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+								$log.debug("svy extra table * updateRenderedRows will temporarily expand bottom spacing div with removed height so that scroll height doesn't shrink to produce unwanted UX... +" +  heightThatWillBeRemoved);
+							bottomSpaceDiv.height(bottomSpaceDiv.height() + heightThatWillBeRemoved);
+						}
+						// END HACK
+						
 						if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
 							$log.debug("svy extra table * updateRenderedRows will delete rendered rows from " + (rowOffSet + renderedSize) + " up to " + (rowOffSet + children.length - 1));
-
 						for (var i = children.length - bottomEmptySpaceRowCount; --i >= renderedSize + topEmptySpaceRowCount;) {
 							children.eq(i).remove();
 							childrenListChanged = true;
@@ -1418,14 +1648,22 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							var tbodyBounds = tbody[0].getBoundingClientRect();
 							var childBounds = scrollToChild.getBoundingClientRect();
 							if (forceScroll || childBounds.top < tbodyBounds.top || childBounds.bottom > tbodyBounds.bottom) {
+								if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+									$log.debug("svy extra table * updateRenderedRows; scrolling into view");
 								scrollToChild.scrollIntoView(alignToTopWhenScrolling)
 							}
 						}
 					}
 
 					if (correctRenderedBoundsAtEnd) {
-						if (correctRenderViewportIfNeeded()) updateRenderedRows(null);
+						if (adjustRenderedViewportIfNeeded()) updateRenderedRows(null);
 					}
+					
+					shrinkRenderedViewport(true);
+					shrinkLoadedViewportIfNeeded();
+					
+					if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+						$log.debug("svy extra table * updateRenderedRows DONE.");
 				}
 
 				var columnCSSRules = [];
@@ -1480,7 +1718,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				function generateTemplate(full) {
 					if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
 						$log.debug("svy extra table * generateTemplate called");
-					correctRenderViewportIfNeeded();
+					adjustRenderedViewportIfNeeded();
 
 					var columns = $scope.model.columns;
 					if (!columns || columns.length == 0) return;
@@ -1541,7 +1779,8 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							var vp = $scope.model.foundset.viewPort;
 							var renderedStartIndexInLoaded = renderedStartIndex - vp.startIndex; // so relative to loaded viewport, not to start of foundset
 							var renderedSizeBefore = renderedSize;
-
+							var visibleViewport;
+							
 							// see if more rows are needed on top
 							if (tbody.scrollTop() - (topSpaceDiv ? topSpaceDiv.height() : 0) < tbody.height()) {
 								// the following code should mirror the scroll down behavior
@@ -1565,23 +1804,62 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 									var addedRows = renderedSize - renderedSizeBefore;
 									// calculate the offset of the rendered rows inside the loaded ones
 									var offset = Math.max(0, renderedStartIndexInLoaded - addedRows);
-
-									// see if more rows need to be loaded from server (there is less then one page of rendered rows available but there are more rows to be loaded on top)
-									if (vp.startIndex > firstIndexAllowedOnScrollUp && (renderedStartIndex - vp.startIndex) < batchSizeForRenderingMoreRows) {
+									
+									// now see what the visible area is - in case the user is scrolling fast (so rendered/loaded are left way behind
+									// with hundreds of records for example) we might need to ditch what we have and start fresh with rows around visible area
+									visibleViewport = getVisibleArea(); // [startIndex, size]
+									if (renderedStartIndex - addedRows > visibleViewport[0] + getInitialRenderSize() * performanceSettings.fastScrollRenderThresholdFactor) {
+										// so the wanted visible start index (we are scrolling up) is way outside of what we can currently render...
+										// jump to what is needed directly, discarding old content as needed
+										// instead of prepending small batches of rendered rows until we can show what is needed
 										if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
-											$log.debug("svy extra table * scrollHandler more records need to be loaded on top");
-										// if a previous scroll down already requested extra records, wait for that to happen
-										// and then recompute everything based on the new viewport - to see if loading more is still needed (so scrollHandler() will be called)
-										// else if there is no pending load, ask for the extra records
-										runWhenThereIsNoPendingLoadRequest(function() {
-												var newLoadingPromise = $scope.model.foundset.loadExtraRecordsAsync(-Math.min(batchSizeForLoadingMoreRows, vp.startIndex - firstIndexAllowedOnScrollUp));
-												newLoadingPromise.then(scrollHandler); // check if rendered viewport needs to be updated again after more rows get loaded
+											$log.debug("svy extra table * scrollHandler (fast scroll up) will discard rendered rows and start fresh in desired area");
+
+										renderedSize = renderedSizeBefore; // we don't change anything until we are ready to jump to the visible area (have loaded rows to be able to render the visible area)
+										
+										if (vp.startIndex > visibleViewport[0] + getInitialPreferredLoadedSize() * performanceSettings.fastScrollLoadThresholdFactor) {
+											// too many extra rows to load... just reset loaded viewport as well; start fresh
+											if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+												$log.debug("svy extra table * scrollHandler (fast scroll up) needs to discard loaded rows and start fresh in desired area");
+											runWhenThereIsNoPendingLoadRequest(function() {
+												var newLoadingPromise = shrinkLoadedViewportNow(false);
+												newLoadingPromise.then(scrollHandler); // call scroll handler again to update the rendered viewport
 												return newLoadingPromise;
 											}, scrollHandler);
-									}
-									if (addedRows != 0) {
-										updateRenderedRows(null, offset); // this can/will update renderedStartIndex to match the given offset
-										$timeout(scrollHandler, 0); // check again just in case the render resulted in the need for more rows according to current scroll position; but do it in a timeout so that we don't block the UI completely if many renders need to be done one after the other due to a very fast scroll (drag of scroll knob)
+										} else if (vp.startIndex > firstIndexAllowedOnScrollUp && (renderedStartIndex - vp.startIndex) < batchSizeForRenderingMoreRows) {
+											// just load more rows on top if needed
+											if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+												$log.debug("svy extra table * scrollHandler (fast scroll up) more records need to be loaded on top");
+											runWhenThereIsNoPendingLoadRequest(function() {
+												var newLoadingPromise = $scope.model.foundset.loadExtraRecordsAsync(-Math.min(vp.startIndex - firstIndexAllowedOnScrollUp, vp.startIndex - visibleViewport[0] + batchSizeForRenderingMoreRows));
+												newLoadingPromise.then(scrollHandler); // call scroll handler again to update the rendered viewport
+												return newLoadingPromise;
+											}, scrollHandler);
+										} else {
+											// we have the needed rows loaded; just render around the visible area
+											shrinkRenderedViewport(false);
+										}
+									} else {
+										if (vp.startIndex > firstIndexAllowedOnScrollUp && (renderedStartIndex - vp.startIndex) < batchSizeForRenderingMoreRows) {
+											// seems like more rows need to be loaded from server (there is less then one page of rendered rows available but there are more rows to be loaded on top)
+											// but desired visible area is close enough to rendered/loaded rows to continue loading small batches one by one until we get there (we don't need to discard all we've got)
+											if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+												$log.debug("svy extra table * scrollHandler more records need to be loaded on top");
+											// if a previous scroll down already requested extra records, wait for that to happen
+											// and then recompute everything based on the new viewport - to see if loading more is still needed (so scrollHandler() will be called)
+											// else if there is no pending load, ask for the extra records
+											runWhenThereIsNoPendingLoadRequest(function() {
+													var newLoadingPromise = $scope.model.foundset.loadExtraRecordsAsync(-Math.min(batchSizeForLoadingMoreRows, vp.startIndex - firstIndexAllowedOnScrollUp));
+													newLoadingPromise.then(scrollHandler); // check if rendered viewport needs to be updated again after more rows get loaded
+													return newLoadingPromise;
+												}, scrollHandler);
+										}
+										if (addedRows != 0) {
+											runAndKeepScrollTopPosition(function() {
+												updateRenderedRows(null, offset); // this can/will update renderedStartIndex to match the given offset
+											});
+											$timeout(scrollHandler, 0); // check again just in case the render resulted in the need for more rows according to current scroll position; but do it in a timeout so that we don't block the UI completely if many renders need to be done one after the other due to a very fast scroll (drag of scroll knob)
+										}
 									}
 								}
 							} // no else here because we don't even check if it was a scroll up or scroll down; we then just check if we need more rows either top or bottom
@@ -1610,24 +1888,62 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 									// see if we also need to request one more batch of records from server due to scrolling down
 									var currentLastLoadedIndex = vp.startIndex + vp.size - 1;
-									if (currentLastLoadedIndex < lastIndexAllowedOnScrollDown && (currentLastLoadedIndex - (renderedStartIndex + renderedSize)) < batchSizeForRenderingMoreRows) {
+									// now see what the visible area is - in case the user is scrolling fast (so rendered/loaded are left way behind
+									// with hundreds of records for example) we might need to ditch what we have and start fresh with rows around visible area
+									visibleViewport = getVisibleArea(); // [startIndex, size]
+									if (renderedStartIndex + renderedSize + getInitialRenderSize() * performanceSettings.fastScrollRenderThresholdFactor < visibleViewport[0] + visibleViewport[1]) {
+										// so the wanted visible end index (we are scrolling down) is way outside of what we can currently render...
+										// jump to what is needed directly, discarding old content as needed
+										// instead of appending small batches of rendered rows until we can show what is needed
 										if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
-											$log.debug("svy extra table * scrollHandler more records need to be loaded below");
+											$log.debug("svy extra table * scrollHandler (fast scroll down) will discard rendered rows and start fresh in desired area");
 
-										// if a previous scroll down already requested extra records, wait for that to happen
-										// and then recompute everything based on the new viewport - to see if loading more is still needed (so scrollHandler() will be called)
-										// else if there is no pending load, ask for the extra records
-										runWhenThereIsNoPendingLoadRequest(function() {
-												var newLoadingPromise = $scope.model.foundset.loadExtraRecordsAsync(Math.min(batchSizeForLoadingMoreRows, lastIndexAllowedOnScrollDown - currentLastLoadedIndex));
-												newLoadingPromise.then(scrollHandler); // check if rendered viewport needs to be updated again after more rows get loaded
+										renderedSize = renderedSizeBefore; // we don't change anything until we are ready to jump to the visible area (have loaded rows to be able to render the visible area)
+										
+										if (vp.startIndex > visibleViewport[0] + getInitialPreferredLoadedSize() * performanceSettings.fastScrollLoadThresholdFactor) {
+											// too many extra rows to load... just reset loaded viewport as well; start fresh
+											if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+												$log.debug("svy extra table * scrollHandler (fast scroll down) needs to discard loaded rows and start fresh in desired area");
+											runWhenThereIsNoPendingLoadRequest(function() {
+												var newLoadingPromise = shrinkLoadedViewportNow(false);
+												newLoadingPromise.then(scrollHandler); // call scroll handler again to update the rendered viewport
 												return newLoadingPromise;
 											}, scrollHandler);
-									}
-
-									if (renderedSize != renderedSizeBefore) {
-										// call update table so that any new rows that need to be rendered are rendered (if viewport already had some more rows loaded but they were not yet rendered)
-										updateRenderedRows({ rowUpdates: [{ startIndex: renderedStartIndexInLoaded + renderedSizeBefore, endIndex: renderedStartIndexInLoaded + renderedSize - 1, type: 0 }], oldStartIndex: vp.startIndex, oldSize : vp.size }); // endIndex is inclusive
-										$timeout(scrollHandler, 0); // check again just in case the render resulted in the need for more rows according to current scroll position; but do it in a timeout so that we don't block the UI completely if many renders need to be done one after the other due to a very fast scroll (drag of scroll knob)
+										} else if (currentLastLoadedIndex < lastIndexAllowedOnScrollDown && (currentLastLoadedIndex - (renderedStartIndex + renderedSize)) < batchSizeForRenderingMoreRows) {
+											// just load more rows on top if needed
+											if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+												$log.debug("svy extra table * scrollHandler (fast scroll down) more records need to be loaded on top");
+											runWhenThereIsNoPendingLoadRequest(function() {
+												var newLoadingPromise = $scope.model.foundset.loadExtraRecordsAsync(Math.min(lastIndexAllowedOnScrollDown - currentLastLoadedIndex, visibleViewport[0] + visibleViewport[1] - vp.startIndex - vp.size + batchSizeForRenderingMoreRows));
+												newLoadingPromise.then(scrollHandler); // call scroll handler again to update the rendered viewport
+												return newLoadingPromise;
+											}, scrollHandler);
+										} else {
+											// we have the needed rows loaded; just render around the visible area
+											shrinkRenderedViewport(false);
+										}
+									} else {
+										if (currentLastLoadedIndex < lastIndexAllowedOnScrollDown && (currentLastLoadedIndex - (renderedStartIndex + renderedSize)) < batchSizeForRenderingMoreRows) {
+											if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+												$log.debug("svy extra table * scrollHandler more records need to be loaded below");
+	
+											// if a previous scroll down already requested extra records, wait for that to happen
+											// and then recompute everything based on the new viewport - to see if loading more is still needed (so scrollHandler() will be called)
+											// else if there is no pending load, ask for the extra records
+											runWhenThereIsNoPendingLoadRequest(function() {
+													var newLoadingPromise = $scope.model.foundset.loadExtraRecordsAsync(Math.min(batchSizeForLoadingMoreRows, lastIndexAllowedOnScrollDown - currentLastLoadedIndex));
+													newLoadingPromise.then(scrollHandler); // check if rendered viewport needs to be updated again after more rows get loaded
+													return newLoadingPromise;
+												}, scrollHandler);
+										}
+	
+										if (renderedSize != renderedSizeBefore) {
+											runAndKeepScrollTopPosition(function() {
+												// call update table so that any new rows that need to be rendered are rendered (if viewport already had some more rows loaded but they were not yet rendered)
+												updateRenderedRows({ rowUpdates: [{ startIndex: renderedStartIndexInLoaded + renderedSizeBefore, endIndex: renderedStartIndexInLoaded + renderedSize - 1, type: 0 }], oldStartIndex: vp.startIndex, oldSize : vp.size }); // endIndex is inclusive
+											});
+											$timeout(scrollHandler, 0); // check again just in case the render resulted in the need for more rows according to current scroll position; but do it in a timeout so that we don't block the UI completely if many renders need to be done one after the other due to a very fast scroll (drag of scroll knob)
+										}
 									}
 								}
 							}

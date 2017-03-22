@@ -42,7 +42,11 @@
 		},
 		"settings": {
 			"minBatchSizeForRenderingMoreRows" : { "type": "int", "default": -1 }, 
-			"minBatchSizeForLoadingMoreRows" : { "type": "int", "default": -1 }
+			"minBatchSizeForLoadingMoreRows" : { "type": "int", "default": -1 },
+			"maxRenderedRows" : { "type": "int", "default": 450 }, 
+			"maxLoadedRows" : { "type": "int", "default": 1000 },
+			"fastScrollRenderThresholdFactor" : { "type": "int", "default": 3.0 }, 
+			"fastScrollLoadThresholdFactor" : { "type": "int", "default": 2.3 }
 		}
 	},
 	"handlers": {
