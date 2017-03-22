@@ -41,8 +41,8 @@
 			"autoResize": { "type": "boolean", "default": false }
 		},
 		"settings": {
-			"minBatchSizeForRenderingMoreRows" : { "type": "int", "default": -1 }, 
-			"minBatchSizeForLoadingMoreRows" : { "type": "int", "default": -1 },
+			"minBatchSizeForRenderingMoreRows" : { "type": "int", "default": 10 }, 
+			"minBatchSizeForLoadingMoreRows" : { "type": "int", "default": 20 },
 			"maxRenderedRows" : { "type": "int", "default": 450 }, 
 			"maxLoadedRows" : { "type": "int", "default": 1000 },
 			"fastScrollRenderThresholdFactor" : { "type": "int", "default": 3.0 }, 
