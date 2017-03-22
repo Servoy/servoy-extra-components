@@ -22,4 +22,4 @@ Eager to fix a bug or introduce a new feature? Clone the repository and issue a 
 
 # License
 
-servoy-navigation is licensed under the MIT license
+servoy-extra-components is licensed under the MIT license
