@@ -44,4 +44,6 @@ JQuery Fancytree - MIT (<http://plugins.jquery.com/fancytree/>)
 
 Angular Animate Module - MIT (<https://github.com/angular/bower-angular-animate/blob/master/LICENSE.md>)
 
+colResizable - MIT and GPL (<http://www.bacubacu.com/colresizable/#license>)
+
 The rest of the content is licensed under the MIT License.
