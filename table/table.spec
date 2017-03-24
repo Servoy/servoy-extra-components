@@ -35,7 +35,7 @@
 			"headerText": { "type": "tagstring", "initialValue": "header", "tags": { "showInOutlineView": true } },
 			"styleClass": { "type": "styleclass" },
 			"styleClassDataprovider": { "type": "dataprovider", "forFoundset": "foundset" },
-			"valuelist": { "type": "valuelist", "tags": { "scope": "design" }, "for": "dataprovider" },
+			"valuelist": { "type": "valuelist", "for": "dataprovider" },
 			"width": { "type": "string" },
 			"initialWidth": { "type": "string", "tags": { "scope": "runtime" } },
 			"autoResize": { "type": "boolean", "default": false }
