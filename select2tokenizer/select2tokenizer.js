@@ -225,6 +225,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 				} else {
 					$log.error('selec2-autoTokenizer: cannot find tokenizer in DOM');
 				}
+				initTabSequence();
 
 			}
 			
