@@ -1583,7 +1583,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 								if (divChild.length == 1) {
 									// its text node
 									value = getDisplayValue(value, column.valuelist);
-									value = formatFilter(value, column.format.display, column.format.type);
+									if (column.format) value = formatFilter(value, column.format.display, column.format.type);
 									divChild.text(value)
 								} else {
 									var imgChild = td.children("img");
