@@ -1510,14 +1510,18 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					var topEmptySpaceRowCount = (topSpaceDiv ? 1 : 0); // access the correct index for rows if we have the empty space row present
 					var bottomEmptySpaceRowCount = (bottomSpaceDiv ? 1 : 0);
 
-					function appendRowSelectionClassName(trEl, idxInFoundset) {
-						var selectionClass =  $scope.model.foundset.selectedRowIndexes.indexOf(idxInFoundset) != -1 ? $scope.model.selectionClass : "";
-						if (trEl.className) {
-							trEl.className += ' ' + selectionClass;
+					function setupRowClassNames(trEl, idxInFoundset) {
+						var rowClassNames = '';
+						if ($scope.model.rowStyleClassDataprovider && $scope.model.rowStyleClassDataprovider[idxInFoundset]) {
+							rowClassNames = $scope.model.rowStyleClassDataprovider[idxInFoundset];
 						}
-						else {
-							trEl.className = selectionClass;
+						if($scope.model.foundset.selectedRowIndexes.indexOf(idxInFoundset) != -1) {
+							if(rowClassNames) {
+								rowClassNames  += ' ';
+							}
+							rowClassNames += $scope.model.selectionClass;
 						}
+						trEl.className = rowClassNames;
 					}
 
 					if (newRowsToBeRenderedBefore > 0) {
@@ -1532,7 +1536,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							// the rendered viewpot
 							var insertedEl = createTableRow(columns, j + rowOffSet, formatFilter);
 							tbody[0].insertBefore(insertedEl, beforeEl);
-							appendRowSelectionClassName(insertedEl, renderedStartIndex + j);
+							setupRowClassNames(insertedEl, renderedStartIndex + j);
 						}
 
 						children = tbody.children();
@@ -1555,9 +1559,6 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							trElement = $(trElement);
 							childrenListChanged = true;
 						} else {
-							if($scope.model.rowStyleClassDataprovider && $scope.model.rowStyleClassDataprovider[rowIdxInFoundsetViewport]) {
-								trElement.get(0).className = $scope.model.rowStyleClassDataprovider[rowIdxInFoundsetViewport];
-							}
 							for (var c = columns.length; --c >= 0;) {
 								var column = columns[c];
 								var td = trChildren.eq(c);
@@ -1597,7 +1598,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							}
 						}
 
-						if (trElement.get(0)) appendRowSelectionClassName(trElement.get(0), renderedStartIndex + j);
+						if (trElement.get(0)) setupRowClassNames(trElement.get(0), renderedStartIndex + j);
 					}
 
 					if (childrenListChanged) {
@@ -1963,7 +1964,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					var tr = document.createElement("TR");
 					if($scope.model.rowStyleClassDataprovider && $scope.model.rowStyleClassDataprovider[idxInLoaded]) {
 						tr.className = $scope.model.rowStyleClassDataprovider[idxInLoaded];
-					}
+					}					
 					for (var c = 0; c < columns.length; c++) {
 						var column = columns[c];
 						var td = document.createElement("TD");
