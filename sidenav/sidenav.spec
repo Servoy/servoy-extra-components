@@ -6,7 +6,7 @@
 	"definition": "servoyextra/sidenav/sidenav.js",
 	"serverscript" : "servoyextra/sidenav/sidenav_server.js",
 	"libraries": [{"name":"svy-sidenav.css", "version":"1", "url":"servoyextra/sidenav/svy-sidenav.css", "mimetype":"text/css"},
-				  {"name":"angular-animate.js", "version":"1.5.8", "url":"servoyextra/sidenav/angular-animate.min.js", "mimetype":"text/javascript"}],
+				  {"name":"angular-animate.js", "version":"1.6.3", "url":"servoyextra/sidenav/angular-animate.min.js", "mimetype":"text/javascript"}],
 	"model":
 	{
 		"menu"							: {"type" :"MenuItem[]", "default" : [], "pushToServer": "allow", "tags": { "scope" :"runtime" }},
