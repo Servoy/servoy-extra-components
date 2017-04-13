@@ -47,7 +47,7 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 						v = v ? 'true' : 'false'
 					}
 					foundset_manager.updateFoundSetRow(
-							parseInt(data.node.key.substring(0, data.node.key.indexOf('_'))),
+							data.node.key.substring(0, data.node.key.lastIndexOf('_')),
 							data.node.data._svyRowId,
 							data.node.data.checkboxvaluedataprovider,
 							v);
