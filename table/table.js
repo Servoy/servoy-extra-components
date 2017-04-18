@@ -488,6 +488,21 @@ return {
 
 			return newLoadingPromise;
 		}
+		
+		function selectedIndexesChanged(newSelectedIdxs, oldSelectedIdxs) {
+			if (newSelectedIdxs.length > 0) {
+				if (newSelectedIdxs != oldSelectedIdxs || $scope.model.lastSelectionFirstElement != newSelectedIdxs[0]) {
+					updateSelection(newSelectedIdxs, oldSelectedIdxs);
+					if ($scope.model.lastSelectionFirstElement != newSelectedIdxs[0]) {
+						scrollToSelectionNeeded = true;
+						if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+							$log.debug("svy extra table * selectedRowIndexes changed; scrollToSelectionNeeded = true");
+						scrollToSelectionIfNeeded();
+					}
+				}
+				$scope.model.lastSelectionFirstElement = newSelectedIdxs[0];
+			} else $scope.model.lastSelectionFirstElement = -1;
+		}
 
 		foundsetListener = function(foundsetChanges) {
 			// really update the UI after all incoming changes from server have been applied;
@@ -523,18 +538,7 @@ return {
 					// ignore value change triggered by the watch initially with the same value except for when it was a form re-show and the selected index changed meanwhile
 					var selectedIdxs = $scope.model.foundset.selectedRowIndexes
 					if (!oldSelectedIdxs) oldSelectedIdxs = selectedIdxs; // initial value of the foundset then, not a change, so old = new
-					if (selectedIdxs.length > 0) {
-						if (selectedIdxs != oldSelectedIdxs || $scope.model.lastSelectionFirstElement != selectedIdxs[0]) {
-							updateSelection(selectedIdxs, oldSelectedIdxs);
-							if ($scope.model.lastSelectionFirstElement != selectedIdxs[0]) {
-								scrollToSelectionNeeded = true;
-								if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
-									$log.debug("svy extra table * selectedRowIndexes changed; scrollToSelectionNeeded = true");
-								scrollToSelectionIfNeeded();
-							}
-						}
-						$scope.model.lastSelectionFirstElement = selectedIdxs[0];
-					} else $scope.model.lastSelectionFirstElement = -1;
+					selectedIndexesChanged(selectedIdxs, oldSelectedIdxs);
 				}
 				
 				if (shouldGenerateWholeTemplate) generateTemplate();
@@ -580,16 +584,15 @@ return {
 		}
 
 		$scope.$watch('model.foundset', function(oldValue, newValue) {
-			if (oldValue !== newValue) {
-				if (oldValue) $scope.model.foundset.removeChangeListener(foundsetListener);
-				if (newValue) {
-					$scope.model.foundset.addChangeListener(foundsetListener);
-					if (!oldValue) {
-						// old value was nothing (so it didn't have listeners that would get triggered); just simulate a full value change
-						var ch = {};
-						ch[$foundsetTypeConstants.NOTIFY_FULL_VALUE_CHANGED] = { oldValue : oldValue, newValue : newValue };
-						foundsetListener(ch);
-					}
+			if (oldValue && oldValue !== newValue) $scope.model.foundset.removeChangeListener(foundsetListener); // so not initial value && old value did have listener
+			if (newValue) {
+				$scope.model.foundset.addChangeListener(foundsetListener);
+				if (!oldValue || oldValue === newValue) {
+					// old value was nothing (so it didn't have listeners that would get triggered); just simulate a full value change
+					// or it is an initial value
+					var ch = {};
+					ch[$foundsetTypeConstants.NOTIFY_FULL_VALUE_CHANGED] = { oldValue : oldValue, newValue : newValue };
+					foundsetListener(ch);
 				}
 			}
 		});
@@ -937,6 +940,8 @@ return {
 		$scope.keyPressed = function(event) {
 			var fs = $scope.model.foundset;
 			if (fs.selectedRowIndexes && fs.selectedRowIndexes.length > 0) {
+				var selectionChanged = false;
+				var oldSelectedIdxs = fs.selectedRowIndexes.slice();
 				var selection = fs.selectedRowIndexes[0];
 				if (event.keyCode == 33) { // PAGE UP KEY
 					var child = getFirstVisibleChild();
@@ -945,6 +950,7 @@ return {
 						var row_column = $(child).children().eq(0).data("row_column");
 						if (row_column) {
 							fs.selectedRowIndexes = [row_column.idxInFs];
+							selectionChanged = (selection != row_column.idxInFs);
 						}
 						if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
 							$log.debug("svy extra table * keyPressed; scroll on PG UP");
@@ -958,6 +964,7 @@ return {
 						var row_column = $(child).children().eq(0).data("row_column");
 						if (row_column) {
 							fs.selectedRowIndexes = [row_column.idxInFs];
+							selectionChanged = (selection != row_column.idxInFs);
 						}
 						if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
 							$log.debug("svy extra table * keyPressed; scroll on PG DOWN");
@@ -969,6 +976,7 @@ return {
 						if ( (fs.viewPort.startIndex) <= selection - 1) {
 							toBottom = false;
 						} else $scope.modifyPage(-1);
+						selectionChanged = true;
 					}
 					event.preventDefault();
 				} else if (event.keyCode == 40) { // ARROW DOWN KEY
@@ -977,6 +985,7 @@ return {
 						if ( (fs.viewPort.startIndex + fs.viewPort.size) > selection + 1) {
 							toBottom = true;
 						} else $scope.modifyPage(1);
+						selectionChanged = true;
 					}
 					event.preventDefault();
 				} else if (event.keyCode == 13) { // ENTER KEY
@@ -984,49 +993,65 @@ return {
 						$scope.handlers.onCellClick(selection + 1, null, fs.viewPort.rows[selection])
 					}
 				} else if (event.keyCode == 36) { // HOME
-					if (fs.viewPort.startIndex > 0) { // see if we have the first record loaded
+					var allowedBounds = calculateAllowedLoadedDataBounds();
+					if (fs.viewPort.startIndex > allowedBounds.startIdx) { // see if we have the first record loaded
 						function loadFirstRecordsIfNeeded() {
 							// this can be executed delayed, after pending loads finish, so do check again if we still need to load bottom of foundset
-							if (fs.viewPort.startIndex > 0) {
-								var newLoadPromise = $scope.model.foundset.loadRecordsAsync(0, Math.min(fs.serverSize, getInitialPreferredLoadedSize()));
+							if (fs.viewPort.startIndex > allowedBounds.startIdx) {
+								var newLoadPromise = $scope.model.foundset.loadRecordsAsync(allowedBounds.startIdx, Math.min(allowedBounds.size, getInitialPreferredLoadedSize()));
 								newLoadPromise.then(function() {
 									runWhenThereIsNoPendingLoadRequest(loadFirstRecordsIfNeeded);
 								});
 								return newLoadPromise;
-							} else if (fs.serverSize > 0) fs.requestSelectionUpdate([0]).then(function() {
+							} else if (allowedBounds.size > 0) fs.requestSelectionUpdate([allowedBounds.startIdx]).then(function() {
 									scrollToSelectionNeeded = true; /* just in case selection was already on first */
 								});
 						}
 						runWhenThereIsNoPendingLoadRequest(loadFirstRecordsIfNeeded);
-					} else if (fs.serverSize > 0) fs.requestSelectionUpdate([0]).then(function() {
-							scrollToSelectionNeeded = true; /* just in case selection was already on first */
-						});
+					} else if (allowedBounds.size > 0) {
+						if (selection != allowedBounds.startIdx) fs.requestSelectionUpdate([allowedBounds.startIdx]);
+						else {
+							// selection did not change but we still need to scroll to it
+							scrollToSelectionNeeded = true;
+							scrollToSelectionIfNeeded();
+						}
+					}
 
 					event.preventDefault()
 					event.stopPropagation();
 				} else if (event.keyCode == 35) { // END
-					if (fs.viewPort.startIndex + fs.viewPort.size < fs.serverSize) { // see if we already have the last record loaded or not
+					var allowedBounds = calculateAllowedLoadedDataBounds();
+					if (fs.viewPort.startIndex + fs.viewPort.size < allowedBounds.startIdx + allowedBounds.size) { // see if we already have the last record loaded or not
 						function loadLastRecordsIfNeeded() {
 							// this can be executed delayed, after pending loads finish, so do check again if we still need to load bottom of foundset
-							if (fs.viewPort.startIndex + fs.viewPort.size < fs.serverSize) {
-								var firstIndexToLoad = Math.max(0, fs.serverSize - getInitialPreferredLoadedSize());
-								var newLoadPromise = $scope.model.foundset.loadRecordsAsync(firstIndexToLoad, fs.serverSize - firstIndexToLoad)
+							if (fs.viewPort.startIndex + fs.viewPort.size < allowedBounds.startIdx + allowedBounds.size) {
+								var firstIndexToLoad = Math.max(allowedBounds.startIdx, allowedBounds.startIdx + allowedBounds.size - getInitialPreferredLoadedSize());
+								var newLoadPromise = $scope.model.foundset.loadRecordsAsync(firstIndexToLoad, allowedBounds.startIdx + allowedBounds.size - firstIndexToLoad);
 								newLoadPromise.then(function() {
 									// just in case server side foundset was not fully loaded and now that we accessed last part of it it already loaded more records
 									runWhenThereIsNoPendingLoadRequest(loadLastRecordsIfNeeded);
 								});
 								return newLoadPromise;
-							} else fs.requestSelectionUpdate([fs.serverSize - 1]).then(function() {
+							} else fs.requestSelectionUpdate([allowedBounds.startIdx + allowedBounds.size - 1]).then(function() {
 									scrollToSelectionNeeded = true; /* just in case selection was already on first */
 								});
 						}
 						runWhenThereIsNoPendingLoadRequest(loadLastRecordsIfNeeded);
-					} else fs.requestSelectionUpdate([fs.serverSize - 1]).then(function() {
-							scrollToSelectionNeeded = true; /* just in case selection was already on first */
-						});
+					} else if (allowedBounds.size > 0) {
+						if (selection != allowedBounds.startIdx + allowedBounds.size - 1) fs.requestSelectionUpdate([allowedBounds.startIdx + allowedBounds.size - 1]);
+						else {
+							// selection did not change but we still need to scroll to it
+							scrollToSelectionNeeded = true;
+							scrollToSelectionIfNeeded();
+						}
+					}
 
 					event.preventDefault();
 					event.stopPropagation();
+				}
+				
+				if (selectionChanged) {
+					selectedIndexesChanged(fs.selectedRowIndexes, oldSelectedIdxs);
 				}
 			}
 		}
@@ -1372,7 +1397,7 @@ return {
 
 			if (renderedStartIndex + renderedSize < allowedBounds.startIdx + allowedBounds.size) {
 				// there are records on top that are not yet rendered; add an empty div as the first row to simulate the height
-				spacingRowsAddedOrRemoved = addBottomSpacingDivIfNotPresent();
+				spacingRowsAddedOrRemoved = addBottomSpacingDivIfNotPresent() || spacingRowsAddedOrRemoved;
 				
 				// that the non-rendered rows should use - for more natural scrolling; if we already have that div just recalculate it's height
 				var previousBottomHeight;
@@ -1426,6 +1451,7 @@ return {
 			var rowOffSet = offset ? offset : 0; // offset of renderedStartIndex in/relative to model.foundset.viewport
 
 			var childIdxToScrollTo = -1; // relative to rendered rows
+			var scrollTopToKeep = -1;
 			var alignToTopWhenScrolling = false;
 			var forceScroll = false;
 
@@ -1448,8 +1474,8 @@ return {
 				if (rowUpdates.length == 1 && rowUpdates[0].type == $foundsetTypeConstants.ROWS_INSERTED
 						&& rowUpdates[0].startIndex == 0 && rowUpdates[0].removedFromVPEnd == 0
 						&& changes.oldStartIndex != undefined && changes.oldSize != undefined
-						&& changes.oldStartIndex == vp.startIndex + rowUpdates[0].rows.length
-						&& changes.oldSize == vp.size - rowUpdates[0].rows.length) {
+						&& changes.oldStartIndex == vp.startIndex + (rowUpdates[0].endIndex - rowUpdates[0].startIndex + 1)
+						&& changes.oldSize == vp.size - (rowUpdates[0].endIndex - rowUpdates[0].startIndex + 1)) {
 					// we check above changes.oldStartIndex != undefined && changes.oldSize != undefined because those are provided only starting with Servoy 8.1.2 - and I don't want to create a separate branch on servoy-extra just for this scenario
 					if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
 						$log.debug("svy extra table * updateRenderedRows ignored because it is just an extra-load on top; rendered viewport is not affected although it might be corrected by scrollhandler later");
@@ -1528,7 +1554,10 @@ return {
 								// if previously first visible child is no longer part of the rendered rows after full re-render, scroll to top rendered row (changing page relies of this to show first row in new page)
 								if (idxOfRowInRendered < 0 || idxOfRowInRendered >= renderedSize) childIdxToScrollTo = 0;
 							} else childIdxToScrollTo = 0; // should this ever happen?
-						} else childIdxToScrollTo = -1; // we can't find a 'first' row to scroll to... don't do anything then (we could keep scroll top in absolute or percentage in the future if needed)
+						} else {
+							childIdxToScrollTo = -1; // we can't find a 'first' row to scroll to... keep scroll top position (we just want to rerender all rows, we don't want browser to autoscroll because for example top space div is removed and some row element from the bottom is now reused as the first row which is on top)
+							scrollTopToKeep = tbody.scrollTop(); 	
+						}
 
 						if (childIdxToScrollTo == 0) {
 							alignToTopWhenScrolling = true;
@@ -1698,6 +1727,8 @@ return {
 						scrollToChild.scrollIntoView(alignToTopWhenScrolling)
 					}
 				}
+			} else if (scrollTopToKeep >= 0) {
+				tbody.scrollTop(scrollTopToKeep); 	
 			}
 
 			if (correctRenderedBoundsAtEnd) {
