@@ -1688,7 +1688,7 @@ return {
 				// have to grab it again to be able to scroll)
 				var firstRemovedChildIndex = renderedSize + topEmptySpaceRowCount;
 				var lastRemovedChildIndex = children.length - bottomEmptySpaceRowCount - 1;
-				if (firstRemovedChildIndex <= lastRemovedChildIndex) {
+				if (firstRemovedChildIndex >= 0 && firstRemovedChildIndex <= lastRemovedChildIndex) {
 					var heightThatWillBeRemoved = children.eq(lastRemovedChildIndex).position().top + children.eq(lastRemovedChildIndex).height()
 													- children.eq(firstRemovedChildIndex).position().top;
 					
