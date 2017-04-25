@@ -5,8 +5,8 @@ CSS-ClientLibs: servoyextra/lib/css/skin-win8/ui.fancytree.css;name=ui
 Responsive-Layout: True
 Bundle-SymbolicName: servoyextra
 Bundle-Name: Servoy Extra Components
-Bundle-Version: 1.1.3
-Absolute-Layout: True
+Bundle-Version: 1.2.0
+0Absolute-Layout: True
 CSS-DesignLibs: servoyextra/lib/css/servoyextra_design.css
 Created-By: 1.7.0_05-b06 (Oracle Corporation)
 Package-Type: Web-Component
