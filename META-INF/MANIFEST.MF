@@ -38,3 +38,5 @@ Web-Component: True
 Name: select2tokenizer/select2tokenizer.spec
 Web-Component: True
 
+Name: fileupload/fileupload.spec
+Web-Component: True
