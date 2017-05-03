@@ -1,0 +1,14 @@
+<div ng-if="model.visible" class="svy-extra-fileupload">
+	<div ngf-drop ngf-select ng-model="$parent.files" class="svy-fu-drop-box" ngf-drag-over-class="'svy-fu-dragover'"
+		ngf-drop-disabled= "getProgress('')" ngf-select-disabled="getProgress('')" ng-click='cancel()'>
+		<i class="svy-fu-row fa fa-upload fa-3x"></i>
+		<span class="svy-fu-row" ng-bind="getMessage()"></span>
+		<span class="svy-fu-row" ng-if="getProgress('')" ng-bind="files.name"></span>
+		<div class="svy-fu-row" ng-if="getProgress('')">
+			<div class="svy-fu-progress-bar" role="progressbar" aria-valuenow="{{getProgress('')}}" aria-valuemin="0" aria-valuemax="100" style="width: {{getProgress('%')}};">
+				{{getProgress('%')}}
+			</div>
+		</div>
+	</div>
+	<div ngf-no-file-drop>{{model.uploadNotSupportedText}}}</div>
+</div>

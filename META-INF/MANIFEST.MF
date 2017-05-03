@@ -6,7 +6,7 @@ Responsive-Layout: True
 Bundle-SymbolicName: servoyextra
 Bundle-Name: Servoy Extra Components
 Bundle-Version: 1.2.0
-0Absolute-Layout: True
+Absolute-Layout: True
 CSS-DesignLibs: servoyextra/lib/css/servoyextra_design.css
 Created-By: 1.7.0_05-b06 (Oracle Corporation)
 Package-Type: Web-Component
@@ -38,3 +38,5 @@ Web-Component: True
 Name: select2tokenizer/select2tokenizer.spec
 Web-Component: True
 
+Name: fileupload/fileupload.spec
+Web-Component: True
