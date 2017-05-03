@@ -2,9 +2,9 @@
 	"name": "servoyextra-fileupload",
 	"displayName": "File upload",
 	"version": 1,
-	"icon": "servoyextra/fileupload/fileupload.gif",
+	"icon": "servoyextra/fileupload/fileupload.png",
 	"definition": "servoyextra/fileupload/fileupload.js",
-	"libraries": [{"name":"fileupload.css", "version":"1", "url":"servoyextra/fileupload/fileupload.css", "mimetype":"text/css"}],
+	"libraries": [{"name":"fileupload.css", "version":"1", "url":"servoyextra/fileupload/fileupload.css", "mimetype":"text/css"}, {"name":"font-awesome.css", "version":"4.6.3", "url":"servoyextra/fileupload/lib/font-awesome.min.css", "mimetype":"text/css", "group":false}],
 	"model":
 	{
 	        "dataProviderID" : { "type":"dataprovider", "pushToServer": "allow", "tags": { "scope": "design", "typeName": "mediaDataprovider" }, "ondatachange": { "onchange":"onDataChangeMethodID"}, "displayTagsPropertyName" : "displaysTags"},
