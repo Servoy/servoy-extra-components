@@ -507,9 +507,9 @@ return {
 		foundsetListener = function(foundsetChanges) {
 			// really update the UI after all incoming changes from server have been applied;
 			// so that we give a change to foundSet-linked column properties (DPs, ...) to get updated as well;
-			// if this was called by the 'model.foundset' watch below, then we aren't in an incomming message handling cycle so
-			// addIncommingMessageHandlingDoneTask will execute the task right away
-			$webSocket.addIncommingMessageHandlingDoneTask(function() {
+			// if this was called by the 'model.foundset' watch below, then we aren't in an incoming message handling cycle so
+			// addIncomingMessageHandlingDoneTask will execute the task right away
+			$webSocket.addIncomingMessageHandlingDoneTask(function() {
 				if (!$scope.model.foundset) return; // should never happen
 
 				var shouldCheckSelection = false;
