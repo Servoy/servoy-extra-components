@@ -1824,7 +1824,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 												$log.debug("svy extra table * scrollHandler (fast scroll up) needs to discard loaded rows and start fresh in desired area");
 											runWhenThereIsNoPendingLoadRequest(function() {
 												var newLoadingPromise = shrinkLoadedViewportNow(false);
-												newLoadingPromise.then(scrollHandler); // call scroll handler again to update the rendered viewport
+												if (newLoadingPromise) newLoadingPromise.then(scrollHandler); // call scroll handler again to update the rendered viewport
 												return newLoadingPromise;
 											}, scrollHandler);
 										} else if (vp.startIndex > firstIndexAllowedOnScrollUp && (renderedStartIndex - vp.startIndex) < batchSizeForRenderingMoreRows) {
@@ -1907,7 +1907,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 												$log.debug("svy extra table * scrollHandler (fast scroll down) needs to discard loaded rows and start fresh in desired area");
 											runWhenThereIsNoPendingLoadRequest(function() {
 												var newLoadingPromise = shrinkLoadedViewportNow(false);
-												newLoadingPromise.then(scrollHandler); // call scroll handler again to update the rendered viewport
+												if (newLoadingPromise) newLoadingPromise.then(scrollHandler); // call scroll handler again to update the rendered viewport
 												return newLoadingPromise;
 											}, scrollHandler);
 										} else if (currentLastLoadedIndex < lastIndexAllowedOnScrollDown && (currentLastLoadedIndex - (renderedStartIndex + renderedSize)) < batchSizeForRenderingMoreRows) {
