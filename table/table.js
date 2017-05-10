@@ -530,6 +530,11 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 				// watch the columns so that we can relay out the columns when width or size stuff are changed.
 				var currentColumnLength = $scope.model.columns ? $scope.model.columns.length : 0;
+				var currentIdForFoundset = [];
+				for (var i = 0; i < $scope.model.columns.length; i++)
+				{
+					currentIdForFoundset.push($scope.model.columns[i].dataprovider ? $scope.model.columns[i].dataprovider.idForFoundset : undefined );
+				}
 				Object.defineProperty($scope.model, $sabloConstants.modelChangeNotifier, {
 						configurable: true,
 						value: function(property, value) {
@@ -537,9 +542,15 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 							case "columns":
 								var differentColumns = currentColumnLength != $scope.model.columns.length;
 								var valueChanged = differentColumns;
+								var dataproviderChanged = false;
 								currentColumnLength = $scope.model.columns.length
 								if (!valueChanged) {
 									for (var i = 0; i < $scope.model.columns.length; i++) {
+										if ($scope.model.columns[i].dataprovider != undefined && currentIdForFoundset[i] != $scope.model.columns[i].dataprovider.idForFoundset)
+										{
+											dataproviderChanged = true;
+										}
+										currentIdForFoundset[i] = $scope.model.columns[i].dataprovider ? $scope.model.columns[i].dataprovider.idForFoundset : undefined;
 										var iw = getNumberFromPxString($scope.model.columns[i].initialWidth);
 										if (iw > -1 && ($scope.model.columns[i].width != $scope.model.columns[i].initialWidth)) {
 											$scope.model.columns[i].initialWidth = $scope.model.columns[i].width;
@@ -548,7 +559,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 									}
 								}
 
-								if (valueChanged) {
+								if (valueChanged || dataproviderChanged) {
 									autoColumns = getAutoColumns();
 									tableWidth = calculateTableWidth();
 									if ($scope.model.columns && $scope.model.columns.length > 0) {
@@ -562,6 +573,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 													}
 												}
 												if (differentColumns) generateTemplate(true);
+												if (dataproviderChanged) updateRenderedRows(null);
 											}, 0);
 									}
 								}
