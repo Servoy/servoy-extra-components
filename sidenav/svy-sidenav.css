@@ -131,10 +131,11 @@
 }
 
 /*******************************************
- * Animate 
+ * SLIDE MENU 
  *
  *******************************************/
 
+/* slide menu animate */
 .nav-slide-menu.svy-sidenav.svy-slide-out {
 	overflow: visible;
 	border-width: 0px; /* reset the border of svy-sidenav */
@@ -260,6 +261,7 @@
  	overflow: hidden;
 }
 
+
 /* Side Toggle */
 
 .nav-hide-toggle .svy-sidenav-action-open {
@@ -300,41 +302,46 @@
           transform: translate(-100%, 0);
 }
 
+/*******************************************************
+* COLLAPSE MENU
+*******************************************************/
 
-/* Small Icon */
-.nav-collapse-menu {
-	
+/* Collapse Menu Animation */
+.nav-collapse-menu.svy-slide-out-add,
+.nav-collapse-menu.svy-slide-out-remove {
+	-webkit-transition: width cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+	   -moz-transition: width cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+   		-ms-transition: width cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+	     -o-transition: width cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+  	        transition: width cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
 }
 
-
-.nav-collapse-menu.svy-slide-out .svy-sidenav-content {
-	display: block;
+.nav-collapse-menu.svy-sidenav-left.svy-slide-out,
+.nav-collapse-menu.svy-sidenav-right.svy-slide-out-remove {
+	float: left;
 }
 
-.nav-collapse-menu.svy-sidenav.svy-slide-out {
-	border-left-width : 1px;
-	-webkit-transform: none;
-     -moz-transform: none;
-      -ms-transform: none;
-       -o-transform: none;
-          transform: none;
-          height: inherit;
+.nav-collapse-menu.svy-sidenav-right.svy-slide-out,
+.nav-collapse-menu.svy-sidenav-right.svy-slide-out-remove {
+	float: right;
 }
 
-.nav-collapse-menu.svy-slide-out.svy-sidenav-left .svy-sidenav-action-open {
-	border-left-width : 1px;
-	-webkit-transform: none;
-     -moz-transform: none;
-      -ms-transform: none;
-       -o-transform: none;
-          transform: none;
+.nav-collapse-menu.svy-slide-out.svy-slide-out-add {
+	width: 50px;
 }
 
+.nav-collapse-menu.svy-slide-out.svy-slide-out-remove {
+	width: 150px;
+}
+
+/* Style the items */
 .nav-collapse-menu.svy-slide-out .svy-sidenav-item {
 	margin: 0;
-    max-width: 36px;
-    overflow: hidden;
     white-space: nowrap;
+}
+
+.nav-collapse-menu.svy-slide-out .svy-sidenav-item-text {
+	display: none;
 }
 
 .nav-collapse-menu.svy-slide-out .svy-sidenav-collapse-icon {

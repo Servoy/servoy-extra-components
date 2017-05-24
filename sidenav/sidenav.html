@@ -3,6 +3,8 @@
 	svy-sidenav-menu
 		svy-sidenav-dropdown
 		svy-sidenav-item
+			svy-sidenav-item-icon
+			svy-sidenav-item-text
 		svy-sidenav-divider
 	svy-sidenav-menu2
 	svy-sidenav-menu3
@@ -14,6 +16,11 @@
 	svy-sidenav-disabled		the item disabled
 
 	svy-sidenav-action-open
+
+	nav-slide-menu
+	nav-collapse-menu
+	nav-side-toggle
+	nav-hide-toggle
 -->
 	<div class="svy-sidenav">
 		<div class="svy-sidenav-header">
@@ -32,8 +39,8 @@
 
 					<!-- Main Menu Items -->
 					<a ng-if="!item.isDivider" class="svy-sidenav-item sn-level-1" ng-class="item.styleClass" ng-href="" ng-click="selectItem(1, $index, item, $event)">
-						<i ng-class="item.iconStyleClass"></i>
-						{{item.text}}
+						<i class="svy-sidenav-item-icon" ng-class="item.iconStyleClass"></i>
+						<span class="svy-sidenav-item-text">{{item.text}}</span>
 						<i class="svy-sidenav-collapse-icon sn-level-1 pull-right" ng-class="item.menuItems ? (expandedIndex[1] == item.id ? '' + model.iconCollapseStyleClass : '' + model.iconExpandStyleClass) : 'hidden'"
 							ng-click="toggleExpandedItem(1, $index, item, $event)"
 							/>
@@ -50,8 +57,8 @@
 							>
 							<!-- Second Menu Items -->
 							<a ng-if="!item2.isDivider" class="svy-sidenav-item sn-level-2" ng-class="item2.styleClass" ng-href="" ng-click="selectItem(2, $index, item2, $event)">
-								<i ng-class="item2.iconStyleClass"></i>
-								{{item2.text}}
+								<i class="svy-sidenav-item-icon" ng-class="item2.iconStyleClass"></i>
+								<span class="svy-sidenav-item-text">{{item2.text}}</span>
 								<i class="svy-sidenav-collapse-icon sn-level-2 pull-right" ng-class="item2.menuItems ? (expandedIndex[2] == item2.id ? '' + model.iconCollapseStyleClass : '' + model.iconExpandStyleClass) : 'hidden'"
 									ng-click="toggleExpandedItem(2, $index, item2, $event)"
 									/>
@@ -67,8 +74,8 @@
 									>
 									<!-- Third Menu Items -->
 									<a ng-if="!item3.isDivider" class="svy-sidenav-item sn-level-3" ng-class="item3.styleClass" ng-href="" ng-click="selectItem(3, $index, item3, $event)">
-										<i ng-class="item3.iconStyleClass"></i>
-										{{item3.text}}
+										<i class="svy-sidenav-item-icon" ng-class="item3.iconStyleClass"></i>
+										<span class="svy-sidenav-item-text">{{item3.text}}</span>
 										<i class="svy-sidenav-collapse-icon sn-level-3 pull-right" ng-class="item3.menuItems ? (expandedIndex[3] == item3.id ? '' + model.iconCollapseStyleClass : '' + model.iconExpandStyleClass) : 'hidden'"
 											ng-click="toggleExpandedItem(3, $index, item3, $event)"
 											/>
@@ -84,8 +91,8 @@
 											>
 											<!-- Second Menu Items -->
 											<a ng-if="!item4.isDivider" class="svy-sidenav-item sn-level-4" ng-class="item4.styleClass" ng-href="" ng-click="selectItem(4, $index, item4, $event)">
-												<i ng-class="item4.iconStyleClass"></i>
-												{{item4.text}}
+												<i class="svy-sidenav-item-icon" ng-class="item4.iconStyleClass"></i>
+												<span class="svy-sidenav-item-text">{{item4.text}}</span>
 											</a>
 											<div ng-if="item4.isDivider" class="svy-sidenav-divider sn-level-4" ng-class="item4.styleClass"> 
 											</div>	
