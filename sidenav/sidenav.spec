@@ -18,8 +18,10 @@
 		"iconCloseStyleClass"			: {"type" :"styleclass", "tags": { "scope" :"design" }, "default": "fa fa-bars"},
 		"iconExpandStyleClass"			: {"type" :"styleclass", "tags": { "scope" :"design" }, "default": "fa fa-caret-right"},
 		"iconCollapseStyleClass"		: {"type" :"styleclass", "tags": { "scope" :"design" }, "default": "fa fa-caret-down"},
-		"styleClass"					: {"type" :"styleclass", "tags": {"scope": "design"}, "values" : ["nav-hide-toggle", "nav-side-toggle"]},
+		"styleClass"					: {"type" :"styleclass", "tags": {"scope": "design"}, "values" : ["nav-hide-toggle", "nav-side-toggle", "nav-always-show-icon"]},
 		"slidePosition"					: {"type" :"string", "tags": {"scope": "design"},"values": [{"LEFT": "left"}, {"RIGHT": "right"}, {"STATIC": "static"}], "default" : "left"},
+		"slideAnimation"				: {"type" :"string", "tags": {"scope": "design"},"values": [{"SLIDE-MENU": "slide-menu"}, {"COLLAPSE-MENU": "collapse-menu"}], "default" : "slide-menu"},
+		"togglePosition"				: {"type" :"string", "tags": {"scope": "design"},"values": [{"FIXED-TOGGLE": "fixed-toggle"}, {"SIDE-TOGGLE": "side-toggle"}, {"HIDE-TOGGLE": "hide-toggle"}], "default" : "fixed-toggle"},
 		
 		"open"							: {"type" :"boolean", "default" : true, "pushToServer": "allow"},
 		"enabled"						: {"type" :"enabled", "default" : true, "blockingOn": false, "for": ["onMenuItemSelected","onMenuItemExpanded","onMenuItemCollapsed"]},
