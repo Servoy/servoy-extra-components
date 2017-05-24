@@ -946,6 +946,38 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				}
 				sidenav.addClass(slidePositionClass);
 				
+
+				// set menu collapsible behavior
+				var slideBehaviorClass;
+				switch ($scope.model.slideAnimation) {
+					case "collapse-menu":
+						slideBehaviorClass = "nav-collapse-menu";
+						break;
+					case "slide-menu":
+					// default cascade
+					default:
+						slideBehaviorClass = "nav-slide-menu";
+						break;
+				}
+				sidenav.addClass(slideBehaviorClass);
+				
+				// set menu side
+				var togglePositionClass;
+				switch($scope.model.togglePosition) {
+					case "side-toggle":
+						togglePositionClass = "nav-side-toggle";
+						break;
+					case "hide-toggle":
+						togglePositionClass = "nav-hide-toggle";
+					break;
+					case "fixed-toggle":
+						// default cascade
+					default : 
+						togglePositionClass = "nav-fixed-toggle";
+						break;
+				}
+				sidenav.addClass(togglePositionClass);
+				
 				// animate slide menu
 				$scope.slideMenu = function (event) {
 					
