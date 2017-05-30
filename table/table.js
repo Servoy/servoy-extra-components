@@ -367,13 +367,21 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					if ($scope.showPagination()) {
 						// paging mode only keeps data for the showing page - at maximum
 						allowedStart = $scope.model.pageSize * ($scope.model.currentPage - 1);
-						if (allowedStart >= serverSize) {
+						if (!$scope.model.foundset.hasMoreRows &&  allowedStart >= serverSize) {
 							// this page no longer exists; it is after serverSize; adjust current page and that watch on that will request the correct viewport
 							setCurrentPage(getPageForIndex(serverSize - 1));
 							allowedStart = $scope.model.pageSize * ($scope.model.currentPage - 1);
 						}
 
-						allowedSize = Math.min($scope.model.pageSize, serverSize - allowedStart);
+						var newAllowedSize;
+						if(allowedStart >= serverSize && $scope.model.foundset.hasMoreRows) {
+							newAllowedSize = $scope.model.pageSize;
+						}
+						else {
+							newAllowedSize = serverSize - allowedStart;
+						}
+
+						allowedSize = Math.min($scope.model.pageSize, newAllowedSize);
 					} else {
 						// table is not going to show/use pages; so we can think of it as one big page
 						setCurrentPage(1); // just to be sure - we are not paging so we are on first "page"
@@ -710,11 +718,12 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				}
 
 				$scope.hasNext = function() {
-					return $scope.model.foundset && $scope.model.currentPage < Math.ceil($scope.model.foundset.serverSize / $scope.model.pageSize);
+					return $scope.model.foundset &&
+						($scope.model.currentPage < Math.ceil($scope.model.foundset.serverSize / $scope.model.pageSize) || $scope.model.foundset.hasMoreRows);
 				}
 
 				$scope.showPagination = function() {
-					return $scope.model.pageSize && $scope.model.foundset && $scope.model.foundset.serverSize > $scope.model.pageSize;
+					return $scope.model.pageSize && $scope.model.foundset && ($scope.model.foundset.serverSize > $scope.model.pageSize || $scope.model.foundset.hasMoreRows);
 				}
 
 				var isPaginationVisible = false;
@@ -741,7 +750,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				$scope.modifyPage = function(count) {
 					var pages = Math.ceil($scope.model.foundset.serverSize / $scope.model.pageSize)
 					var newPage = $scope.model.currentPage + count;
-					if (newPage >= 1 && newPage <= pages) {
+					if (newPage >= 1 && (newPage <= pages || $scope.model.foundset.hasMoreRows)) {
 						setCurrentPage(newPage);
 					}
 				}
