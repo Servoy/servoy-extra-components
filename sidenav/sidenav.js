@@ -1031,7 +1031,9 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				}
 
 				/**
+				 * Cannot use angular animate at mouse enter/leave. Simulate animate using onmouseenter/onmouseleave
 				 * Toggle menu hover animation
+				 * 
 				 * @public
 				 * */
 				function animateMenuHover(open) {
@@ -1049,7 +1051,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 * @public
 				 * */
 				function bindOnHover() {
-
+					
 					// register on mouse hover
 					if ($scope.model.slideAnimation === 'collapse-menu') {
 						nav.mouseenter(onMouseEnter);
@@ -1066,20 +1068,23 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 						// only if the menu is collapsed, use the mouseover
 						if ($scope.model.slideAnimation === 'collapse-menu') {
 
-							// stop remove animation
+							// stop remove animation clearing previous timeout
 							if (mouseLeaveTimeout) {
 								$log.debug('Clear Timeout Remove ');
 								sidenav.removeClass('svy-hover-remove');
 								clearTimeout(mouseLeaveTimeout);
 								mouseLeaveTimeout = undefined;
 							}
-
-							$scope.mouseHover = true;
+							
+							$scope.mouseHover = true;	// TODO remove mouseHover
+							
+							// to start animation add svy-hover-add to start animation and remove at next repaint
 							sidenav.addClass('svy-hover svy-hover-add svy-hover-animate');
 							requestAnimationFrame(function() {
 								$log.debug('Timeout add');
 								sidenav.removeClass('svy-hover-add');
 
+								// complete hover animation
 								mouseEnterTimeout = setTimeout(function() {
 										$log.debug('Timeout add animate');
 										sidenav.removeClass('svy-hover-animate');
@@ -1105,9 +1110,12 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 								mouseEnterTimeout = undefined;
 							}
 
+							// start hover remove animation
 							$scope.mouseHover = false;
 							sidenav.addClass('svy-hover-animate svy-hover-remove ');
 							sidenav.removeClass('svy-hover');
+							
+							// complete hover animation
 							mouseLeaveTimeout = setTimeout(function() {
 									$log.debug('Timeout remove');
 									sidenav.removeClass('svy-hover-animate svy-hover-remove ');
