@@ -1,4 +1,4 @@
-angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoyextraSidenav', ['$animate', '$sabloConstants', '$log',  function($animate, $sabloConstants, $log) {
+angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoyextraSidenav', ['$animate', '$sabloConstants', '$log', function($animate, $sabloConstants, $log) {
 		return {
 			restrict: 'E',
 			scope: {
@@ -8,15 +8,15 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				handlers: "=svyHandlers"
 			},
 			controller: function($scope, $element, $attrs) {
-				
-				/** 
+
+				/**
 				 * API CHANGES
 				 * addMenuItem returns the index.
 				 * removeAllMenuItemsAtDepth -> clearMenuItems(level)
-				 * 
-				 *  
+				 *
+				 *
 				 *  */
-				
+
 				/**
 				 * TODO
 				 * searchBox
@@ -26,14 +26,14 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 * clearSelection
 				 * mediaIcon
 				 * autogenerate IDs
-				 * 
+				 *
 				 * HTML text
 				 * Addition to the text (badge) HTML
-				 * 
+				 *
 				 * FIXME
 				 * Scan nodes to report duplicate ID.
 				 * Possible Conflicts with Node Edit.
-				 * 		Remove a selected/expanded node, node with same ID is added again before selection is changed. 
+				 * 		Remove a selected/expanded node, node with same ID is added again before selection is changed.
 				 * 			Force refresh Index when node is collapsed.
 				 *
 				 * isSelected
@@ -77,24 +77,27 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				var isDisabled;
 				var isNodeSelected;
 				var isNodeExpanded;
-				
-				/** 
+
+				/**
 				 * @typedef {{id: String|Number ,
-  				 * text: String=,
-  				 * styleClass: String=,
-  				 * iconStyleClass: String=,
-  				 * enabled: Boolean=,
-  				 * data: Object=,
-  				 * menuItems: Array=,
-  				 * isDivider : Boolean=}}
-  				 * 
-  				 * @SuppressWarnings("unused")
+				 * text: String=,
+				 * styleClass: String=,
+				 * iconStyleClass: String=,
+				 * enabled: Boolean=,
+				 * data: Object=,
+				 * menuItems: Array=,
+				 * isDivider : Boolean=}}
+				 *
+				 * @SuppressWarnings("unused")
 				 * */
 				var NavMenuItem;
 
 				// scope vars
 				$scope.selectedIndex = { }; // hold the id of the selected nodes, per level
 				$scope.expandedIndex = { }; // hold the id of the expanded nodes, per level
+
+				// true during on mouseHover. Used only with slideAnimation 'collapse-menu'
+				$scope.mouseHover;
 
 				// sample menu for developer
 				if ($scope.svyServoyapi.isInDesigner()) {
@@ -131,7 +134,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				// wait that model is syncronized with the server
 				$scope.$watch("model.svyMarkupId", function(newValue, oldValue) {
 						if (newValue) {
-							
+
 							// TODO restore selectedindex
 							if ($scope.model.selectedIndex) {
 								$scope.selectedIndex = JSON.parse($scope.model.selectedIndex);
@@ -157,7 +160,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 *
 				 * Select the main Item */
 				$scope.selectItem = function(level, index, item, event, preventHandler) {
-//					console.log("select " + level + ' - ' + item.id)
+					//					console.log("select " + level + ' - ' + item.id)
 
 					if (event) { //
 						event.stopPropagation();
@@ -183,17 +186,17 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 						confirmSelection();
 					}
 					return true;
-					
+
 					function confirmSelection() {
 						setSelectedIndex(level, index, item);
-						
+
 						// expand the item
-						if (item.menuItems) {	// expand the node if not leaf
+						if (item.menuItems) { // expand the node if not leaf
 							$scope.expandItem(level, index, item, event, preventHandler); // TODO add collapsed argument
-						} else {		// expand the parent node if is a leaf
+						} else { // expand the parent node if is a leaf
 							var parentNode = getParentNode(item.id);
 							if (parentNode) {
-								$scope.expandItem(level-1, null, parentNode, event, preventHandler);
+								$scope.expandItem(level - 1, null, parentNode, event, preventHandler);
 							}
 						}
 					}
@@ -209,8 +212,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 						$scope.collapseItem(level, index, item, event, preventHandler);
 					}
 				}
-				
-				
+
 				/**
 				 * @param {Number} level
 				 * @param {Number} index
@@ -220,14 +222,14 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 *
 				 * Expand the item */
 				$scope.expandItem = function(level, index, item, event, preventHandler) {
-//					console.log("expand " + level + ' - ' + item.id);
+					//					console.log("expand " + level + ' - ' + item.id);
 
 					if (event) { //
 						event.stopPropagation();
 					} else { //
 						event = createJSEvent();
 					}
-					
+
 					// check if node is already collapsed
 					if (isNodeExpanded(item.id, level)) {
 						return true;
@@ -251,7 +253,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					} else {
 						setExpandedIndex(level, index, item);
 					}
-					
+
 					return true;
 				}
 
@@ -270,7 +272,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					} else { //
 						event = createJSEvent();
 					}
-					
+
 					// check if node is already collapsed
 					if (!isNodeExpanded(item.id, level)) {
 						return true;
@@ -279,7 +281,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					// prevent selection if item is disabled
 					if (isDisabled(item.id)) {
 						return false;
-					}					
+					}
 
 					// call handler onMenuItemCollapsed
 					if (preventHandler != true && $scope.handlers.onMenuItemCollapsed) {
@@ -294,7 +296,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					} else {
 						clearExpandedIndex(level - 1);
 					}
-					
+
 					return true;
 				}
 
@@ -302,14 +304,14 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 * API
 				 **************************************************************/
 
-				/** 
+				/**
 				 * Client Side API
-				 * 
+				 *
 				 * Returns the selected menuItem.
 				 * @public
-				 * 
+				 *
 				 * @param {Number} [level] if level is provided search for the selected menu item at level.
-				 * 
+				 *
 				 * @return {servoyextra-sidenav.MenuItem}
 				 * */
 				$scope.api.getSelectedMenuItem = function(level) {
@@ -319,18 +321,18 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 
 				/**
 				 * Client Side API
-				 * 
+				 *
 				 * Select the menu item with the given id.
-				 * If level is provided search is optimized since it will search only within the descendant of the selected menuItem at level. 
+				 * If level is provided search is optimized since it will search only within the descendant of the selected menuItem at level.
 				 * For example if a root menuItem is selected and level is equal 2 search only in the subMenuItems of the selected root.
 				 * Return false if menuItemId cannot be found or is disabled.
-				 * @public 
-				 * 
+				 * @public
+				 *
 				 * @param {String|Number} id
 				 * @param {Boolean} [mustExecuteOnMenuItemSelect] Force the onMenuItemSelect to be executed. Default false.
 				 * @param {Boolean} [mustExecuteOnMenuItemExpand] Force the onMenuItemExpand to be executed. Default false.
 				 * @param {Number} [level] reduce the search to the selected menuItem at level, if any menuItem is selected at level.
-				 * 
+				 *
 				 * @return {Boolean}
 				 *
 				 *  */
@@ -364,7 +366,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 						return true;
 					} else {
 						// search the node
-						var	node = getNodeByIndexPath(subPath, nodes);
+						var node = getNodeByIndexPath(subPath, nodes);
 
 						// select the item
 						var preventHandler = mustExecuteOnMenuItemExpand == true ? false : true;
@@ -374,10 +376,10 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 
 				/**
 				 * Client Side API
-				 * 
+				 *
 				 * @param {Array<Number>} path
 				 * @param {Boolean} mustExecuteOnSelectNode
-				 * @deprecated 
+				 * @deprecated
 				 *
 				 * Should allow selection by index path as an API ?
 				 *  */
@@ -425,10 +427,10 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					//				}
 				}
 
-				/** 
+				/**
 				 * Client Side API
-				 * 
-				 * @deprecated 
+				 *
+				 * @deprecated
 				 * */
 				$scope.setSubMenuItemsByIndexPath = function(path, subtree) {
 					var tree = $scope.model.menu;
@@ -440,63 +442,63 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					}
 					return false;
 				}
-				
+
 				/**
 				 * Client Side API
-				 * 
+				 *
 				 * Force the menuItem to be expanded or collapsed.
 				 * Return false if menuItemId cannot be found or is disabled.
-				 * @public 
-				 * 
+				 * @public
+				 *
 				 * @param {String|Number} menuItemId
 				 * @param {Boolean} expanded force the menuItem to expand if true, is collapsed otherwise
 				 * @param {Boolean} [mustExecuteOnMenuItemExpand] Force the onMenuItemExpand to be executed. Default false.
-				 * 
+				 *
 				 * @return {Boolean}
 				 *  */
 				$scope.api.setMenuItemExpanded = function(menuItemId, expanded, mustExecuteOnMenuItemExpand) {
 					var node = getNodeById(menuItemId, $scope.model.menu);
-					
+
 					if (!node) {
 						return false;
 					}
-					
+
 					// expandItem/collapsItem requires node level
 					var level = getNodeLevel(menuItemId);
 					var preventHandler = mustExecuteOnMenuItemExpand == true ? false : true;
-					
+
 					if (expanded) {
 						return $scope.expandItem(level, null, node, null, preventHandler);
 					} else {
 						return $scope.collapseItem(level, null, node, null, preventHandler);
 					}
-					
+
 				}
-				
+
 				/**
 				 * Client Side API
-				 * 
+				 *
 				 * Returns true if the menuItem is expanded.
-				 * @public 
-				 * 
+				 * @public
+				 *
 				 * @param {String|Number} menuItemId
-				 * 
+				 *
 				 * @return {Boolean}
 				 *  */
 				$scope.api.isMenuItemExpanded = function(menuItemId) {
 					return isNodeExpanded(menuItemId);
 				}
-				
+
 				/**
 				 * Client Side API
-				 * 
+				 *
 				 * Returns true if the menuItem and all it's ancestors are enabled. <br/>
 				 * Return false if menuItemId cannot be found.
 				 * <i>NOTE: The method returns false if any ancestor of the menuItem is not enabled; if the property enabled of the menuItem is set to true, but has a parent with the enabled property set to false, then isMenuItemEnabled returns false. </i><br/>
-				 * @public 
-				 * 
+				 * @public
+				 *
 				 * @param {String|Number} menuItemId
-				 * 
+				 *
 				 * @return {Boolean}
 				 *  */
 				$scope.api.isMenuItemEnabled = function(menuItemId) {
@@ -623,7 +625,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					anchestors.pop();
 					return anchestors;
 				}
-				
+
 				/**
 				 * Returns the parent node
 				 *
@@ -633,10 +635,10 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				getParentNode = function(nodeId) {
 					var anchestors = getNodeAnchestors(nodeId);
 					if (anchestors && anchestors.length) {
-						return anchestors[anchestors.length -1];
+						return anchestors[anchestors.length - 1];
 					}
 				}
-				
+
 				/**
 				 * Returns all anchestors of node
 				 *
@@ -661,14 +663,14 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				getSelectedNode = function(level) {
 					var levels = $scope.selectedIndex;
 					var maxLevel = -1;
-					
+
 					// get the node at deeper level
 					for (var lvl in levels) {
 						if (lvl > maxLevel && (!level || lvl <= level)) {
 							maxLevel = lvl;
 						}
 					}
-					
+
 					var nodeId = levels[maxLevel];
 					return getNodeById(nodeId, $scope.model.menu);
 				}
@@ -786,7 +788,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 *  */
 				clearExpandedIndex = function(level) {
 					var levels = $scope.expandedIndex;
-					
+
 					// reset all sub levels
 					for (var lvl in levels) {
 						if (lvl > level) { // reset the next levels
@@ -798,7 +800,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				/**
 				 * Check if node and all it's anchestors are enabled.
 				 * Return false
-				 * 
+				 *
 				 * @param {String|Number} nodeId
 				 * @return {Boolean}
 				 *  */
@@ -807,17 +809,17 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					if ($scope.model.enabled == false) {
 						return true;
 					}
-					
+
 					// TODO refactor: use getNodeAnchestors
 					var indexPath = getPathToNode(nodeId, $scope.model.menu);
 					var tree = $scope.model.menu;
 					/** @type {servoyextra-sidenav.MenuItem} */
 					var node;
-					
+
 					if (!indexPath || !indexPath.length) {
 						return null;
 					}
-					
+
 					for (var i = 0; i < indexPath.length; i++) {
 						node = tree[indexPath[i]];
 						if (node.enabled == false) {
@@ -830,7 +832,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 
 				/**
 				 * Check if node is selected
-				 * 
+				 *
 				 * @param {String|Number} nodeId
 				 * @param {Number} [level] 1-based search in the givenLevel
 				 * @return {Boolean}
@@ -851,7 +853,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 
 				/**
 				 * Check if node is expanded
-				 * 
+				 *
 				 * @param {Object} nodeId
 				 * @param {Number} [level] 1-based search in the givenLevel
 				 * @return {Boolean}
@@ -872,7 +874,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 
 				/**
 				 * Create a JSEvent
-				 * 
+				 *
 				 * @return {JSEvent}
 				 * */
 				createJSEvent = function() {
@@ -886,117 +888,130 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					return event;
 				}
 			},
-			link: function($scope, $element, $attrs) { 
-				
+			link: function($scope, $element, $attrs) {
+
 				var className = null;
 				var sidenav = $element.find(".svy-sidenav");
 				var sidenavHeader = $element.find(".svy-sidenav-header");
 				var nav = $element.find("nav");
-				
+
 				// prevent animation at page refresh
-				if ($scope.model.open === false ) {
-				    sidenav.addClass('svy-slide-out');
+				if ($scope.model.open === false) {
+					sidenav.addClass('svy-slide-out');
 				}
-								
-				Object.defineProperty($scope.model,$sabloConstants.modelChangeNotifier, {configurable:true,value:function(property,value) {
-					switch(property) {
-						case "enabled":
-							if (value) {
-								nav.removeAttr("disabled");
-								nav.removeClass("svy-sidenav-disabled");
-							} else {
-								nav.attr("disabled","disabled");
-								nav.addClass("svy-sidenav-disabled");
+
+				Object.defineProperty($scope.model, $sabloConstants.modelChangeNotifier, {
+						configurable: true,
+						value: function(property, value) {
+							switch (property) {
+							case "enabled":
+								if (value) {
+									nav.removeAttr("disabled");
+									nav.removeClass("svy-sidenav-disabled");
+								} else {
+									nav.attr("disabled", "disabled");
+									nav.addClass("svy-sidenav-disabled");
+								}
+								break;
+							case "open":
+								animateMenuHover($scope.model.open);
+								animateSlideMenu(value);
+								break;
+							case "styleClass":
+								if (className) sidenav.removeClass(className);
+								className = value;
+								if (className) sidenav.addClass(className);
+								break;
 							}
-							break;
-						case "open":
-							animateSlideMenu(value);
-						break;
-						case "styleClass":
-							if (className) sidenav.removeClass(className);
-							className = value;
-							if(className) sidenav.addClass(className);
-							break;
-					}
-				}});
+						}
+					});
 				var destroyListenerUnreg = $scope.$on("$destroy", function() {
-					destroyListenerUnreg();
-					delete $scope.model[$sabloConstants.modelChangeNotifier];
-				});
+						unbindOnHover();
+						destroyListenerUnreg();
+						delete $scope.model[$sabloConstants.modelChangeNotifier];
+					});
 				// data can already be here, if so call the modelChange function so that it is initialized correctly.
 				var modelChangFunction = $scope.model[$sabloConstants.modelChangeNotifier];
 				for (key in $scope.model) {
-					modelChangFunction(key,$scope.model[key]);
+					modelChangFunction(key, $scope.model[key]);
 				}
-				
-				// set menu side
+
+				/** Default menu side */
 				var slidePositionClass;
-				switch($scope.model.slidePosition) {
-					case "right":
-						slidePositionClass = "svy-sidenav-right";
-						break;
-					case "static":
-						slidePositionClass = "svy-sidenav-static";
+				switch ($scope.model.slidePosition) {
+				case "right":
+					slidePositionClass = "svy-sidenav-right";
 					break;
-					case "left":
-						// default cascade
-					default : 
-						slidePositionClass = "svy-sidenav-left";
-						break;
+				case "static":
+					slidePositionClass = "svy-sidenav-static";
+					break;
+				case "left":
+				// default cascade
+				default:
+					slidePositionClass = "svy-sidenav-left";
+					break;
 				}
 				sidenav.addClass(slidePositionClass);
-				
 
-				// set menu collapsible behavior
+				/** Default menu collapsible behavior */
 				var slideBehaviorClass;
 				switch ($scope.model.slideAnimation) {
-					case "collapse-menu":
-						slideBehaviorClass = "nav-collapse-menu";
-						break;
-					case "slide-menu":
-					// default cascade
-					default:
-						slideBehaviorClass = "nav-slide-menu";
-						break;
+				case "collapse-menu":
+					slideBehaviorClass = "nav-collapse-menu";
+					break;
+				case "slide-menu":
+				// default cascade
+				default:
+					slideBehaviorClass = "nav-slide-menu";
+					break;
 				}
 				sidenav.addClass(slideBehaviorClass);
-				
-				// set menu side
+
+				/** Default toggle position */
 				var togglePositionClass;
-				switch($scope.model.togglePosition) {
-					case "side-toggle":
-						togglePositionClass = "nav-side-toggle";
-						break;
-					case "hide-toggle":
-						togglePositionClass = "nav-hide-toggle";
+				switch ($scope.model.togglePosition) {
+				case "side-toggle":
+					togglePositionClass = "nav-side-toggle";
 					break;
-					case "fixed-toggle":
-						// default cascade
-					default : 
-						togglePositionClass = "nav-fixed-toggle";
-						break;
+				case "hide-toggle":
+					togglePositionClass = "nav-hide-toggle";
+					break;
+				case "fixed-toggle":
+				// default cascade
+				default:
+					togglePositionClass = "nav-fixed-toggle";
+					break;
 				}
 				sidenav.addClass(togglePositionClass);
-				
+
 				// animate slide menu
-				$scope.slideMenu = function (event) {
-					
+				$scope.slideMenu = function(event) {
+
 					// toggle the menu
 					var wasOpen = $scope.model.open;
 					$scope.model.open = $scope.model.open === false ? true : false;
+
+					animateMenuHover($scope.model.open);
 					animateSlideMenu($scope.model.open);
 					$scope.svyServoyapi.apply("open");
-					
+
 					// event on menu open
 					if ($scope.handlers.onOpenToggled && wasOpen != $scope.model.open) {
 						$scope.handlers.onOpenToggled(event);
 					}
 				}
-				
+
+				/**
+				 * Toggle menu open/close animation
+				 * @public
+				 * */
 				function animateSlideMenu(open) {
 					if ($scope.model.slidePosition && $scope.model.slidePosition != 'static') {
 						var iconOpen = sidenavHeader.find('.svy-sidenav-action-open');
-						if (open) {
+						if (open) { // open the menu when hovering
+						
+							// remove all hover animation
+							sidenav.removeClass('svy-hover-animate svy-hover-remove svy-hover-add svy-hover');
 							if (sidenav.hasClass('svy-slide-out')) {
 								$animate.removeClass(sidenav, 'svy-slide-out');
 							}
@@ -1009,13 +1024,109 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 							iconOpen.removeClass($scope.model.iconOpenStyleClass);
 							iconOpen.addClass($scope.model.iconCloseStyleClass);
 						}
-					}
-					else {
+					} else {
 						$scope.model.open = true;
 						$scope.svyServoyapi.apply("open");
 					}
 				}
-				
+
+				/**
+				 * Toggle menu hover animation
+				 * @public
+				 * */
+				function animateMenuHover(open) {
+					if (open === false) { // add listener when menu closed, use a delay
+						setTimeout(function() {
+								bindOnHover();
+							}, 300);
+					} else { // remove listener when open
+						unbindOnHover();
+					}
+				}
+
+				/**
+				 * Bind hover event
+				 * @public
+				 * */
+				function bindOnHover() {
+
+					// register on mouse hover
+					if ($scope.model.slideAnimation === 'collapse-menu') {
+						nav.mouseenter(onMouseEnter);
+						sidenav.mouseleave(onMouseLeave);
+					}
+
+					var mouseEnterTimeout;
+					var mouseLeaveTimeout;
+
+					/**
+					 * @private
+					 * */
+					function onMouseEnter(e) {
+						// only if the menu is collapsed, use the mouseover
+						if ($scope.model.slideAnimation === 'collapse-menu') {
+
+							// stop remove animation
+							if (mouseLeaveTimeout) {
+								$log.debug('Clear Timeout Remove ');
+								sidenav.removeClass('svy-hover-remove');
+								clearTimeout(mouseLeaveTimeout);
+								mouseLeaveTimeout = undefined;
+							}
+
+							$scope.mouseHover = true;
+							sidenav.addClass('svy-hover svy-hover-add svy-hover-animate');
+							requestAnimationFrame(function() {
+								$log.debug('Timeout add');
+								sidenav.removeClass('svy-hover-add');
+
+								mouseEnterTimeout = setTimeout(function() {
+										$log.debug('Timeout add animate');
+										sidenav.removeClass('svy-hover-animate');
+									}, 450);
+
+							});
+
+						}
+					}
+
+					/**
+					 * @private
+					 * */
+					function onMouseLeave(e) {
+						// only if the menu is collapsed, use the mouseover
+						if ($scope.model.slideAnimation === 'collapse-menu') {
+
+							// stop add animation
+							if (mouseEnterTimeout) {
+								$log.debug('Clear Timeout Add');
+								sidenav.removeClass('svy-hover-add');
+								clearTimeout(mouseEnterTimeout);
+								mouseEnterTimeout = undefined;
+							}
+
+							$scope.mouseHover = false;
+							sidenav.addClass('svy-hover-animate svy-hover-remove ');
+							sidenav.removeClass('svy-hover');
+							mouseLeaveTimeout = setTimeout(function() {
+									$log.debug('Timeout remove');
+									sidenav.removeClass('svy-hover-animate svy-hover-remove ');
+								}, 450);
+						}
+					}
+
+				}
+
+				/**
+				 * Unbind hover event
+				 * @public
+				 * */
+				function unbindOnHover() {
+					$scope.mouseHover = false;
+					sidenav.off('mouseenter mouseleave');
+					nav.off('mouseenter mouseleave');
+				}
+
 			},
 			templateUrl: 'servoyextra/sidenav/sidenav.html'
 		};
