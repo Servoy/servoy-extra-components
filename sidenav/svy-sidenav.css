@@ -25,6 +25,16 @@
     width: 100%;
 }
 
+/* default float to right */
+.svy-sidenav.svy-sidenav-right {
+	float: right;
+}
+
+/* default float to left */
+.svy-sidenav.svy-sidenav-left {
+	float: left;
+}
+
 .svy-sidenav-header,
 .svy-sidenav-content {
 	width: 100%;
@@ -142,8 +152,17 @@
 	height: 0;
 }
 
+/** Responsive form */
 .nav-slide-menu.svy-slide-out.svy-slide-out-add,
 .nav-slide-menu.svy-slide-out.svy-slide-out-remove {
+	width: 150px;
+	height: 100%;
+	border-width: 1px;
+}
+
+/** Absolute form */
+.svy-wrapper > * > .nav-slide-menu.svy-slide-out.svy-slide-out-add,
+.svy-wrapper > * > .nav-slide-menu.svy-slide-out.svy-slide-out-remove {
 	width: 100%;
 	height: 100%;
 	border-width: 1px;
@@ -180,6 +199,11 @@
 /* Set with to 0 when collapsed to the right to avoid hor scrollbar */
 .nav-slide-menu.svy-slide-out.svy-sidenav-right.svy-slide-out-add,
 .nav-slide-menu.svy-slide-out.svy-sidenav-right.svy-slide-out-remove {
+	width: 150px;
+}
+
+.svy-wrapper > * > .nav-slide-menu.svy-slide-out.svy-sidenav-right.svy-slide-out-add,
+.svy-wrapper > * > .nav-slide-menu.svy-slide-out.svy-sidenav-right.svy-slide-out-remove {
 	width: 100%;
 }
 
@@ -335,23 +359,11 @@
 
 /* remove float and give full width when hovering */
 .nav-collapse-menu.svy-sidenav.svy-slide-out.svy-hover {
-	float: initial;
+	width: 150px;
+} 
+
+.svy-wrapper > * > .nav-collapse-menu.svy-slide-out.svy-hover {
 	width: 100%;
-} 
-
-/* float to left when animating */
-.nav-collapse-menu.svy-sidenav-left.svy-slide-out,
-.nav-collapse-menu.svy-sidenav-left.svy-slide-out.svy-hover-animate.svy-hover,
-.nav-collapse-menu.svy-sidenav-left.svy-slide-out.svy-hover-remove.svy-hover {
-	float: left;
-} 
-
-/* float to right when animating */
-.nav-collapse-menu.svy-sidenav-right.svy-slide-out,
-.nav-collapse-menu.svy-sidenav-right.svy-slide-out-remove,
-.nav-collapse-menu.svy-sidenav-right.svy-slide-out.svy-hover-animate.svy-hover,
-.nav-collapse-menu.svy-sidenav-right.svy-slide-out.svy-hover-remove.svy-hover {
-	float: right;
 }
 
 /* end width when closing */
@@ -360,12 +372,12 @@
 	width: 50px !important;
 }
 
-/* start width when opening */
+/* start width when opening (hover) */
 .nav-collapse-menu.svy-slide-out.svy-hover-add  {
-	width: 150px !important;
+	width: 50px !important;
 }
 
-/* start width when opening */
+/* start width when opening (open) */
 .nav-collapse-menu.svy-slide-out.svy-slide-out-remove {
 	width: 50px;
 }
