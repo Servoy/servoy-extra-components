@@ -594,7 +594,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 				$scope.$watch('model.foundset.viewPort.rows', function(newValue, oldValue) {
 						// full viewport update (it changed by reference); start over with renderedSize
-						generateTemplate();
+						generateTemplate(true);
 					})
 
 				$scope.$watch('model.currentPage', function(newValue, oldValue) {
