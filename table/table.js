@@ -549,7 +549,7 @@ return {
 					selectedIndexesChanged(selectedIdxs, oldSelectedIdxs);
 				}
 				
-				if (shouldGenerateWholeTemplate) generateTemplate();
+				if (shouldGenerateWholeTemplate) generateTemplate(true);
 				else {
 					if (foundsetChanges[$foundsetTypeConstants.NOTIFY_VIEW_PORT_ROW_UPDATES_RECEIVED]) {
 						adjustLoadedRowsIfNeeded();
