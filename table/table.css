@@ -48,6 +48,16 @@
 	left: 0px;
 }
 
+
+.tablewrapper thead tr {
+	display: inherit;
+	white-space: nowrap;
+}
+
+.tablewrapper thead th {
+	display: inline-block;
+}
+
 .tablewrapper tbody {
 	overflow: auto;
 	position: absolute;

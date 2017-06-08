@@ -132,7 +132,7 @@ return {
 		}
 
 		function getAutoColumns() {
-			var autoColumns = { columns: { }, minWidth: { }, count: 0 };
+			var autoColumns = { columns: { }, minWidth: { }, autoResize: {}, count: 0 };
 			if ($scope.model.columns) {
 				for (var i = 0; i < $scope.model.columns.length; i++) {
 					if ($scope.model.columns[i].initialWidth == undefined) {
@@ -144,6 +144,7 @@ return {
 					if ($scope.model.columns[i].autoResize || minWidth < 0) {
 						autoColumns.columns[i] = true;
 						autoColumns.minWidth[i] = minWidth;
+						autoColumns.autoResize[i] = $scope.model.columns[i].autoResize;
 						autoColumns.count += 1;
 					}
 				}
@@ -152,17 +153,29 @@ return {
 			return autoColumns;
 		}
 
+
 		function updateAutoColumnsWidth(delta) {
 			columnStyleCache = [];
 			var componentWidth = getComponentWidth();
 			var oldWidth = componentWidth - delta;
+
+			var usedDelta = 0;
 			for (var i = 0; i < $scope.model.columns.length; i++) {
-				if (autoColumns.columns[i]) {
+				if (autoColumns.autoResize[i]) {
 					if (autoColumns.minWidth[i] > 0) {
-						var w = Math.floor(getNumberFromPxString($scope.model.columns[i].width) * componentWidth / oldWidth);
+						var oldW = getNumberFromPxString($scope.model.columns[i].width);
+						var w = Math.floor(oldW * componentWidth / oldWidth);
+						
 						if (w < autoColumns.minWidth[i]) {
 							w = autoColumns.minWidth[i];
 						}
+
+						usedDelta += (w - oldW);
+						if(i == $scope.model.columns.length - 1) {
+							var extraSize = Math.abs(delta) - Math.abs(usedDelta);
+							w += Math.abs(extraSize);
+						}
+
 						$scope.model.columns[i].width = w + "px";
 					} else {
 						$scope.model.columns[i].width = $scope.model.columns[i].initialWidth;
@@ -170,6 +183,7 @@ return {
 				}
 			}
 		}
+
 
 		$scope.componentWidth = 0;
 		function getComponentWidth() {
@@ -234,10 +248,9 @@ return {
 									$timeout(function() {
 											if ($scope.model.enableColumnResize) {
 												addColResizable(true);
-											} else {
-												for (var i = 0; i < $scope.model.columns.length; i++) {
-													updateTableColumnStyleClass(i, getCellStyle(i));
-												}
+											}
+											for (var i = 0; i < $scope.model.columns.length; i++) {
+												updateTableColumnStyleClass(i, getCellStyle(i));
 											}
 										}, 0);
 								}
@@ -274,17 +287,6 @@ return {
 			});
 			// don't want JColResize to change the column width on window resize
 			$(window).unbind('resize.JColResizer');
-			// update the model with the right px values
-			var headers = tbl.find("th");
-			if ($(headers).is(":visible")) {
-				for (var i = 0; i < $scope.model.columns.length; i++) {
-					if (autoColumns.columns[i] && autoColumns.minWidth[i] < 0) {
-						$scope.model.columns[i].width = $(headers.get(i)).outerWidth(false) + "px";
-						updateTableColumnStyleClass(i, { width: $scope.model.columns[i].width, minWidth: $scope.model.columns[i].width, maxWidth: $scope.model.columns[i].width });
-					}
-				}
-				updateTBodyStyle(tbl.find("tbody")[0]);
-			}
 		}
 
 		function scrollToRenderedIfNeeded() {
@@ -345,6 +347,22 @@ return {
 				tableWidth = calculateTableWidth();
 				updateAutoColumnsWidth(0);
 				addColResizable(true);
+			}
+
+			// update the autoColumns with the right px values
+			var tbl = $element.find("table:first");
+			var headers = tbl.find("th");
+			if ($(headers).length && $(headers).eq(0).is(":visible")) {
+				for (var i = 0; i < $scope.model.columns.length; i++) {
+					if (autoColumns.columns[i]) {
+						if(autoColumns.minWidth[i] < 0) {
+							autoColumns.minWidth[i] = 1;
+							$scope.model.columns[i].width = $(headers.get(i)).outerWidth(false) + "px";
+						}
+						updateTableColumnStyleClass(i, { width: $scope.model.columns[i].width, minWidth: $scope.model.columns[i].width, maxWidth: $scope.model.columns[i].width });
+					}
+				}
+				updateTBodyStyle(tbl.find("tbody")[0]);
 			}
 		}
 
