@@ -641,7 +641,8 @@ return {
 								currentColumnLength = $scope.model.columns.length
 								if (!valueChanged) {
 									for (var i = 0; i < $scope.model.columns.length; i++) {
-										if ($scope.model.columns[i].dataprovider != undefined && currentIdForFoundset[i] != $scope.model.columns[i].dataprovider.idForFoundset)
+										if ($scope.model.columns[i].dataprovider != undefined &&
+											(($scope.model.columns[i].dataprovider.idForFoundset == undefined) || (currentIdForFoundset[i] != $scope.model.columns[i].dataprovider.idForFoundset)))
 										{
 											dataproviderChanged = true;
 										}
