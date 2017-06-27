@@ -21,7 +21,7 @@
 
 /* Overflow auto in anchored forms */
 .svy-wrapper > * > .svy-sidenav {
-    /* overflow-y: auto; */
+    overflow-y: auto;
     width: 100%;
 }
 
@@ -176,6 +176,11 @@
 	display: none;
 }
 
+.svy-wrapper > * > .nav-slide-menu.svy-slide-out .svy-sidenav-content {
+	max-height: calc(100% - 30px);
+	overflow-y: auto;
+}
+
 .nav-slide-menu.svy-slide-out.svy-sidenav-left {
 	border-right-width: 0;
 	-webkit-transform: translate(-100%, 0);
@@ -291,6 +296,14 @@
 
 
 /* Side Toggle */
+.svy-wrapper > * > .svy-sidenav.nav-side-toggle {
+	overflow: initial;
+}
+
+.svy-wrapper > * > .svy-sidenav.nav-side-toggle .svy-sidenav-content {
+	overflow-y: auto; 
+	max-height: 100%;
+}
 
 .nav-hide-toggle .svy-sidenav-action-open {
 	display: none !important;
