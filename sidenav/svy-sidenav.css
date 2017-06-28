@@ -25,6 +25,11 @@
     width: 100%;
 }
 
+/* Auto width while collapsing. Let the menu calculate necessary width (icon widths) for collapsed menu */
+.svy-sidenav.svy-slide-out {
+	width: auto;
+}
+
 /* default float to right */
 .svy-sidenav.svy-sidenav-right {
 	float: right;
