@@ -610,12 +610,13 @@ return {
 		}
 
 		$scope.$watch('model.foundset', function(oldValue, newValue) {
-			if (oldValue && oldValue !== newValue) $scope.model.foundset.removeChangeListener(foundsetListener); // so not initial value && old value did have listener
+			if (oldValue !== newValue && oldValue) oldValue.removeChangeListener(foundsetListener); // so not initial value && old value did have listener; unregister it	
+			
 			if (newValue) {
-				$scope.model.foundset.addChangeListener(foundsetListener);
+				newValue.addChangeListener(foundsetListener); // either a value changed happened or it is the initial value of the watch; do register the listener
 				if (!oldValue || oldValue === newValue) {
-					// old value was nothing (so it didn't have listeners that would get triggered); just simulate a full value change
-					// or it is an initial value
+					// either old value was nothing (so it didn't have listeners that would already have been triggered (due to a full value change); just simulate a full value change)
+					// or it is an initial value, which we do handle as a full change
 					var ch = {};
 					ch[$foundsetTypeConstants.NOTIFY_FULL_VALUE_CHANGED] = { oldValue : oldValue, newValue : newValue };
 					foundsetListener(ch);
