@@ -2191,8 +2191,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 
 				$scope.getLayoutStyle = function() {
 					var layoutStyle = { };
-					var isAbsolute = $scope.$parent.formProperties && $scope.$parent.formProperties.absoluteLayout;
-					if (isAbsolute) {
+					if ($scope.$parent.absoluteLayout) {
 						layoutStyle.position = "absolute";
 						layoutStyle.height = "100%";
 					} else {
