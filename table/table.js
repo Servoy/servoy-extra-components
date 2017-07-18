@@ -153,6 +153,26 @@ return {
 			return autoColumns;
 		}
 
+		function getAutoColumnPercentage() {
+			var nrColumnsWithPercentage = 0;
+			var sumColumnsWithPercentage = 0;
+
+			for(var autoColumnIdx in autoColumns.columns) {
+				var w = $scope.model.columns[autoColumnIdx].width;
+				if(w) {
+					w = w.trim();
+					if (w.indexOf("%") == w.length - 1) {
+						w = w.substring(0, w.length - 1);
+						if ($.isNumeric(w)) {
+							nrColumnsWithPercentage++;
+							sumColumnsWithPercentage += parseInt(w);
+						}
+					}							
+				}
+			}
+
+			return nrColumnsWithPercentage ? (100 - sumColumnsWithPercentage) / (autoColumns.count - nrColumnsWithPercentage) : 0;
+		}		
 
 		function updateAutoColumnsWidth(delta) {
 			columnStyleCache = [];
@@ -2152,7 +2172,12 @@ return {
 			} else if ($scope.model.columns[column].width) {
 				columnStyle.width = $scope.model.columns[column].width;
 			} else {
-				columnStyle.minWidth = columnStyle.maxWidth = columnStyle.width = Math.floor( (getComponentWidth() - tableWidth) / autoColumns.count) + "px";
+				var autoColumnPercentage = getAutoColumnPercentage();
+				if(autoColumnPercentage) {
+					columnStyle.width = autoColumnPercentage + "%";
+				} else {
+					columnStyle.minWidth = columnStyle.maxWidth = columnStyle.width = Math.floor( (getComponentWidth() - tableWidth) / autoColumns.count) + "px";
+				}
 			}
 			return columnStyle;
 		}
