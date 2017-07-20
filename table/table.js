@@ -629,6 +629,64 @@ return {
 			});
 		}
 
+		// watch the columns so that we can relay out the columns when width or size stuff are changed.
+		var currentColumnLength = $scope.model.columns ? $scope.model.columns.length : 0;
+		var currentIdForFoundset = [];
+		for (var i = 0; i < currentColumnLength; i++)
+		{
+			currentIdForFoundset.push($scope.model.columns[i].dataprovider ? $scope.model.columns[i].dataprovider.idForFoundset : undefined );
+		}
+		Object.defineProperty($scope.model, $sabloConstants.modelChangeNotifier, {
+				configurable: true,
+				value: function(property, value) {
+					switch (property) {
+					case "columns":
+						var differentColumns = currentColumnLength != $scope.model.columns.length;
+						var valueChanged = differentColumns;
+						var dataproviderChanged = false;
+						currentColumnLength = $scope.model.columns.length
+						if (!valueChanged) {
+							for (var i = 0; i < $scope.model.columns.length; i++) {
+								if ($scope.model.columns[i].dataprovider != undefined &&
+									(($scope.model.columns[i].dataprovider.idForFoundset == undefined) || (currentIdForFoundset[i] != $scope.model.columns[i].dataprovider.idForFoundset)))
+								{
+									dataproviderChanged = true;
+								}
+								currentIdForFoundset[i] = $scope.model.columns[i].dataprovider ? $scope.model.columns[i].dataprovider.idForFoundset : undefined;
+								var iw = getNumberFromPxString($scope.model.columns[i].initialWidth);
+								if (iw > -1 && ($scope.model.columns[i].width != $scope.model.columns[i].initialWidth)) {
+									$scope.model.columns[i].initialWidth = $scope.model.columns[i].width;
+									if (!valueChanged) valueChanged = true;
+								}
+							}
+						}
+
+						if (valueChanged || dataproviderChanged) {
+							autoColumns = getAutoColumns();
+							tableWidth = calculateTableWidth();
+							if ($scope.model.columns && $scope.model.columns.length > 0) {
+								updateAutoColumnsWidth(0);
+								$timeout(function() {
+										if ($scope.model.enableColumnResize) {
+											addColResizable(true);
+										} else {
+											for (var i = 0; i < $scope.model.columns.length; i++) {
+												updateTableColumnStyleClass(i, getCellStyle(i));
+											}
+										}
+										if (differentColumns) generateTemplate(true);
+										if (dataproviderChanged) updateRenderedRows(null);
+
+							}, 0);
+						}
+					}
+					// if the columns didn't change completely then test for the style class
+					if (!differentColumns) updateColumnStyleClass();
+					break;
+				}
+			}
+		});
+		
 		$scope.$watch('model.foundset', function(oldValue, newValue) {
 			if (oldValue !== newValue && oldValue) oldValue.removeChangeListener(foundsetListener); // so not initial value && old value did have listener; unregister it	
 			
@@ -643,64 +701,6 @@ return {
 				}
 			}
 		});
-
-		// watch the columns so that we can relay out the columns when width or size stuff are changed.
-		var currentColumnLength = $scope.model.columns ? $scope.model.columns.length : 0;
-		var currentIdForFoundset = [];
-				for (var i = 0; i < $scope.model.columns.length; i++)
-				{
-					currentIdForFoundset.push($scope.model.columns[i].dataprovider ? $scope.model.columns[i].dataprovider.idForFoundset : undefined );
-				}
-				Object.defineProperty($scope.model, $sabloConstants.modelChangeNotifier, {
-						configurable: true,
-						value: function(property, value) {
-							switch (property) {
-							case "columns":
-								var differentColumns = currentColumnLength != $scope.model.columns.length;
-								var valueChanged = differentColumns;
-								var dataproviderChanged = false;
-								currentColumnLength = $scope.model.columns.length
-								if (!valueChanged) {
-									for (var i = 0; i < $scope.model.columns.length; i++) {
-										if ($scope.model.columns[i].dataprovider != undefined &&
-											(($scope.model.columns[i].dataprovider.idForFoundset == undefined) || (currentIdForFoundset[i] != $scope.model.columns[i].dataprovider.idForFoundset)))
-										{
-											dataproviderChanged = true;
-										}
-										currentIdForFoundset[i] = $scope.model.columns[i].dataprovider ? $scope.model.columns[i].dataprovider.idForFoundset : undefined;
-										var iw = getNumberFromPxString($scope.model.columns[i].initialWidth);
-										if (iw > -1 && ($scope.model.columns[i].width != $scope.model.columns[i].initialWidth)) {
-											$scope.model.columns[i].initialWidth = $scope.model.columns[i].width;
-											if (!valueChanged) valueChanged = true;
-										}
-									}
-								}
-
-								if (valueChanged || dataproviderChanged) {
-									autoColumns = getAutoColumns();
-									tableWidth = calculateTableWidth();
-									if ($scope.model.columns && $scope.model.columns.length > 0) {
-										updateAutoColumnsWidth(0);
-										$timeout(function() {
-												if ($scope.model.enableColumnResize) {
-													addColResizable(true);
-												} else {
-													for (var i = 0; i < $scope.model.columns.length; i++) {
-														updateTableColumnStyleClass(i, getCellStyle(i));
-													}
-												}
-												if (differentColumns) generateTemplate(true);
-												if (dataproviderChanged) updateRenderedRows(null);
-
-									}, 0);
-							}
-						}
-						// if the columns didn't change completely then test for the style class
-						if (!differentColumns) updateColumnStyleClass();
-						break;
-					}
-				}
-			});
 
 		$scope.$watch('model.currentPage', function(newValue, oldValue) {
 				if (newValue && newValue != oldValue) {
