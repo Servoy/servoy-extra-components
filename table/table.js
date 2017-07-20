@@ -532,52 +532,11 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					return newLoadingPromise;
 				}
 
-				// this watch is registered before others that call adjustLoadedRowsIfNeeded (like the watch on 'model.foundset.serverSize' for example)
-				// because it needs to adjust current page first in order to avoid adjustLoadedRowsIfNeeded loading rows for an outdated page
-				$scope.$watch('model.foundset.selectedRowIndexes', function(newValue, oldValue) {
-						// ignore value change triggered by the watch initially with the same value except for when it was a form re-show and the selected index changed meanwhile
-						if (newValue.length > 0) {
-							if ( (newValue != oldValue || $scope.model.lastSelectionFirstElement != newValue[0]) && $scope.model.foundset) {
-								updateSelection(newValue, oldValue);
-								if ($scope.model.lastSelectionFirstElement != newValue[0]) {
-									scrollToSelectionNeeded = true;
-									if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
-										$log.debug("svy extra table * selectedRowIndexes watch; scrollToSelectionNeeded = true");
-									scrollToSelectionIfNeeded();
-								}
-							}
-							$scope.model.lastSelectionFirstElement = newValue[0];
-						} else $scope.model.lastSelectionFirstElement = -1;
-					}, true);
-
-				$scope.$watch('model.foundset.serverSize', function(newValue, oldValue) {
-						if (newValue && newValue != oldValue) {
-							adjustLoadedRowsIfNeeded(); // load more if available and needed, or decrease page in case current page no longer exists
-							updateTopAndBottomEmptySpace();
-						}
-					});
-
-				$scope.$watch('model.foundset.viewPort.startIndex', function(newValue, oldValue) {
-						if (newValue && newValue != oldValue) {
-							// handle a situation where only startIndex and server size got updated due to a delete of rows before the currently loaded viewport,
-							// when the viewport is at the end of the foundset; we check if the foundset index stored in rows matches the new indexes
-							// to avoid calling update if it was only a normal viewport change
-
-							// I am using evalAsync here so that this executes hopefully after the evalAsync from foundsetListener
-							// TODO as this is a very specific scenario and not nice impl., please remove this watch and evalAsync as part of SVY-10706 (do it through the listener instead)
-							$scope.$evalAsync(function() {
-								var vp = $scope.model.foundset.viewPort;
-								if (renderedStartIndex < vp.startIndex || renderedStartIndex + renderedSize > vp.startIndex + vp.size) {
-									updateRenderedRows(null);
-								}
-							});
-						}
-					});
 
 				// watch the columns so that we can relay out the columns when width or size stuff are changed.
 				var currentColumnLength = $scope.model.columns ? $scope.model.columns.length : 0;
 				var currentIdForFoundset = [];
-				for (var i = 0; i < $scope.model.columns.length; i++)
+				for (var i = 0; i < currentColumnLength; i++)
 				{
 					currentIdForFoundset.push($scope.model.columns[i].dataprovider ? $scope.model.columns[i].dataprovider.idForFoundset : undefined );
 				}
@@ -631,50 +590,94 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						}
 					});
 
-				$scope.$watch('model.foundset.viewPort.rows', function(newValue, oldValue) {
-						// full viewport update (it changed by reference); start over with renderedSize
-						generateTemplate(true);
-					})
-
-				$scope.$watch('model.currentPage', function(newValue, oldValue) {
-						if (newValue && newValue != oldValue) {
-							adjustLoadedRowsIfNeeded(); // load needed records from new page if needed
-						}
-					});
-
-				$scope.$watch('model.pageSize', function(newValue, oldValue) {
-						if (oldValue != newValue) {
-							// start over with renderedSize
-							renderedSize = -1;
-
-							if (oldValue && newValue && $scope.showPagination()) {
-								// page size has changed; try to show the page for which we have loaded records
-								setCurrentPage(getPageForIndex($scope.model.foundset.viewPort.startIndex));
-								adjustLoadedRowsIfNeeded(); // load more rows if needed according to new page bounds
+				if (!$scope.svyServoyapi.isInDesigner()) {
+					// this watch is registered before others that call adjustLoadedRowsIfNeeded (like the watch on 'model.foundset.serverSize' for example)
+					// because it needs to adjust current page first in order to avoid adjustLoadedRowsIfNeeded loading rows for an outdated page
+					$scope.$watch('model.foundset.selectedRowIndexes', function(newValue, oldValue) {
+							// ignore value change triggered by the watch initially with the same value except for when it was a form re-show and the selected index changed meanwhile
+							if (newValue.length > 0) {
+								if ( (newValue != oldValue || $scope.model.lastSelectionFirstElement != newValue[0]) && $scope.model.foundset) {
+									updateSelection(newValue, oldValue);
+									if ($scope.model.lastSelectionFirstElement != newValue[0]) {
+										scrollToSelectionNeeded = true;
+										if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+											$log.debug("svy extra table * selectedRowIndexes watch; scrollToSelectionNeeded = true");
+										scrollToSelectionIfNeeded();
+									}
+								}
+								$scope.model.lastSelectionFirstElement = newValue[0];
+							} else $scope.model.lastSelectionFirstElement = -1;
+						}, true);
+	
+					$scope.$watch('model.foundset.serverSize', function(newValue, oldValue) {
+							if (newValue && newValue != oldValue) {
+								adjustLoadedRowsIfNeeded(); // load more if available and needed, or decrease page in case current page no longer exists
+								updateTopAndBottomEmptySpace();
 							}
-						}
-						$scope.model.foundset.setPreferredViewportSize(getInitialPreferredLoadedSize());
-					});
-
-				$scope.$watch('model.foundset.viewPort', function(newValue, oldValue) {
-						adjustLoadedRowsIfNeeded();
-					});
-
-				$scope.$watch('model.foundset.sortColumns', function(newValue, oldValue) {
-						if (newValue) {
-							var sortColumnsA = $scope.model.foundset.sortColumns.split(" ");
-							if (sortColumnsA.length == 2) {
-								for (var i = 0; i < $scope.model.columns.length; i++) {
-									if (sortColumnsA[0] == $scope.model.columns[i].dataprovider.idForFoundset) {
-										$scope.model.sortColumnIndex = i;
-										$scope.model.sortDirection = sortColumnsA[1].toLowerCase() == 'asc' ? 'up' : 'down';
-										break;
+						});
+	
+					$scope.$watch('model.foundset.viewPort.startIndex', function(newValue, oldValue) {
+							if (newValue && newValue != oldValue) {
+								// handle a situation where only startIndex and server size got updated due to a delete of rows before the currently loaded viewport,
+								// when the viewport is at the end of the foundset; we check if the foundset index stored in rows matches the new indexes
+								// to avoid calling update if it was only a normal viewport change
+	
+								// I am using evalAsync here so that this executes hopefully after the evalAsync from foundsetListener
+								// TODO as this is a very specific scenario and not nice impl., please remove this watch and evalAsync as part of SVY-10706 (do it through the listener instead)
+								$scope.$evalAsync(function() {
+									var vp = $scope.model.foundset.viewPort;
+									if (renderedStartIndex < vp.startIndex || renderedStartIndex + renderedSize > vp.startIndex + vp.size) {
+										updateRenderedRows(null);
+									}
+								});
+							}
+						});
+	
+					
+					$scope.$watch('model.foundset.viewPort.rows', function(newValue, oldValue) {
+							// full viewport update (it changed by reference); start over with renderedSize
+							generateTemplate(true);
+						})
+	
+					$scope.$watch('model.currentPage', function(newValue, oldValue) {
+							if (newValue && newValue != oldValue) {
+								adjustLoadedRowsIfNeeded(); // load needed records from new page if needed
+							}
+						});
+	
+					$scope.$watch('model.pageSize', function(newValue, oldValue) {
+							if (oldValue != newValue) {
+								// start over with renderedSize
+								renderedSize = -1;
+	
+								if (oldValue && newValue && $scope.showPagination()) {
+									// page size has changed; try to show the page for which we have loaded records
+									setCurrentPage(getPageForIndex($scope.model.foundset.viewPort.startIndex));
+									adjustLoadedRowsIfNeeded(); // load more rows if needed according to new page bounds
+								}
+							}
+							$scope.model.foundset.setPreferredViewportSize(getInitialPreferredLoadedSize());
+						});
+	
+					$scope.$watch('model.foundset.viewPort', function(newValue, oldValue) {
+							adjustLoadedRowsIfNeeded();
+						});
+	
+					$scope.$watch('model.foundset.sortColumns', function(newValue, oldValue) {
+							if (newValue) {
+								var sortColumnsA = $scope.model.foundset.sortColumns.split(" ");
+								if (sortColumnsA.length == 2) {
+									for (var i = 0; i < $scope.model.columns.length; i++) {
+										if (sortColumnsA[0] == $scope.model.columns[i].dataprovider.idForFoundset) {
+											$scope.model.sortColumnIndex = i;
+											$scope.model.sortDirection = sortColumnsA[1].toLowerCase() == 'asc' ? 'up' : 'down';
+											break;
+										}
 									}
 								}
 							}
-						}
 					});
-
+				}
 				var toBottom = false;
 				$scope.$watch('model.visible', function(newValue) {
 						if (newValue) {
