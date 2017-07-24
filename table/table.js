@@ -253,30 +253,32 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					if (resizeTimeout) $timeout.cancel(resizeTimeout);
 					resizeTimeout = $timeout(function() {
 							$scope.$apply(function() {
-								if ($scope.model.columns) {
-									var newComponentWidth = $element.parent().width();
-									var deltaWidth = newComponentWidth - getComponentWidth();
-									if (deltaWidth != 0) {
-										$scope.componentWidth = newComponentWidth;
-										updateTBodyStyle(tbody[0]);
-										if ($scope.model.columns && $scope.model.columns.length > 0) {
-											updateAutoColumnsWidth(deltaWidth);
-											$timeout(function() {
-													if ($scope.model.enableColumnResize) {
-														addColResizable(true);
-													}
-													for (var i = 0; i < $scope.model.columns.length; i++) {
-														updateTableColumnStyleClass(i, getCellStyle(i));
-													}
-												}, 0);
+								if(tbody) {
+									if ($scope.model.columns) {
+										var newComponentWidth = $element.parent().width();
+										var deltaWidth = newComponentWidth - getComponentWidth();
+										if (deltaWidth != 0) {
+											$scope.componentWidth = newComponentWidth;
+											updateTBodyStyle(tbody[0]);
+											if ($scope.model.columns && $scope.model.columns.length > 0) {
+												updateAutoColumnsWidth(deltaWidth);
+												$timeout(function() {
+														if ($scope.model.enableColumnResize) {
+															addColResizable(true);
+														}
+														for (var i = 0; i < $scope.model.columns.length; i++) {
+															updateTableColumnStyleClass(i, getCellStyle(i));
+														}
+													}, 0);
+											}
 										}
 									}
-								}
 
-								// see if more rows need to be rendered due to resize
-								if (updateBatchSizesIfNeeded(getAverageRowHeight())) {
-									adjustLoadedRowsIfNeeded();
-									updateRenderedRows(null);
+									// see if more rows need to be rendered due to resize
+									if (updateBatchSizesIfNeeded(getAverageRowHeight())) {
+										adjustLoadedRowsIfNeeded();
+										updateRenderedRows(null);
+									}
 								}
 							})
 						}, 50);
@@ -1785,7 +1787,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					adjustRenderedViewportIfNeeded();
 
 					var columns = $scope.model.columns;
-					if (!columns || columns.length == 0) return;
+					if (!tbody || !columns || columns.length == 0) return;
 					var tbodyJQ = tbody;
 					var tblHead = $element.find("thead");
 					if (tbodyJQ.length == 0 || $(tblHead).height() <= 0) {
@@ -2185,7 +2187,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					if (currentSortClass.length <= column || currentSortClass[column] != sortClass) {
 						if (sortClassUpdateTimer) $timeout.cancel(sortClassUpdateTimer);
 						sortClassUpdateTimer = $timeout(function() {
-								updateTBodyStyle(tbody[0]);
+								if(tbody)  updateTBodyStyle(tbody[0]);
 							}, 50);
 						currentSortClass[column] = sortClass;
 					}
