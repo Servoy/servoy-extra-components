@@ -692,7 +692,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 									tbody = $element.find("tbody");
 								});
 
-							// TODO do we need to reinitialize anything else here as the elements were recreated
+							generateTemplate(true);
 						} else {
 							toBottom = false;
 							tbody = null;
@@ -703,7 +703,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 					});
 
 				function scrollToSelectionIfNeeded() {
-					if (!scrollToSelectionNeeded) return;
+					if (!tbody || !scrollToSelectionNeeded) return;
 
 					var firstSelected = $scope.model.foundset.selectedRowIndexes.length == 1 ? $scope.model.foundset.selectedRowIndexes[0] : -1; // we do not scroll to selection if there is no selected record (serverSize is probably 0) or we have multi-select with more then one or 0 selected records
 
@@ -715,7 +715,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 						}
 
 						// check if the selected row is in the current ui viewport.
-						if (tbody && tbody.children().length - (topSpaceDiv ? 1 : 0) - (bottomSpaceDiv ? 1 : 0) > 0 && (firstSelected < renderedStartIndex || firstSelected >= (renderedStartIndex + renderedSize))) {
+						if (tbody.children().length - (topSpaceDiv ? 1 : 0) - (bottomSpaceDiv ? 1 : 0) > 0 && (firstSelected < renderedStartIndex || firstSelected >= (renderedStartIndex + renderedSize))) {
 							// it's not in the current rendered viewport, check if it is in the current data viewport
 							var vp = $scope.model.foundset.viewPort;
 							if (firstSelected < vp.startIndex || firstSelected >= (vp.startIndex + vp.size)) {
@@ -1066,6 +1066,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				}
 
 				function updateTableRowSelectionClass(rowsFoundsetIdxArray, rowSelectionClass) {
+					if(!tbody) return;
 					var trChildren = tbody.children();
 					if (trChildren) {
 						for (var i = 0; i < rowsFoundsetIdxArray.length; i++) {
@@ -1352,6 +1353,7 @@ angular.module('servoyextraTable', ['servoy']).directive('servoyextraTable', ["$
 				}
 
 				function updateTopAndBottomEmptySpace() {
+					if(!tbody) return;
 					var spacingRowsAddedOrRemoved = false;
 					var allowedBounds = calculateAllowedLoadedDataBounds();
 
