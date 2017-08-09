@@ -2268,7 +2268,25 @@ return {
 			} else {
 				layoutStyle.position = "relative";
 				if ($scope.model.columns) {
-					layoutStyle.height = $scope.model.responsiveHeight + "px";
+					if($scope.model.responsiveDynamicHeight) {
+						var h = 0;
+						var p = $element.find(".svy-pagination");
+						if(p.length) {
+							h += $(p).height();
+						}
+						$element.find("tr").each(function() {
+							h += $(this).height();
+							if(h > $scope.model.responsiveHeight) {
+								return false;
+							}
+						});
+						layoutStyle.height = h + "px";
+						layoutStyle.maxHeight = $scope.model.responsiveHeight + "px";
+					}
+					else {
+						layoutStyle.height = $scope.model.responsiveHeight + "px";
+					}
+					
 				}
 			}
 			return layoutStyle;
