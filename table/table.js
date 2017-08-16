@@ -1723,7 +1723,18 @@ return {
 						if (divChild.length == 1) {
 							// its text node
 							value = getDisplayValue(value, column.valuelist);
-							if (column.format) value = formatFilter(value, column.format.display, column.format.type);
+							if (column.format)
+							{	
+								value = formatFilter(value, column.format.display, column.format.type);
+								if (column.format.type == 'TEXT' && column.format.uppercase)
+								{
+									value = value.toUpperCase();
+								}
+								if (column.format.type == 'TEXT' && column.format.lowercase)
+								{
+									value = value.toLowerCase();
+								}
+							}
 							divChild.text(value)
 						} else {
 							var imgChild = td.children("img");
@@ -2117,7 +2128,18 @@ return {
 					var div = document.createElement("DIV");
 					var value = column.dataprovider ? column.dataprovider[idxInLoaded] : null;
 					value = getDisplayValue(value, column.valuelist);
-					if (column.format) value = formatFilter(value, column.format.display, column.format.type);
+					if (column.format) 
+					{	
+						value = formatFilter(value, column.format.display, column.format.type);
+						if (column.format.type == 'TEXT' && column.format.uppercase)
+						{
+							value = value.toUpperCase();
+						}
+						if (column.format.type == 'TEXT' && column.format.lowercase)
+						{
+							value = value.toLowerCase();
+						}
+					}
 					var txt = document.createTextNode(value ? value : "");
 					div.appendChild(txt);
 					td.appendChild(div);
