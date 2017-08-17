@@ -679,8 +679,12 @@ return {
 										if (differentColumns) generateTemplate(true);
 										if (dataproviderChanged) updateRenderedRows(null);
 
-							}, 0);
-						}
+								}, 0);
+							}
+							else if (differentColumns && tbody)
+							{
+								tbody.empty();
+							}	
 					}
 					// if the columns didn't change completely then test for the style class
 					if (!differentColumns) updateColumnStyleClass();
