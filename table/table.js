@@ -1729,15 +1729,7 @@ return {
 							value = getDisplayValue(value, column.valuelist);
 							if (column.format)
 							{	
-								value = formatFilter(value, column.format.display, column.format.type);
-								if (column.format.type == 'TEXT' && column.format.uppercase)
-								{
-									value = value.toUpperCase();
-								}
-								if (column.format.type == 'TEXT' && column.format.lowercase)
-								{
-									value = value.toLowerCase();
-								}
+								value = formatFilter(value, column.format.display, column.format.type, column.format);
 							}
 							divChild.text(value)
 						} else {
@@ -2134,15 +2126,7 @@ return {
 					value = getDisplayValue(value, column.valuelist);
 					if (column.format) 
 					{	
-						value = formatFilter(value, column.format.display, column.format.type);
-						if (column.format.type == 'TEXT' && column.format.uppercase)
-						{
-							value = value.toUpperCase();
-						}
-						if (column.format.type == 'TEXT' && column.format.lowercase)
-						{
-							value = value.toLowerCase();
-						}
+						value = formatFilter(value, column.format.display, column.format.type, column.format);
 					}
 					var txt = document.createTextNode(value ? value : "");
 					div.appendChild(txt);
