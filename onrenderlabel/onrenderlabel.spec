@@ -2,7 +2,7 @@
 	"name": "servoyextra-onrenderlabel",
 	"displayName": "OnRender Label",
 	"version": 1,
-	"icon": "servoyextra/onrenderlabel/text.gif",
+	"icon": "servoyextra/onrenderlabel/label.png",
 	"definition": "servoyextra/onrenderlabel/onrenderlabel.js",
 	"libraries": [],
 	"model":

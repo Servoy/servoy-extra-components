@@ -2,7 +2,7 @@
 	"name": "servoyextra-table",
 	"displayName": "Table",
 	"version": 1,
-	"icon": "servoycore/portal/portal.gif",
+	"icon": "servoyextra/table/table.png",
 	"definition": "servoyextra/table/table.js",
 	"serverscript": "servoyextra/table/table_server.js",
 	"libraries": [{ "name": "servoyextra-table-css", "version": "1.0", "url": "servoyextra/table/table.css", "mimetype": "text/css" }, { "name": "colResizable", "version": "1.7", "url": "servoyextra/table/js/colResizable-1.7.js", "mimetype": "text/javascript" }],
