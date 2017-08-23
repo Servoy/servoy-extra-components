@@ -725,7 +725,7 @@ return {
 						adjustLoadedRowsIfNeeded(); // load more rows if needed according to new page bounds
 					}
 				}
-				$scope.model.foundset.setPreferredViewportSize(getInitialPreferredLoadedSize());
+				if ($scope.model.foundset) $scope.model.foundset.setPreferredViewportSize(getInitialPreferredLoadedSize());
 			});
 
 		var toBottom = false;
