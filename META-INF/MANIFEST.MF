@@ -40,3 +40,7 @@ Web-Component: True
 
 Name: fileupload/fileupload.spec
 Web-Component: True
+
+Name: imagelabel/imagelabel.spec
+Web-Component: True
+
