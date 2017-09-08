@@ -30,7 +30,7 @@
 	},
 	"types": {
 		"column": {
-			"dataprovider": { "type": "dataprovider", "forFoundset": "foundset" },
+			"dataprovider": { "type": "dataprovider", "forFoundset": "foundset", "resolveValuelist" : true },
 			"format": { "for": ["valuelist", "dataprovider"], "type": "format" },
 			"headerStyleClass": { "type": "styleclass" },
 			"headerText": { "type": "tagstring", "initialValue": "header", "tags": { "showInOutlineView": true } },
