@@ -1,0 +1,8 @@
+.svy-fa {
+	display: inline;
+}
+
+.svy-wrapper > * > .svy-fa {
+	display: block;
+	/* text-align: center; */
+}
