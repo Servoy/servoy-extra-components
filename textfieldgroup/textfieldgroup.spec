@@ -4,7 +4,7 @@
 	"version": 1,
 	"icon": "servoyextra/textfieldgroup/textbox_group.png",
 	"definition": "servoyextra/textfieldgroup/textfieldgroup.js",
-	"libraries": [{"name":"textboxgroup.css", "version":"1", "url":"servoyextra/textfieldgroup/textfieldgroup.css", "mimetype":"text/css"}, {"name":"font-awesome.css", "version":"4.6.3", "url":"servoyextra/textfieldgroup/lib/font-awesome.min.css", "mimetype":"text/css", "group":false}],
+	"libraries": [{"name":"textboxgroup.css", "version":"1", "url":"servoyextra/textfieldgroup/textfieldgroup.css", "mimetype":"text/css"}, {"name":"font-awesome.css", "version":"4.7.0", "url":"servoyextra/textfieldgroup/lib/font-awesome.min.css", "mimetype":"text/css", "group":false}],
 	"model":
 	{
 			"dataProviderID" : { "type":"dataprovider", "pushToServer": "allow","tags": { "scope" :"design" }, "ondatachange": { "onchange":"onDataChangeMethodID", "callback":"onDataChangeCallback"}},
