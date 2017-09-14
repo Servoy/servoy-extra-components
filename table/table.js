@@ -896,11 +896,34 @@ return {
 
 					$scope.model.foundset.requestSelectionUpdate(newSelection);
 					if (type == 1 && $scope.handlers.onCellClick) {
-						$scope.handlers.onCellClick(idxInFs + 1, columnIndex, $scope.model.foundset.viewPort.rows[idxInViewport], event);
+						if ($scope.handlers.onCellDoubleClick)
+						{
+							if($scope.timerID){
+								clearTimeout($scope.timerID);
+								$scope.timerID = null;
+								//double click, do nothing
+							}
+							else{
+								$scope.timerID= setTimeout(function(){
+									$scope.timerID = null;
+									$scope.$apply(function() {
+										$scope.handlers.onCellClick(idxInFs + 1, columnIndex, $scope.model.foundset.viewPort.rows[idxInViewport], event);
+									});
+								},250)
+							}
+						}
+						else
+						{
+							$scope.handlers.onCellClick(idxInFs + 1, columnIndex, $scope.model.foundset.viewPort.rows[idxInViewport], event);
+						}
 					}
 
 					if (type == 2 && $scope.handlers.onCellRightClick) {
 						$scope.handlers.onCellRightClick(idxInFs + 1, columnIndex, $scope.model.foundset.viewPort.rows[idxInViewport], event);
+					}
+					
+					if (type == 3 && $scope.handlers.onCellDoubleClick) {
+						$scope.handlers.onCellDoubleClick(idxInFs + 1, columnIndex, $scope.model.foundset.viewPort.rows[idxInViewport], event);
 					}
 				}
 			}
@@ -908,6 +931,12 @@ return {
 		if ($scope.handlers.onCellRightClick) {
 			$scope.tableRightClick = function(event) {
 				$scope.tableClicked(event, 2);
+			}
+		}
+		
+		if ($scope.handlers.onCellDoubleClick) {
+			$scope.tableDoubleClick = function(event) {
+				$scope.tableClicked(event, 3);
 			}
 		}
 
