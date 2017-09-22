@@ -8,11 +8,11 @@
 	"libraries": [{"name":"dbtreeview.css", "version":"1", "url":"servoyextra/dbtreeview/css/dbtreeview.css", "mimetype":"text/css"}],
 	"model":
 	{
-	    "roots": "foundsetref[]",
-	    "bindings" : "binding[]",
+	    "roots": {"type":"foundsetref[]", "tags": { "scope": "private" }},
+	    "bindings" : {"type":"binding[]", "tags": { "scope": "private" }},
 	    "visible" : {"type":"boolean", "default":true},
-	    "selection" : "object[]",
-	    "levelVisibility" : "levelVisibilityType"
+	    "selection" : {"type":"object[]", "tags": { "scope": "private" }},
+	    "levelVisibility" : {"type":"levelVisibilityType", "tags": { "scope": "private" }, "pushToServer": "shallow"}
 	},	
 	"api":
 	{
@@ -48,8 +48,7 @@
 							"name":"state",
 							"type": "boolean"
 		                	}		                	
-						 ],
-			"delayUntilFormLoad": true						 
+						 ]
         },
         "setNodeLevelVisible": {
 			"parameters":[
