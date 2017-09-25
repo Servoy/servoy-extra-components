@@ -4,9 +4,28 @@
 	  </label>
 </div>
 <div class="tablewrapper" ng-style="getLayoutStyle()" ng-if='model.visible'>
-	<table id="table_{{ model.svyMarkupId }}" ng-style="getTableStyle()" class='svy-table' ng-class="model.styleClass" sablo-tabseq='model.tabSeq' ng-keydown="keyPressed($event)" ng-click="tableClicked($event,1)"  svy-dblclick="tableDoubleClick($event)" svy-rightclick="tableRightClick($event)" svy-focusgained="onFocusGained($event)" svy-focuslost="handlers.onFocusLostMethodID($event)">
+	<table id="table_{{ model.svyMarkupId }}"
+		ng-style="getTableStyle()"
+		class='svy-table'
+		ng-class="model.styleClass"
+		sablo-tabseq='model.tabSeq'
+		ng-keydown="keyPressed($event)"
+		ng-click="tableClicked($event,1)"
+		svy-dblclick="tableDoubleClick($event)"
+		svy-rightclick="tableRightClick($event)"
+		svy-focusgained="onFocusGained($event)"
+		svy-focuslost="handlers.onFocusLostMethodID($event)">
 	   <thead ng-style="getTHeadStyle()">
-	  	<tr><th ng-style="getColumnStyle(model.columns.indexOf(column))" ng-class="column.headerStyleClass" ng-repeat="column in model.columns" svy-click="headerClicked($event, model.columns.indexOf(column))"><div ng-bind='column.headerText' class="table-servoyextra-header-label"></div><span ng-class="getSortClass(model.columns.indexOf(column))"></span></th></tr>
+			<tr><th ng-style="getColumnStyle(model.columns.indexOf(column))"
+						ng-class="column.headerStyleClass"
+						ng-repeat="column in model.columns"
+						svy-click="headerClicked($event, model.columns.indexOf(column))">
+							<div style="display: table; width: 100%"><div style="display: table-row;">
+							<div ng-bind='column.headerText' class="table-servoyextra-header-label"></div>
+							<span ng-class="getSortClass(model.columns.indexOf(column))" style="display: table-cell;"></span>
+						</div></div>
+					</th>
+			</tr>
 	   </thead>
 	  <tbody>
 	  </tbody>

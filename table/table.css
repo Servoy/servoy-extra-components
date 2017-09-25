@@ -3,11 +3,10 @@
 }
 
 .table-servoyextra-header-label {
-	display: inline-block;
+	display: table-cell;
 }
 
 .table-servoyextra-sort-show-up, .table-servoyextra-sort-show-down{
-	float: right;
 	padding: 10px;
 }
 
@@ -55,8 +54,8 @@
 }
 
 .tablewrapper thead th {
-	display: inline-block;
 	white-space: normal;
+	vertical-align: middle;
 }
 
 .tablewrapper tbody {
