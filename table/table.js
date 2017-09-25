@@ -116,11 +116,15 @@ return {
 			return numberFromPxString;
 		}
 
+		function isAutoResizeColumn(columnIdx) {
+			return $scope.model.columns[columnIdx].autoResize || ($scope.model.columns[columnIdx].width == "auto");
+		}
+
 		function calculateTableWidth() {
 			var tableWidth = 0;
 			if ($scope.model.columns) {
 				for (var i = 0; i < $scope.model.columns.length; i++) {
-					if (!$scope.model.columns[i].autoResize && getNumberFromPxString($scope.model.columns[i].initialWidth) > 0) {
+					if (!isAutoResizeColumn(i) && getNumberFromPxString($scope.model.columns[i].initialWidth) > 0) {
 						var w = getNumberFromPxString($scope.model.columns[i].width);
 						if (w > -1) {
 							tableWidth += w;
@@ -140,11 +144,12 @@ return {
 					} else {
 						$scope.model.columns[i].width = $scope.model.columns[i].initialWidth;
 					}
+
 					var minWidth = getNumberFromPxString($scope.model.columns[i].width);
-					if ($scope.model.columns[i].autoResize || minWidth < 0) {
+					if (isAutoResizeColumn(i) || minWidth < 0) {
 						autoColumns.columns[i] = true;
 						autoColumns.minWidth[i] = minWidth;
-						autoColumns.autoResize[i] = $scope.model.columns[i].autoResize;
+						autoColumns.autoResize[i] = isAutoResizeColumn(i);
 						autoColumns.count += 1;
 					}
 				}
@@ -174,38 +179,67 @@ return {
 			return nrColumnsWithPercentage ? (100 - sumColumnsWithPercentage) / (autoColumns.count - nrColumnsWithPercentage) : 0;
 		}		
 
+		function getAutoResizeColumnsWidth() {
+			var autoColumnsWidth = 0;
+			for (var i = 0; i < $scope.model.columns.length; i++) {
+				if (autoColumns.autoResize[i] && autoColumns.minWidth[i] > 0) {
+					autoColumnsWidth += getNumberFromPxString($scope.model.columns[i].width);
+				}
+			}
+			return autoColumnsWidth;	
+		}
+
 		function updateAutoColumnsWidth(delta) {
+			var fixedDelta = delta;
+
+			// if extraWidth was appended to last auto-resize column then remove it, and append it to delta
+			if($scope.extraWidth) {
+				fixedDelta += $scope.extraWidth;
+				var w = getNumberFromPxString($scope.model.columns[$scope.extraWidthColumnIdx].width);
+				w += (0 -$scope.extraWidth);
+				$scope.model.columns[$scope.extraWidthColumnIdx].width = w + "px";				
+			}
+
 			columnStyleCache = [];
-			var componentWidth = getComponentWidth();
-			var oldWidth = componentWidth - delta;
+			var oldWidth = getAutoResizeColumnsWidth();
+			var newWidth = oldWidth + fixedDelta;
 
 			var usedDelta = 0;
+			var lastAutoColumnIdx = -1;
 			for (var i = 0; i < $scope.model.columns.length; i++) {
 				if (autoColumns.autoResize[i]) {
 					if (autoColumns.minWidth[i] > 0) {
 						var oldW = getNumberFromPxString($scope.model.columns[i].width);
-						var w = Math.floor(oldW * componentWidth / oldWidth);
+						var w = Math.floor(oldW * newWidth / oldWidth);
 						
 						if (w < autoColumns.minWidth[i]) {
 							w = autoColumns.minWidth[i];
 						}
-
-						usedDelta += (w - oldW);
-						if(i == $scope.model.columns.length - 1) {
-							var extraSize = Math.abs(delta) - Math.abs(usedDelta);
-							w += Math.abs(extraSize);
-						}
-
 						$scope.model.columns[i].width = w + "px";
+						usedDelta += (w - oldW);
+						lastAutoColumnIdx = i;
 					} else {
 						$scope.model.columns[i].width = $scope.model.columns[i].initialWidth;
 					}
+				}
+			}
+
+			if(lastAutoColumnIdx > -1) {
+				$scope.extraWidth = Math.abs(fixedDelta) - Math.abs(usedDelta);
+				$scope.extraWidthColumnIdx = lastAutoColumnIdx;
+				if($scope.extraWidth) {
+					if(fixedDelta < 0) $scope.extraWidth = 0 - $scope.extraWidth;
+					var w = getNumberFromPxString($scope.model.columns[lastAutoColumnIdx].width);
+					w += $scope.extraWidth;
+					$scope.model.columns[lastAutoColumnIdx].width = w + "px";
 				}
 			}
 		}
 
 
 		$scope.componentWidth = 0;
+		$scope.extraWidth = 0; // extra width remainig after resize, that is added to the last auto-resize column
+		$scope.extraWidthColumnIdx = -1;
 		function getComponentWidth() {
 			if (!$scope.componentWidth) {
 				$scope.componentWidth = $element.parent().width();
@@ -2213,7 +2247,7 @@ return {
 			var w = getNumberFromPxString($scope.model.columns[column].width);
 			if (w > -1) {
 				columnStyle.minWidth = columnStyle.maxWidth = columnStyle.width = w + "px";
-			} else if ($scope.model.columns[column].width) {
+			} else if ($scope.model.columns[column].width && ($scope.model.columns[column].width) != "auto") {
 				columnStyle.width = $scope.model.columns[column].width;
 			} else {
 				var autoColumnPercentage = getAutoColumnPercentage();
@@ -2230,7 +2264,7 @@ return {
 			var cellStyle = { overflow: "hidden" };
 			if (column < $scope.model.columns.length) {
 				var w = getNumberFromPxString($scope.model.columns[column].width);
-				if ($scope.model.columns[column].autoResize || w < 0) {
+				if (isAutoResizeColumn(column) || w < 0) {
 					var tbl = $element.find("table:first");
 					var headers = tbl.find("th");
 					w = $(headers.get(column)).outerWidth(false);

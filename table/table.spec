@@ -37,7 +37,7 @@
 			"styleClass": { "type": "styleclass" },
 			"styleClassDataprovider": { "type": "dataprovider", "forFoundset": "foundset" },
 			"valuelist": { "type": "valuelist", "for": "dataprovider" },
-			"width": { "type": "string" },
+			"width": { "type": "string", "default": "auto"},
 			"initialWidth": { "type": "string", "tags": { "scope": "runtime" } },
 			"autoResize": { "type": "boolean", "default": false }
 		},
