@@ -654,8 +654,10 @@ return {
 						if (sortColumnsA.length == 2) {
 							for (var i = 0; i < $scope.model.columns.length; i++) {
 								if (sortColumnsA[0] == $scope.model.columns[i].dataprovider.idForFoundset) {
-									$scope.model.sortColumnIndex = i;
-									$scope.model.sortDirection = sortColumnsA[1].toLowerCase() == 'asc' ? 'up' : 'down';
+									$scope.$apply(function() {
+										$scope.model.sortColumnIndex = i;
+										$scope.model.sortDirection = sortColumnsA[1].toLowerCase() == 'asc' ? 'up' : 'down';
+									});
 									break;
 								}
 							}
