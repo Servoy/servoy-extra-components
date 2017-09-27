@@ -89,7 +89,15 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 					}
 				},
 				activate: function(even, data) {
-					var selectionPath = [];
+					var selectionPath;
+					if($scope.model.selection) {
+						selectionPath = $scope.model.selection;
+						selectionPath.length = 0;
+					}
+					else {
+						selectionPath = [];
+					}
+
 					var activeNode = data.node;
       				for(var i = 0; i < activeNode.getParentList().length; i++) {
       					var parentNode = activeNode.getParentList()[i];
