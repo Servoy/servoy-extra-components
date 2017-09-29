@@ -55,20 +55,22 @@ angular.module('servoyextraFileupload',['servoy', 'sabloApp'])
             $scope.upload = Upload.upload({
               url: uploadURL,
               file: uploadFiles
-            }).progress(function(evt) {
+            }).then(function(resp) {
+              $scope.upload = null;
+              hideProgress();
+            },
+            function(resp){
+              $scope.upload = null;
+              hideProgress();
+              if (resp.data) $scope.errorText = resp.data;
+              else $scope.errorText = $scope.model.uploadCancelText;
+            },
+            function(evt) {
               var current = 100.0 * evt.loaded / evt.total;
               if (current < progress) {
                 $scope.upload.abort();
               }
               else progress  = current;
-            }).success(function(data, status, headers, config) {
-              $scope.upload = null;
-              hideProgress();
-            }).error(function(status,status2){
-              $scope.upload = null;
-              hideProgress();
-              if (status) $scope.errorText = status;
-              else $scope.errorText = $scope.model.uploadCancelText;
             });
           }
         }
