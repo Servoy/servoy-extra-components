@@ -225,7 +225,7 @@ return {
 			}
 
 			if(lastAutoColumnIdx > -1) {
-				$scope.extraWidth = Math.abs(fixedDelta) - Math.abs(usedDelta);
+				$scope.extraWidth = Math.round(Math.abs(fixedDelta) - Math.abs(usedDelta));
 				$scope.extraWidthColumnIdx = lastAutoColumnIdx;
 				if($scope.extraWidth) {
 					if(fixedDelta < 0) $scope.extraWidth = 0 - $scope.extraWidth;
@@ -289,39 +289,46 @@ return {
 
 		var windowResizeHandler = function() {
 			if (resizeTimeout) $timeout.cancel(resizeTimeout);
-			resizeTimeout = $timeout(function() {
-					$scope.$apply(function() {
-						if(tbody) {
-							if ($scope.model.columns) {
-								var newComponentWidth = $element.parent().width();
-								var deltaWidth = newComponentWidth - getComponentWidth();
-								if (deltaWidth != 0) {
-									$scope.componentWidth = newComponentWidth;
-									updateTBodyStyle(tbody[0]);
-									if ($scope.model.columns && $scope.model.columns.length > 0) {
-										updateAutoColumnsWidth(deltaWidth);
-										$timeout(function() {
-												if ($scope.model.enableColumnResize) {
-													addColResizable(true);
-												}
-												for (var i = 0; i < $scope.model.columns.length; i++) {
-													updateTableColumnStyleClass(i, getCellStyle(i));
-												}
-											}, 0);
+			if($element.is(":visible")) {
+				resizeTimeout = $timeout(function() {
+						$scope.$apply(function() {
+							if(tbody) {
+								if ($scope.model.columns) {
+									var newComponentWidth = $element.parent().width();
+									var deltaWidth = newComponentWidth - getComponentWidth();
+									if (deltaWidth != 0) {
+										$scope.componentWidth = newComponentWidth;
+										updateTBodyStyle(tbody[0]);
+										if ($scope.model.columns && $scope.model.columns.length > 0) {
+											updateAutoColumnsWidth(deltaWidth);
+											$timeout(function() {
+													if ($scope.model.enableColumnResize) {
+														addColResizable(true);
+													}
+													for (var i = 0; i < $scope.model.columns.length; i++) {
+														updateTableColumnStyleClass(i, getCellStyle(i));
+													}
+												}, 0);
+										}
 									}
 								}
-							}
 
-							// see if more rows need to be rendered due to resize
-							if (updateBatchSizesIfNeeded(getAverageRowHeight())) {
-								adjustLoadedRowsIfNeeded();
-								updateRenderedRows(null);
+								// see if more rows need to be rendered due to resize
+								if (updateBatchSizesIfNeeded(getAverageRowHeight())) {
+									adjustLoadedRowsIfNeeded();
+									updateRenderedRows(null);
+								}
 							}
-						}
-					})
-				}, 50);
+						})
+					}, 50);
+			}
 		}
 		$(window).on('resize', windowResizeHandler);
+
+		$scope.$watch(function() { return $element.is(':visible') }, function(isVisible) {
+			if(isVisible) windowResizeHandler();
+		});
+
 
 		function addColResizable(cleanPrevious) {
 			var tbl = $element.find("table:first");
