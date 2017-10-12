@@ -16,7 +16,7 @@
 		
 		"containedForm"					: {"type" :"form"},
 		"sidenavWidth"					: {"type" :"int", "default":"300"},
-		"height" 						: {"type" :"int", "default":0},
+		"responsiveHeight" 				: {"type" :"int", "default":0},
 		
 		"iconOpenStyleClass"			: {"type" :"styleclass", "tags": { "scope" :"design" }, "default": "fa fa-bars"},
 		"iconCloseStyleClass"			: {"type" :"styleclass", "tags": { "scope" :"design" }, "default": "fa fa-bars"},

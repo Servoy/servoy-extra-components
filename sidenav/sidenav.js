@@ -1323,8 +1323,8 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				function getResponsiveHeight() {
 					var height = 0;
 					if (isResponsiveForm()) {
-						if ($scope.model.height) {
-							height = $scope.model.height
+						if ($scope.model.responsiveHeight) {
+							height = $scope.model.responsiveHeight;
 						} else if ($scope.model.containedForm && $sabloApplication.hasFormStateWithData($scope.model.containedForm)) {
 							// for absolute form default height is design height, for responsive form default height is 0
 							var formState = $sabloApplication.getFormStateEvenIfNotYetResolved($scope.model.containedForm);
