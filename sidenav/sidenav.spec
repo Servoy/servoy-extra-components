@@ -26,6 +26,7 @@
 		"slidePosition"					: {"type" :"string", "tags": {"scope": "design"},"values": [{"LEFT": "left"}, {"RIGHT": "right"}, {"STATIC": "static"}], "default" : "left"},
 		"slideAnimation"				: {"type" :"string", "tags": {"scope": "design"},"values": [{"SLIDE-MENU": "slide-menu"}, {"COLLAPSE-MENU": "collapse-menu"}], "default" : "slide-menu"},
 		"togglePosition"				: {"type" :"string", "tags": {"scope": "design"},"values": [{"FIXED-TOGGLE": "fixed-toggle"}, {"SIDE-TOGGLE": "side-toggle"}, {"HIDE-TOGGLE": "hide-toggle"}], "default" : "fixed-toggle"},
+		"scrollbarPosition"             : {"type" :"string", "tags": {"scope": "design"},"values": [{"LEFT": "left"}, {"RIGHT": "right"}], "default" : "left"},
 		
 		"open"							: {"type" :"boolean", "default" : true, "pushToServer": "allow"},
 		"enabled"						: {"type" :"enabled", "default" : true, "blockingOn": false, "for": ["onMenuItemSelected","onMenuItemExpanded","onMenuItemCollapsed"]},

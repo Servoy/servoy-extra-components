@@ -970,17 +970,17 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					}
 
 					sidenav.css(cssStyle);
-					
+
 				}
 
 				/**
 				 * Update the container style
-				 * @deprecated 
+				 * @deprecated
 				 *  */
 				function updateContainerStyle() {
-					
+
 					return;
-					
+
 					var cssStyle = new Object();
 
 					if ($scope.model.containedForm) {
@@ -1044,6 +1044,16 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				}
 				sidenav.addClass(togglePositionClass);
 
+				switch ($scope.model.scrollbarPosition) {
+				case "left":
+					break;
+				case "right":
+					sidenav.attr("dir", "rtl");
+					break;
+				default:
+					break;
+				}
+
 				/**
 				 * @public
 				 * Check if the menu has a slide animation
@@ -1084,14 +1094,13 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 							sidenav.removeClass('svy-hover-animate svy-hover-remove svy-hover-add svy-hover');
 							if (sidenav.hasClass('svy-slide-out')) {
 
-
 								$animate.removeClass(svyextracontainer, 'svy-slide-out');
 								$animate.removeClass(sidenav, 'svy-slide-out');
 
 								// used to slide in the panel if. Use only if menu slides
 								if (hasSlideMenuAnimation()) {
 									svyextracontainer.addClass('svy-slide-out-remove-delay');
-									
+
 									// stop remove animation clearing previous timeout
 									if (animateSlideMenuTimeout) {
 										clearTimeout(animateSlideMenuTimeout);
