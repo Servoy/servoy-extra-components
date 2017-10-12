@@ -1,6 +1,24 @@
 /* Drilldown to second menu items */
 
+.svy-extra-sidenav {
+	width: 100%;
+}
+
+.svy-extra-sidenav.has-panel {
+	overflow-x: hidden;
+	white-space:nowrap;
+	position: relative;
+}
+
+.svy-sidenav-tablesspanel {
+	white-space:initial;
+	height: 100%;
+	display: block;
+	overflow: auto;
+}
+
 .svy-sidenav {
+	white-space:initial;
 	height: 100%;
 	width: 100%;
 	position: relative;
@@ -20,9 +38,16 @@
 }
 
 /* Overflow auto in anchored forms */
-.svy-wrapper > * > .svy-sidenav {
-    overflow-y: auto;
+.svy-wrapper > * > .svy-extra-sidenav {
+/*     overflow-y: auto;
+    overflow-x: visible; */
     width: 100%;
+    height: 100%;
+}
+
+.svy-wrapper > * > .svy-extra-sidenav > .svy-sidenav {
+	height: 100%;
+	overflow-y: auto;
 }
 
 /* Auto width while collapsing. Let the menu calculate necessary width (icon widths) for collapsed menu */
@@ -165,9 +190,21 @@
 	border-width: 1px;
 }
 
+.has-panel .nav-slide-menu.svy-slide-out.svy-slide-out-add,
+.has-panel .nav-slide-menu.svy-slide-out.svy-slide-out-remove {
+	position: absolute;
+}
+
+.has-panel .nav-slide-menu.svy-slide-out.svy-sidenav-right.svy-slide-out-add,
+.has-panel .nav-slide-menu.svy-slide-out.svy-sidenav-right.svy-slide-out-remove {
+	right: 0;
+	top: 0;
+	bottom: 0;
+}
+
 /** Absolute form */
-.svy-wrapper > * > .nav-slide-menu.svy-slide-out.svy-slide-out-add,
-.svy-wrapper > * > .nav-slide-menu.svy-slide-out.svy-slide-out-remove {
+.svy-wrapper > * > .svy-extra-sidenav > .nav-slide-menu.svy-slide-out.svy-slide-out-add,
+.svy-wrapper > * > .svy-extra-sidenav > .nav-slide-menu.svy-slide-out.svy-slide-out-remove {
 	width: 100%;
 	height: 100%;
 	border-width: 1px;
@@ -181,7 +218,7 @@
 	display: none;
 }
 
-.svy-wrapper > * > .nav-slide-menu.svy-slide-out .svy-sidenav-content {
+.svy-wrapper > * > .svy-extra-sidenav > .nav-slide-menu.svy-slide-out .svy-sidenav-content {
 	max-height: calc(100% - 30px);
 	overflow-y: auto;
 }
@@ -212,8 +249,8 @@
 	width: 150px;
 }
 
-.svy-wrapper > * > .nav-slide-menu.svy-slide-out.svy-sidenav-right.svy-slide-out-add,
-.svy-wrapper > * > .nav-slide-menu.svy-slide-out.svy-sidenav-right.svy-slide-out-remove {
+.svy-wrapper > * > .svy-extra-sidenav > .nav-slide-menu.svy-slide-out.svy-sidenav-right.svy-slide-out-add,
+.svy-wrapper > * > .svy-extra-sidenav > .nav-slide-menu.svy-slide-out.svy-sidenav-right.svy-slide-out-remove {
 	width: 100%;
 }
 
@@ -277,6 +314,113 @@
           transform: translate(-100%, 0);
 }
 
+
+/* Tabless container animation. Only if .has-panel*/
+.svy-sidenav-tablesspanel {
+	-webkit-transition: margin  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.46s;
+	   -moz-transition: margin  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.46s;
+  		-ms-transition: margin  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.46s;
+	     -o-transition: margin  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.46s;
+  	        transition: margin  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.46s;	
+}
+
+/* Set tablesspanel margin to 0 for the animation */
+.svy-extra-sidenav.has-panel.svy-slide-out:not(.svy-slide-out-add) > .svy-sidenav-tablesspanel  {
+	margin-left: 0px !important;
+	margin-right: 0px !important;
+}
+
+/* Absolute positioning of the menu so goes out from the float style */
+.svy-extra-sidenav.has-panel.svy-slide-out > .nav-slide-menu.svy-sidenav-left,
+.svy-extra-sidenav.has-panel.svy-slide-out-add > .nav-slide-menu.svy-sidenav-left,
+.svy-extra-sidenav.has-panel.svy-slide-out-remove > .nav-slide-menu.svy-sidenav-left,
+.svy-extra-sidenav.has-panel.svy-slide-out-remove-delay > .nav-slide-menu.svy-sidenav-left {
+	position: absolute;
+	top:0;
+	bottom: 0;
+	left: 0;
+}
+
+
+.svy-extra-sidenav.has-panel.svy-slide-out > .nav-slide-menu.svy-sidenav-right,
+.svy-extra-sidenav.has-panel.svy-slide-out-add > .nav-slide-menu.svy-sidenav-right,
+.svy-extra-sidenav.has-panel.svy-slide-out-remove > .nav-slide-menu.svy-sidenav-right,
+.svy-extra-sidenav.has-panel.svy-slide-out-remove-delay > .nav-slide-menu.svy-sidenav-right {
+	position: absolute;
+	top:0;
+	bottom: 0;
+	right: 0;
+}
+
+/* Use a ghost to mimic width expansion of the pael */
+
+/*
+.svy-extra-sidenav.has-panel.svy-slide-out:before,
+.svy-extra-sidenav.has-panel.svy-slide-out-add:before,
+.svy-extra-sidenav.has-panel.svy-slide-out-remove:before,
+.svy-extra-sidenav.has-panel.svy-slide-out-remove-delay:before {
+	float: left;
+	content: "";
+	width: 0px;
+	height: 100%;
+	-webkit-transition: width  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+	   -moz-transition: width  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+  		-ms-transition: width  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+	     -o-transition: width  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+  	        transition: width  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+}
+
+.svy-extra-sidenav.has-panel.svy-slide-out-remove-delay:before,
+.svy-extra-sidenav.has-panel.svy-slide-out-add:before,
+.svy-extra-sidenav.has-panel.svy-slide-out-remove:before {
+	width: 150px;
+}
+
+*/
+
+/*
+.svy-ghost {
+	display: none;
+	float: left;
+	height: 100%;
+	-webkit-transition: width  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+	   -moz-transition: width  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+  		-ms-transition: width  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+	     -o-transition: width  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+  	        transition: width  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+  	      
+}
+
+.svy-ghost-out .svy-ghost {
+	width: 0px;
+	display: block;
+}
+
+.svy-slide-out .svy-ghost {
+	width: 0px;
+} 
+
+.svy-extra-sidenav.svy-slide-out-add > .svy-ghost,
+.svy-extra-sidenav.svy-slide-out-remove > .svy-ghost {
+	width: 400px;
+} */
+
+
+/*
+.svy-sidenav-tablesspanel {
+	margin-left : 350px;
+}
+
+.svy-extra-sidenav.svy-slide-out .svy-sidenav-tablesspanel {
+	margin-left : 0;
+}
+
+.svy-extra-sidenav.svy-slide-out.svy-slide-out-add .svy-sidenav-tablesspanel,
+.svy-extra-sidenav.svy-slide-out.svy-slide-out-remove .svy-sidenav-tablesspanel {
+	margin-left : 350px;
+}
+*/
+
 /* Animate collapsible menu items */
 .svy-sidenav-menu.ng-enter, 
 .svy-sidenav-menu.ng-leave {
@@ -301,11 +445,11 @@
 
 
 /* Side Toggle */
-.svy-wrapper > * > .svy-sidenav.nav-side-toggle {
+.svy-wrapper > * > .svy-extra-sidenav > .svy-sidenav.nav-side-toggle {
 	overflow: initial;
 }
 
-.svy-wrapper > * > .svy-sidenav.nav-side-toggle .svy-sidenav-content {
+.svy-wrapper > * > .svy-extra-sidenav > .svy-sidenav.nav-side-toggle .svy-sidenav-content {
 	overflow-y: auto; 
 	max-height: 100%;
 }
@@ -377,10 +521,10 @@
 
 /* remove float and give full width when hovering */
 .nav-collapse-menu.svy-sidenav.svy-slide-out.svy-hover {
-	width: 150px;
+	width: 100%;
 } 
 
-.svy-wrapper > * > .nav-collapse-menu.svy-slide-out.svy-hover {
+.svy-wrapper > * > .svy-extra-sidenav > .nav-collapse-menu.svy-slide-out.svy-hover {
 	width: 100%;
 }
 

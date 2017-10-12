@@ -5,7 +5,7 @@
 	"icon": "servoyextra/sidenav/bars.png",
 	"definition": "servoyextra/sidenav/sidenav.js",
 	"serverscript" : "servoyextra/sidenav/sidenav_server.js",
-	"libraries": [{"name":"svy-sidenav.css", "version":"1", "url":"servoyextra/sidenav/svy-sidenav.css", "mimetype":"text/css"},
+	"libraries": [{"name":"svy-sidenav.css", "version":"1", "url":"servoyextra/sidenav/svy-sidenav2.css", "mimetype":"text/css"},
 				  {"name":"angular-animate.js", "version":"1.6.3", "url":"servoyextra/sidenav/angular-animate.min.js", "mimetype":"text/javascript"}],
 	"model":
 	{
@@ -13,6 +13,10 @@
 		
 		"selectedIndex"					: {"type" :"object", "tags": { "scope" :"private" }, "pushToServer" : "allow"},
 		"expandedIndex"					: {"type" :"object", "tags": { "scope" :"private" }, "pushToServer" : "allow"},
+		
+		"containedForm"					: {"type" :"form"},
+		"sidenavWidth"					: {"type" :"int", "default":"300"},
+		"height" 						: {"type" :"int", "default":0},
 		
 		"iconOpenStyleClass"			: {"type" :"styleclass", "tags": { "scope" :"design" }, "default": "fa fa-bars"},
 		"iconCloseStyleClass"			: {"type" :"styleclass", "tags": { "scope" :"design" }, "default": "fa fa-bars"},

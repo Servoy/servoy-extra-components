@@ -1,4 +1,4 @@
-angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoyextraSidenav', ['$animate', '$sabloConstants', '$log', function($animate, $sabloConstants, $log) {
+angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoyextraSidenav', ['$animate', '$sabloConstants', '$sabloApplication', '$log', '$q', function($animate, $sabloConstants, $sabloApplication, $log, $q) {
 		return {
 			restrict: 'E',
 			scope: {
@@ -8,6 +8,32 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				handlers: "=svyHandlers"
 			},
 			controller: function($scope, $element, $attrs) {
+
+				var testClass = '.svy-extra-sidenav';
+				// TODO remove test function
+				window.outAdd = function() {
+					$(testClass).removeClass('svy-slide-out-remove')
+					$(testClass).addClass('svy-slide-out svy-slide-out-add')
+				}
+				window.outRemove = function() {
+					$(testClass).removeClass('svy-slide-out-add')
+					$(testClass).addClass('svy-slide-out svy-slide-out-remove')
+				}
+				window.outRemoveOnly = function() {
+					$(testClass).removeClass('svy-slide-out');
+					$(testClass).removeClass('svy-slide-out-add')
+					$(testClass).addClass('svy-slide-out-remove')
+				}
+				window.outIn = function() {
+					$(testClass).removeClass('svy-slide-out-add');
+					$(testClass).removeClass('svy-slide-out-remove');
+					$(testClass).addClass('svy-slide-out');
+				}
+				window.outOff = function() {
+					$(testClass).removeClass('svy-slide-out');
+					$(testClass).removeClass('svy-slide-out-add');
+					$(testClass).removeClass('svy-slide-out-remove');
+				}
 
 				/**
 				 * API CHANGES
@@ -891,13 +917,16 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 			link: function($scope, $element, $attrs) {
 
 				var className = null;
+				var svyextracontainer = $element.find(".svy-extra-sidenav");
 				var sidenav = $element.find(".svy-sidenav");
 				var sidenavHeader = $element.find(".svy-sidenav-header");
+				var tablesspanel = $element.find('.svy-sidenav-tablesspanel');
 				var nav = $element.find("nav");
 
 				// prevent animation at page refresh
 				if ($scope.model.open === false) {
 					sidenav.addClass('svy-slide-out');
+					svyextracontainer.addClass('svy-slide-out');
 				}
 
 				Object.defineProperty($scope.model, $sabloConstants.modelChangeNotifier, {
@@ -922,6 +951,17 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 								className = value;
 								if (className) sidenav.addClass(className);
 								break;
+							case "containedForm":
+								if (value) {
+									svyextracontainer.addClass("has-panel");
+								} else {
+									svyextracontainer.removeClass("has-panel");
+								}
+							case "sidenavWidth":
+							case "height":
+								updateSidenavStyle();
+								updateContainerStyle();
+								break;
 							}
 						}
 					});
@@ -934,6 +974,59 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				var modelChangFunction = $scope.model[$sabloConstants.modelChangeNotifier];
 				for (key in $scope.model) {
 					modelChangFunction(key, $scope.model[key]);
+				}
+
+				/**
+				 * Update the sidenav style
+				 *  */
+				function updateSidenavStyle() {
+					var cssStyle = new Object();
+
+					var width = getSidenavWidth();
+					if (width) {
+						// TODO set fixed width
+						cssStyle.width = width + "px";
+					}
+
+					// check height
+					var height = getResponsiveHeight();
+					if (height) {
+						// TODO should be max height !?
+						cssStyle.height = height + "px";
+						cssStyle["overflow-x"] = "auto";
+
+						// set the height of the container
+						// svyextracontainer.height(height + "px");
+					}
+
+					sidenav.css(cssStyle);
+					
+				}
+
+				/**
+				 * Update the container style
+				 *  */
+				function updateContainerStyle() {
+					return;
+
+					var cssStyle = new Object();
+
+					if ($scope.model.containedForm) {
+
+						// check sidenavWidth if there is a containedForm
+						if ($scope.model.sidenavWidth) {
+							cssStyle.width = "calc(100% - " + $scope.model.sidenavWidth + "px)"
+						}
+
+						// check height
+						var height = getResponsiveHeight();
+						// TODO should be max height !?
+						cssStyle.minHeight = height + "px";
+					} else {
+						cssStyle.display = "none";
+					}
+
+					tablesspanel.css(cssStyle);
 				}
 
 				/** Default menu side */
@@ -952,6 +1045,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					break;
 				}
 				sidenav.addClass(slidePositionClass);
+				tablesspanel.addClass(slidePositionClass);
 
 				/** Default menu collapsible behavior */
 				var slideBehaviorClass;
@@ -1001,6 +1095,8 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					}
 				}
 
+				var animateSlideMenuTimeout;
+
 				/**
 				 * Toggle menu open/close animation
 				 * @public
@@ -1009,17 +1105,43 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					if ($scope.model.slidePosition && $scope.model.slidePosition != 'static') {
 						var iconOpen = sidenavHeader.find('.svy-sidenav-action-open');
 						if (open) { // open the menu when hovering
-						
+
 							// remove all hover animation
 							sidenav.removeClass('svy-hover-animate svy-hover-remove svy-hover-add svy-hover');
 							if (sidenav.hasClass('svy-slide-out')) {
+								
+								svyextracontainer.addClass('svy-slide-out-remove-delay');
+
+								
+								$animate.removeClass(svyextracontainer, 'svy-slide-out');
 								$animate.removeClass(sidenav, 'svy-slide-out');
+								
+								// used to slide in the panel
+
+								// stop remove animation clearing previous timeout
+								if (animateSlideMenuTimeout) {
+									clearTimeout(animateSlideMenuTimeout);
+									animateSlideMenuTimeout = undefined;
+								}
+
+								requestAnimationFrame(function() {
+									$log.debug('Timeout add');
+
+									// complete hover animation
+									animateSlideMenuTimeout = setTimeout(function() {
+											$log.debug('Timeout add animate');
+											svyextracontainer.removeClass('svy-slide-out-remove-delay');
+										}, 450);
+
+								});
+								
 							}
 							iconOpen.removeClass($scope.model.iconCloseStyleClass);
 							iconOpen.addClass($scope.model.iconOpenStyleClass);
 						} else {
-							if (!sidenav.hasClass('svy-slide-out')) {
+							if (!svyextracontainer.hasClass('svy-slide-out')) {
 								$animate.addClass(sidenav, 'svy-slide-out');
+								$animate.addClass(svyextracontainer, 'svy-slide-out');
 							}
 							iconOpen.removeClass($scope.model.iconOpenStyleClass);
 							iconOpen.addClass($scope.model.iconCloseStyleClass);
@@ -1033,7 +1155,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				/**
 				 * Cannot use angular animate at mouse enter/leave. Simulate animate using onmouseenter/onmouseleave
 				 * Toggle menu hover animation
-				 * 
+				 *
 				 * @public
 				 * */
 				function animateMenuHover(open) {
@@ -1051,7 +1173,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 * @public
 				 * */
 				function bindOnHover() {
-					
+
 					// register on mouse hover
 					if ($scope.model.slideAnimation === 'collapse-menu') {
 						nav.mouseenter(onMouseEnter);
@@ -1075,9 +1197,9 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 								clearTimeout(mouseLeaveTimeout);
 								mouseLeaveTimeout = undefined;
 							}
-							
-							$scope.mouseHover = true;	// TODO remove mouseHover
-							
+
+							$scope.mouseHover = true; // TODO remove mouseHover
+
 							// to start animation add svy-hover-add to start animation and remove at next repaint
 							sidenav.addClass('svy-hover svy-hover-add svy-hover-animate');
 							requestAnimationFrame(function() {
@@ -1114,7 +1236,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 							$scope.mouseHover = false;
 							sidenav.addClass('svy-hover-animate svy-hover-remove ');
 							sidenav.removeClass('svy-hover');
-							
+
 							// complete hover animation
 							mouseLeaveTimeout = setTimeout(function() {
 									$log.debug('Timeout remove');
@@ -1133,6 +1255,120 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					$scope.mouseHover = false;
 					sidenav.off('mouseenter mouseleave');
 					nav.off('mouseenter mouseleave');
+				}
+
+				/**
+				 * Check if is a responsiveForm
+				 *
+				 * @public
+				 *  */
+				function isResponsiveForm() {
+					return ! ($scope.$parent.absoluteLayout === true);
+				}
+
+				/****************************************************************************************
+				 *
+				 * Tabless Panel
+				 *
+				 * *************************************************************************************/
+
+				var realContainedForm;
+				var formWillShowCalled;
+
+				function setRealContainedForm(formname, relationname) {
+					if (formWillShowCalled != formname && formname) {
+						formWillShowCalled = formname;
+						if ($scope.model.waitForData) {
+							$q.when($scope.svyServoyapi.formWillShow(formname, relationname)).then(function() {
+								realContainedForm = formname;
+							});
+						} else {
+							$scope.svyServoyapi.formWillShow(formname, relationname);
+							realContainedForm = formname;
+						}
+					}
+				}
+
+				$scope.getActiveTabUrl = function() {
+					if (realContainedForm) {
+						return $scope.svyServoyapi.getFormUrl(realContainedForm)
+					}
+					setRealContainedForm($scope.model.containedForm, $scope.model.relationName);
+
+					return "";
+				}
+
+				setRealContainedForm($scope.model.containedForm, $scope.model.relationName);
+
+				$scope.$watch("model.containedForm", function(newValue, oldValue) {
+						if (newValue !== oldValue) {
+							if (oldValue) {
+								$scope.svyServoyapi.hideForm(oldValue, null, null, newValue, $scope.model.relationName, null).then(function(ok) {
+									realContainedForm = $scope.model.containedForm;
+								})
+							} else if (newValue) {
+								setRealContainedForm(newValue, $scope.model.relationName);
+							}
+						}
+					});
+
+				$scope.$watch("model.visible", function(newValue, oldValue) {
+						if ($scope.model.containedForm && newValue !== oldValue) {
+							formWillShowCalled = realContainedForm = undefined;
+							if (newValue) {
+								setRealContainedForm($scope.model.containedForm, $scope.model.relationName);
+							} else {
+								$scope.svyServoyapi.hideForm($scope.model.containedForm);
+							}
+						}
+					});
+
+				$scope.getContainerStyle = function() {
+					var height = getResponsiveHeight();
+					var width = getSidenavWidth();
+					var cssStyle = {
+						"position": "relative", 
+						"min-height": height + "px"
+					}
+					switch ($scope.model.slidePosition) {
+					case "left":
+						cssStyle.marginLeft = width + "px";
+						break;
+					case "right":
+						cssStyle.marginRight = width + "px";
+					default:
+						break;
+					}
+					
+					return cssStyle;
+					// TODO return margin-left
+					// updateSidenavStyle();
+				}
+
+				function getResponsiveHeight() {
+					var height = 0;
+					if (isResponsiveForm()) {
+						if ($scope.model.height) {
+							height = $scope.model.height
+						} else if ($scope.model.containedForm && $sabloApplication.hasFormStateWithData($scope.model.containedForm)) {
+							// for absolute form default height is design height, for responsive form default height is 0
+							var formState = $sabloApplication.getFormStateEvenIfNotYetResolved($scope.model.containedForm);
+							if (formState && formState.absoluteLayout) {
+								height = formState.properties.designSize.height;
+							}
+						}
+					}
+					return height;
+				}
+				
+				function getSidenavWidth() {
+					if ($scope.model.sidenavWidth) {
+						// if value is set and there is a responsiveForm or a containedForm. Note should react also if containeForm is set later
+						if (isResponsiveForm() || $scope.model.containedForm) {
+							return $scope.model.sidenavWidth;														
+						}
+					}
+					return 0;
 				}
 
 			},

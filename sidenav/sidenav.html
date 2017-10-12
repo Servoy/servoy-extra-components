@@ -22,6 +22,7 @@
 	nav-side-toggle
 	nav-hide-toggle
 -->
+<div class="svy-extra-sidenav">
 	<div class="svy-sidenav">
 		<div class="svy-sidenav-header">
 			<!--<input ng-model="searchText" class="svy-searchbox"></input>-->
@@ -111,4 +112,12 @@
 			</ul><!-- #main list -->
 		</nav> 
 	</div>
-<!-- #sidebar -->
+	<!--<div class="svy-ghost"></div>-->
+	<!-- #sidebar -->
+	<div class="svy-sidenav-tablesspanel"
+		 ng-if="model.containedForm"
+			 ng-style="getContainerStyle()"
+			 ng-include="getActiveTabUrl()" 
+			 sablo-tabseq='model.tabSeq' sablo-tabseq-config="{container: true, reservedGap: 50}"
+	</div>
+</div>
