@@ -9,32 +9,6 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 			},
 			controller: function($scope, $element, $attrs) {
 
-				var testClass = '.svy-extra-sidenav';
-				// TODO remove test function
-				window.outAdd = function() {
-					$(testClass).removeClass('svy-slide-out-remove')
-					$(testClass).addClass('svy-slide-out svy-slide-out-add')
-				}
-				window.outRemove = function() {
-					$(testClass).removeClass('svy-slide-out-add')
-					$(testClass).addClass('svy-slide-out svy-slide-out-remove')
-				}
-				window.outRemoveOnly = function() {
-					$(testClass).removeClass('svy-slide-out');
-					$(testClass).removeClass('svy-slide-out-add')
-					$(testClass).addClass('svy-slide-out-remove')
-				}
-				window.outIn = function() {
-					$(testClass).removeClass('svy-slide-out-add');
-					$(testClass).removeClass('svy-slide-out-remove');
-					$(testClass).addClass('svy-slide-out');
-				}
-				window.outOff = function() {
-					$(testClass).removeClass('svy-slide-out');
-					$(testClass).removeClass('svy-slide-out-add');
-					$(testClass).removeClass('svy-slide-out-remove');
-				}
-
 				/**
 				 * API CHANGES
 				 * addMenuItem returns the index.
@@ -960,7 +934,6 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 							case "sidenavWidth":
 							case "height":
 								updateSidenavStyle();
-								updateContainerStyle();
 								break;
 							}
 						}
@@ -991,12 +964,9 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					// check height
 					var height = getResponsiveHeight();
 					if (height) {
-						// TODO should be max height !?
-						cssStyle.height = height + "px";
-						cssStyle["overflow-x"] = "auto";
-
-						// set the height of the container
-						// svyextracontainer.height(height + "px");
+						// TODO should be min height or height ? minHeight allow overflow visible, while height prevents the sidenav to grow
+						cssStyle.minHeight = height + "px";
+						/*cssStyle["overflow-x"] = "auto";*/
 					}
 
 					sidenav.css(cssStyle);
@@ -1005,19 +975,15 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 
 				/**
 				 * Update the container style
+				 * @deprecated 
 				 *  */
 				function updateContainerStyle() {
+					
 					return;
-
+					
 					var cssStyle = new Object();
 
 					if ($scope.model.containedForm) {
-
-						// check sidenavWidth if there is a containedForm
-						if ($scope.model.sidenavWidth) {
-							cssStyle.width = "calc(100% - " + $scope.model.sidenavWidth + "px)"
-						}
-
 						// check height
 						var height = getResponsiveHeight();
 						// TODO should be max height !?
@@ -1078,6 +1044,14 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				}
 				sidenav.addClass(togglePositionClass);
 
+				/**
+				 * @public
+				 * Check if the menu has a slide animation
+				 *  */
+				function hasSlideMenuAnimation() {
+					return $scope.model.slideAnimation === "slide-menu";
+				}
+
 				// animate slide menu
 				$scope.slideMenu = function(event) {
 
@@ -1109,32 +1083,33 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 							// remove all hover animation
 							sidenav.removeClass('svy-hover-animate svy-hover-remove svy-hover-add svy-hover');
 							if (sidenav.hasClass('svy-slide-out')) {
-								
-								svyextracontainer.addClass('svy-slide-out-remove-delay');
 
-								
+
 								$animate.removeClass(svyextracontainer, 'svy-slide-out');
 								$animate.removeClass(sidenav, 'svy-slide-out');
-								
-								// used to slide in the panel
 
-								// stop remove animation clearing previous timeout
-								if (animateSlideMenuTimeout) {
-									clearTimeout(animateSlideMenuTimeout);
-									animateSlideMenuTimeout = undefined;
+								// used to slide in the panel if. Use only if menu slides
+								if (hasSlideMenuAnimation()) {
+									svyextracontainer.addClass('svy-slide-out-remove-delay');
+									
+									// stop remove animation clearing previous timeout
+									if (animateSlideMenuTimeout) {
+										clearTimeout(animateSlideMenuTimeout);
+										animateSlideMenuTimeout = undefined;
+									}
+
+									requestAnimationFrame(function() {
+										$log.debug('Timeout add delay');
+
+										// complete hover animation
+										animateSlideMenuTimeout = setTimeout(function() {
+												$log.debug('Timeout remove delay');
+												svyextracontainer.removeClass('svy-slide-out-remove-delay');
+											}, 450);
+
+									});
 								}
 
-								requestAnimationFrame(function() {
-									$log.debug('Timeout add');
-
-									// complete hover animation
-									animateSlideMenuTimeout = setTimeout(function() {
-											$log.debug('Timeout add animate');
-											svyextracontainer.removeClass('svy-slide-out-remove-delay');
-										}, 450);
-
-								});
-								
 							}
 							iconOpen.removeClass($scope.model.iconCloseStyleClass);
 							iconOpen.addClass($scope.model.iconOpenStyleClass);
@@ -1327,7 +1302,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					var height = getResponsiveHeight();
 					var width = getSidenavWidth();
 					var cssStyle = {
-						"position": "relative", 
+						"position": "relative",
 						"min-height": height + "px"
 					}
 					switch ($scope.model.slidePosition) {
@@ -1339,7 +1314,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					default:
 						break;
 					}
-					
+
 					return cssStyle;
 					// TODO return margin-left
 					// updateSidenavStyle();
@@ -1360,12 +1335,12 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					}
 					return height;
 				}
-				
+
 				function getSidenavWidth() {
 					if ($scope.model.sidenavWidth) {
 						// if value is set and there is a responsiveForm or a containedForm. Note should react also if containeForm is set later
 						if (isResponsiveForm() || $scope.model.containedForm) {
-							return $scope.model.sidenavWidth;														
+							return $scope.model.sidenavWidth;
 						}
 					}
 					return 0;

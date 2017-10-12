@@ -21,6 +21,7 @@
 	white-space:initial;
 	height: 100%;
 	width: 100%;
+	max-width: 100%;
 	position: relative;
 	background: white;
 	word-break: break-word;
@@ -180,6 +181,11 @@
 	overflow: visible;
 	border-width: 0px; /* reset the border of svy-sidenav */
 	height: 0;
+	min-height: 0 !important; /* override inline min-height */
+}
+
+.nav-slide-menu.svy-sidenav.svy-slide-out:not(.svy-slide-out-add) {
+	width: 0 !important;
 }
 
 /** Responsive form */
@@ -317,11 +323,11 @@
 
 /* Tabless container animation. Only if .has-panel*/
 .svy-sidenav-tablesspanel {
-	-webkit-transition: margin  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.46s;
-	   -moz-transition: margin  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.46s;
-  		-ms-transition: margin  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.46s;
-	     -o-transition: margin  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.46s;
-  	        transition: margin  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.46s;	
+	-webkit-transition: margin  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+	   -moz-transition: margin  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+  		-ms-transition: margin  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+	     -o-transition: margin  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+  	        transition: margin  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;	
 }
 
 /* Set tablesspanel margin to 0 for the animation */
@@ -337,7 +343,6 @@
 .svy-extra-sidenav.has-panel.svy-slide-out-remove-delay > .nav-slide-menu.svy-sidenav-left {
 	position: absolute;
 	top:0;
-	bottom: 0;
 	left: 0;
 }
 
@@ -348,78 +353,16 @@
 .svy-extra-sidenav.has-panel.svy-slide-out-remove-delay > .nav-slide-menu.svy-sidenav-right {
 	position: absolute;
 	top:0;
-	bottom: 0;
 	right: 0;
 }
 
-/* Use a ghost to mimic width expansion of the pael */
-
-/*
-.svy-extra-sidenav.has-panel.svy-slide-out:before,
-.svy-extra-sidenav.has-panel.svy-slide-out-add:before,
-.svy-extra-sidenav.has-panel.svy-slide-out-remove:before,
-.svy-extra-sidenav.has-panel.svy-slide-out-remove-delay:before {
-	float: left;
-	content: "";
-	width: 0px;
-	height: 100%;
-	-webkit-transition: width  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
-	   -moz-transition: width  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
-  		-ms-transition: width  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
-	     -o-transition: width  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
-  	        transition: width  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+.svy-wrapper > * > .svy-extra-sidenav.has-panel.svy-slide-out > .nav-slide-menu,
+.svy-wrapper > * > .svy-extra-sidenav.has-panel.svy-slide-out-add > .nav-slide-menu,
+.svy-wrapper > * > .svy-extra-sidenav.has-panel.svy-slide-out-remove > .nav-slide-menu,
+.svy-wrapper > * > .svy-extra-sidenav.has-panel.svy-slide-out-remove-delay > .nav-slide-menu {
+	bottom: 0;
 }
 
-.svy-extra-sidenav.has-panel.svy-slide-out-remove-delay:before,
-.svy-extra-sidenav.has-panel.svy-slide-out-add:before,
-.svy-extra-sidenav.has-panel.svy-slide-out-remove:before {
-	width: 150px;
-}
-
-*/
-
-/*
-.svy-ghost {
-	display: none;
-	float: left;
-	height: 100%;
-	-webkit-transition: width  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
-	   -moz-transition: width  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
-  		-ms-transition: width  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
-	     -o-transition: width  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
-  	        transition: width  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
-  	      
-}
-
-.svy-ghost-out .svy-ghost {
-	width: 0px;
-	display: block;
-}
-
-.svy-slide-out .svy-ghost {
-	width: 0px;
-} 
-
-.svy-extra-sidenav.svy-slide-out-add > .svy-ghost,
-.svy-extra-sidenav.svy-slide-out-remove > .svy-ghost {
-	width: 400px;
-} */
-
-
-/*
-.svy-sidenav-tablesspanel {
-	margin-left : 350px;
-}
-
-.svy-extra-sidenav.svy-slide-out .svy-sidenav-tablesspanel {
-	margin-left : 0;
-}
-
-.svy-extra-sidenav.svy-slide-out.svy-slide-out-add .svy-sidenav-tablesspanel,
-.svy-extra-sidenav.svy-slide-out.svy-slide-out-remove .svy-sidenav-tablesspanel {
-	margin-left : 350px;
-}
-*/
 
 /* Animate collapsible menu items */
 .svy-sidenav-menu.ng-enter, 
@@ -526,6 +469,10 @@
 
 .svy-wrapper > * > .svy-extra-sidenav > .nav-collapse-menu.svy-slide-out.svy-hover {
 	width: 100%;
+}
+
+.nav-collapse-menu.svy-slide-out:not(.svy-hover) {
+    width: 50px !important; /* use important to override inline width */
 }
 
 /* end width when closing */
