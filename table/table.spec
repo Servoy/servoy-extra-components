@@ -30,10 +30,10 @@
 	},
 	"types": {
 		"column": {
-			"dataprovider": { "type": "dataprovider", "forFoundset": "foundset", "resolveValuelist" : true },
+			"dataprovider": { "type": "dataprovider", "forFoundset": "foundset", "resolveValuelist" : true , "tags": { "useAsCaptionInDeveloper" : true, "captionPriority" : 2 }},
 			"format": { "for": ["valuelist", "dataprovider"], "type": "format" },
 			"headerStyleClass": { "type": "styleclass" },
-			"headerText": { "type": "tagstring", "initialValue": "header", "tags": { "showInOutlineView": true } },
+			"headerText": { "type": "tagstring", "initialValue": "header", "tags": { "useAsCaptionInDeveloper" : true, "captionPriority" : 1, "showInOutlineView": true }},
 			"styleClass": { "type": "styleclass" },
 			"styleClassDataprovider": { "type": "dataprovider", "forFoundset": "foundset" },
 			"valuelist": { "type": "valuelist", "for": "dataprovider" },
