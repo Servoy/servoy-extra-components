@@ -511,7 +511,7 @@
 .nav-collapse-menu.svy-slide-out.svy-hover-add.svy-hover .svy-sidenav-item,
 .nav-collapse-menu.svy-slide-out.svy-hover-remove.svy-hover .svy-sidenav-item {
     white-space: nowrap;
-    text-overflow: ellipsis;
+    text-overflow: hidden;
     overflow: hidden;
 }
 
