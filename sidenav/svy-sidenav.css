@@ -363,6 +363,9 @@
 	bottom: 0;
 }
 
+.svy-sidenav-tablesspanel.ng-leave {
+	display: none;
+}
 
 /* Animate collapsible menu items */
 .svy-sidenav-menu.ng-enter, 
