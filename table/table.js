@@ -737,6 +737,7 @@ return {
 		});
 		
 		$scope.$watch('model.foundset', function(oldValue, newValue) {
+			if(!$scope.svyServoyapi || $scope.svyServoyapi.isInDesigner()) return;
 			if (oldValue !== newValue && oldValue) oldValue.removeChangeListener(foundsetListener); // so not initial value && old value did have listener; unregister it	
 			
 			if (newValue) {
@@ -758,18 +759,19 @@ return {
 			});
 
 		$scope.$watch('model.pageSize', function(newValue, oldValue) {
-				if (oldValue != newValue) {
-					// start over with renderedSize
-					renderedSize = -1;
+			if(!$scope.svyServoyapi || $scope.svyServoyapi.isInDesigner()) return;
+			if (oldValue != newValue) {
+				// start over with renderedSize
+				renderedSize = -1;
 
-					if (oldValue && newValue && $scope.showPagination()) {
-						// page size has changed; try to show the page for which we have loaded records
-						setCurrentPage(getPageForIndex($scope.model.foundset.viewPort.startIndex));
-						adjustLoadedRowsIfNeeded(); // load more rows if needed according to new page bounds
-					}
+				if (oldValue && newValue && $scope.showPagination()) {
+					// page size has changed; try to show the page for which we have loaded records
+					setCurrentPage(getPageForIndex($scope.model.foundset.viewPort.startIndex));
+					adjustLoadedRowsIfNeeded(); // load more rows if needed according to new page bounds
 				}
-				if ($scope.model.foundset) $scope.model.foundset.setPreferredViewportSize(getInitialPreferredLoadedSize());
-			});
+			}
+			if ($scope.model.foundset) $scope.model.foundset.setPreferredViewportSize(getInitialPreferredLoadedSize());
+		});
 
 		var toBottom = false;
 		$scope.$watch('model.visible', function(newValue) {
@@ -2375,7 +2377,7 @@ return {
 		}
 
 		$scope.showEditorHint = function() {
-			return (!$scope.model.columns || $scope.model.columns.length == 0) && $scope.svyServoyapi.isInDesigner();
+			return (!$scope.model.columns || $scope.model.columns.length == 0) && $scope.svyServoyapi && $scope.svyServoyapi.isInDesigner();
 		}
 
 		var skipOnce = false;
