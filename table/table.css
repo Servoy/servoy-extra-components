@@ -80,3 +80,7 @@
 	position: absolute;
 	bottom: 0px;
 }
+
+data-servoyextra-table {
+	display: block;
+}
