@@ -24,7 +24,7 @@
 		"iconCollapseStyleClass"		: {"type" :"styleclass", "tags": { "scope" :"design" }, "default": "fa fa-caret-down"},
 		"styleClass"					: {"type" :"styleclass", "tags": {"scope": "design"}, "values" : ["nav-hide-toggle", "nav-side-toggle", "nav-always-show-icon"]},
 		"slidePosition"					: {"type" :"string", "tags": {"scope": "design"},"values": [{"LEFT": "left"}, {"RIGHT": "right"}, {"STATIC": "static"}], "default" : "left"},
-		"slideAnimation"				: {"type" :"string", "tags": {"scope": "design"},"values": [{"SLIDE-MENU": "slide-menu"}, {"COLLAPSE-MENU": "collapse-menu"}], "default" : "slide-menu"},
+		"slideAnimation"				: {"type" :"string", "tags": {"scope": "design"},"values": [{"SLIDE-MENU": "slide-menu"}, {"COLLAPSE-MENU": "collapse-menu"},{"COLLAPSE-MENU-NOHOVER": "collapse-menu-nohover"}], "default" : "slide-menu"},
 		"togglePosition"				: {"type" :"string", "tags": {"scope": "design"},"values": [{"FIXED-TOGGLE": "fixed-toggle"}, {"SIDE-TOGGLE": "side-toggle"}, {"HIDE-TOGGLE": "hide-toggle"}], "default" : "fixed-toggle"},
 		"scrollbarPosition"             : {"type" :"string", "tags": {"scope": "design"},"values": [{"LEFT": "left"}, {"RIGHT": "right"}], "default" : "left"},
 		

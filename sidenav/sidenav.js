@@ -1017,6 +1017,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				var slideBehaviorClass;
 				switch ($scope.model.slideAnimation) {
 				case "collapse-menu":
+				case "collapse-menu-nohover":
 					slideBehaviorClass = "nav-collapse-menu";
 					break;
 				case "slide-menu":
