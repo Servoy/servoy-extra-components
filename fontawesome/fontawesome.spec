@@ -10,7 +10,7 @@
 	{
 		"faclass"      	: {"type":"string", "tags": { "scope" :"design" }},
 		"enabled" 		: {"type": "enabled", "blockingOn": false, "default": true, "for": ["dataProviderID","onActionMethodID"] },
-		"styleClass"   	: {"type": "styleclass"},
+		"styleclass"   	: {"type": "styleclass", "tags": { "scope" :"design" }},
 		"size" 			: {"type":"dimension",  "default" : {"width":25, "height":25}}, 
 		"visible" 		: "visible"
 	}, "handlers":
