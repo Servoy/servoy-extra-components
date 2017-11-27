@@ -11,7 +11,8 @@
 		"faclass"      	: {"type":"string", "tags": { "scope" :"design" }},
 		"enabled" 		: {"type": "enabled", "blockingOn": false, "default": true, "for": ["dataProviderID","onActionMethodID"] },
 		"styleclass"   	: {"type": "styleclass"},
-		"size" 			: {"type":"dimension",  "default" : {"width":25, "height":25}}, 
+		"size" 			: {"type":"dimension",  "default" : {"width":25, "height":25}},
+		"toolTipText" : { "type" : "tagstring"}, 
 		"visible" 		: "visible"
 	}, "handlers":
 	{
