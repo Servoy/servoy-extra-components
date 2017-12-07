@@ -240,6 +240,7 @@ return {
 		$scope.componentWidth = 0;
 		$scope.extraWidth = 0; // extra width remainig after resize, that is added to the last auto-resize column
 		$scope.extraWidthColumnIdx = -1;
+		$scope.scrollWidth = 0;
 		function getComponentWidth() {
 			if (!$scope.componentWidth) {
 				$scope.componentWidth = $element.parent().width();
@@ -405,28 +406,52 @@ return {
 				}
 				tbody.bind("scroll", onTBodyScrollListener);
 			}
-			if ($scope.model.enableColumnResize) {
-				autoColumns = getAutoColumns();
-				tableWidth = calculateTableWidth();
-				updateAutoColumnsWidth(0);
-				addColResizable(true);
-			}
 
-			// update the autoColumns with the right px values
-			var tbl = $element.find("table:first");
-			var headers = tbl.find("th");
-			if ($(headers).length && $(headers).eq(0).is(":visible")) {
-				for (var i = 0; i < $scope.model.columns.length; i++) {
-					if (autoColumns.columns[i]) {
-						if(autoColumns.minWidth[i] < 0) {
-							autoColumns.minWidth[i] = 1;
-							$scope.model.columns[i].width = $(headers.get(i)).outerWidth(false) + "px";
-						}
-						updateTableColumnStyleClass(i, { width: $scope.model.columns[i].width, minWidth: $scope.model.columns[i].width, maxWidth: $scope.model.columns[i].width });
-					}
+
+			$scope.$apply(function() {
+				var isScrollWidthChange = false;
+				if(tbody && (tbody[0].scrollHeight > tbody[0].clientHeight && ($scope.scrollWidth == 0))) {
+					$scope.scrollWidth = 15;
+					isScrollWidthChange = true;
 				}
-				updateTBodyStyle(tbl.find("tbody")[0]);
-			}
+				else if(tbody && (tbody[0].scrollHeight <= tbody[0].clientHeight) && ($scope.scrollWidth > 0)) {
+					$scope.scrollWidth = 0;
+					isScrollWidthChange = true;
+				}
+	
+				if(isScrollWidthChange) {
+					autoColumns = getAutoColumns();	// reset column model width to inital value
+					columnStyleCache = []; // clear style cache so header style (width) is re-calculated
+				}
+
+				if ($scope.model.enableColumnResize) {
+					if(!isScrollWidthChange) {
+						autoColumns = getAutoColumns();
+					}
+					tableWidth = calculateTableWidth();
+					updateAutoColumnsWidth(0);
+					addColResizable(true);
+				}
+			});
+
+			// do it in the next digest cycle, so the headers already have the style with the width applied (by the apply above)
+			$timeout(function() {
+				// update the autoColumns with the right px values
+				var tbl = $element.find("table:first");
+				var headers = tbl.find("th");
+				if ($(headers).length && $(headers).eq(0).is(":visible")) {
+					for (var i = 0; i < $scope.model.columns.length; i++) {
+						if (autoColumns.columns[i]) {
+							if(autoColumns.minWidth[i] < 0) {
+								autoColumns.minWidth[i] = 1;
+								$scope.model.columns[i].width = $(headers.get(i)).outerWidth(false) + "px";
+							}
+							updateTableColumnStyleClass(i, { width: $scope.model.columns[i].width, minWidth: $scope.model.columns[i].width, maxWidth: $scope.model.columns[i].width });
+						}
+					}
+					updateTBodyStyle(tbl.find("tbody")[0]);
+				}
+			}, 0);
 		}
 
 		function getPageForIndex(idx) {
@@ -2221,7 +2246,7 @@ return {
 			if ($scope.model.enableSort || $scope.handlers.onHeaderClick) {
 				tHeadStyle.cursor = "pointer";
 			}
-			tHeadStyle.width = autoColumns.count > 0 ? getComponentWidth() + "px" : tableWidth + "px";
+			tHeadStyle.width = autoColumns.count > 0 ? (getComponentWidth() - $scope.scrollWidth) + "px" : tableWidth + "px";
 			tHeadStyle.left = tableLeftOffset + "px";
 			return tHeadStyle;
 		}
@@ -2265,7 +2290,7 @@ return {
 				if(autoColumnPercentage) {
 					columnStyle.width = autoColumnPercentage + "%";
 				} else {
-					columnStyle.minWidth = columnStyle.maxWidth = columnStyle.width = Math.floor( (getComponentWidth() - tableWidth) / autoColumns.count) + "px";
+					columnStyle.minWidth = columnStyle.maxWidth = columnStyle.width = Math.floor( (getComponentWidth() - tableWidth - $scope.scrollWidth) / autoColumns.count) + "px";
 				}
 			}
 			return columnStyle;
