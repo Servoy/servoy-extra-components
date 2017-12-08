@@ -681,19 +681,25 @@ return {
 				}
 
 				if (foundsetChanges[$foundsetTypeConstants.NOTIFY_SORT_COLUMNS_CHANGED]) {
+					var sortSet = false;
 					if (foundsetChanges[$foundsetTypeConstants.NOTIFY_SORT_COLUMNS_CHANGED].newValue) {
-						var sortColumnsA = $scope.model.foundset.sortColumns.split(" ");
-						if (sortColumnsA.length == 2) {
+						var sortColumnsA = $scope.model.foundset.sortColumns.split(/[\s,]+/);
+						if (sortColumnsA.length >= 2) {
 							for (var i = 0; i < $scope.model.columns.length; i++) {
 								if (sortColumnsA[0] == $scope.model.columns[i].dataprovider.idForFoundset) {
 									$scope.$apply(function() {
 										$scope.model.sortColumnIndex = i;
 										$scope.model.sortDirection = sortColumnsA[1].toLowerCase() == 'asc' ? 'up' : 'down';
+										sortSet = true;
 									});
 									break;
 								}
 							}
 						}
+					}
+					if(!sortSet) {
+						$scope.model.sortColumnIndex = -1;
+						$scope.model.sortDirection = null;
 					}
 				}
 			});
