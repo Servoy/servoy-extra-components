@@ -44,3 +44,5 @@ Web-Component: True
 Name: imagelabel/imagelabel.spec
 Web-Component: True
 
+Name: timeline/timeline.spec
+Web-Component: True
