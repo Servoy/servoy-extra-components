@@ -874,7 +874,7 @@ return {
 						var wrapperRect = tbody[0].getBoundingClientRect();
 						var childRect = child[0].getBoundingClientRect();
 						if (Math.floor(childRect.top) < Math.floor(wrapperRect.top) || Math.floor(childRect.bottom) > Math.floor(wrapperRect.bottom)) {
-							child[0].scrollIntoView(!toBottom);
+							scrollIntoView(child, tbody, !toBottom);
 						}
 						scrollToSelectionNeeded = false; // now reset the flag so that it is only set back to true on purpose
 						if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
@@ -1127,7 +1127,7 @@ return {
 						}
 						if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
 							$log.debug("svy extra table * keyPressed; scroll on PG UP");
-						child.scrollIntoView(false);
+							child.scrollIntoView(false);
 					}
 				} else if (event.keyCode == 34) { // PAGE DOWN KEY
 					var child = getLastVisibleChild();
@@ -1141,7 +1141,7 @@ return {
 						}
 						if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
 							$log.debug("svy extra table * keyPressed; scroll on PG DOWN");
-						child.scrollIntoView(true);
+							child.scrollIntoView(true);
 					}
 				} else if (event.keyCode == 38) { // ARROW UP KEY
 					if (selection > 0) {
@@ -1903,7 +1903,7 @@ return {
 					if (forceScroll || childBounds.top < tbodyBounds.top || childBounds.bottom > tbodyBounds.bottom) {
 						if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
 							$log.debug("svy extra table * updateRenderedRows; scrolling into view");
-						scrollToChild.scrollIntoView(alignToTopWhenScrolling)
+						scrollIntoView($(scrollToChild), tbody, alignToTopWhenScrolling);
 					}
 				}
 			} else if (scrollTopToKeep >= 0) {
@@ -1969,6 +1969,21 @@ return {
 				}
 			}
 		}
+
+		function scrollIntoView(child, parent, alignTo) {
+			var scrollFromTop;
+			if(alignTo) {
+				scrollFromTop = child[0].offsetTop;
+			}
+			else {
+				scrollFromTop = child[0].offsetTop - parent[0].clientHeight + child[0].offsetHeight
+			}
+			if(scrollFromTop < 0) {
+				scrollFromTop = 0;
+			}
+			parent.scrollTop(scrollFromTop);
+		}
+
 		function generateTemplate(full) {
 			if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
 				$log.debug("svy extra table * generateTemplate called");
