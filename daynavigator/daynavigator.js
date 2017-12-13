@@ -19,7 +19,13 @@ function($log, $timeout) {
                             $scope.handlers.onChange(date);
                         }
                     },
-                    selectedDate: selectedDateToMomentDate()
+                    selectedDate: selectedDateToMomentDate(),
+					// TODO expose this properties to the model ?
+					text: "DD",
+					textSelected: "DD",
+					width: 0,
+					selectedItemWidth: 40,
+					itemWidth: 40
                 });
             });
 

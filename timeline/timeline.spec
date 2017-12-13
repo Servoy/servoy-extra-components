@@ -36,7 +36,8 @@
 			"subject": {"type" : "string" },
 			"content" : {"type" : "string"},
 			"tooltip": {"type" : "string"},
-            "time": {"type" : "string"}
+            "time": {"type" : "string"},
+            "data": {"type" : "object"}
 		}
     }
 }
