@@ -10,7 +10,7 @@ function($log) {
         },
         controller: function($scope, $element, $attrs) {
             if($scope.svyServoyapi.isInDesigner()) {
-                $scope.model.data = [{time: 'today', subject: 'timeline subject', content: 'timeline content' }];
+                $scope.model.data = [{time: ' today', subject: 'timeline subject', content: 'timeline content' }];
             }
 
             var entryStyleClassFunc = null;
