@@ -1,0 +1,6 @@
+<iframe width="{{model.videoWidth}}" height="{{model.videoHeight}}"
+		ng-class='model.styleClass' sablo-tabseq='model.tabSeq' ng-if='model.visible'
+		id="{{::model.svyMarkupId}}"
+        ng-src="{{getEmbedURL()}}"
+		allowfullscreen
+></iframe>

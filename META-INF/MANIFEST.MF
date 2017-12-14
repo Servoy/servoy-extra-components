@@ -23,10 +23,19 @@ Web-Component: True
 Name: treeview/treeview.spec
 Web-Component: True
 
+Name: youtubevideoembedder/youtubevideoembedder.spec
+Web-Component: True
+
 Name: onrenderlabel/onrenderlabel.spec
 Web-Component: True
 
+Name: fileupload/fileupload.spec
+Web-Component: True
+
 Name: fontawesome/fontawesome.spec
+Web-Component: True
+
+Name: imagelabel/imagelabel.spec
 Web-Component: True
 
 Name: textfieldgroup/textfieldgroup.spec
@@ -36,11 +45,5 @@ Name: dbtreeview/dbtreeview.spec
 Web-Component: True
 
 Name: select2tokenizer/select2tokenizer.spec
-Web-Component: True
-
-Name: fileupload/fileupload.spec
-Web-Component: True
-
-Name: imagelabel/imagelabel.spec
 Web-Component: True
 
