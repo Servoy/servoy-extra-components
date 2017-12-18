@@ -4,7 +4,8 @@ angular.module('servoyextraYoutubevideoembedder', ['servoy', 'ngSanitize'])
       restrict: 'E',
       scope: {
     	  model: '=svyModel',
-		  api: "=svyApi"
+		  api: "=svyApi",
+		  svyServoyapi: "="
       },
       controller: function($scope, $element, $attrs) {
     	  var urlWithParams = ""; // cache calculated URL which is watched
@@ -24,7 +25,7 @@ angular.module('servoyextraYoutubevideoembedder', ['servoy', 'ngSanitize'])
     		  if (!m.allowFullScreen) params += "&fs=0";
     		  if (!m.showControls) params += "&controls=0";
     		  if (m.modestBranding) params += "&modestbranding=1";
-    		  if (m.autoPlay) params += "&autoplay=1";
+    		  if (m.autoPlay && !($scope.svyServoyapi && $scope.svyServoyapi.isInDesigner())) params += "&autoplay=1"; // we don't want it to auto-play in designer as it will not be stoppable => sound and video keep running in designer
     		  if (!m.showRelatedVideosAtEnd) params += "&rel=0";
     		  
     		  if (params.length > 0) urlWithParams += "?" + params.substr(1);
