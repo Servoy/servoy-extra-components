@@ -1078,6 +1078,16 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					if ($scope.handlers.onOpenToggled && wasOpen != $scope.model.open) {
 						$scope.handlers.onOpenToggled(event);
 					}
+					
+					// trigger a window resize since form may have changed
+					// TODO trigger it also after the onHover ?
+					// TODO trigger only if there is a containedForm ?
+					// TODO expose a setting for triggerWindow resize ?
+					if ($scope.model.slidePosition != 'static') {
+						setTimeout(function() {
+								$(window).resize();
+							}, 450);
+					}
 				}
 
 				var animateSlideMenuTimeout;
