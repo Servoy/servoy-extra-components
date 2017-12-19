@@ -23,7 +23,7 @@ function($log, $timeout) {
 					// TODO expose this properties to the model ?
 					text: "DD",
 					textSelected: "DD",
-					width: 0,
+					width: 240,
 					selectedItemWidth: 40,
 					itemWidth: 40
                 });
