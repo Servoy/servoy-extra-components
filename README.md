@@ -46,4 +46,6 @@ Angular Animate Module - MIT (<https://github.com/angular/bower-angular-animate/
 
 colResizable - MIT and GPL (<http://www.bacubacu.com/colresizable/#license>)
 
+bootstrap-datepaginator - Apache License 2.0 (<https://github.com/jonmiles/bootstrap-datepaginator/blob/master/LICENSE>)
+
 The rest of the content is licensed under the MIT License.
