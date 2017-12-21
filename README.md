@@ -1,6 +1,6 @@
 # Servoy Extra Components
 
-NGClient component package of all kinds of 'extra' components. Current components are: a tree, a lightweight table, font awesome library, a textfield group and a special label. 
+NGClient component package of all kinds of 'extra' components. Current components are: a tree, a lightweight table, font awesome library, a textfield group, a special label and an youtube embedder component. 
 
 # Getting started
 
