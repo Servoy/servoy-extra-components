@@ -17,9 +17,6 @@ function($log, $timeout) {
                     showCalendar: false,
                     onSelectedDateChanged: function(event, date) {
                         selectedMonth = date.format('MMM')
-                        $timeout(function() {
-                            addCustomDayClasses();
-                        });
                         if($scope.handlers.onChange) {
                             $scope.handlers.onChange(date);
                         }
@@ -32,7 +29,15 @@ function($log, $timeout) {
 					selectedItemWidth: 40,
 					itemWidth: 40
                 });
-                addCustomDayClasses();
+
+                // add custom classes to day items, based on their distances from the selected item
+                var items = $element.find('.dp-item');
+                var halfLength = Math.floor(items.length / 2);
+                for(var i = 0; i < halfLength; i++) {
+                    var className = 'day-item-' + (halfLength - i);
+                    $(items[i]).addClass(className);
+                    $(items[items.length - 1 - i]).addClass(className);
+                }
             });
 
             $scope.$watch("model.selectedDate", function(newValue, oldValue) {
@@ -49,16 +54,6 @@ function($log, $timeout) {
 
             function selectedDateToMomentDate() {
                 return $scope.model.selectedDate ? moment($scope.model.selectedDate) : moment();
-            }
-
-            function addCustomDayClasses() {
-                var items = $element.find('.dp-item');
-                var halfLength = Math.floor(items.length / 2);
-                for(var i = 0; i < halfLength; i++) {
-                    var className = 'day-item-' + (halfLength - i);
-                    $(items[i]).addClass(className);
-                    $(items[items.length - 1 - i]).addClass(className);
-                }
             }
         },
         templateUrl: 'servoyextra/daynavigator/daynavigator.html'
