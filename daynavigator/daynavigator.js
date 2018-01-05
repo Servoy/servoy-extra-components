@@ -29,15 +29,6 @@ function($log, $timeout) {
 					selectedItemWidth: 40,
 					itemWidth: 40
                 });
-
-                // add custom classes to day items, based on their distances from the selected item
-                var items = $element.find('.dp-item');
-                var halfLength = Math.floor(items.length / 2);
-                for(var i = 0; i < halfLength; i++) {
-                    var className = 'day-item-' + (halfLength - i);
-                    $(items[i]).addClass(className);
-                    $(items[items.length - 1 - i]).addClass(className);
-                }
             });
 
             $scope.$watch("model.selectedDate", function(newValue, oldValue) {
