@@ -4,6 +4,6 @@
         ng-attr-title="{{entry.tooltip}}"
         ng-repeat="entry in model.data"
         ng-bind-html="getEntryRenderer(entry)"
-        svy-click='handlers.onClick(entry)'>
+        svy-click='onEntryClick(entry, $event)'>
     </div>
 </div>

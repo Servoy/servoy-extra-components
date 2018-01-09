@@ -20,7 +20,12 @@
 			"parameters": [{
 				"name": "entry",
 				"type": "entry"
-			}]
+			},
+			{
+				"name": "targetId",
+				"type": "string"
+			}
+			]
 		}
 	}, 
 	"api" : {

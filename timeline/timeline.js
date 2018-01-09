@@ -1,5 +1,5 @@
-angular.module('servoyextraTimeline', ['servoy']).directive('servoyextraTimeline', ['$log',
-function($log) {
+angular.module('servoyextraTimeline', ['servoy']).directive('servoyextraTimeline', ['$log', '$sce',
+function($log, $sce) {
     return {
         restrict: 'E',
         scope: {
@@ -41,9 +41,15 @@ function($log) {
 
             $scope.getEntryRenderer = function(entry) {
                 if(entryRendererFunc) {
-                    return entryRendererFunc(entry);
+                    return $sce.trustAsHtml(entryRendererFunc(entry));
                 }
                 return '';
+            }
+
+            $scope.onEntryClick = function(entry, e) {
+                if($scope.handlers.onClick) {
+                    $scope.handlers.onClick(entry, e.target.id);
+                }
             }
 
             $scope.$watch('model.foundset', function(oldValue, newValue) {
