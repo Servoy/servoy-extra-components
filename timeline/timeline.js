@@ -45,6 +45,27 @@ function($log) {
                 }
                 return '';
             }
+
+            $scope.$watch('model.foundset', function(oldValue, newValue) {
+                if(!$scope.svyServoyapi || $scope.svyServoyapi.isInDesigner()) return;
+                loadDataFromFoundset();
+            });
+
+            function loadDataFromFoundset() {
+                if($scope.model.foundset && $scope.model.foundset.viewPort.size) {
+                    $scope.model.data = []
+                    for(var i = 0; i < $scope.model.foundset.viewPort.size; i++) {
+                        var entry = {};
+                        entry['time'] = $scope.model.foundsetEntry['time'] != undefined ? $scope.model.foundsetEntry['time'][i] : '';
+                        entry['subject'] = $scope.model.foundsetEntry['subject'] != undefined ? $scope.model.foundsetEntry['subject'][i] : '';
+                        entry['content'] = $scope.model.foundsetEntry['content'] != undefined ? $scope.model.foundsetEntry['content'][i] : '';
+                        entry['tooltip'] = $scope.model.foundsetEntry['tooltip'] != undefined ? $scope.model.foundsetEntry['tooltip'][i] : '';
+                        entry['data'] = $scope.model.foundsetEntry['data'] != undefined ? $scope.model.foundsetEntry['data'][i] : '';
+                        $scope.model.data.push(entry);
+                    }
+                }
+
+            }
         },
         templateUrl: 'servoyextra/timeline/timeline.html'
     }

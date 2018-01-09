@@ -10,7 +10,9 @@
 		"data": { "type": "entry[]", "tags": {"scope" : "private"}},
 		"entryStyleClassFunc": { "type": "string"},
 		"entryRendererFunc": { "type": "string"},
-		"visible": "visible"
+		"visible": "visible",
+		"foundset": {"type": "foundset"},
+		"foundsetEntry": {"type": "foundsetEntry"}
 	},
 	"handlers" : {
 		"onClick": {
@@ -38,6 +40,13 @@
 			"tooltip": {"type" : "string"},
             "time": {"type" : "string"},
             "data": {"type" : "object"}
+		},
+		"foundsetEntry" : {
+			"subject": {"type" : "dataprovider", "forFoundset": "foundset"},
+			"content" : {"type" : "dataprovider", "forFoundset": "foundset"},
+			"tooltip": {"type" : "dataprovider", "forFoundset": "foundset"},
+            "time": {"type" : "dataprovider", "forFoundset": "foundset"},
+            "data": {"type" : "dataprovider", "forFoundset": "foundset"}
 		}
     }
 }
