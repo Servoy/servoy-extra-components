@@ -1,5 +1,5 @@
-angular.module('servoyextraTimeline', ['servoy']).directive('servoyextraTimeline', ['$log', '$sce',
-	function($log, $sce) {
+angular.module('servoyextraTimeline', ['servoy']).directive('servoyextraTimeline', ['$log',
+	function($log) {
 		return {
 			restrict: 'E',
 			scope: {
@@ -27,16 +27,16 @@ angular.module('servoyextraTimeline', ['servoy']).directive('servoyextraTimeline
 					return '';
 				}
 
-//				var entryRendererFunc = function(entry) {
-//					return '<div class="feed-icon"></div>' + '<div class="feed-subject">' + entry.subject + ' </div>' + '<div class="feed-content">' + entry.content + '</div>' + '<div class="feed-actions"><div class="pull-right"><i class="fa fa-clock-o"></i>' + entry.time + '</div></div>';
-//				}
+				// var entryRendererFunc = function(entry) {
+				// 	return '<div class="feed-icon"></div>' + '<div class="feed-subject" svy-tooltip="{{entry.tooltip}}">' + entry.subject + ' </div>' + '<div class="feed-content">' + entry.content + '</div>' + '<div class="feed-actions"><div class="pull-right"><i class="fa fa-clock-o"></i>' + entry.time + '</div></div>';
+				// }
 
 				var entryRendererFunc = function(entry) {
 					var template;
 					if (entry.data && entry.data.isDivider) {
 						template = '<div class="label-header3 feed-divider">DEADLINE ' + entry.subject + '</div>';
 					} else {
-						template = '<div class="feed-icon"></div>' + '<i class="pull-right md md-check icon-round text-success"></i>' + '<div class="feed-subject">' + entry.subject + ' <i class="md md-note" ng-attr-title="{{model.entryRendererFunc}}"></i> </div>' + '<div class="feed-content">' + entry.content + '</div>';
+						template = '<div class="feed-icon"></div>' + '<i class="pull-right md md-check icon-round text-success"></i>' + '<div class="feed-subject">' + entry.subject + ' <i class="md md-note" ng-attr-title="{{entry.tooltip}}"></i> </div>' + '<div class="feed-content">' + entry.content + '</div>';
 					}
 					return template;
 				}
@@ -49,7 +49,7 @@ angular.module('servoyextraTimeline', ['servoy']).directive('servoyextraTimeline
 
 				$scope.getEntryRenderer = function(entry) {
 					if (entryRendererFunc) {
-						return $sce.trustAsHtml(entryRendererFunc(entry));
+						return entryRendererFunc(entry);
 					}
 					return '';
 				}
@@ -109,4 +109,25 @@ angular.module('servoyextraTimeline', ['servoy']).directive('servoyextraTimeline
 			},
 			templateUrl: 'servoyextra/timeline/timeline.html'
 		}
+	}])
+	.directive('bindHtmlCompile', ['$compile', function ($compile) {
+		return {
+		  restrict: 'A',
+		  link: function (scope, element, attrs) {
+			scope.$watch(function () {
+			  return scope.$eval(attrs.bindHtmlCompile);
+			}, function (value) {
+			  // Incase value is a TrustedValueHolderType, sometimes it
+			  // needs to be explicitly called into a string in order to
+			  // get the HTML string.
+			  element.html(value && value.toString());
+			  // If scope is provided use it, otherwise use parent scope
+			  var compileScope = scope;
+			  if (attrs.bindHtmlScope) {
+				compileScope = scope.$eval(attrs.bindHtmlScope);
+			  }
+			  $compile(element.contents())(compileScope);
+			});
+		  }
+		};
 	}]);

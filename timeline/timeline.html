@@ -1,9 +1,8 @@
 <div ng-if="model.visible" class="svy-extra-timeline" id="{{::model.svyMarkupId}}">
     <div class="feed-item feed-item-idea"
         ng-class="getEntryStyleClass(entry)"
-        ng-attr-title="{{entry.tooltip}}"
         ng-repeat="entry in model.data"
-        ng-bind-html="getEntryRenderer(entry)"
+        bind-html-compile="getEntryRenderer(entry)"
         svy-click='onEntryClick(entry, $event)'>
     </div>
 </div>
