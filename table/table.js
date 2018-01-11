@@ -717,10 +717,11 @@ return {
 				value: function(property, value) {
 					switch (property) {
 					case "columns":
-						var differentColumns = currentColumnLength != $scope.model.columns.length;
+						var newLength =  $scope.model.columns ? $scope.model.columns.length : 0;
+						var differentColumns = currentColumnLength != newLength;
 						var valueChanged = differentColumns;
 						var dataproviderChanged = false;
-						currentColumnLength = $scope.model.columns.length
+						currentColumnLength = newLength
 						if (!valueChanged) {
 							for (var i = 0; i < $scope.model.columns.length; i++) {
 								if ($scope.model.columns[i].dataprovider != undefined &&
