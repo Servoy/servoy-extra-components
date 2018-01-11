@@ -11,8 +11,12 @@
 		"entryStyleClassFunc": { "type": "string"},
 		"entryRendererFunc": { "type": "string"},
 		"visible": "visible",
-		"foundset": {"type": "foundset"},
-		"foundsetEntry": {"type": "foundsetEntry"}
+		"foundset": {"type": "foundset", "dataproviders": [
+				"subject", 
+				"content",
+				"tooltip",
+				"time",
+				"data"] }
 	},
 	"handlers" : {
 		"onClick": {
@@ -45,13 +49,6 @@
 			"tooltip": {"type" : "string"},
             "time": {"type" : "string"},
             "data": {"type" : "object"}
-		},
-		"foundsetEntry" : {
-			"subject": {"type" : "dataprovider", "forFoundset": "foundset"},
-			"content" : {"type" : "dataprovider", "forFoundset": "foundset"},
-			"tooltip": {"type" : "dataprovider", "forFoundset": "foundset"},
-            "time": {"type" : "dataprovider", "forFoundset": "foundset"},
-            "data": {"type" : "dataprovider", "forFoundset": "foundset"}
 		}
     }
 }

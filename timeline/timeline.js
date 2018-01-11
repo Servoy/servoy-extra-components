@@ -61,12 +61,13 @@ function($log, $sce) {
                 if($scope.model.foundset && $scope.model.foundset.viewPort.size) {
                     $scope.model.data = []
                     for(var i = 0; i < $scope.model.foundset.viewPort.size; i++) {
+                    	var row = $scope.model.foundset.viewPort.rows[i];
                         var entry = {};
-                        entry['time'] = $scope.model.foundsetEntry['time'] != undefined ? $scope.model.foundsetEntry['time'][i] : '';
-                        entry['subject'] = $scope.model.foundsetEntry['subject'] != undefined ? $scope.model.foundsetEntry['subject'][i] : '';
-                        entry['content'] = $scope.model.foundsetEntry['content'] != undefined ? $scope.model.foundsetEntry['content'][i] : '';
-                        entry['tooltip'] = $scope.model.foundsetEntry['tooltip'] != undefined ? $scope.model.foundsetEntry['tooltip'][i] : '';
-                        entry['data'] = $scope.model.foundsetEntry['data'] != undefined ? $scope.model.foundsetEntry['data'][i] : '';
+                        entry['time'] = row['time'] != undefined ?row['time'] : '';
+                        entry['subject'] = row['subject'] != undefined ?row['subject'] : '';
+                        entry['content'] = row['content'] != undefined ?row['content'] : '';
+                        entry['tooltip'] = row['tooltip'] != undefined ?row['tooltip'] : '';
+                        entry['data'] = row['data'] != undefined ?row['data'] : '';
                         $scope.model.data.push(entry);
                     }
                 }
