@@ -1,6 +1,6 @@
 angular.module('servoyextraTable', ['servoy'])
-.directive('servoyextraTable', ["$log", "$timeout", "$sabloConstants", "$foundsetTypeConstants", "$filter", "$webSocket",
-				function($log, $timeout, $sabloConstants, $foundsetTypeConstants, $filter, $webSocket) {
+.directive('servoyextraTable', ["$log", "$timeout", "$sabloConstants", "$foundsetTypeConstants", "$filter", "$webSocket", "$sanitize",
+				function($log, $timeout, $sabloConstants, $foundsetTypeConstants, $filter, $webSocket, $sanitize) {
 return {
 	restrict: 'E',
 	scope: {
@@ -1837,7 +1837,7 @@ return {
 							{	
 								value = formatFilter(value, column.format.display, column.format.type, column.format);
 							}
-							divChild.text(value)
+							setCellDivValue(column, divChild[0], value);
 						} else {
 							var imgChild = td.children("img");
 							if (imgChild.length == 1) {
@@ -2219,6 +2219,18 @@ return {
 			onTableRendered();
 		}
 
+		function setCellDivValue(column, divElement, value) {
+			var fixedValue = value ? value : "";
+			if(column.showAs == 'html') {
+				$(divElement).html(fixedValue);
+			} else if(column.showAs == 'sanitizedHtml') {
+				$(divElement).html($sanitize(fixedValue));
+			}
+			else {
+				$(divElement).text(fixedValue);
+			}
+		}
+
 		function createTableRow(columns, idxInLoaded, formatFilter) {
 			var tr = document.createElement("TR");
 			if($scope.model.rowStyleClassDataprovider && $scope.model.rowStyleClassDataprovider[idxInLoaded]) {
@@ -2249,8 +2261,7 @@ return {
 					{	
 						value = formatFilter(value, column.format.display, column.format.type, column.format);
 					}
-					var txt = document.createTextNode(value ? value : "");
-					div.appendChild(txt);
+					setCellDivValue(column, div, value);
 					td.appendChild(div);
 				}
 			}
