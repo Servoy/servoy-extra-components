@@ -28,7 +28,7 @@ angular.module('servoyextraTimeline', ['servoy']).directive('servoyextraTimeline
 				}
 
 				// var entryRendererFunc = function(entry) {
-				// 	return '<div class="feed-icon"></div>' + '<div class="feed-subject" svy-tooltip="{{entry.tooltip}}">' + entry.subject + ' </div>' + '<div class="feed-content">' + entry.content + '</div>' + '<div class="feed-actions"><div class="pull-right"><i class="fa fa-clock-o"></i>' + entry.time + '</div></div>';
+				// 	return '<div class="feed-icon"></div>' + '<div class="feed-subject" svy-tooltip="entry.tooltip">' + entry.subject + ' </div>' + '<div class="feed-content">' + entry.content + '</div>' + '<div class="feed-actions"><div class="pull-right"><i class="fa fa-clock-o"></i>' + entry.time + '</div></div>';
 				// }
 
 				var entryRendererFunc = function(entry) {
