@@ -135,8 +135,8 @@ return {
 			return tableWidth;
 		}
 
-		function getAutoColumns() {
-			var autoColumns = { columns: { }, minWidth: { }, autoResize: {}, count: 0 };
+		function setColumnsToInitalWidthAndInitAutoColumns() {
+			var newAutoColumns = { columns: { }, minWidth: { }, autoResize: {}, count: 0 };
 			if ($scope.model.columns) {
 				for (var i = 0; i < $scope.model.columns.length; i++) {
 					if ($scope.model.columns[i].initialWidth == undefined) {
@@ -147,15 +147,16 @@ return {
 
 					var minWidth = getNumberFromPxString($scope.model.columns[i].width);
 					if (isAutoResizeColumn(i) || minWidth < 0) {
-						autoColumns.columns[i] = true;
-						autoColumns.minWidth[i] = minWidth;
-						autoColumns.autoResize[i] = isAutoResizeColumn(i);
-						autoColumns.count += 1;
+						newAutoColumns.columns[i] = true;
+						newAutoColumns.minWidth[i] = minWidth;
+						newAutoColumns.autoResize[i] = isAutoResizeColumn(i);
+						newAutoColumns.count += 1;
 					}
 				}
 			}
 
-			return autoColumns;
+			autoColumns = newAutoColumns;
+			needToUpdateAutoColumnsWidth = true;
 		}
 
 		function getAutoColumnPercentage() {
@@ -248,7 +249,9 @@ return {
 			return $scope.componentWidth;
 		}
 
-		var autoColumns = getAutoColumns();
+		var autoColumns;
+		var needToUpdateAutoColumnsWidth = false;
+		setColumnsToInitalWidthAndInitAutoColumns();
 		var tableWidth = calculateTableWidth();
 
 		var tableLeftOffset = 0;
@@ -419,17 +422,33 @@ return {
 					isScrollWidthChange = true;
 				}
 	
-				if(isScrollWidthChange) {
-					autoColumns = getAutoColumns();	// reset column model width to inital value
-					columnStyleCache = []; // clear style cache so header style (width) is re-calculated
+				if(isScrollWidthChange || $scope.model.enableColumnResize) {
+					setColumnsToInitalWidthAndInitAutoColumns();	// reset column model width to inital value
+					if(isScrollWidthChange) {
+						columnStyleCache = []; // clear style cache so header style (width) is re-calculated
+					}
+				}
+
+				if(needToUpdateAutoColumnsWidth) {
+					needToUpdateAutoColumnsWidth = false;
+					tableWidth = calculateTableWidth();
+
+					var sumColumnsWidth = 0;
+					var ignoreScrollWidth = false;
+					var tbl = $element.find("table:first");
+					var headers = tbl.find("th");
+					if ($(headers).length && $(headers).eq(0).is(":visible")) {
+						for (var i = 0; i < $scope.model.columns.length; i++) {
+							sumColumnsWidth += $(headers.get(i)).outerWidth(false);
+							if(!ignoreScrollWidth && ($scope.model.columns[i].width == "" || $scope.model.columns[i].width == "auto")) {
+								ignoreScrollWidth = true;
+							}
+						}
+					}
+					updateAutoColumnsWidth(getComponentWidth() - (ignoreScrollWidth ? 0 :  $scope.scrollWidth) - sumColumnsWidth);
 				}
 
 				if ($scope.model.enableColumnResize) {
-					if(!isScrollWidthChange) {
-						autoColumns = getAutoColumns();
-					}
-					tableWidth = calculateTableWidth();
-					updateAutoColumnsWidth(0);
 					addColResizable(true);
 				}
 			});
@@ -739,7 +758,7 @@ return {
 						}
 
 						if (valueChanged || dataproviderChanged) {
-							autoColumns = getAutoColumns();
+							setColumnsToInitalWidthAndInitAutoColumns();
 							tableWidth = calculateTableWidth();
 							if ($scope.model.columns && $scope.model.columns.length > 0) {
 								updateAutoColumnsWidth(0);
@@ -806,7 +825,7 @@ return {
 		});
 
 		var toBottom = false;
-		$scope.$watch('model.visible', function(newValue) {
+		$scope.$watch('model.visible', function(newValue, oldValue) {
 				if (newValue) {
 					wrapper = $element.find(".tablewrapper")[0];
 					tbody = $element.find("tbody");
@@ -817,7 +836,9 @@ return {
 							tbody = $element.find("tbody");
 						});
 
-					generateTemplate(true);
+					if(newValue != oldValue) {
+						generateTemplate(true);
+					}
 				} else {
 					toBottom = false;
 					tbody = null;
@@ -2311,7 +2332,7 @@ return {
 		$scope.getColumnStyle = function(column) {
 			var columnStyle = columnStyleCache[column];
 			if (columnStyle) return columnStyle;
-			columnStyle = { overflow: "hidden" };
+			columnStyle = { overflow: "hidden", display: "inline-block" };
 			columnStyleCache[column] = columnStyle;
 			var w = getNumberFromPxString($scope.model.columns[column].width);
 			if (w > -1) {
