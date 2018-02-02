@@ -1,0 +1,110 @@
+<div 
+	class="svy-collapse {{model.styleClass}}" 
+	id="{{::model.svyMarkupId}}" >
+
+	<!-- //collapsibles -->
+	<div 
+		class="svy-collapse-collapsible {{collapsible.styleClass ? collapsible.styleClass : ''}}" 
+		id="{{::model.svyMarkupId}}-{{$index}}"
+		ng-repeat="collapsible in model.collapsibles" 
+		ng-init="collapsibleIndex = $index"
+		>
+		
+		<!-- //header -->
+		<div 
+			class="svy-collapse-header {{collapsible.isCollapsed ? 'collapsed' : ''}} {{collapsible.headerStyleClass}}" 
+			id="{{::model.svyMarkupId}}-{{$index}}-header" 
+			ng-click="onClick($event)"
+			data-toggle="collapse" 
+			data-target="#{{::model.svyMarkupId}}-{{$index}}-collapsible" 
+			aria-expanded="{{!collapsible.isCollapsed}}" 
+			aria-controls="{{::model.svyMarkupId}}-{{$index}}-collapsible"
+			role="button" >
+			<div class="svy-collapse-header-container">
+				<div 
+					ng-bind-html="trustAsHtml(collapsible.headerHtml)"
+					class="svy-collapse-header-content" >
+				</div>
+				<span ng-if="collapsible.isCollapsed" class="svy-collapse-header-icon {{collapsible.collapsedIconName}}" aria-hidden="true"></span>
+				<span ng-if="!collapsible.isCollapsed" class="svy-collapse-header-icon {{collapsible.expandedIconName}}" aria-hidden="true"></span>
+			</div>
+		</div>
+		<!-- .//header -->
+
+		<!-- //collapsibles -->
+
+		<!-- //form -->
+		<div 
+			ng-if="collapsible.form"
+			id="{{::model.svyMarkupId}}-{{$index}}-collapsible" 
+			class="svy-collapse-collapsible-container collapse {{::collapsible.isCollapsed ? '' : 'in'}}" 
+			aria-labelledby="{{::model.svyMarkupId}}-{{$index}}-header" 
+			data-parent="#{{::model.svyMarkupId}}-{{$index}}">
+		    <div 
+				class="svy-collapse-card-body {{collapsible.bodyStyleClass}}" 
+				id="{{::model.svyMarkupId}}-{{$index}}-collapsible-body" >
+				<div 
+					ng-include="getForm(collapsible.form)" 
+					class="svy-collapse-card-body-container" 
+					ng-style="getFormStyle(collapsible.form)" >
+				</div>
+		    </div>
+		</div>
+		<!-- .//form -->
+
+		<!-- //cards -->
+		<div 
+			ng-if="collapsible.cards && collapsible.cards.length > 0"
+			id="{{::model.svyMarkupId}}-{{$index}}-collapsible" 
+			class="svy-collapse-collapsible-container collapse {{::collapsible.isCollapsed ? '' : 'in'}}" 
+			aria-labelledby="{{::model.svyMarkupId}}-{{$index}}-header" 
+			data-parent="#{{::model.svyMarkupId}}-{{$index}}" >
+		    <div 
+				ng-repeat="card in collapsible.cards"
+				class="svy-collapse-card-body {{collapsible.bodyStyleClass}}"
+				id="{{::model.svyMarkupId}}-{{collapsibleIndex}}-collapsible-body-{{$index}}" >
+				<div 
+					ng-if="!card.form" 
+					ng-bind-html="trustAsHtml(card.contentHtml)" 
+					data-card-index="{{$index}}" 
+					data-collapsible-index="collapsibleIndex)" 
+					ng-class="card.styleClass" 
+					ng-click="onCardClick($event, $index, collapsibleIndex)" 
+					class="svy-collapse-card-body-container" 
+					id="{{::model.svyMarkupId}}-{{collapsibleIndex}}-collapsible-card-container-{{$index}}" >
+				</div>
+				<div 
+					ng-if="card.form" 
+					ng-include="getForm(card.form)" 
+					ng-class="card.styleClass" 
+					ng-style="getFormStyle(card.form)"
+					class="svy-collapse-card-body-container" 
+					id="{{::model.svyMarkupId}}-{{collapsibleIndex}}-collapsible-card-container-{{$index}}" >
+				</div>
+		    </div>
+		</div>
+		<!-- .//cards -->
+
+		<!-- //collapsibleHtml -->
+		<div 
+			ng-if="collapsible.collapsibleHtml"
+			id="{{::model.svyMarkupId}}-{{$index}}-collapsible" 
+			class="svy-collapse-collapsible-container collapse {{::collapsible.isCollapsed ? '' : 'in'}}" 
+			aria-labelledby="{{::model.svyMarkupId}}-{{$index}}-header" 
+			data-parent="#{{::model.svyMarkupId}}-{{$index}}">
+		    <div 
+				class="svy-collapse-card-body {{collapsible.bodyStyleClass}}"
+				id="{{::model.svyMarkupId}}-{{collapsibleIndex}}-collapsible-body" 
+				ng-click="onCardClick($event, 0, collapsibleIndex)" >
+				<div 
+					ng-bind-html="trustAsHtml(collapsible.collapsibleHtml)" 
+					class="svy-collapse-card-body-container" 
+					id="{{::model.svyMarkupId}}-{{collapsibleIndex}}-collapsible-card-container" >
+				</div>
+		    </div>
+		</div>
+		<!-- .//collapsibleHtml -->
+		
+		<!-- .//collapsibles -->
+	</div>
+</div>
