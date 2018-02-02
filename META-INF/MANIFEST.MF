@@ -5,7 +5,7 @@ CSS-ClientLibs: servoyextra/lib/css/skin-win8/ui.fancytree.css;name=ui
 Responsive-Layout: True
 Bundle-SymbolicName: servoyextra
 Bundle-Name: Servoy Extra Components
-Bundle-Version: 1.4.1
+Bundle-Version: 1.5.0
 Absolute-Layout: True
 CSS-DesignLibs: servoyextra/lib/css/servoyextra_design.css
 Created-By: 1.7.0_05-b06 (Oracle Corporation)
@@ -36,6 +36,12 @@ Name: fontawesome/fontawesome.spec
 Web-Component: True
 
 Name: imagelabel/imagelabel.spec
+Web-Component: True
+
+Name: slider/slider.spec
+Web-Component: True
+
+Name: collapse/collapse.spec
 Web-Component: True
 
 Name: textfieldgroup/textfieldgroup.spec
