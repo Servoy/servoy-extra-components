@@ -2300,7 +2300,6 @@ return {
 			if ($scope.model.enableSort || $scope.handlers.onHeaderClick) {
 				tHeadStyle.cursor = "pointer";
 			}
-			tHeadStyle.width = autoColumns.count > 0 ? (getComponentWidth() - $scope.scrollWidth) + "px" : tableWidth + "px";
 			tHeadStyle.left = tableLeftOffset + "px";
 			return tHeadStyle;
 		}
@@ -2309,9 +2308,6 @@ return {
 			var tBodyStyle = { };
 			var componentWidth = getComponentWidth();
 			tBodyStyle.width = componentWidth + "px";
-			if (tableWidth < componentWidth) {
-				tBodyStyle.overflowX = "hidden";
-			}
 			var tbl = $element.find("table:first");
 			var tblHead = tbl.find("thead");
 			if ($(tblHead).is(":visible")) {
