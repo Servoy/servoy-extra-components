@@ -2328,7 +2328,7 @@ return {
 		$scope.getColumnStyle = function(column) {
 			var columnStyle = columnStyleCache[column];
 			if (columnStyle) return columnStyle;
-			columnStyle = { overflow: "hidden", display: "inline-block" };
+			columnStyle = { overflow: "hidden"};
 			columnStyleCache[column] = columnStyle;
 			var w = getNumberFromPxString($scope.model.columns[column].width);
 			if (w > -1) {
