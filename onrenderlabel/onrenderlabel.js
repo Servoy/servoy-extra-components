@@ -26,8 +26,7 @@ angular.module('servoyextraOnrenderlabel',['servoy'])
     	  }
       },
       link: function($scope, $element, $attrs) {
-    	  
-			var tooltipState = null;
+
 			var className = null;
 			var element = $element.children().first();
 			Object.defineProperty($scope.model,$sabloConstants.modelChangeNotifier, {configurable:true,value:function(property,value) {
@@ -48,13 +47,9 @@ angular.module('servoyextraOnrenderlabel',['servoy'])
 						className = value;
 						if(className) element.addClass(className);
 						break;
-					case "toolTipText":
-						if (tooltipState)
-							tooltipState(value);
-						else tooltipState = $svyProperties.createTooltipState(element,value);
-					    break;
 				}
 			}});
+			$svyProperties.createTooltipState(element, function() { return $scope.model.toolTipText });
 			var destroyListenerUnreg = $scope.$on("$destroy", function() {
 				destroyListenerUnreg();
 				delete $scope.model[$sabloConstants.modelChangeNotifier];
