@@ -4,8 +4,8 @@
 	"version": 1,
 	"definition": "servoyextra/lightboxgallery/lightboxgallery.js",
 	"libraries": [
-		{"name":"lightbox.js", "version":"2.10.0", "url":"servoyextra/lightboxgallery/js/lightbox.js", "mimetype":"text/javascript"},
-		{"name":"lightbox.css", "version":"2.10.0", "url":"servoyextra/lightboxgallery/css/lightbox.css", "mimetype":"text/css"},
+		{"name":"lightbox.min.js", "version":"2.10.0", "url":"servoyextra/lightboxgallery/js/lightbox.min.js", "mimetype":"text/javascript"},
+		{"name":"lightbox.min.css", "version":"2.10.0", "url":"servoyextra/lightboxgallery/css/lightbox.min.css", "mimetype":"text/css"},
 		{"name":"lightboxgallery.css", "version":"1.0.0", "url":"servoyextra/lightboxgallery/lightboxgallery.css", "mimetype":"text/css"}
 	],
 	"model":
