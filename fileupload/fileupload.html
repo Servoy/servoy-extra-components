@@ -1,10 +1,22 @@
-<div ng-if="model.visible" class="svy-extra-fileupload"  id="{{::model.svyMarkupId}}">
-	<div ngf-drop ngf-select ng-model="$parent.files" class="svy-fu-drop-box" ngf-drag-over-class="'svy-fu-dragover'"
-		ngf-drop-disabled= "getProgress('')" ngf-select-disabled="getProgress('')" ng-click='cancel()'>
-		<i class="svy-fu-row fa fa-upload fa-3x"></i>
+<div 
+	ng-if="model.visible" 
+	class="svy-extra-fileupload {{model.styleClass}}"  
+	id="{{::model.svyMarkupId}}">
+	<div 
+		ngf-drop ngf-select 
+		ng-model="$parent.files" 
+		class="svy-fu-drop-box" 
+		ngf-drag-over-class="'svy-fu-dragover'"
+		ngf-drop-disabled= "getProgress('')" 
+		ngf-select-disabled="getProgress('')" 
+		ngf-accept="'{{model.accept}}'"
+		ng-click='cancel()'
+		ng-disabled="{{!model.enabled}}"
+		>
+		<i class="svy-fu-row {{model.iconStyleClass}}"></i>
 		<span class="svy-fu-row" ng-bind="getMessage()"></span>
-		<span class="svy-fu-row" ng-if="getProgress('')" ng-bind="files.name"></span>
-		<div class="svy-fu-row" ng-if="getProgress('')">
+		<span class="svy-fu-row" ng-if="model.showFileName && getProgress('')" ng-bind="files.name"></span>
+		<div class="svy-fu-row" ng-if="model.showProgress && getProgress('')">
 			<div class="svy-fu-progress-bar" role="progressbar" aria-valuenow="{{getProgress('')}}" aria-valuemin="0" aria-valuemax="100" style="width: {{getProgress('%')}};">
 				{{getProgress('%')}}
 			</div>
