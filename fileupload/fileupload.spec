@@ -19,6 +19,7 @@
 	        "styleClass" 				: { "type" : "styleclass", "tags": { "scope" :"design" }, "values" :[] }, 
 	        "styleClassExpression" 		: { "type" : "dataprovider", "tags": { "scope" :"design" }}, 
 	        "iconStyleClass" 			: { "type" : "styleclass", "tags": { "scope" :"design" }, "default": "fa fa-upload fa-3x", "values" :[]}, 
+	        "successIconStyleClass" 	: { "type" : "styleclass", "tags": { "scope" :"design" }, "default": "fa fa-check fa-3x", "values" :[]}, 
 			"showFileName" 				: { "type" : "boolean", "default": true },
 			"showProgress" 				: { "type" : "boolean", "default": true },
 			"toolTipText" 				: { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags" },
