@@ -1,0 +1,38 @@
+.svyextra-lightboxgallery {
+}
+
+.svyextra-lightboxgallery-image-set {
+	display: flex;
+    flex-wrap: wrap;
+    flex-direction: row-reverse;
+}
+
+.svyextra-lightboxgallery-image-cell {
+	
+}
+
+.svyextra-lightboxgallery-image {
+    display: inline-block;
+    padding: 2px;
+    margin: 0 0.5rem 1rem 0.5rem;
+    background-color: #fff;
+    line-height: 0;
+    border-radius: 4px;
+    transition: background-color 0.5s ease-out;
+}
+
+.svyextra-lightboxgallery-image:hover {
+    background-color: #4ae;
+    transition: none;
+}
+
+a.svyextra-lightboxgallery-image {
+    color: #4ae;
+    text-decoration: none;
+    outline: 0;
+}
+
+.svyextra-lightboxgallery-thumbnail {
+    border-radius: 4px;
+    border: 0;
+}
