@@ -1,6 +1,6 @@
 <div 
 	ng-if="model.visible" 
-	class="svy-extra-fileupload {{model.styleClass}}"  
+	class="svy-extra-fileupload {{model.styleClass}} {{model.styleClassExpression}}"  
 	id="{{::model.svyMarkupId}}">
 	<div 
 		ngf-drop ngf-select 
@@ -13,7 +13,7 @@
 		ng-click='cancel()'
 		ng-disabled="{{!model.enabled}}"
 		>
-		<i class="svy-fu-row {{model.iconStyleClass}}"></i>
+		<i class="svy-fu-row {{getProgress('') ? model.successIconStyleClass : model.iconStyleClass}}"></i>
 		<span class="svy-fu-row" ng-bind="getMessage()"></span>
 		<span class="svy-fu-row" ng-if="model.showFileName && getProgress('')" ng-bind="files.name"></span>
 		<div class="svy-fu-row" ng-if="model.showProgress && getProgress('')">
