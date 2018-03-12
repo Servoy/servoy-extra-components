@@ -8,5 +8,11 @@
 	</div>
 </div>
 <div ng-show="!model.galleryVisible && model.buttonText">
-	<button class="btn svyextra-lightboxgallery-button {{model.buttonStyleClass}}" ng-click="api.showLightbox()">{{model.buttonText}}</button>
+	<button 
+		class="btn svyextra-lightboxgallery-button {{model.buttonStyleClass}}" 
+		ng-click="api.showLightbox()"
+		ng-disabled="!images || images.length === 0"
+	>
+			{{model.buttonText}}
+	</button>
 </div>
