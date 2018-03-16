@@ -2032,6 +2032,8 @@ return {
 				tbody = $(tbodyNew);
 				topSpaceDiv = null;
 				bottomSpaceDiv = null;
+				tbodyJQ.unbind("scroll", onTBodyScrollListener);
+				onTBodyScrollListener = null;
 
 				updateTBodyStyle(tbodyNew);
 				renderedSize = Math.min(renderedSize, rows.length);
