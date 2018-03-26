@@ -21,6 +21,7 @@
     	{"version":"1.3.1","url":"https://github.com/Servoy/servoy-extra-components/releases/download/V1.3.1/servoy-extra-components.zip", "servoy-version":"8.2.1"},
     	{"version":"1.3.2","url":"https://github.com/Servoy/servoy-extra-components/releases/download/V1.3.2/servoy-extra-components.zip", "servoy-version":"8.2.1"},
     	{"version":"1.4.0","url":"https://github.com/Servoy/servoy-extra-components/releases/download/V1.4.0/servoy-extra-components.zip", "servoy-version":"8.2.1"},
-    	{"version":"1.5.0","url":"https://github.com/Servoy/servoy-extra-components/releases/download/v1.5.0/servoy-extra-components.zip", "servoy-version":"8.2.1"}
+    	{"version":"1.5.0","url":"https://github.com/Servoy/servoy-extra-components/releases/download/v1.5.0/servoy-extra-components.zip", "servoy-version":"8.2.1"},
+	{"version":"1.5.1","url":"https://github.com/Servoy/servoy-extra-components/releases/download/v1.5.1/servoy-extra-components.zip", "servoy-version":"8.2.1"}
 	]
 }
