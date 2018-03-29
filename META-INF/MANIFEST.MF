@@ -17,6 +17,18 @@ JS-ClientLibs: js/jquery-ui.min.js;name=jquery-ui.min.js;version=1.11.
 Name: table/table.spec
 Web-Component: True
 
+Name: collapse/collapse.spec
+Web-Component: True
+
+Name: imagelabel/imagelabel.spec
+Web-Component: True
+
+Name: textfieldgroup/textfieldgroup.spec
+Web-Component: True
+
+Name: lightboxgallery/lightboxgallery.spec
+Web-Component: True
+
 Name: sidenav/sidenav.spec
 Web-Component: True
 
@@ -29,22 +41,13 @@ Web-Component: True
 Name: onrenderlabel/onrenderlabel.spec
 Web-Component: True
 
+Name: slider/slider.spec
+Web-Component: True
+
 Name: fileupload/fileupload.spec
 Web-Component: True
 
 Name: fontawesome/fontawesome.spec
-Web-Component: True
-
-Name: imagelabel/imagelabel.spec
-Web-Component: True
-
-Name: slider/slider.spec
-Web-Component: True
-
-Name: collapse/collapse.spec
-Web-Component: True
-
-Name: textfieldgroup/textfieldgroup.spec
 Web-Component: True
 
 Name: dbtreeview/dbtreeview.spec
