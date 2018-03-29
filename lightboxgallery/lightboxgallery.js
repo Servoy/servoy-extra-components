@@ -26,7 +26,6 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 					$timeout(function() {
 							$window.lightbox.option({
 								'albumLabel': $scope.model.albumLabel,
-								'fitImagesInViewpoer': $scope.model.fitImagesInViewpoer,
 								'fadeDuration': $scope.model.fadeDuration,
 								'fitImagesInViewport': $scope.model.fitImagesInViewport,
 								'imageFadeDuration': $scope.model.imageFadeDuration,
