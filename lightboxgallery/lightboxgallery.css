@@ -1,14 +1,18 @@
 .svyextra-lightboxgallery {
 }
 
+/* Why using flex Box ? */
 .svyextra-lightboxgallery-image-set {
+	/*
 	display: flex;
     flex-wrap: wrap;
     flex-direction: row-reverse;
+    */  
+      
 }
 
 .svyextra-lightboxgallery-image-cell {
-	
+	display: inline-block;
 }
 
 .svyextra-lightboxgallery-image {
@@ -35,4 +39,27 @@ a.svyextra-lightboxgallery-image {
 .svyextra-lightboxgallery-thumbnail {
     border-radius: 4px;
     border: 0;
+}
+
+.svyextra-lightboxgallery img {
+	max-width: 100%;
+}
+.svy-wrapper > * > .svyextra-lightboxgallery img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+.svy-wrapper > * > .svyextra-lightboxgallery,
+.svy-wrapper > * > .svyextra-lightboxgallery > .svyextra-lightboxgallery-image-set {
+	height: 100%;
+}
+
+.svy-wrapper > * > .svyextra-lightboxgallery > .svyextra-lightboxgallery-image-set {
+	overflow: auto;
+}
+
+/* Forces all images to container height */
+.svy-wrapper > * > .svyextra-lightboxgallery > .svyextra-lightboxgallery-image-contain > .svyextra-lightboxgallery-image-cell,
+.svy-wrapper > * > .svyextra-lightboxgallery > .svyextra-lightboxgallery-image-contain > .svyextra-lightboxgallery-image-cell > a {
+	height: 100%; 
 }

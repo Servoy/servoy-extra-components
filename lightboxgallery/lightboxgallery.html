@@ -1,6 +1,6 @@
 <div class="svyextra-lightboxgallery" ng-show="model.galleryVisible">
-	<div class="svyextra-lightboxgallery-image-set">
-		<div ng-repeat="image in images" class"svyextra-lightboxgallery-image-cell">
+	<div class="svyextra-lightboxgallery-image-set" ng-class="model.maxImageHeight ? '' : 'svyextra-lightboxgallery-image-contain'">
+		<div ng-repeat="image in images" class="svyextra-lightboxgallery-image-cell">
 			<a href="{{image.url}}" class="svyextra-lightboxgallery-image" data-lightbox="{{::model.svyMarkupId}}" data-title="{{image.caption}}">
 				<img ng-src="{{image.thumbUrl}}" class="svyextra-lightboxgallery-thumbnail" ng-style="getStyle()">
 			</a>
