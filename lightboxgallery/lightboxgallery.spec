@@ -14,7 +14,6 @@
 		"maxImageWidth"			: { "type": "int" },
 		"maxImageHeight"		: { "type": "int" },
 		"albumLabel"			: { "type": "string", "default": "image %1 of %2" },
-		"fitImagesInViewpoer" 	: { "type": "boolean", "default": true },
 		"fadeDuration"			: { "type": "int", "default": 600 },
 		"fitImagesInViewport"	: { "type": "boolean", "default": true },
 		"imageFadeDuration"		: { "type": "int", "default": 600 },
