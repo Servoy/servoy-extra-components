@@ -4,48 +4,45 @@
 	"version": 1,
 	"icon": "servoyextra/fileupload/fileupload.png",
 	"definition": "servoyextra/fileupload/fileupload.js",
-	"libraries": [{"name":"fileupload.css", "version":"1", "url":"servoyextra/fileupload/fileupload.css", "mimetype":"text/css"}, {"name":"font-awesome.css", "version":"4.7.0", "url":"servoyextra/fileupload/lib/font-awesome.min.css", "mimetype":"text/css", "group":false}],
+	"libraries": [
+		{"name":"fileupload.css", "version":"1", "url":"servoyextra/fileupload/fileupload.css", "mimetype":"text/css"}, 
+		{"name":"font-awesome.css", "version":"4.7.0", "url":"servoyextra/fileupload/lib/font-awesome.min.css", "mimetype":"text/css", "group":false}
+	],
 	"model":
 	{
-	        "dataProviderID" : { "type":"dataprovider", "pushToServer": "allow", "tags": { "scope": "design", "typeName": "mediaDataprovider" }, "ondatachange": { "onchange":"onDataChangeMethodID"}, "displayTagsPropertyName" : "displaysTags"},
-					"displaysTags" : { "type" : "boolean", "tags": { "scope" : "design" } },
-	        "enabled" : { "type": "enabled", "blockingOn": false, "default": true, "for": ["onActionMethodID","onDoubleClickMethodID","onRightClickMethodID"] }, 
-	        "location" : "point", 
-	        "size" : {"type" :"dimension",  "default" : {"width":80, "height":20}}, 
-	        "styleClass" : { "type" :"styleclass", "tags": { "scope" :"design" }, "values" :[]}, 
-	        "styleClassExpression" : { "type" :"dataprovider", "tags": { "scope" :"design" }}, 
-					"toolTipText" : { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags" },
-					"uploadText" : { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "Drop a file here or click to upload"},  
-					"uploadProgressText" : { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "Uploading click to cancel"},  
-					"uploadSuccessText" : { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "Successfully uploaded"},  
-					"uploadCancelText" : { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "Upload canceled"},  
-					"uploadNotSupportedText" : { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "File Drag/Drop is not supported for this browser"}, 
-					"resultDisplayTimeout": { "type": "int", "default": 2000 },
-	        "visible" : "visible" 
+	        "dataProviderID" 			: { "type" : "dataprovider", "pushToServer": "allow", "tags": { "scope": "design", "typeName": "mediaDataprovider" }, "ondatachange": { "onchange":"onDataChangeMethodID"}, "displayTagsPropertyName" : "displaysTags"},
+			"displaysTags" 				: { "type" : "boolean", "tags": { "scope" : "design" } },
+	        "enabled" 					: { "type" : "enabled", "blockingOn": false, "default": true, "for": ["onActionMethodID","onDoubleClickMethodID","onRightClickMethodID"] }, 
+	        "location" 					: { "type" : "point" }, 
+	        "size" 						: { "type" : "dimension",  "default" : {"width":80, "height":20} }, 
+	        "accept"					: { "type" : "string", "default": "*/*" },
+	        "styleClass" 				: { "type" : "styleclass", "tags": { "scope" :"design" }, "values" :[] }, 
+	        "styleClassExpression" 		: { "type" : "dataprovider", "tags": { "scope" :"design" }}, 
+	        "iconStyleClass" 			: { "type" : "styleclass", "tags": { "scope" :"design" }, "default": "fa fa-upload fa-3x", "values" :[]}, 
+	        "successIconStyleClass" 	: { "type" : "styleclass", "tags": { "scope" :"design" }, "default": "fa fa-check fa-3x", "values" :[]}, 
+			"showFileName" 				: { "type" : "boolean", "default": true },
+			"showProgress" 				: { "type" : "boolean", "default": true },
+			"toolTipText" 				: { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags" },
+			"uploadText" 				: { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "Drop a file here or click to upload"},  
+			"uploadProgressText" 		: { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "Uploading click to cancel"},  
+			"uploadSuccessText" 		: { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "Successfully uploaded"},  
+			"uploadCancelText" 			: { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "Upload canceled"},  
+			"uploadNotSupportedText" 	: { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "File Drag/Drop is not supported for this browser"}, 
+			"resultDisplayTimeout"		: { "type" : "int", "default": 2000 },
+	        "visible" 					: { "type" : "visible" } 
 	},
 	"handlers":
 	{
 	        "onDataChangeMethodID" : {
 	          "returns": "boolean", 
-	         	
-	        	"parameters":[
-								{
-						          "name":"oldValue",
-								  "type":"${dataproviderType}"
-								}, 
-								{
-						          "name":"newValue",
-								  "type":"${dataproviderType}"
-								}, 
-								{
-						          "name":"event",
-								  "type":"JSEvent"
-								} 
+	        		"parameters": [
+								{ "name": "oldValue", "type" : "${dataproviderType}" }, 
+								{ "name": "newValue", "type" : "${dataproviderType}" }, 
+								{ "name": "event", "type" : "JSEvent" } 
 							 ]
 	        }
 	},
 	"api":
 	{
 	}
-	 
 }

@@ -1,0 +1,10 @@
+<iframe ng-if="!svyServoyapi.isInDesigner()" width="{{model.videoWidth}}" height="{{model.videoHeight}}"
+		ng-class='model.styleClass' sablo-tabseq='model.tabSeq' ng-if='model.visible'
+		id="{{::model.svyMarkupId}}"
+        ng-src="{{getEmbedURL()}}"
+		allowfullscreen
+></iframe>
+<div ng-if="svyServoyapi.isInDesigner()" class="youtubevideoembedder-designer-container" ng-style="{ 'width': model.videoWidth, 'height': model.videoHeight }">
+	<i class="fa fa-youtube-play youtubevideoembedder-designer-icon youtubevideoembedder-play" aria-hidden="true"></i>
+	<i class="fa fa-youtube youtubevideoembedder-designer-icon youtubevideoembedder-logo" aria-hidden="true"></i>
+</div>

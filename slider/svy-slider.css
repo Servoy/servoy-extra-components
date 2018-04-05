@@ -1,0 +1,57 @@
+/* Absolute form container */
+.svy-wrapper > * > .svy-slider-container {
+    width: 100%;
+    height: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+/* Slider container */
+.svy-slider-container {
+
+}
+
+/* Slider bar */
+.svy-slider .rz-bar {
+	
+}
+
+/* Selection bar */
+.svy-slider .rz-selection {
+	
+}
+
+/* Pointer */
+.svy-slider .rz-pointer {
+
+}
+
+/* Pointer pseudo element (center circle) */
+.svy-slider.rzslider .rz-pointer:after {
+	
+}
+
+/* don't show the focus outline on the pointer when grabbed */
+.svy-slider .rz-pointer:focus {
+	outline: none;
+}
+
+/* text bubbles */
+.svy-slider .rz-bubble {
+	
+}
+
+/* limit labels */
+.svy-slider .rz-limit {
+	
+}
+
+/* ticks */
+.svy-slider .rz-tick {
+	
+}
+
+/* selected tick */
+.svy-slider .rz-tick.rz-selected {
+
+}

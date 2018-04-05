@@ -1,0 +1,27 @@
+.youtubevideoembedder {
+	border: none;
+}
+
+.youtubevideoembedder-designer-container > .youtubevideoembedder-logo {
+	font-size: 65px;
+}
+
+.youtubevideoembedder-designer-container > .youtubevideoembedder-play {
+	font-size: 100px;
+}
+
+.youtubevideoembedder-designer-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border: 1px black solid;
+}
+
+.youtubevideoembedder-logo {
+	color: black;
+}
+
+.youtubevideoembedder-play {
+	color: red;
+	margin-right: 10px;
+}

@@ -39,7 +39,8 @@
 			"valuelist": { "type": "valuelist", "for": "dataprovider" },
 			"width": { "type": "string", "default": "auto"},
 			"initialWidth": { "type": "string", "tags": { "scope": "runtime" } },
-			"autoResize": { "type": "boolean", "default": false }
+			"autoResize": { "type": "boolean", "default": false },
+			"showAs": { "type": "string", "default": "text", "values": ["text", "html", "sanitizedHtml"] }
 		},
 		"settings": {
 			"minBatchSizeForRenderingMoreRows" : { "type": "int", "default": 10 }, 

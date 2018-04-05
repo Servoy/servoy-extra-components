@@ -1,0 +1,12 @@
+<div 
+	id="{{::model.svyMarkupId}}"
+	class="svy-slider-container {{model.styleClass}}" 
+	ng-show="model.visible" >
+	<rzslider 
+		class="svy-slider {{model.styleClass}} bts-extra-slider" 
+		ng-if='model.visible' 
+		rz-slider-model="model.dataProvider" 
+		rz-slider-high="model.dataProviderHigh" 
+		rz-slider-options="options" >
+	</rzslider>
+</div>

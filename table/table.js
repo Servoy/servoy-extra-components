@@ -1,6 +1,6 @@
 angular.module('servoyextraTable', ['servoy'])
-.directive('servoyextraTable', ["$log", "$timeout", "$sabloConstants", "$foundsetTypeConstants", "$filter", "$webSocket",
-				function($log, $timeout, $sabloConstants, $foundsetTypeConstants, $filter, $webSocket) {
+.directive('servoyextraTable', ["$log", "$timeout", "$sabloConstants", "$foundsetTypeConstants", "$filter", "$webSocket", "$sanitize",
+				function($log, $timeout, $sabloConstants, $foundsetTypeConstants, $filter, $webSocket, $sanitize) {
 return {
 	restrict: 'E',
 	scope: {
@@ -135,8 +135,8 @@ return {
 			return tableWidth;
 		}
 
-		function getAutoColumns() {
-			var autoColumns = { columns: { }, minWidth: { }, autoResize: {}, count: 0 };
+		function setColumnsToInitalWidthAndInitAutoColumns() {
+			var newAutoColumns = { columns: { }, minWidth: { }, autoResize: {}, count: 0 };
 			if ($scope.model.columns) {
 				for (var i = 0; i < $scope.model.columns.length; i++) {
 					if ($scope.model.columns[i].initialWidth == undefined) {
@@ -147,15 +147,16 @@ return {
 
 					var minWidth = getNumberFromPxString($scope.model.columns[i].width);
 					if (isAutoResizeColumn(i) || minWidth < 0) {
-						autoColumns.columns[i] = true;
-						autoColumns.minWidth[i] = minWidth;
-						autoColumns.autoResize[i] = isAutoResizeColumn(i);
-						autoColumns.count += 1;
+						newAutoColumns.columns[i] = true;
+						newAutoColumns.minWidth[i] = minWidth;
+						newAutoColumns.autoResize[i] = isAutoResizeColumn(i);
+						newAutoColumns.count += 1;
 					}
 				}
 			}
 
-			return autoColumns;
+			autoColumns = newAutoColumns;
+			needToUpdateAutoColumnsWidth = true;
 		}
 
 		function getAutoColumnPercentage() {
@@ -248,7 +249,9 @@ return {
 			return $scope.componentWidth;
 		}
 
-		var autoColumns = getAutoColumns();
+		var autoColumns;
+		var needToUpdateAutoColumnsWidth = false;
+		setColumnsToInitalWidthAndInitAutoColumns();
 		var tableWidth = calculateTableWidth();
 
 		var tableLeftOffset = 0;
@@ -419,17 +422,33 @@ return {
 					isScrollWidthChange = true;
 				}
 	
-				if(isScrollWidthChange) {
-					autoColumns = getAutoColumns();	// reset column model width to inital value
-					columnStyleCache = []; // clear style cache so header style (width) is re-calculated
+				if(isScrollWidthChange || $scope.model.enableColumnResize) {
+					setColumnsToInitalWidthAndInitAutoColumns();	// reset column model width to inital value
+					if(isScrollWidthChange) {
+						columnStyleCache = []; // clear style cache so header style (width) is re-calculated
+					}
+				}
+
+				if(needToUpdateAutoColumnsWidth) {
+					needToUpdateAutoColumnsWidth = false;
+					tableWidth = calculateTableWidth();
+
+					var sumColumnsWidth = 0;
+					var ignoreScrollWidth = false;
+					var tbl = $element.find("table:first");
+					var headers = tbl.find("th");
+					if ($(headers).length && $(headers).eq(0).is(":visible")) {
+						for (var i = 0; i < $scope.model.columns.length; i++) {
+							sumColumnsWidth += $(headers.get(i)).outerWidth(false);
+							if(!ignoreScrollWidth && ($scope.model.columns[i].width == "" || $scope.model.columns[i].width == "auto")) {
+								ignoreScrollWidth = true;
+							}
+						}
+					}
+					updateAutoColumnsWidth(getComponentWidth() - (ignoreScrollWidth ? 0 :  $scope.scrollWidth) - sumColumnsWidth);
 				}
 
 				if ($scope.model.enableColumnResize) {
-					if(!isScrollWidthChange) {
-						autoColumns = getAutoColumns();
-					}
-					tableWidth = calculateTableWidth();
-					updateAutoColumnsWidth(0);
 					addColResizable(true);
 				}
 			});
@@ -717,10 +736,11 @@ return {
 				value: function(property, value) {
 					switch (property) {
 					case "columns":
-						var differentColumns = currentColumnLength != $scope.model.columns.length;
+						var newLength =  $scope.model.columns ? $scope.model.columns.length : 0;
+						var differentColumns = currentColumnLength != newLength;
 						var valueChanged = differentColumns;
 						var dataproviderChanged = false;
-						currentColumnLength = $scope.model.columns.length
+						currentColumnLength = newLength
 						if (!valueChanged) {
 							for (var i = 0; i < $scope.model.columns.length; i++) {
 								if ($scope.model.columns[i].dataprovider != undefined &&
@@ -738,7 +758,7 @@ return {
 						}
 
 						if (valueChanged || dataproviderChanged) {
-							autoColumns = getAutoColumns();
+							setColumnsToInitalWidthAndInitAutoColumns();
 							tableWidth = calculateTableWidth();
 							if ($scope.model.columns && $scope.model.columns.length > 0) {
 								updateAutoColumnsWidth(0);
@@ -805,7 +825,7 @@ return {
 		});
 
 		var toBottom = false;
-		$scope.$watch('model.visible', function(newValue) {
+		$scope.$watch('model.visible', function(newValue, oldValue) {
 				if (newValue) {
 					wrapper = $element.find(".tablewrapper")[0];
 					tbody = $element.find("tbody");
@@ -816,7 +836,9 @@ return {
 							tbody = $element.find("tbody");
 						});
 
-					generateTemplate(true);
+					if(newValue != oldValue) {
+						generateTemplate(true);
+					}
 				} else {
 					toBottom = false;
 					tbody = null;
@@ -1836,7 +1858,7 @@ return {
 							{	
 								value = formatFilter(value, column.format.display, column.format.type, column.format);
 							}
-							divChild.text(value)
+							setCellDivValue(column, divChild[0], value);
 						} else {
 							var imgChild = td.children("img");
 							if (imgChild.length == 1) {
@@ -2010,6 +2032,8 @@ return {
 				tbody = $(tbodyNew);
 				topSpaceDiv = null;
 				bottomSpaceDiv = null;
+				tbodyJQ.unbind("scroll", onTBodyScrollListener);
+				onTBodyScrollListener = null;
 
 				updateTBodyStyle(tbodyNew);
 				renderedSize = Math.min(renderedSize, rows.length);
@@ -2218,6 +2242,18 @@ return {
 			onTableRendered();
 		}
 
+		function setCellDivValue(column, divElement, value) {
+			var fixedValue = value ? value : "";
+			if(column.showAs == 'html') {
+				$(divElement).html(fixedValue);
+			} else if(column.showAs == 'sanitizedHtml') {
+				$(divElement).html($sanitize(fixedValue));
+			}
+			else {
+				$(divElement).text(fixedValue);
+			}
+		}
+
 		function createTableRow(columns, idxInLoaded, formatFilter) {
 			var tr = document.createElement("TR");
 			if($scope.model.rowStyleClassDataprovider && $scope.model.rowStyleClassDataprovider[idxInLoaded]) {
@@ -2248,8 +2284,7 @@ return {
 					{	
 						value = formatFilter(value, column.format.display, column.format.type, column.format);
 					}
-					var txt = document.createTextNode(value ? value : "");
-					div.appendChild(txt);
+					setCellDivValue(column, div, value);
 					td.appendChild(div);
 				}
 			}
@@ -2267,7 +2302,6 @@ return {
 			if ($scope.model.enableSort || $scope.handlers.onHeaderClick) {
 				tHeadStyle.cursor = "pointer";
 			}
-			tHeadStyle.width = autoColumns.count > 0 ? (getComponentWidth() - $scope.scrollWidth) + "px" : tableWidth + "px";
 			tHeadStyle.left = tableLeftOffset + "px";
 			return tHeadStyle;
 		}
@@ -2276,9 +2310,6 @@ return {
 			var tBodyStyle = { };
 			var componentWidth = getComponentWidth();
 			tBodyStyle.width = componentWidth + "px";
-			if (tableWidth < componentWidth) {
-				tBodyStyle.overflowX = "hidden";
-			}
 			var tbl = $element.find("table:first");
 			var tblHead = tbl.find("thead");
 			if ($(tblHead).is(":visible")) {
@@ -2299,7 +2330,7 @@ return {
 		$scope.getColumnStyle = function(column) {
 			var columnStyle = columnStyleCache[column];
 			if (columnStyle) return columnStyle;
-			columnStyle = { overflow: "hidden" };
+			columnStyle = { overflow: "hidden"};
 			columnStyleCache[column] = columnStyle;
 			var w = getNumberFromPxString($scope.model.columns[column].width);
 			if (w > -1) {

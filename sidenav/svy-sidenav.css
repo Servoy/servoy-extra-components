@@ -127,7 +127,7 @@
 	color: inherit;
 }
 
-.svy-sidenav-item.sn-level-1 {
+.sn-level-1 {
 	font-size: 16px;
 }
 
@@ -542,12 +542,12 @@
 /** display the text while opening and animating */
 .nav-collapse-menu.svy-slide-out.svy-hover .svy-sidenav-item-text,
 .nav-collapse-menu.svy-slide-out.svy-hover-animate .svy-sidenav-item-text {
-	display: initial;
+	display: inline;
 }
 
 /** display the collapse icon while hovering and fully open */
 .nav-collapse-menu.svy-slide-out.svy-hover:not(.svy-hover-animate) .svy-sidenav-collapse-icon {
-	display: initial;
+	display: inline;
 }
 
 /** display the submenu while hovering or opening the menu */
