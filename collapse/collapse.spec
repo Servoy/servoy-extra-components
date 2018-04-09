@@ -7,7 +7,7 @@
 	"serverscript": "servoyextra/collapse/collapse_server.js",
 	"libraries": [
 		{"name":"svy-collapse.css", "version":"1.0.0", "url":"servoyextra/collapse/svy-collapse.css", "mimetype":"text/css"},
-		{"name":"bootstrap.min.js", "version":"3.3.7", "url":"servoyextra/lib/js/bootstrap.min.js", "mimetype":"text/javascript"}
+		{"name":"bootstrap", "version":"3.3.7", "url":"servoyextra/lib/js/bootstrap.min.js", "mimetype":"text/javascript"}
 	],
 	"model":
 	{
