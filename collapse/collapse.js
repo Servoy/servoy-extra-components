@@ -10,6 +10,14 @@ angular.module('servoyextraCollapse', ['servoy']) //$NON-NLS-1$ //$NON-NLS-2$
 			},
 			controller: function($scope, $element, $attrs) {
 				
+				$scope.getFormIfVisible = function(collapse) {
+					if (collapse && collapse.form && !collapse.isCollapsed) {
+						return $scope.svyServoyapi.getFormUrl(collapse.form);
+					} else {
+						return "";
+					}
+				}
+
 				$scope.getForm = function(formToGet) {
 					if (formToGet) {
 						return $scope.svyServoyapi.getFormUrl(formToGet);
@@ -17,7 +25,7 @@ angular.module('servoyextraCollapse', ['servoy']) //$NON-NLS-1$ //$NON-NLS-2$
 						return "";
 					}
 				}
-
+				
 				$scope.getFormStyle = function(formToGet) {
 					if (formToGet && $scope.formState && $scope.formState[formToGet]) {
 						//form found
