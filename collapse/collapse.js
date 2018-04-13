@@ -17,10 +17,10 @@ angular.module('servoyextraCollapse', ['servoy']) //$NON-NLS-1$ //$NON-NLS-2$
 						return "";
 					}
 				}
-
-				$scope.getForm = function(formToGet) {
-					if (formToGet) {
-						return $scope.svyServoyapi.getFormUrl(formToGet);
+				
+				$scope.getCardFormIfVisible = function(collapse, card) {
+					if (collapse && card.form && !collapse.isCollapsed) {
+						return $scope.svyServoyapi.getFormUrl(card.form);
 					} else {
 						return "";
 					}
@@ -100,31 +100,43 @@ angular.module('servoyextraCollapse', ['servoy']) //$NON-NLS-1$ //$NON-NLS-2$
 					//toggle form visibility
 					if (collapsibleToChange.form) {
 						if (state === false) {
-							$scope.svyServoyapi.formWillShow(collapsibleToChange.form);
+							$scope.svyServoyapi.formWillShow(collapsibleToChange.form).then(function() {
+								$scope.model.collapsibles[index].isCollapsed = state;
+							});
 						} else if (state === true) {
-							$scope.svyServoyapi.hideForm(collapsibleToChange.form);
+							$scope.svyServoyapi.hideForm(collapsibleToChange.form).then(function() {
+								$scope.model.collapsibles[index].isCollapsed = state;
+							});
 						}
-					}
-					
-					if (collapsibleToChange.cards) {
+					} else if (collapsibleToChange.cards) {
 						//toggle form visibility on cards
-						toggleCardFormVisibility(collapsibleToChange.cards, state);
+						toggleCardVisibility(collapsibleToChange.cards, state).then(function() {							
+							$scope.model.collapsibles[index].isCollapsed = state;
+						});
+					} else {						
+						$scope.model.collapsibles[index].isCollapsed = state;
 					}
-					
-					$scope.model.collapsibles[index].isCollapsed = state;
 				}
 				
 				/**
+				 * @param {Array<{form: String}>} cardsArray
+				 * @param {String} state
 				 * Shows/Hides forms when a card containing a form becomes visible / not visible
 				 */
-				function toggleCardFormVisibility(cardsArray, state) {
-					for (var c = 0; c < cardsArray.length; c++) {
-						if (cardsArray[c].form && state === false) {
-							$scope.svyServoyapi.formWillShow(cardsArray[c].form);								
-						} else if (cardsArray[c].form && state === true) {
-							$scope.svyServoyapi.hideForm(cardsArray[c].form);
+				function toggleCardVisibility(cardsArray, state) {
+					function toggleFormVisibility(card) {
+						if (card.form) {
+							if (state === false) {
+								return $scope.svyServoyapi.formWillShow(card.form);
+							} else {
+								return $scope.svyServoyapi.hideForm(card.form);
+							}
+						} else {
+							return true;
 						}
 					}
+					
+					return Promise.all(cardsArray.map(toggleFormVisibility));
 				}
 				
 				/**

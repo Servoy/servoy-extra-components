@@ -75,7 +75,7 @@
 				</div>
 				<div 
 					ng-if="card.form" 
-					ng-include="getForm(card.form)" 
+					ng-include="getCardFormIfVisible(collapsible, card)" 
 					ng-class="card.styleClass" 
 					ng-style="getFormStyle(card.form)"
 					class="svy-collapse-card-body-container" 
