@@ -622,11 +622,11 @@ return {
 			return newLoadingPromise;
 		}
 		
-		function selectedIndexesChanged(newSelectedIdxs, oldSelectedIdxs) {
+		function selectedIndexesChanged(newSelectedIdxs, oldSelectedIdxs, noScrollToSelection) {
 			if (newSelectedIdxs.length > 0) {
 				if (newSelectedIdxs != oldSelectedIdxs || $scope.model.lastSelectionFirstElement != newSelectedIdxs[0]) {
 					updateSelection(newSelectedIdxs, oldSelectedIdxs);
-					if ($scope.model.lastSelectionFirstElement != newSelectedIdxs[0]) {
+					if (!noScrollToSelection && ($scope.model.lastSelectionFirstElement != newSelectedIdxs[0])) {
 						scrollToSelectionNeeded = true;
 						if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
 							$log.debug("svy extra table * selectedRowIndexes changed; scrollToSelectionNeeded = true");
@@ -671,7 +671,7 @@ return {
 					// ignore value change triggered by the watch initially with the same value except for when it was a form re-show and the selected index changed meanwhile
 					var selectedIdxs = $scope.model.foundset.selectedRowIndexes
 					if (!oldSelectedIdxs) oldSelectedIdxs = selectedIdxs; // initial value of the foundset then, not a change, so old = new
-					selectedIndexesChanged(selectedIdxs, oldSelectedIdxs);
+					selectedIndexesChanged(selectedIdxs, oldSelectedIdxs, !foundsetChanges[$foundsetTypeConstants.NOTIFY_SCROLL_TO_SELECTION]);
 				}
 				
 				if (shouldGenerateWholeTemplate) generateTemplate(true);
