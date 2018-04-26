@@ -162,11 +162,13 @@ angular.module('servoyextraCollapse', ['servoy']) //$NON-NLS-1$ //$NON-NLS-2$
 				 */
 				$scope.onClick = function(e) {
 					var collapsibleIndex = e.target.closest('.svy-collapse-collapsible').id.split('-')[1] //$NON-NLS-1$ //$NON-NLS-2$
-					setCollapsedState(collapsibleIndex, !$scope.model.collapsibles[collapsibleIndex].isCollapsed);
-					if ($scope.model.collapsibles[collapsibleIndex].isCollapsed !== true && $scope.handlers.onCollapsibleShown) {
-						$scope.handlers.onCollapsibleShown(e, $scope.model.collapsibles[collapsibleIndex], collapsibleIndex);
-					} else if ($scope.model.collapsibles[collapsibleIndex].isCollapsed === true && $scope.handlers.onCollapsibleHidden) {
-						$scope.handlers.onCollapsibleHidden(e, $scope.model.collapsibles[collapsibleIndex], collapsibleIndex);
+					var collapsible = $scope.model.collapsibles[collapsibleIndex];
+					var previousState = collapsible.isCollapsed;
+					setCollapsedState(collapsibleIndex, !previousState);
+					if (previousState === true && $scope.handlers.onCollapsibleShown) {
+						$scope.handlers.onCollapsibleShown(e, collapsible, collapsibleIndex);
+					} else if (previousState !== true && $scope.handlers.onCollapsibleHidden) {
+						$scope.handlers.onCollapsibleHidden(e, collapsible, collapsibleIndex);
 					}
 				}
 
