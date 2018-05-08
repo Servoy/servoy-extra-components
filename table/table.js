@@ -411,10 +411,10 @@ return {
 			}
 
 
-			$scope.$apply(function() {
+			$timeout(function() {
 				var isScrollWidthChange = false;
 				if(tbody && (tbody[0].scrollHeight > tbody[0].clientHeight && ($scope.scrollWidth == 0))) {
-					$scope.scrollWidth = 15;
+					$scope.scrollWidth = tbody[0].offsetWidth - tbody[0].clientWidth;
 					isScrollWidthChange = true;
 				}
 				else if(tbody && (tbody[0].scrollHeight <= tbody[0].clientHeight) && ($scope.scrollWidth > 0)) {
@@ -451,7 +451,7 @@ return {
 				if ($scope.model.enableColumnResize) {
 					addColResizable(true);
 				}
-			});
+			}, 0);
 
 			// do it in the next digest cycle, so the headers already have the style with the width applied (by the apply above)
 			$timeout(function() {
