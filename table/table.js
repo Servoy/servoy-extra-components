@@ -411,10 +411,10 @@ return {
 			}
 
 
-			$scope.$apply(function() {
+			$timeout(function() {
 				var isScrollWidthChange = false;
 				if(tbody && (tbody[0].scrollHeight > tbody[0].clientHeight && ($scope.scrollWidth == 0))) {
-					$scope.scrollWidth = 15;
+					$scope.scrollWidth = tbody[0].offsetWidth - tbody[0].clientWidth;
 					isScrollWidthChange = true;
 				}
 				else if(tbody && (tbody[0].scrollHeight <= tbody[0].clientHeight) && ($scope.scrollWidth > 0)) {
@@ -451,7 +451,7 @@ return {
 				if ($scope.model.enableColumnResize) {
 					addColResizable(true);
 				}
-			});
+			}, 0);
 
 			// do it in the next digest cycle, so the headers already have the style with the width applied (by the apply above)
 			$timeout(function() {
@@ -622,11 +622,11 @@ return {
 			return newLoadingPromise;
 		}
 		
-		function selectedIndexesChanged(newSelectedIdxs, oldSelectedIdxs) {
+		function selectedIndexesChanged(newSelectedIdxs, oldSelectedIdxs, noScrollToSelection) {
 			if (newSelectedIdxs.length > 0) {
 				if (newSelectedIdxs != oldSelectedIdxs || $scope.model.lastSelectionFirstElement != newSelectedIdxs[0]) {
 					updateSelection(newSelectedIdxs, oldSelectedIdxs);
-					if ($scope.model.lastSelectionFirstElement != newSelectedIdxs[0]) {
+					if (!noScrollToSelection && ($scope.model.lastSelectionFirstElement != newSelectedIdxs[0])) {
 						scrollToSelectionNeeded = true;
 						if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
 							$log.debug("svy extra table * selectedRowIndexes changed; scrollToSelectionNeeded = true");
@@ -671,7 +671,7 @@ return {
 					// ignore value change triggered by the watch initially with the same value except for when it was a form re-show and the selected index changed meanwhile
 					var selectedIdxs = $scope.model.foundset.selectedRowIndexes
 					if (!oldSelectedIdxs) oldSelectedIdxs = selectedIdxs; // initial value of the foundset then, not a change, so old = new
-					selectedIndexesChanged(selectedIdxs, oldSelectedIdxs);
+					selectedIndexesChanged(selectedIdxs, oldSelectedIdxs, !foundsetChanges[$foundsetTypeConstants.NOTIFY_SCROLL_TO_SELECTION]);
 				}
 				
 				if (shouldGenerateWholeTemplate) generateTemplate(true);

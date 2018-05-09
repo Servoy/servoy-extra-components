@@ -10,14 +10,22 @@ angular.module('servoyextraCollapse', ['servoy']) //$NON-NLS-1$ //$NON-NLS-2$
 			},
 			controller: function($scope, $element, $attrs) {
 				
-				$scope.getForm = function(formToGet) {
-					if (formToGet) {
-						return $scope.svyServoyapi.getFormUrl(formToGet);
+				$scope.getFormIfVisible = function(collapse) {
+					if (collapse && collapse.form && !collapse.isCollapsed) {
+						return $scope.svyServoyapi.getFormUrl(collapse.form);
 					} else {
 						return "";
 					}
 				}
-
+				
+				$scope.getCardFormIfVisible = function(collapse, card) {
+					if (collapse && card.form && !collapse.isCollapsed) {
+						return $scope.svyServoyapi.getFormUrl(card.form);
+					} else {
+						return "";
+					}
+				}
+				
 				$scope.getFormStyle = function(formToGet) {
 					if (formToGet && $scope.formState && $scope.formState[formToGet]) {
 						//form found
@@ -92,31 +100,43 @@ angular.module('servoyextraCollapse', ['servoy']) //$NON-NLS-1$ //$NON-NLS-2$
 					//toggle form visibility
 					if (collapsibleToChange.form) {
 						if (state === false) {
-							$scope.svyServoyapi.formWillShow(collapsibleToChange.form);
+							$scope.svyServoyapi.formWillShow(collapsibleToChange.form).then(function() {
+								$scope.model.collapsibles[index].isCollapsed = state;
+							});
 						} else if (state === true) {
-							$scope.svyServoyapi.hideForm(collapsibleToChange.form);
+							$scope.svyServoyapi.hideForm(collapsibleToChange.form).then(function() {
+								$scope.model.collapsibles[index].isCollapsed = state;
+							});
 						}
-					}
-					
-					if (collapsibleToChange.cards) {
+					} else if (collapsibleToChange.cards) {
 						//toggle form visibility on cards
-						toggleCardFormVisibility(collapsibleToChange.cards, state);
+						toggleCardVisibility(collapsibleToChange.cards, state).then(function() {							
+							$scope.model.collapsibles[index].isCollapsed = state;
+						});
+					} else {						
+						$scope.model.collapsibles[index].isCollapsed = state;
 					}
-					
-					$scope.model.collapsibles[index].isCollapsed = state;
 				}
 				
 				/**
+				 * @param {Array<{form: String}>} cardsArray
+				 * @param {String} state
 				 * Shows/Hides forms when a card containing a form becomes visible / not visible
 				 */
-				function toggleCardFormVisibility(cardsArray, state) {
-					for (var c = 0; c < cardsArray.length; c++) {
-						if (cardsArray[c].form && state === false) {
-							$scope.svyServoyapi.formWillShow(cardsArray[c].form);								
-						} else if (cardsArray[c].form && state === true) {
-							$scope.svyServoyapi.hideForm(cardsArray[c].form);
+				function toggleCardVisibility(cardsArray, state) {
+					function toggleFormVisibility(card) {
+						if (card.form) {
+							if (state === false) {
+								return $scope.svyServoyapi.formWillShow(card.form);
+							} else {
+								return $scope.svyServoyapi.hideForm(card.form);
+							}
+						} else {
+							return true;
 						}
 					}
+					
+					return Promise.all(cardsArray.map(toggleFormVisibility));
 				}
 				
 				/**
@@ -142,11 +162,13 @@ angular.module('servoyextraCollapse', ['servoy']) //$NON-NLS-1$ //$NON-NLS-2$
 				 */
 				$scope.onClick = function(e) {
 					var collapsibleIndex = e.target.closest('.svy-collapse-collapsible').id.split('-')[1] //$NON-NLS-1$ //$NON-NLS-2$
-					setCollapsedState(collapsibleIndex, !$scope.model.collapsibles[collapsibleIndex].isCollapsed);
-					if ($scope.model.collapsibles[collapsibleIndex].isCollapsed !== true && $scope.handlers.onCollapsibleShown) {
-						$scope.handlers.onCollapsibleShown(e, $scope.model.collapsibles[collapsibleIndex], collapsibleIndex);
-					} else if ($scope.model.collapsibles[collapsibleIndex].isCollapsed === true && $scope.handlers.onCollapsibleHidden) {
-						$scope.handlers.onCollapsibleHidden(e, $scope.model.collapsibles[collapsibleIndex], collapsibleIndex);
+					var collapsible = $scope.model.collapsibles[collapsibleIndex];
+					var previousState = collapsible.isCollapsed;
+					setCollapsedState(collapsibleIndex, !previousState);
+					if (previousState === true && $scope.handlers.onCollapsibleShown) {
+						$scope.handlers.onCollapsibleShown(e, collapsible, collapsibleIndex);
+					} else if (previousState !== true && $scope.handlers.onCollapsibleHidden) {
+						$scope.handlers.onCollapsibleHidden(e, collapsible, collapsibleIndex);
 					}
 				}
 

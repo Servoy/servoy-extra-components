@@ -44,7 +44,7 @@
 				class="svy-collapse-card-body {{collapsible.bodyStyleClass}}" 
 				id="{{::model.svyMarkupId}}-{{$index}}-collapsible-body" >
 				<div 
-					ng-include="getForm(collapsible.form)" 
+					ng-include="getFormIfVisible(collapsible)" 
 					class="svy-collapse-card-body-container" 
 					ng-style="getFormStyle(collapsible.form)" >
 				</div>
@@ -75,7 +75,7 @@
 				</div>
 				<div 
 					ng-if="card.form" 
-					ng-include="getForm(card.form)" 
+					ng-include="getCardFormIfVisible(collapsible, card)" 
 					ng-class="card.styleClass" 
 					ng-style="getFormStyle(card.form)"
 					class="svy-collapse-card-body-container" 
