@@ -1,5 +1,5 @@
 angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
-.directive('servoyextraSelect2tokenizer', ['$diacritics', '$log', '$sabloConstants', '$compile', '$timeout', function($diacritics, $log, $sabloConstants, $compile, $timeout) {
+.directive('servoyextraSelect2tokenizer', ['$diacritics', '$log', '$sabloConstants', '$compile', '$timeout','$q', function($diacritics, $log, $sabloConstants, $compile, $timeout,$q) {
 	return {
 		restrict: 'E',
 		scope: {
@@ -294,7 +294,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 				  if ((searchTerm.length > searchText.length && searchTerm.indexOf(searchText, 0) > -1) && ((tags.length === 1 && tags[0].text === searchText) || tags.length < MAX_LENGTH)) {
 					$log.debug("subset already on clientside " + searchTerm);
 				  	// pointless to search for more values
-				  	var promise = new Promise(function (resolve, vailure) {
+				  	var promise = new $q(function (resolve, vailure) {
 				  		// filter on valuelist
 				  		var results = [];
 				  		var list = $scope.model.valuelistID;
