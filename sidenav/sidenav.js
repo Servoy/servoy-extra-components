@@ -156,10 +156,11 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 * @param {Number} index
 				 * @param {servoyextra-sidenav.MenuItem} item
 				 * @param {Object} [event]
-				 * @param {Object} [preventHandler]
+				 * @param {Object} [preventSelectHandler]
+				 * @param {Object} [preventExpandHandler]
 				 *
 				 * Select the main Item */
-				$scope.selectItem = function(level, index, item, event, preventHandler) {
+				$scope.selectItem = function(level, index, item, event, preventSelectHandler, preventExpandHandler) {
 					//					console.log("select " + level + ' - ' + item.id)
 
 					if (event) { //
@@ -173,7 +174,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 						return false;
 					}
 
-					if (preventHandler != true && $scope.handlers.onMenuItemSelected) { // change selection only if onMenuItemSelected allows it
+					if (preventSelectHandler != true && $scope.handlers.onMenuItemSelected) { // change selection only if onMenuItemSelected allows it
 						$scope.handlers.onMenuItemSelected(item.id, event).then(function(result) {
 								if (result !== false) {
 									confirmSelection();
@@ -192,11 +193,11 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 
 						// expand the item
 						if (item.menuItems) { // expand the node if not leaf
-							$scope.expandItem(level, index, item, event, preventHandler); // TODO add collapsed argument
+							$scope.expandItem(level, index, item, event, preventExpandHandler); // TODO add collapsed argument
 						} else { // expand the parent node if is a leaf
 							var parentNode = getParentNode(item.id);
 							if (parentNode) {
-								$scope.expandItem(level - 1, null, parentNode, event, preventHandler);
+								$scope.expandItem(level - 1, null, parentNode, event, preventExpandHandler);
 							}
 						}
 					}
@@ -369,8 +370,9 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 						var node = getNodeByIndexPath(subPath, nodes);
 
 						// select the item
-						var preventHandler = mustExecuteOnMenuItemExpand == true ? false : true;
-						return $scope.selectItem(path.length, path[path.length - 1], node, null, preventHandler);
+						var preventSelectHandler = mustExecuteOnMenuItemSelect == true ? false : true;
+						var preventExpandHandler = mustExecuteOnMenuItemExpand == true ? false : true;
+						return $scope.selectItem(path.length, path[path.length - 1], node, null, preventSelectHandler, preventExpandHandler);
 					}
 				}
 
@@ -387,8 +389,8 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 
 					// search node in tree
 					var node = getNodeByIndexPath(path, $scope.model.menu);
-					var preventHandler = mustExecuteOnSelectNode == true ? false : true;
-					$scope.selectItem(path.length, path[path.length - 1], node, null, preventHandler);
+					var preventSelectHandler = mustExecuteOnSelectNode == true ? false : true;
+					$scope.selectItem(path.length, path[path.length - 1], node, null, preventSelectHandler);
 					return;
 
 					//				if (node && !isDisabled(node.id)) {	// check if node is enabled
