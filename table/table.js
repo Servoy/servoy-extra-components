@@ -1971,7 +1971,7 @@ return {
 					var rules = targetStyleSheet.cssRules || targetStyleSheet.rules;
 					targetStyleSheet.insertRule(clsName + '{}', rules.length);
 					columnCSSRules[columnIndex] = rules[rules.length - 1];
-					columnCSSRules[columnIndex].style["height"] = $scope.model.minRowHeight
+					columnCSSRules[columnIndex].style["min-height"] = $scope.model.minRowHeight
 				}
 			}
 
@@ -2349,7 +2349,8 @@ return {
 		}
 
 		function getCellStyle(column) {
-			var cellStyle = { overflow: "hidden" };
+			// force row to take into acount set sizes, have to change display
+			var cellStyle = { overflow: "hidden", display: "inline-block" };
 			if (column < $scope.model.columns.length) {
 				var w = getNumberFromPxString($scope.model.columns[column].width);
 				if (isAutoResizeColumn(column) || w < 0) {
