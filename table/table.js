@@ -1795,13 +1795,14 @@ return {
 				trEl.className = rowClassNames;
 			}
 
+			var j;
 			if (newRowsToBeRenderedBefore > 0) {
 				var beforeEl = children.eq(topEmptySpaceRowCount); // dom element before which the new rows should be appended (first row rendered previously if any is available, otherwise bottom space div or null)
 				if (!beforeEl || beforeEl.length == 0) beforeEl = null; // append last (before == null) as there is nothing after it
 				else beforeEl = beforeEl[0]; // get DOM node in front of which we should insert
 
 				// rows will be prepended to current ones on top
-				for (var j = 0; j < newRowsToBeRenderedBefore; j++) {
+				for (j = 0; j < newRowsToBeRenderedBefore; j++) {
 					// as trChildren is relative to rendered viewport, it can only grow (have missing rows) or shrink at the end; if changes
 					// happen before it, the data is updated in those cells, no real dom Node inserts have to happen in specific indexes in
 					// the rendered viewpot
@@ -1814,7 +1815,7 @@ return {
 				childrenListChanged = false;
 			}
 
-			for (var j = startIndex; j <= endIndex; j++) {
+			for (j = startIndex; j <= endIndex; j++) {
 				var rowIdxInFoundsetViewport = j + rowOffSet;
 				var trElement = children.eq(j + topEmptySpaceRowCount);
 
@@ -1853,7 +1854,7 @@ return {
 						}
 						if (divChild.length == 1) {
 							// its text node
-							value = getDisplayValue(value, column.valuelist);
+							value = getDisplayValue(value, column.valuelist && column.valuelist["idForFoundset"] ? column.valuelist[rowIdxInFoundsetViewport] : column.valuelist);
 							if (column.format)
 							{	
 								value = formatFilter(value, column.format.display, column.format.type, column.format);
@@ -2279,7 +2280,7 @@ return {
 				} else {
 					var div = document.createElement("DIV");
 					var value = column.dataprovider ? column.dataprovider[idxInLoaded] : null;
-					value = getDisplayValue(value, column.valuelist);
+					value = getDisplayValue(value, column.valuelist && column.valuelist["idForFoundset"] ? column.valuelist[idxInLoaded] : column.valuelist);
 					if (column.format) 
 					{	
 						value = formatFilter(value, column.format.display, column.format.type, column.format);

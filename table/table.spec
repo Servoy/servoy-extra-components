@@ -30,13 +30,13 @@
 	},
 	"types": {
 		"column": {
-			"dataprovider": { "type": "dataprovider", "forFoundset": "foundset", "resolveValuelist" : true , "tags": { "useAsCaptionInDeveloper" : true, "captionPriority" : 2 }},
+			"dataprovider": { "type": "dataprovider", "forFoundset": "foundset", "resolveValuelist" : true, "tags": { "useAsCaptionInDeveloper" : true, "captionPriority" : 2 }},
 			"format": { "for": ["valuelist", "dataprovider"], "type": "format" },
 			"headerStyleClass": { "type": "styleclass" },
 			"headerText": { "type": "tagstring", "tags": { "useAsCaptionInDeveloper" : true, "captionPriority" : 1, "showInOutlineView": true }},
 			"styleClass": { "type": "styleclass" },
 			"styleClassDataprovider": { "type": "dataprovider", "forFoundset": "foundset" },
-			"valuelist": { "type": "valuelist", "for": "dataprovider" },
+			"valuelist": { "type": "valuelist", "for": "dataprovider", "forFoundset": "foundset" },
 			"width": { "type": "string", "default": "auto"},
 			"initialWidth": { "type": "string", "tags": { "scope": "runtime" } },
 			"autoResize": { "type": "boolean", "default": false },
