@@ -1,6 +1,6 @@
-angular.module('servoyextraTable', ['servoy'])
-.directive('servoyextraTable', ["$log", "$timeout", "$sabloConstants", "$foundsetTypeConstants", "$filter", "$webSocket", "$sanitize",
-				function($log, $timeout, $sabloConstants, $foundsetTypeConstants, $filter, $webSocket, $sanitize) {
+angular.module('servoyextraTable', ['webSocketModule', 'servoy'])
+.directive('servoyextraTable', ["$log", "$timeout", "$sabloConstants", "$foundsetTypeConstants", "$filter", "$webSocket", "$sanitize", "$sabloConverters",
+				function($log, $timeout, $sabloConstants, $foundsetTypeConstants, $filter, $webSocket, $sanitize, $sabloConverters) {
 return {
 	restrict: 'E',
 	scope: {
@@ -1634,6 +1634,13 @@ return {
 			}
 			return spacingRowsAddedOrRemoved;
 		}
+		
+		function getValuelist(column, rowIdxInFoundsetViewport) {
+			// backwards compatibility with Servoy 8.1.3 where valuelist forFoundset was not implemented so it has no effect
+			if (column.valuelist && column.valuelist[$sabloConverters.INTERNAL_IMPL]
+					&& angular.isDefined(column.valuelist[$sabloConverters.INTERNAL_IMPL]["recordLinked"])) return column.valuelist[rowIdxInFoundsetViewport];
+			else return column.valuelist;
+		}
 
 		// changes is something like { rowUpdates: rowUpdates, oldStartIndex: oldStartIndex, oldSize : oldSize }
 		function updateRenderedRows(changes, offset) {
@@ -1854,7 +1861,7 @@ return {
 						}
 						if (divChild.length == 1) {
 							// its text node
-							value = getDisplayValue(value, column.valuelist && column.valuelist["idForFoundset"] ? column.valuelist[rowIdxInFoundsetViewport] : column.valuelist);
+							value = getDisplayValue(value, getValuelist(column, rowIdxInFoundsetViewport));
 							if (column.format)
 							{	
 								value = formatFilter(value, column.format.display, column.format.type, column.format);
@@ -2280,7 +2287,7 @@ return {
 				} else {
 					var div = document.createElement("DIV");
 					var value = column.dataprovider ? column.dataprovider[idxInLoaded] : null;
-					value = getDisplayValue(value, column.valuelist && column.valuelist["idForFoundset"] ? column.valuelist[idxInLoaded] : column.valuelist);
+					value = getDisplayValue(value, getValuelist(column, idxInLoaded));
 					if (column.format) 
 					{	
 						value = formatFilter(value, column.format.display, column.format.type, column.format);
