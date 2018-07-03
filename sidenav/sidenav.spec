@@ -13,7 +13,7 @@
 		
 		"selectedIndex"					: {"type" :"object", "tags": { "scope" :"private" }, "pushToServer" : "allow"},
 		"expandedIndex"					: {"type" :"object", "tags": { "scope" :"private" }, "pushToServer" : "allow"},
-		
+		"tabSeq"						: { "type": "tabseq", "tags": { "scope": "design" } },
 		"containedForm"					: {"type" :"form"},
 		"sidenavWidth"					: {"type" :"int", "default":"300"},
 		"responsiveHeight" 				: {"type" :"int", "default":0},
