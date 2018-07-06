@@ -58,6 +58,10 @@
 	vertical-align: middle;
 }
 
+.tablewrapper tbody tr {
+	white-space: nowrap;
+}
+
 .tablewrapper tbody {
 	overflow: auto;
 	position: absolute;
