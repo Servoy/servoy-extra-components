@@ -104,13 +104,23 @@
 					{ "name": "collapsibleIndex", "type": "int" }
 				] 
 			},
+		"onHeaderClicked"		:
+			{ "returns": "boolean", 
+			  "parameters": [
+					{ "name": "event", "type": "JSEvent" },
+					{ "name": "collapsible", "type": "collapsible" }, 
+					{ "name": "collapsibleIndex", "type": "int" },
+					{ "name": "dataTarget", "type": "string" }
+				]
+			},
 		"onCardClicked"			: 
 			{ "parameters": [
 					{ "name": "event", "type": "JSEvent" },
 					{ "name": "card", "type": "card" }, 
 					{ "name": "collapsible", "type": "collapsible" }, 
 					{ "name": "cardIndex", "type": "int" }, 
-					{ "name": "collapsibleIndex", "type": "int" }
+					{ "name": "collapsibleIndex", "type": "int" }, 
+					{ "name": "dataTarget", "type": "string" }
 				]
 			}
 	},
