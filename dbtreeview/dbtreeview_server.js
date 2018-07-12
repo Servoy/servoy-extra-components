@@ -199,3 +199,24 @@ $scope.api.setSelectionPath = function(pk) {
 $scope.api.setNodeLevelVisible = function(level, state) {
 	$scope.model.levelVisibility = {level: level, state: state};	
 }
+
+/**
+ * Create relation info object used to set multiple child relations for a tree node
+ * 
+ * @param label 
+ * @param nRelationName 
+ * @return {relationInfo}
+ */
+$scope.api.createRelationInfo = function(label, nRelationName) {
+	return {label: label, nRelationName: nRelationName};
+}
+
+/**
+ * Set n-relation infos (array of RelationInfo objects created using tree.createRelationInfo() for having multiple child relations for one node)
+ * 
+ * @param datasource 
+ * @param relationInfos 
+ */
+$scope.api.setNRelationInfos = function(datasource, relationInfos) {
+	$scope.getBinding(datasource).nRelationInfos = relationInfos;
+}
