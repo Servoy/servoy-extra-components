@@ -197,7 +197,7 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 										});
 										
 										var children = getChildren(rfoundset, rfoundsetinfo.foundsethash, rfoundsetinfo.foundsetpk, getBinding(rfoundsetinfo.foundsetdatasource), level, item);
-										if (!children || children.length == 0)
+										if ((!children || children.length == 0) && (!item.data || !item.data.relationInfo))
 										{
 											item.folder = null
 										}
@@ -297,8 +297,34 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 	    			}
 	    			
 	    			returnChildren.push(item);
-	    			
-	    			if(binding.nrelationname) 
+					
+					if(binding.nRelationInfos && binding.nRelationInfos.length > 0) {
+						item.folder = true;
+						item.children = new Array();
+						for(var j = 0; j < binding.nRelationInfos.length; j++) {
+							var relationItem = {};
+							relationItem.title = binding.nRelationInfos[j].label;
+							relationItem.hideCheckbox = true;
+							relationItem.folder = true;
+							relationItem.lazy = true;
+							relationItem.data = {}
+							relationItem.data.relationInfo = true;
+
+							var sort = binding.childsortdataprovider ? foundset.viewPort.rows[i][binding.childsortdataprovider]: null		
+							relationItem.data.getChildren = {
+									foundsethash: foundsethash,
+									sort: sort,
+									rowid: foundset.viewPort.rows[i]._svyRowId,
+									relation: binding.nRelationInfos[j].nRelationName,
+									level: level+1
+							}
+
+							//relationItem.data.parentItem = item;
+							item.children.push(relationItem);
+						}
+
+					}
+					else if(binding.nrelationname) 
 	    			{
 	    				if (item.expanded)
 		    			{
@@ -549,7 +575,19 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
   			if(newValue) {
 				expandChildNodes(theTree.getRootNode(), newValue.level, newValue.state);
 	      	}
-		})		
+		})
+		
+		$scope.$watch('model.enabled', function(newValue, oldValue) {
+			if(newValue != oldValue) {
+				var dbtreeviewEl = $element.find(".dbtreeview");
+				if(newValue) {
+					dbtreeviewEl.removeClass("dbtreeview-disabled");
+				}
+				else {
+					dbtreeviewEl.addClass("dbtreeview-disabled");
+				}
+			}
+	  	})
 		
       },
       templateUrl: 'servoyextra/dbtreeview/dbtreeview.html'
