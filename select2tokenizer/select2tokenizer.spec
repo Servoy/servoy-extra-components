@@ -14,7 +14,7 @@
 		{
 			"name": "select2.js",
 			"version": "4.0.3",
-			"url": "servoyextra/select2tokenizer/js/select2.full.min.js",
+			"url": "servoyextra/select2tokenizer/js/select2patched.full.js",
 			"mimetype": "text/javascript"
 		},
 		{
