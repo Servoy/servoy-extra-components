@@ -56,3 +56,5 @@ Web-Component: True
 Name: select2tokenizer/select2tokenizer.spec
 Web-Component: True
 
+Name: listformcomponent/listformcomponent.spec
+Web-Component: True
