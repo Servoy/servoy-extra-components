@@ -7,7 +7,8 @@
 	"libraries": [],	
 	"model":
 	{
-		"foundset" : "foundset",
-		"containedForm": {"type":"formcomponent", "forFoundset":"foundset"}
+		"foundset" : {"type": "foundset", "tags": { "scope" :"design" }},
+		"containedForm": {"type":"formcomponent", "forFoundset":"foundset", "tags": { "scope" :"design" }},
+		"responsivePageSize": "int"
 	}
 }
