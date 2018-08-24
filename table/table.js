@@ -2449,11 +2449,20 @@ return {
 								return false;
 							}
 						});
-						layoutStyle.height = h + "px";
-						layoutStyle.maxHeight = $scope.model.responsiveHeight + "px";
-					}
-					else {
-						layoutStyle.height = $scope.model.responsiveHeight + "px";
+						if ($scope.model.responsiveHeight === 0) {
+                            $element.css("height", "100%");
+                            layoutStyle.height = 100 + "%";
+                        } else {
+							layoutStyle.height = h + "px";
+							layoutStyle.maxHeight = $scope.model.responsiveHeight + "px";
+						}
+					} else {
+                        if ($scope.model.responsiveHeight === 0) {
+                            $element.css("height", "100%");
+                            layoutStyle.height = 100 + "%";
+                        } else {
+                            layoutStyle.height = $scope.model.responsiveHeight + "px";
+                        }
 					}
 					
 				}
