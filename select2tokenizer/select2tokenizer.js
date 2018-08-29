@@ -113,6 +113,10 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 					options.dropdownCssClass += " " + $scope.model.styleClass;
 				}
 				
+				if(!$scope.model.visible){
+					$element.css("display","none")
+				}
+				
 				//options.containerCssClass = "custom-red"
 				//options.dropdownCssClass = "custom-red"
 				// placeholder
