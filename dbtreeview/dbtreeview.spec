@@ -12,6 +12,7 @@
 	    "bindings" : {"type":"binding[]", "tags": { "scope": "private" }},
 	    "visible" : {"type":"boolean", "default":true},
 		"enabled" : {"type":"boolean", "default":true},
+		"autoRefresh": {"type":"boolean", "default":true},
 	    "selection" : {"type":"object[]", "tags": { "scope": "private" }},
 	    "levelVisibility" : {"type":"levelVisibilityType", "tags": { "scope": "private" }, "pushToServer": "shallow"}
 	},	

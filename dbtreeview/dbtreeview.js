@@ -190,11 +190,13 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 										if(foundsetChangeWatches[rfoundsetinfo.foundsethash] != undefined) {
 											foundsetChangeWatches[rfoundsetinfo.foundsethash]();
 										}
-										foundsetChangeWatches[rfoundsetinfo.foundsethash] = foundset_manager.addFoundSetChangeCallback(rfoundsetinfo.foundsethash, function() {
-											if(jQuery.contains(document.documentElement, $element.get(0)) && ($scope.pendingChildrenRequests < 1)) {
-												refresh();
-											}
-										});
+										if($scope.model.autoRefresh) {
+											foundsetChangeWatches[rfoundsetinfo.foundsethash] = foundset_manager.addFoundSetChangeCallback(rfoundsetinfo.foundsethash, function() {
+												if(jQuery.contains(document.documentElement, $element.get(0)) && ($scope.pendingChildrenRequests < 1)) {
+													refresh();
+												}
+											});
+										}
 										
 										var children = getChildren(rfoundset, rfoundsetinfo.foundsethash, rfoundsetinfo.foundsetpk, getBinding(rfoundsetinfo.foundsetdatasource), level, item);
 										if ((!children || children.length == 0) && (!item.data || !item.data.relationInfo))
@@ -395,11 +397,13 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 							if(foundsetChangeWatches[$scope.model.roots[nr].foundsethash] != undefined) {
 								foundsetChangeWatches[$scope.model.roots[nr].foundsethash]();
 							}							
-							foundsetChangeWatches[$scope.model.roots[nr].foundsethash] = foundset_manager.addFoundSetChangeCallback($scope.model.roots[nr].foundsethash, function() {
-								if(jQuery.contains(document.documentElement, $element.get(0)) && ($scope.pendingChildrenRequests < 1)) {
-									refresh();
-								}
-							});
+							if($scope.model.autoRefresh) {
+								foundsetChangeWatches[$scope.model.roots[nr].foundsethash] = foundset_manager.addFoundSetChangeCallback($scope.model.roots[nr].foundsethash, function() {
+									if(jQuery.contains(document.documentElement, $element.get(0)) && ($scope.pendingChildrenRequests < 1)) {
+										refresh();
+									}
+								});
+							}
  
 							$scope.treeJSON = $scope.treeJSON.concat(getChildren(foundset, $scope.model.roots[nr].foundsethash, $scope.model.roots[nr].foundsetpk, getBinding($scope.model.roots[nr].foundsetdatasource), 1, null));
 							$scope.pendingChildrenRequests = $scope.pendingChildrenRequests - 1;
