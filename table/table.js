@@ -238,12 +238,12 @@ return {
 		}
 
 
-		$scope.componentWidth = 0;
+		$scope.componentWidth = undefined;
 		$scope.extraWidth = 0; // extra width remainig after resize, that is added to the last auto-resize column
 		$scope.extraWidthColumnIdx = -1;
 		$scope.scrollWidth = 0;
 		function getComponentWidth() {
-			if (!$scope.componentWidth) {
+			if ($scope.componentWidth === undefined) {
 				$scope.componentWidth = $element.parent().width();
 			}
 			return $scope.componentWidth;
