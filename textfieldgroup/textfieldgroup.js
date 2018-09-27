@@ -12,7 +12,6 @@ angular.module('servoyextraTextfieldgroup',['servoy']).directive('servoyextraTex
 			
         	$scope.$watch('model.dataProviderID', function() {
         		if($scope.model.inputValidation == 'email') {
-        			$scope.errorMessage = 'This is an invalid email address'
         			var isMatchRegex = EMAIL_REGEXP.test($scope.model.dataProviderID);
         			if(isMatchRegex || !$scope.model.dataProviderID) {
         				$scope.showError = false

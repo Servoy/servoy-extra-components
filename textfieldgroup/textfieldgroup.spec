@@ -13,6 +13,7 @@
 			"faclass" : {"type":"string"},
 			"inputType" : {"type":"string" , "tags": { "scope" :"design" }, "default" : "text",  "values" :["text", "password"]},
 			"inputValidation" : {"type":"string", "default" : "text",  "values" :["none", "email"]},
+			"invalidEmailMessage" : { "type": "tagstring", "default" : "This is an invalid email address" },
 			"readOnly" : { "type": "protected", "blockingOn": true, "default": false,"for": ["dataProviderID","onDataChangeMethodID"] },
 			"placeholderText" : "tagstring",
 			"styleClass" : { "type" :"styleclass", "tags": { "scope" :"design" }, "default": "form-control", "values" :["form-control", "input-sm"]},
