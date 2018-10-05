@@ -1788,10 +1788,10 @@ return {
 			var topEmptySpaceRowCount = (topSpaceDiv ? 1 : 0); // access the correct index for rows if we have the empty space row present
 			var bottomEmptySpaceRowCount = (bottomSpaceDiv ? 1 : 0);
 
-			function setupRowClassNames(trEl, idxInFoundset) {
+			function setupRowClassNames(trEl, idxInFoundset, rowIdxInFoundsetViewport) {
 				var rowClassNames = '';
-				if ($scope.model.rowStyleClassDataprovider && $scope.model.rowStyleClassDataprovider[idxInFoundset]) {
-					rowClassNames = $scope.model.rowStyleClassDataprovider[idxInFoundset];
+				if ($scope.model.rowStyleClassDataprovider && $scope.model.rowStyleClassDataprovider[rowIdxInFoundsetViewport]) {
+					rowClassNames = $scope.model.rowStyleClassDataprovider[rowIdxInFoundsetViewport];
 				}
 				if($scope.model.foundset.selectedRowIndexes.indexOf(idxInFoundset) != -1) {
 					if(rowClassNames) {
@@ -1815,7 +1815,7 @@ return {
 					// the rendered viewpot
 					var insertedEl = createTableRow(columns, j + rowOffSet, formatFilter);
 					tbody[0].insertBefore(insertedEl, beforeEl);
-					setupRowClassNames(insertedEl, renderedStartIndex + j);
+					setupRowClassNames(insertedEl, renderedStartIndex + j, j + rowOffSet);
 				}
 
 				children = tbody.children();
@@ -1880,7 +1880,7 @@ return {
 					}
 				}
 
-				if (trElement.get(0)) setupRowClassNames(trElement.get(0), renderedStartIndex + j);
+				if (trElement.get(0)) setupRowClassNames(trElement.get(0), renderedStartIndex + j, rowIdxInFoundsetViewport);
 			}
 
 			if (childrenListChanged) {
@@ -2266,7 +2266,7 @@ return {
 			var tr = document.createElement("TR");
 			if($scope.model.rowStyleClassDataprovider && $scope.model.rowStyleClassDataprovider[idxInLoaded]) {
 				tr.className = $scope.model.rowStyleClassDataprovider[idxInLoaded];
-			}					
+			}				
 			for (var c = 0; c < columns.length; c++) {
 				var column = columns[c];
 				var td = document.createElement("TD");
