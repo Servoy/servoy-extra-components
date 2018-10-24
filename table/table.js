@@ -1285,7 +1285,7 @@ return {
 				var toUnselect = oldValue.filter(function(i) {
 					return !newValue || newValue.indexOf(i) < 0;
 				})
-				updateTableRowSelectionClass(toUnselect, "");
+				updateTableRowSelectionClass(toUnselect, $scope.model.rowStyleClassDataprovider[oldValue%$scope.model.pageSize]);
 			}
 			if (newValue) {
 				var toSelect = newValue.filter(function(i) {
