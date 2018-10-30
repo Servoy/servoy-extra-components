@@ -157,10 +157,20 @@ angular.module('servoyextraCollapse', ['servoy']) //$NON-NLS-1$ //$NON-NLS-2$
 					return $('#' + $scope.model.svyMarkupId + '-' + index + '-collapsible'); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				}
 
+				var lastClick = null;
 				/**
 				 * onClick handler setting the collapsible state and possibly calling handlers
 				 */
 				$scope.onClick = function(e) {
+					if (lastClick)
+					{
+						if (e.timeStamp - lastClick < 500)
+						{
+							lastClick = e.timeStamp;
+							return;
+						}	
+					}
+					lastClick = e.timeStamp;
 					var collapsibleIndex = $(e.target).closest('.svy-collapse-collapsible').attr('id').split('-')[1] //$NON-NLS-1$ //$NON-NLS-2$
 					var collapsible = $scope.model.collapsibles[collapsibleIndex];
 					var previousState = collapsible.isCollapsed;

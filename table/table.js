@@ -238,12 +238,12 @@ return {
 		}
 
 
-		$scope.componentWidth = 0;
+		$scope.componentWidth = undefined;
 		$scope.extraWidth = 0; // extra width remainig after resize, that is added to the last auto-resize column
 		$scope.extraWidthColumnIdx = -1;
 		$scope.scrollWidth = 0;
 		function getComponentWidth() {
-			if (!$scope.componentWidth) {
+			if ($scope.componentWidth === undefined) {
 				$scope.componentWidth = $element.parent().width();
 			}
 			return $scope.componentWidth;
@@ -1285,7 +1285,7 @@ return {
 				var toUnselect = oldValue.filter(function(i) {
 					return !newValue || newValue.indexOf(i) < 0;
 				})
-				updateTableRowSelectionClass(toUnselect, "");
+				updateTableRowSelectionClass(toUnselect, $scope.model.rowStyleClassDataprovider?$scope.model.rowStyleClassDataprovider[oldValue%$scope.model.pageSize]:"");
 			}
 			if (newValue) {
 				var toSelect = newValue.filter(function(i) {
@@ -1788,10 +1788,10 @@ return {
 			var topEmptySpaceRowCount = (topSpaceDiv ? 1 : 0); // access the correct index for rows if we have the empty space row present
 			var bottomEmptySpaceRowCount = (bottomSpaceDiv ? 1 : 0);
 
-			function setupRowClassNames(trEl, idxInFoundset) {
+			function setupRowClassNames(trEl, idxInFoundset, rowIdxInFoundsetViewport) {
 				var rowClassNames = '';
-				if ($scope.model.rowStyleClassDataprovider && $scope.model.rowStyleClassDataprovider[idxInFoundset]) {
-					rowClassNames = $scope.model.rowStyleClassDataprovider[idxInFoundset];
+				if ($scope.model.rowStyleClassDataprovider && $scope.model.rowStyleClassDataprovider[rowIdxInFoundsetViewport]) {
+					rowClassNames = $scope.model.rowStyleClassDataprovider[rowIdxInFoundsetViewport];
 				}
 				if($scope.model.foundset.selectedRowIndexes.indexOf(idxInFoundset) != -1) {
 					if(rowClassNames) {
@@ -1815,7 +1815,7 @@ return {
 					// the rendered viewpot
 					var insertedEl = createTableRow(columns, j + rowOffSet, formatFilter);
 					tbody[0].insertBefore(insertedEl, beforeEl);
-					setupRowClassNames(insertedEl, renderedStartIndex + j);
+					setupRowClassNames(insertedEl, renderedStartIndex + j, j + rowOffSet);
 				}
 
 				children = tbody.children();
@@ -1880,7 +1880,7 @@ return {
 					}
 				}
 
-				if (trElement.get(0)) setupRowClassNames(trElement.get(0), renderedStartIndex + j);
+				if (trElement.get(0)) setupRowClassNames(trElement.get(0), renderedStartIndex + j, rowIdxInFoundsetViewport);
 			}
 
 			if (childrenListChanged) {
@@ -2266,7 +2266,7 @@ return {
 			var tr = document.createElement("TR");
 			if($scope.model.rowStyleClassDataprovider && $scope.model.rowStyleClassDataprovider[idxInLoaded]) {
 				tr.className = $scope.model.rowStyleClassDataprovider[idxInLoaded];
-			}					
+			}				
 			for (var c = 0; c < columns.length; c++) {
 				var column = columns[c];
 				var td = document.createElement("TD");
@@ -2449,11 +2449,20 @@ return {
 								return false;
 							}
 						});
-						layoutStyle.height = h + "px";
-						layoutStyle.maxHeight = $scope.model.responsiveHeight + "px";
-					}
-					else {
-						layoutStyle.height = $scope.model.responsiveHeight + "px";
+						if ($scope.model.responsiveHeight === 0) {
+                            $element.css("height", "100%");
+                            layoutStyle.height = 100 + "%";
+                        } else {
+							layoutStyle.height = h + "px";
+							layoutStyle.maxHeight = $scope.model.responsiveHeight + "px";
+						}
+					} else {
+                        if ($scope.model.responsiveHeight === 0) {
+                            $element.css("height", "100%");
+                            layoutStyle.height = 100 + "%";
+                        } else {
+                            layoutStyle.height = $scope.model.responsiveHeight + "px";
+                        }
 					}
 					
 				}
