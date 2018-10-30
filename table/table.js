@@ -1269,12 +1269,10 @@ return {
 				for (var i = 0; i < rowsFoundsetIdxArray.length; i++) {
 					var trIndex = rowsFoundsetIdxArray[i] - renderedStartIndex;
 					if (trIndex >= (topSpaceDiv ? 1 : 0) && trIndex < trChildren.length - (bottomSpaceDiv ? 1 : 0)) {
-						var tr = trChildren.eq(trIndex + (topSpaceDiv ? 1 : 0)).get(0);
-						if ($scope.model.rowStyleClassDataprovider && $scope.model.rowStyleClassDataprovider[rowsFoundsetIdxArray[i]]) {
-							tr.className = $scope.model.rowStyleClassDataprovider[rowsFoundsetIdxArray[i]] + ' ' + rowSelectionClass;
-						} else {
-							tr.className = rowSelectionClass;
-						}
+						var tr = trChildren.eq(trIndex + (topSpaceDiv ? 1 : 0)).get(0);												
+						if ($scope.model.rowStyleClassDataprovider && $scope.model.rowStyleClassDataprovider[rowsFoundsetIdxArray[i] % $scope.model.pageSize])
+							tr.className = $scope.model.rowStyleClassDataprovider[rowsFoundsetIdxArray[i] % $scope.model.pageSize] + ' ' + rowSelectionClass;
+						else tr.className = rowSelectionClass;
 					}
 				}
 			}
@@ -1285,7 +1283,7 @@ return {
 				var toUnselect = oldValue.filter(function(i) {
 					return !newValue || newValue.indexOf(i) < 0;
 				})
-				updateTableRowSelectionClass(toUnselect, $scope.model.rowStyleClassDataprovider?$scope.model.rowStyleClassDataprovider[oldValue%$scope.model.pageSize]:"");
+				updateTableRowSelectionClass(toUnselect,"");
 			}
 			if (newValue) {
 				var toSelect = newValue.filter(function(i) {
