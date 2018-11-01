@@ -2025,6 +2025,10 @@ return {
 				if ($element.closest("body").length > 0) $timeout(generateTemplate);
 				return;
 			}
+			if (full)
+			{
+				tableLeftOffset = 0;
+			}	
 			var rows = $scope.model.foundset.viewPort.rows;
 
 			for (var c = 0; c < columns.length; c++) {
