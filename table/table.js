@@ -1,6 +1,6 @@
-angular.module('servoyextraTable', ['servoy'])
-.directive('servoyextraTable', ["$log", "$timeout", "$sabloConstants", "$foundsetTypeConstants", "$filter", "$webSocket", "$sanitize",
-				function($log, $timeout, $sabloConstants, $foundsetTypeConstants, $filter, $webSocket, $sanitize) {
+angular.module('servoyextraTable', ['webSocketModule', 'servoy'])
+.directive('servoyextraTable', ["$log", "$timeout", "$sabloConstants", "$foundsetTypeConstants", "$filter", "$webSocket", "$sanitize", "$sabloConverters",
+				function($log, $timeout, $sabloConstants, $foundsetTypeConstants, $filter, $webSocket, $sanitize, $sabloConverters) {
 return {
 	restrict: 'E',
 	scope: {
@@ -238,12 +238,12 @@ return {
 		}
 
 
-		$scope.componentWidth = 0;
+		$scope.componentWidth = undefined;
 		$scope.extraWidth = 0; // extra width remainig after resize, that is added to the last auto-resize column
 		$scope.extraWidthColumnIdx = -1;
 		$scope.scrollWidth = 0;
 		function getComponentWidth() {
-			if (!$scope.componentWidth) {
+			if ($scope.componentWidth === undefined) {
 				$scope.componentWidth = $element.parent().width();
 			}
 			return $scope.componentWidth;
@@ -1269,12 +1269,10 @@ return {
 				for (var i = 0; i < rowsFoundsetIdxArray.length; i++) {
 					var trIndex = rowsFoundsetIdxArray[i] - renderedStartIndex;
 					if (trIndex >= (topSpaceDiv ? 1 : 0) && trIndex < trChildren.length - (bottomSpaceDiv ? 1 : 0)) {
-						var tr = trChildren.eq(trIndex + (topSpaceDiv ? 1 : 0)).get(0);
-						if ($scope.model.rowStyleClassDataprovider && $scope.model.rowStyleClassDataprovider[rowsFoundsetIdxArray[i]]) {
-							tr.className = $scope.model.rowStyleClassDataprovider[rowsFoundsetIdxArray[i]] + ' ' + rowSelectionClass;
-						} else {
-							tr.className = rowSelectionClass;
-						}
+						var tr = trChildren.eq(trIndex + (topSpaceDiv ? 1 : 0)).get(0);												
+						if ($scope.model.rowStyleClassDataprovider && $scope.model.rowStyleClassDataprovider[rowsFoundsetIdxArray[i] % $scope.model.pageSize])
+							tr.className = $scope.model.rowStyleClassDataprovider[rowsFoundsetIdxArray[i] % $scope.model.pageSize] + ' ' + rowSelectionClass;
+						else tr.className = rowSelectionClass;
 					}
 				}
 			}
@@ -1285,7 +1283,7 @@ return {
 				var toUnselect = oldValue.filter(function(i) {
 					return !newValue || newValue.indexOf(i) < 0;
 				})
-				updateTableRowSelectionClass(toUnselect, "");
+				updateTableRowSelectionClass(toUnselect,"");
 			}
 			if (newValue) {
 				var toSelect = newValue.filter(function(i) {
@@ -1634,6 +1632,13 @@ return {
 			}
 			return spacingRowsAddedOrRemoved;
 		}
+		
+		function getValuelist(column, rowIdxInFoundsetViewport) {
+			// backwards compatibility with Servoy 8.1.3 where valuelist forFoundset was not implemented so it has no effect
+			if (column.valuelist && column.valuelist[$sabloConverters.INTERNAL_IMPL]
+					&& angular.isDefined(column.valuelist[$sabloConverters.INTERNAL_IMPL]["recordLinked"])) return column.valuelist[rowIdxInFoundsetViewport];
+			else return column.valuelist;
+		}
 
 		// changes is something like { rowUpdates: rowUpdates, oldStartIndex: oldStartIndex, oldSize : oldSize }
 		function updateRenderedRows(changes, offset) {
@@ -1781,10 +1786,10 @@ return {
 			var topEmptySpaceRowCount = (topSpaceDiv ? 1 : 0); // access the correct index for rows if we have the empty space row present
 			var bottomEmptySpaceRowCount = (bottomSpaceDiv ? 1 : 0);
 
-			function setupRowClassNames(trEl, idxInFoundset) {
+			function setupRowClassNames(trEl, idxInFoundset, rowIdxInFoundsetViewport) {
 				var rowClassNames = '';
-				if ($scope.model.rowStyleClassDataprovider && $scope.model.rowStyleClassDataprovider[idxInFoundset]) {
-					rowClassNames = $scope.model.rowStyleClassDataprovider[idxInFoundset];
+				if ($scope.model.rowStyleClassDataprovider && $scope.model.rowStyleClassDataprovider[rowIdxInFoundsetViewport]) {
+					rowClassNames = $scope.model.rowStyleClassDataprovider[rowIdxInFoundsetViewport];
 				}
 				if($scope.model.foundset.selectedRowIndexes.indexOf(idxInFoundset) != -1) {
 					if(rowClassNames) {
@@ -1795,26 +1800,27 @@ return {
 				trEl.className = rowClassNames;
 			}
 
+			var j;
 			if (newRowsToBeRenderedBefore > 0) {
 				var beforeEl = children.eq(topEmptySpaceRowCount); // dom element before which the new rows should be appended (first row rendered previously if any is available, otherwise bottom space div or null)
 				if (!beforeEl || beforeEl.length == 0) beforeEl = null; // append last (before == null) as there is nothing after it
 				else beforeEl = beforeEl[0]; // get DOM node in front of which we should insert
 
 				// rows will be prepended to current ones on top
-				for (var j = 0; j < newRowsToBeRenderedBefore; j++) {
+				for (j = 0; j < newRowsToBeRenderedBefore; j++) {
 					// as trChildren is relative to rendered viewport, it can only grow (have missing rows) or shrink at the end; if changes
 					// happen before it, the data is updated in those cells, no real dom Node inserts have to happen in specific indexes in
 					// the rendered viewpot
 					var insertedEl = createTableRow(columns, j + rowOffSet, formatFilter);
 					tbody[0].insertBefore(insertedEl, beforeEl);
-					setupRowClassNames(insertedEl, renderedStartIndex + j);
+					setupRowClassNames(insertedEl, renderedStartIndex + j, j + rowOffSet);
 				}
 
 				children = tbody.children();
 				childrenListChanged = false;
 			}
 
-			for (var j = startIndex; j <= endIndex; j++) {
+			for (j = startIndex; j <= endIndex; j++) {
 				var rowIdxInFoundsetViewport = j + rowOffSet;
 				var trElement = children.eq(j + topEmptySpaceRowCount);
 
@@ -1853,7 +1859,7 @@ return {
 						}
 						if (divChild.length == 1) {
 							// its text node
-							value = getDisplayValue(value, column.valuelist);
+							value = getDisplayValue(value, getValuelist(column, rowIdxInFoundsetViewport));
 							if (column.format)
 							{	
 								value = formatFilter(value, column.format.display, column.format.type, column.format);
@@ -1872,7 +1878,7 @@ return {
 					}
 				}
 
-				if (trElement.get(0)) setupRowClassNames(trElement.get(0), renderedStartIndex + j);
+				if (trElement.get(0)) setupRowClassNames(trElement.get(0), renderedStartIndex + j, rowIdxInFoundsetViewport);
 			}
 
 			if (childrenListChanged) {
@@ -2019,6 +2025,10 @@ return {
 				if ($element.closest("body").length > 0) $timeout(generateTemplate);
 				return;
 			}
+			if (full)
+			{
+				tableLeftOffset = 0;
+			}	
 			var rows = $scope.model.foundset.viewPort.rows;
 
 			for (var c = 0; c < columns.length; c++) {
@@ -2258,7 +2268,7 @@ return {
 			var tr = document.createElement("TR");
 			if($scope.model.rowStyleClassDataprovider && $scope.model.rowStyleClassDataprovider[idxInLoaded]) {
 				tr.className = $scope.model.rowStyleClassDataprovider[idxInLoaded];
-			}					
+			}				
 			for (var c = 0; c < columns.length; c++) {
 				var column = columns[c];
 				var td = document.createElement("TD");
@@ -2279,7 +2289,7 @@ return {
 				} else {
 					var div = document.createElement("DIV");
 					var value = column.dataprovider ? column.dataprovider[idxInLoaded] : null;
-					value = getDisplayValue(value, column.valuelist);
+					value = getDisplayValue(value, getValuelist(column, idxInLoaded));
 					if (column.format) 
 					{	
 						value = formatFilter(value, column.format.display, column.format.type, column.format);
@@ -2349,7 +2359,7 @@ return {
 		}
 
 		function getCellStyle(column) {
-			var cellStyle = { overflow: "hidden" };
+			var cellStyle = { overflow: "hidden"};
 			if (column < $scope.model.columns.length) {
 				var w = getNumberFromPxString($scope.model.columns[column].width);
 				if (isAutoResizeColumn(column) || w < 0) {
@@ -2441,11 +2451,20 @@ return {
 								return false;
 							}
 						});
-						layoutStyle.height = h + "px";
-						layoutStyle.maxHeight = $scope.model.responsiveHeight + "px";
-					}
-					else {
-						layoutStyle.height = $scope.model.responsiveHeight + "px";
+						if ($scope.model.responsiveHeight === 0) {
+                            $element.css("height", "100%");
+                            layoutStyle.height = 100 + "%";
+                        } else {
+							layoutStyle.height = h + "px";
+							layoutStyle.maxHeight = $scope.model.responsiveHeight + "px";
+						}
+					} else {
+                        if ($scope.model.responsiveHeight === 0) {
+                            $element.css("height", "100%");
+                            layoutStyle.height = 100 + "%";
+                        } else {
+                            layoutStyle.height = $scope.model.responsiveHeight + "px";
+                        }
 					}
 					
 				}

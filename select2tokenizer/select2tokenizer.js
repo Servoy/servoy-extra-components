@@ -1,5 +1,5 @@
 angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
-.directive('servoyextraSelect2tokenizer', ['$diacritics', '$log', '$sabloConstants', '$compile', '$timeout', function($diacritics, $log, $sabloConstants, $compile, $timeout) {
+.directive('servoyextraSelect2tokenizer', ['$diacritics', '$log', '$sabloConstants', '$compile', '$timeout','$q', function($diacritics, $log, $sabloConstants, $compile, $timeout,$q) {
 	return {
 		restrict: 'E',
 		scope: {
@@ -25,7 +25,6 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 			var tags = [];			// the array of valuelistItems
 			var hashMap = {}; 		// contains the realValue to be resolved in displayValue
 			var searchText = "";			// the last search text
-			var tabIndex;
 			var observer;
 			var executeOnFocusGained = true;
 
@@ -114,6 +113,10 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 					options.dropdownCssClass += " " + $scope.model.styleClass;
 				}
 				
+				if(!$scope.model.visible){
+					$element.css("display","none")
+				}
+				
 				//options.containerCssClass = "custom-red"
 				//options.dropdownCssClass = "custom-red"
 				// placeholder
@@ -146,7 +149,6 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 
 				if (tokenizer && tokenizer.length) {
 					
-					// listen for focus to set tabIndex
 					wrapper.unbind('focus')
 					wrapper.bind('focus', setFocus)
 					
@@ -230,27 +232,9 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 			}
 			
 			function setFocus(e) {
-				if (tabIndex === null || tabIndex === undefined) {
-					tabIndex = wrapper.attr("tabindex");
-					
-					// use the reserved gap
-					if (tabIndex > -1) {
-						tabIndex = parseInt(tabIndex) + 1;
-					}
-				}
 				var input = $element.find('input');
 				if (input[0]) {
-					resetInputTabIndex(input);
 					input[0].focus();
-				} else {
-					$log.warn("select-2autoTokenizer: cannot set focus on field")
-				}
-			}
-			
-			function resetInputTabIndex(input) {
-				if (!input) input = $element.find('input');
-				if (input[0]) {
-					input.attr("tabindex", tabIndex);
 				} else {
 					$log.warn("select-2autoTokenizer: cannot set focus on field")
 				}
@@ -278,62 +262,29 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 			}
 			
 			function initTabSequence() {
-			    addTabSeq($scope, $scope.model.tabSeq);
-				
-			    // start an observer to get mutation on the selected element
-				observer = new MutationObserver(function(mutations) {
-					mutations.forEach(function(mutation) {
-				    if (mutation.addedNodes.length && mutation.addedNodes[0].classList.contains('select2-search')) {
-					    $timeout(setTabSeq);
-				    }
-				  });    
-				});
-					
-				var obsConfig = { attributes: false, childList: true, characterData: false };						
-				var target = $element.find("ul.select2-selection__rendered");
-				observer.observe(target[0], obsConfig);
-			}
-			
-			function addTabSeq (scope, tabSeq) {
-				
 				// add and evaluate sablo-tabseq on the input field
 				var input = $element.find('input');
 				if (input && input !== []) {
-					if (!isNaN(tabSeq) && tabSeq > -1 ) {
-						// set the tabSeq on the input field
-						input.attr("sablo-tabseq", tabSeq); 
-						$compile(input)(scope);
+					// set the tabSeq on the input field
+					input.attr("sablo-tabseq", "model.tabSeq"); 
+					$compile(input)($scope);
+					
+					// start an observer to get mutation on the selected element
+					observer = new MutationObserver(function(mutations) {
+						mutations.forEach(function(mutation) {
+					    if (mutation.addedNodes.length && mutation.addedNodes[0].classList.contains('select2-search')) {
+					    	$element.trigger("enableTabseq" );
+					    }
+					  });    
+					});
 						
-						// persist the tabSeq in an internal var
-						$scope.$evalAsync(function () {
-							tabIndex = input.attr("tabindex");
-							$log.debug("store tabIndex value " + tabIndex);
-							setTabSeq();
-						});
-					} else {
-						tabIndex = -1;
-						setTabSeq();
-					}
+					var obsConfig = { attributes: false, childList: true, characterData: false };						
+					var target = $element.find("ul.select2-selection__rendered");
+					observer.observe(target[0], obsConfig);
 				} else {
 					$log.warn('selec2-autoTokenizer: addTabSeq cannot find input !');
 				}
-			}
-			
-			function setTabSeq () {
-			
-				// update the tabSequence value of the input field.
-				var input = $element.find('input');				
-				$log.debug('set tab index to: ' +tabIndex);
 				
-				if (input && input !== []) {
-					if (!isNaN(tabIndex) && tabIndex > -1 ) {
-						input.attr('tabindex', tabIndex);
-					} else {
-						input.attr('tabindex', -1);
-					}
-				} else {
-					$log.warn('selec2-autoTokenizer: setTabSeq cannot find input !');
-				}
 			}
 			
 			// filter valuelist with search term
@@ -347,7 +298,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 				  if ((searchTerm.length > searchText.length && searchTerm.indexOf(searchText, 0) > -1) && ((tags.length === 1 && tags[0].text === searchText) || tags.length < MAX_LENGTH)) {
 					$log.debug("subset already on clientside " + searchTerm);
 				  	// pointless to search for more values
-				  	var promise = new Promise(function (resolve, vailure) {
+				  	var promise = new $q(function (resolve, vailure) {
 				  		// filter on valuelist
 				  		var results = [];
 				  		var list = $scope.model.valuelistID;

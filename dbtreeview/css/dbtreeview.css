@@ -48,3 +48,9 @@
   background-color: #cbe8f6;
   border-color: transparent;
 }
+
+.dbtreeview-disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  background: #ccc;
+}

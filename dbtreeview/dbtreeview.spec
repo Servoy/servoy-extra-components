@@ -11,6 +11,8 @@
 	    "roots": {"type":"foundsetref[]", "tags": { "scope": "private" }},
 	    "bindings" : {"type":"binding[]", "tags": { "scope": "private" }},
 	    "visible" : {"type":"boolean", "default":true},
+		"enabled" : {"type":"boolean", "default":true},
+		"autoRefresh": {"type":"boolean", "default":true},
 	    "selection" : {"type":"object[]", "tags": { "scope": "private" }},
 	    "levelVisibility" : {"type":"levelVisibilityType", "tags": { "scope": "private" }, "pushToServer": "shallow"}
 	},	
@@ -204,7 +206,32 @@
         },
 		"getSelectionPath": {
 			"returns": "object[]"
-        }      
+        },
+		"createRelationInfo": {
+			"parameters":[
+							{                                                                 
+							"name":"label",
+							"type": "string"
+		                	},
+							{                                                                 
+							"name":"nRelationInfo",
+							"type": "string"
+		                	}
+						 ],
+			"returns": "relationInfo"
+		},
+		"setNRelationInfos": {
+			"parameters":[
+							{                                                                 
+							"name":"datasource",
+							"type": "string"
+		                	},
+							{                                                                 
+							"name":"relationInfos",
+							"type": "relationInfo[]"
+		                	}
+						 ]
+		}
 	},
 	"types": {
 	  "callback": {
@@ -222,11 +249,16 @@
 	  		"childsortdataprovider": "string",
 	  		"callbackinfo": "callback",
 	  		"methodToCallOnCheckBoxChange": "callback",
-	  		"methodToCallOnDoubleClick": "callback"
+	  		"methodToCallOnDoubleClick": "callback",
+			"nRelationInfos": "relationInfo[]"
 	  },
 	  "levelVisibilityType": {
 	  		"level": "int",
 	  		"state": "boolean"
+	  },
+	  "relationInfo": {
+		  	"label": "string",
+			"nRelationName": "string"
 	  }
 	}
 }
