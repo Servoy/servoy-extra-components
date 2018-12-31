@@ -1301,6 +1301,10 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 						if (newValue !== oldValue) {
 							if (oldValue) {
 								$scope.svyServoyapi.hideForm(oldValue, null, null, newValue, $scope.model.relationName, null).then(function(ok) {
+									// reset formWillShowCalled if has hidden meantime
+									if (formWillShowCalled === oldValue) {
+										formWillShowCalled = null;
+									}
 									realContainedForm = $scope.model.containedForm;
 								})
 							} else if (newValue) {
