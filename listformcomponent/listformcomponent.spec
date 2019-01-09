@@ -9,6 +9,7 @@
 	{
 		"foundset" : {"type": "foundset", "tags": { "scope" :"design" }},
 		"containedForm": {"type":"formcomponent", "forFoundset":"foundset", "tags": { "scope" :"design" }},
-		"responsivePageSize": "int"
+		"responsivePageSize": "int",
+		"styleClass" : { "type" :"styleclass", "tags": { "scope" :"design" }, "default": "svy-listformcomponent" }
 	}
 }
