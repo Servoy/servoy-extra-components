@@ -705,7 +705,7 @@ return {
 						var sortColumnsA = $scope.model.foundset.sortColumns.split(/[\s,]+/);
 						if (sortColumnsA.length >= 2) {
 							for (var i = 0; i < $scope.model.columns.length; i++) {
-								if (sortColumnsA[0] == $scope.model.columns[i].dataprovider.idForFoundset) {
+								if ($scope.model.columns[i].dataprovider && sortColumnsA[0] == $scope.model.columns[i].dataprovider.idForFoundset) {
 									$scope.$apply(function() {
 										$scope.model.sortColumnIndex = i;
 										$scope.model.sortDirection = sortColumnsA[1].toLowerCase() == 'asc' ? 'up' : 'down';
