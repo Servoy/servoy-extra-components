@@ -12,10 +12,41 @@
 	},	
 	"handlers":
 	{
-		"onNodeClicked": "function",
-		"onNodeExpanded": "function",
-	    "onNodeCollapsed": "function",
-	    "onNodeSelected": "function"
+		"onNodeClicked": {
+		      		"parameters":[
+      						{
+      						"name":"nodeId",
+      						"type":"object"
+      						}
+      					]},
+		"onNodeDoubleClicked": {
+		      		"parameters":[
+      						{
+      						"name":"nodeId",
+      						"type":"object"
+      						}
+      					]},
+		"onNodeExpanded": {
+		      		"parameters":[
+      						{
+      						"name":"nodeId",
+      						"type":"object"
+      						}
+      					]},
+	    "onNodeCollapsed": {
+		      		"parameters":[
+      						{
+      						"name":"nodeId",
+      						"type":"object"
+      						}
+      					]},
+	    "onNodeSelected": {
+		      		"parameters":[
+      						{
+      						"name":"nodeId",
+      						"type":"object"
+      						}
+      					]}
 	},
 	"api":
 	{

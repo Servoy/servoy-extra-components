@@ -1,4 +1,4 @@
-angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview', function() {  
+angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview', ['$timeout', function($timeout) {  
     return {
       restrict: 'E',
       scope: {
@@ -15,6 +15,7 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
     	  
     	var treeJSON;
     	var theTree;
+    	var clickTimeout;
     	
 		$scope.$watch('model.jsDataSet', function(newValue) {
 			if($scope.model.jsDataSet) {
@@ -36,7 +37,33 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 // 				extensions: ["wide"],
  				activate: function(event, data) {
 					if(!data.node.isSelected()) data.node.setSelected();
-					if($scope.handlers.onNodeClicked) $scope.handlers.onNodeClicked(data.node.key);
+					if ($scope.handlers.onNodeClicked) {
+
+						// if double click available execute timeout
+						if ($scope.handlers.onNodeDoubleClicked) {
+							if (clickTimeout) {
+								$timeout.cancel(clickTimeout);
+							}
+							clickTimeout = $timeout(function() {
+									$scope.handlers.onNodeClicked(data.node.key);
+								}, 200);
+						} else {
+							// if no double click execute immediately the click
+							$scope.handlers.onNodeClicked(data.node.key);
+						}
+					}
+				},
+				click: function(event, data) {	
+
+				},
+				dblclick: function(event, data) {
+					if($scope.handlers.onNodeDoubleClicked)  {
+			    		if(clickTimeout) {
+			    			$timeout.cancel(clickTimeout);
+			    			clickTimeout = null;
+			    		}	
+						$scope.handlers.onNodeDoubleClicked(data.node.key);
+					}
 				},
 				select: function(event, data) {
 					if($scope.handlers.onNodeSelected) $scope.handlers.onNodeSelected(data.node.key);
@@ -296,4 +323,4 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       },
       templateUrl: 'servoyextra/treeview/treeview.html'
     };
-  })
+  }])
