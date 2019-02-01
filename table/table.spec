@@ -153,8 +153,8 @@
 				"optional": true
 			}],
 
-			"delayUntilFormLoad": true,
-			"globalExclusive": true
+			"delayUntilFormLoads": true,
+			"discardPreviouslyQueuedSimilarCalls": true
 		},
 		 "getColumnsCount": {
 	            "returns": "int"
