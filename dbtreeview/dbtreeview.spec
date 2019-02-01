@@ -29,7 +29,7 @@
         "removeAllRoots": {
         },
         "refresh": {
-        	"delayUntilFormLoad": true
+        	"delayUntilFormLoads": true
         },  
         "isNodeExpanded": {
 			"parameters":[
