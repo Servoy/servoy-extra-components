@@ -148,6 +148,10 @@ $scope.api.addMenuItem = function(menuItem, menuItemId, index) {
 		if (node) {
 			if (!node.menuItems) node.menuItems = [];
 			nodes = node.menuItems;
+		} else {
+			// TODO can i add some log here !?
+			// cannot find node with menuItemId
+			return false;
 		}
 	} else { // add to root
 		if (!$scope.model.menu) $scope.model.menu = [];
@@ -157,7 +161,12 @@ $scope.api.addMenuItem = function(menuItem, menuItemId, index) {
 	if (nodes) {
 		if (typeof (index) === 'number' && index >= 0 && index <= nodes.length) {
 			// insert in a proper position
-			node.menuItems = nodes.splice(0, index).concat([menuItem]).concat(nodes);
+			var newNodes = nodes.splice(0, index).concat([menuItem]).concat(nodes);
+			if (node) {	 // add to node
+				node.menuItems = newNodes;
+			} else {	// add to root
+				$scope.model.menu = newNodes;
+			}
 		} else if (index === null || index === undefined) {
 			nodes.push(menuItem);
 		} else {
