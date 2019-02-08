@@ -523,7 +523,7 @@ return {
 		// tries to center new interval of desired size around old interval without going past allowed bounds
 		function centerIntervalAroundOldIntervalIfPossible(oldStartIdx, oldSize, allowedStartIdx, allowedSize, newDesiredSize) {
 			// try to compute center start index and compute size (if it doesn't fit in the beginning slide towards end of allowed as much as possible)
-			var computedStart = Math.max(oldStartIdx - Math.floor( (newDesiredSize - oldSize) / 2), allowedStartIdx);
+			var computedStart = Math.max(Math.min(oldStartIdx - Math.floor( (newDesiredSize - oldSize) / 2), allowedStartIdx + allowedSize - 1), allowedStartIdx);
 			var computedSize = Math.min(newDesiredSize, allowedStartIdx + allowedSize - computedStart);
 
 			// if newDesiredSize is still not reached, see if we can slide the interval towards the beginning of allowed
