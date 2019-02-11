@@ -11,6 +11,9 @@ angular.module('servoyextraListformcomponent', ['servoy']).directive('servoyextr
 			controller: function($scope, $element, $attrs) {
 			},
 			link: function($scope, $element, $attrs) {
+				$scope.getListStyle = function() {
+					return ( ($scope.model.containedForm && !$scope.model.containedForm.absoluteLayout && $scope.model.responsivePageLayout == "listview") ? {"width":"100%"} : "" );
+				}
 			}
 		}
 	}])
