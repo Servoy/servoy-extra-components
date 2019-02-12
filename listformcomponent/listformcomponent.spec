@@ -9,7 +9,7 @@
 	{
 		"foundset" : {"type": "foundset", "default" : {"foundsetSelector":""} , "tags": { "scope" :"design" }},
 		"containedForm": {"type":"formcomponent", "forFoundset":"foundset", "tags": { "scope" :"design" }},
-		"responsivePageLayout" : {"type" : "string" , "values" : ["cardview","listview"] , "default" : "cardview" },
+		"pageLayout" : {"type" : "string" , "values" : ["cardview","listview"] , "default" : "cardview" },
 		"responsivePageSize": "int",
 		"styleClass" : { "type" :"styleclass", "tags": { "scope" :"design" }, "default": "svy-listformcomponent" }
 	}
