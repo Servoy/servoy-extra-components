@@ -164,7 +164,7 @@ angular.module('servoyextraCollapse', ['servoy']) //$NON-NLS-1$ //$NON-NLS-2$
 				$scope.onClick = function(e) {
 					if (lastClick)
 					{
-						if (e.timeStamp - lastClick < 500)
+						if (e.timeStamp - lastClick < 300)
 						{
 							lastClick = e.timeStamp;
 							return;
