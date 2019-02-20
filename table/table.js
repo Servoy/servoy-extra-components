@@ -2433,7 +2433,7 @@ return {
 
 		$scope.getLayoutStyle = function() {
 			var layoutStyle = { };
-			if ($scope.$parent.absoluteLayout) {
+			if ($scope.$parent.absoluteLayout) { // TODO can we always rely on the fact that $parent is the one to look at?
 				layoutStyle.position = "absolute";
 				layoutStyle.height = "100%";
 			} else {
