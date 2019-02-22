@@ -58,9 +58,6 @@ angular.module('servoyextraCollapse', ['servoy']) //$NON-NLS-1$ //$NON-NLS-2$
 				    return $sce.trustAsHtml(string);
 				};
 				
-				if (!$scope.model.collapsibles) {
-					$scope.model.collapsibles = [];
-				}
 			},
 			link: function($scope, $element, $attrs) {
 
@@ -299,23 +296,26 @@ angular.module('servoyextraCollapse', ['servoy']) //$NON-NLS-1$ //$NON-NLS-2$
 				function initCollapsibles() {
 					//get form states and fix possible accordionMode misconfiguration
 					var openedCollapseFound = false;
-					for (var x = 0; x < $scope.model.collapsibles.length; x++) {
-						var collapsible = $scope.model.collapsibles[x];
-						//see whether it should be collapsed or not
-						if ($scope.model.expandedIndices && $scope.model.expandedIndices.indexOf(x) !== -1) {
-							//should be expanded
-							if (!$scope.model.accordionMode || !openedCollapseFound) {
-								//when not in accordionMode or no collapse is yet expanded
-								collapsible.isCollapsed = false;
-								openedCollapseFound = true;
-							} else {
-								collapsible.isCollapsed = true;
+					if ($scope.model.collapsibles)
+					{
+						for (var x = 0; x < $scope.model.collapsibles.length; x++) {
+							var collapsible = $scope.model.collapsibles[x];
+							//see whether it should be collapsed or not
+							if ($scope.model.expandedIndices && $scope.model.expandedIndices.indexOf(x) !== -1) {
+								//should be expanded
+								if (!$scope.model.accordionMode || !openedCollapseFound) {
+									//when not in accordionMode or no collapse is yet expanded
+									collapsible.isCollapsed = false;
+									openedCollapseFound = true;
+								} else {
+									collapsible.isCollapsed = true;
+								}
+							}
+							if (collapsible.form) {
+								getFormState(collapsible.form, !collapsible.isCollapsed, collapsible);
 							}
 						}
-						if (collapsible.form) {
-							getFormState(collapsible.form, !collapsible.isCollapsed, collapsible);
-						}
-					}
+					}	
 				}
 				
 				initCollapsibles();
