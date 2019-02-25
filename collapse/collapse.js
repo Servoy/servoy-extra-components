@@ -161,11 +161,10 @@ angular.module('servoyextraCollapse', ['servoy']) //$NON-NLS-1$ //$NON-NLS-2$
 				$scope.onClick = function(e) {
 					if (lastClick)
 					{
-						if (e.timeStamp - lastClick < 300)
+						if (e.timeStamp - lastClick < 375)
 						{
-							lastClick = e.timeStamp;
 							return;
-						}	
+						}
 					}
 					lastClick = e.timeStamp;
 					var collapsibleIndex = $(e.target).closest('.svy-collapse-collapsible').attr('id').split('-')[1] //$NON-NLS-1$ //$NON-NLS-2$
