@@ -54,8 +54,11 @@ angular.module('servoyextraCollapse', ['servoy']) //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				
 				$scope.trustAsHtml = function(string) {
-					//allow html content
-				    return $sce.trustAsHtml(string);
+					// not trusted
+					if (!$scope.svyServoyapi.trustAsHtml()) return string; 
+					
+					//allow html content     
+					return $sce.trustAsHtml(string);
 				};
 				
 			},
