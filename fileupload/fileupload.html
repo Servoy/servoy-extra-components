@@ -11,7 +11,7 @@
 		ngf-select-disabled="getProgress('')" 
 		ngf-accept="'{{model.accept}}'"
 		ng-click='cancel()'
-		ng-disabled="{{!model.enabled}}"
+		ng-disabled="!model.enabled"
 		>
 		<i class="svy-fu-row {{getProgress('') ? model.successIconStyleClass : model.iconStyleClass}}"></i>
 		<span class="svy-fu-row" ng-bind="getMessage()"></span>
