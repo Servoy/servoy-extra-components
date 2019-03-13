@@ -10,9 +10,9 @@ Absolute-Layout: True
 CSS-DesignLibs: servoyextra/lib/css/servoyextra_design.css
 Created-By: 1.7.0_05-b06 (Oracle Corporation)
 Package-Type: Web-Component
-JS-ClientLibs: servoyextra/lib/js/jquery-ui.min.js;name=jquery-ui;version=1.12.
- 1,servoyextra/lib/js/jquery.fancytree-all.min.js;name=jquery.fancytre
- e-all;version=2.30.2
+JS-ClientLibs: js/jquery-ui.min.js;name=jquery-ui;version=1.11.
+ 4,servoyextra/lib/js/jquery.fancytree-all.min.js;name=jquery.fancytre
+ e-all;version=2.9.0
 
 Name: table/table.spec
 Web-Component: True

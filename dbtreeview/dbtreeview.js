@@ -257,8 +257,8 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 	    			item.title = foundset.viewPort.rows[i][binding.textdataprovider];
 	    			if(binding.tooltiptextdataprovider) item.tooltip = foundset.viewPort.rows[i][binding.tooltiptextdataprovider];
 	    			if(binding.imageurldataprovider) item.icon = getIconURL(foundset.viewPort.rows[i][binding.imageurldataprovider]);
-	    			item.checkbox = binding.hascheckboxdataprovider !== undefined && foundset.viewPort.rows[i][binding.hascheckboxdataprovider];
-	    			if(!item.checkbox) {
+	    			item.hideCheckbox = binding.hascheckboxdataprovider == undefined || !foundset.viewPort.rows[i][binding.hascheckboxdataprovider];
+	    			if(!item.hideCheckbox) {
 	    				item.selected = Boolean(foundset.viewPort.rows[i][binding.checkboxvaluedataprovider])
 	    			}
 					
@@ -306,7 +306,7 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 						for(var j = 0; j < binding.nRelationInfos.length; j++) {
 							var relationItem = {};
 							relationItem.title = binding.nRelationInfos[j].label;
-							relationItem.checkbox = true;
+							relationItem.hideCheckbox = true;
 							relationItem.folder = true;
 							relationItem.lazy = true;
 							relationItem.data = {}
