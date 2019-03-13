@@ -5,8 +5,7 @@
 	"icon": "servoyextra/fileupload/fileupload.png",
 	"definition": "servoyextra/fileupload/fileupload.js",
 	"libraries": [
-		{"name":"fileupload.css", "version":"1", "url":"servoyextra/fileupload/fileupload.css", "mimetype":"text/css"}, 
-		{"name":"font-awesome.css", "version":"4.7.0", "url":"servoyextra/fileupload/lib/font-awesome.min.css", "mimetype":"text/css", "group":false}
+		{"name":"fileupload.css", "version":"1", "url":"servoyextra/fileupload/fileupload.css", "mimetype":"text/css"}
 	],
 	"model":
 	{
