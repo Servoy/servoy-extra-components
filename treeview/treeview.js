@@ -30,13 +30,14 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 		})    	
     	
       	function initTree() {
-      		theTree = $element.find("div").fancytree(
-     	 	{
+      		treeOptions = {
  				source: treeJSON,
  				selectMode: 1,
 // 				extensions: ["wide"],
  				activate: function(event, data) {
 					if(!data.node.isSelected()) data.node.setSelected();
+				},
+				click: function(event, data) {	
 					if ($scope.handlers.onNodeClicked) {
 
 						// if double click available execute timeout
@@ -46,15 +47,12 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 							}
 							clickTimeout = $timeout(function() {
 									$scope.handlers.onNodeClicked(data.node.key);
-								}, 200);
+								}, 400);
 						} else {
 							// if no double click execute immediately the click
 							$scope.handlers.onNodeClicked(data.node.key);
 						}
 					}
-				},
-				click: function(event, data) {	
-
 				},
 				dblclick: function(event, data) {
 					if($scope.handlers.onNodeDoubleClicked)  {
@@ -79,9 +77,40 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 // 					iconSpacing: "0.5em", // Adjust this if @fancy-icon-spacing != "3px"
 // 					levelOfs: "1.5em"     // Adjust this if ul padding != "16px"
 // 				},
- 			});
+ 			};
+      		
+		    /*Bind context menu for every node when its DOM element is created.
+	        We do it here, so we can also bind to lazy nodes, which do not
+	        exist at load-time.*/
+      		if ($scope.handlers.onNodeRightClicked) {
+      			treeOptions.createNode = function(event, data){
+			        bindContextMenu(data.node.span);
+			    }
+      		}
+      		
+      		theTree = $element.find("div").fancytree(treeOptions);
+      		
       		theTree = theTree.fancytree("getTree");
      	}
+		
+     	  // --- Contextmenu helper --------------------------------------------------
+     	  function bindContextMenu(span) {
+     	    // Add context menu to this node:
+     	    
+     		 if ($scope.handlers.onNodeRightClicked) {
+	     	    $(span).contextmenu(function(event) {
+	     	      // The event was bound to the <span> tag, but the node object
+	     	      // is stored in the parent <li> tag
+	     	      if ($scope.handlers.onNodeRightClicked) {     	    	
+		     	      var node = $.ui.fancytree.getNode(event.target);
+					  event.preventDefault();
+					  if (node) {
+					  	 $scope.handlers.onNodeRightClicked(node.key);
+					  }
+	     	      }
+	     	    });
+     		 }
+     	  };
 
   		function findParent(parentId, children) {
   			if(children != null) {
