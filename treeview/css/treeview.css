@@ -1,7 +1,16 @@
 .treeview {
 	width: 100%;
-	height: 100%
 }
+
+div.treeview {
+	height: 100%;
+}
+
+table.treeview {
+    height: initial;
+    max-height: 100%;
+}
+
 .treeview ul.fancytree-container {
 	min-height: 100%;
 }

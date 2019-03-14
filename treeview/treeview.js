@@ -13,6 +13,8 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
     		  $element.html("<div class=\"tree_design\"></div>");
     	  }
     	  
+    	var renderedAsTable = false;
+    	var columnsLength = 0;
     	var treeJSON;
     	var theTree;
     	var clickTimeout;
@@ -21,7 +23,13 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 			if($scope.model.jsDataSet) {
 				treeJSON = toTreeJSON($scope.model.jsDataSet);
 				if(theTree) {
-					theTree.reload(treeJSON);
+					if (renderedAsTable == isTableView()) {
+						// reload the data
+						theTree.reload(treeJSON);
+					} else {
+						// reload the tree if switching between table and non-table view
+						initTree();
+					}
 				}
 				else {
 					initTree();
@@ -30,7 +38,7 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 		})    	
     	
       	function initTree() {
-      		treeOptions = {
+      		var treeOptions = {
  				source: treeJSON,
  				selectMode: 1,
 // 				extensions: ["wide"],
@@ -88,7 +96,51 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 			    }
       		}
       		
-      		theTree = $element.find("div").fancytree(treeOptions);
+      		/** if should be rendered as a table */
+      		if (isTableView()) {
+					treeOptions.extensions = ["table"]
+					treeOptions.table = {
+	 					nodeColumnIdx: 0         // render node expander, icon, and title to this column (default: #0)
+	 				}
+					treeOptions.renderColumns = function(event, data) {					
+	 			        var node = data.node,
+				        $tdList = $(node.tr).find(">td");
+	 			        
+	 			        for (var i = 1; i <= columnsLength; i++) {
+	 				        $tdList.eq(i).text(node.data['column' + i]);
+	 			        } 			        
+						return;
+	 				}
+	      		
+	 			var columnHeaders = toTreeColumnHeaders($scope.model.jsDataSet);
+ 				
+	 			var table = '<table class="treeview"><colgroup>';
+	 			var thead = '<thead><tr>';
+	 			
+ 				// sets the title for the other columns
+	 			for (var i = 0; i < columnHeaders.length; i++) {
+	 				table += '<col></col>';
+	 				if (columnHeaders[i] != null && columnHeaders[i] != undefined) {
+	 					thead += '<th>' + columnHeaders[i] + '</th>'; 
+	 				} else {
+	 					thead += '<th></th>';
+	 				}
+	 			}
+	 			
+	 			table += '</colgroup>';
+	 			thead +='</tr></thead><tbody></tbody>';
+	 			table += thead;
+	 			table += '</table>'
+	 			
+	 			$element.append(table);
+	 			$element.find('div').css('display','none');
+	 				
+	      		theTree = $element.find("table").fancytree(treeOptions);
+	      		renderedAsTable = true;
+      		} else {
+	      		theTree = $element.find("div").fancytree(treeOptions);
+	      		renderedAsTable = false;
+      		}
       		
       		theTree = theTree.fancytree("getTree");
      	}
@@ -121,7 +173,32 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
   			}
   			return null;
   		};
+  		
+  		function isTableView() {
+  			return columnsLength === 0 ? false : true;
+  		}
+  		
+  		/**
+  		 * Returns the column headers sorted by index
+  		 * */
+  		function toTreeColumnHeaders(jsDataSet) {
+      		// index for extra columns
+      		var columnHeaders = [];
+      		if (jsDataSet) {
+      			columnHeaders.push(jsDataSet[1][jsDataSet[0].indexOf("treeColumn")])
+      		}
+      		for (var c = 0; jsDataSet && c < jsDataSet[0].length; c++) {
+      			if (jsDataSet[0][c].indexOf("column") === 0) {
+      				columnHeaders.push(jsDataSet[1][c]);
+      			}
+      		}
+      		return columnHeaders;
+  		}
 
+  		/**
+  		 * Returns the treeJSON
+  		 * 
+  		 * */
       	function toTreeJSON(jsDataSet) {
       		var fancyTreeJSON = new Array();
       		
@@ -129,8 +206,27 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       		var pidIdx = jsDataSet[0].indexOf("pid")
       		var iconIdx = jsDataSet[0].indexOf("icon");
       		var treeColumnIdx = jsDataSet[0].indexOf("treeColumn");
-      		for(var i = 1; i < jsDataSet.length; i++) {
+      		
+      		// index for extra columns
+      		var columnsIdx = [];
+      		for (var c = 0; c < jsDataSet[0].length; c++) {
+      			if (jsDataSet[0][c].indexOf("column") === 0) {
+      				columnsIdx.push(c);
+      			}
+      		}
+      		
+      		// sets the column length. Not very nice coded;
+      		columnsLength = columnsIdx.length;
+      		
+      		// in table view the first contains the table header names
+      		var i = columnsIdx.length ? 2 : 1;
+      		for(i; i < jsDataSet.length; i++) {
       			var n = {key: jsDataSet[i][idIdx], title: jsDataSet[i][treeColumnIdx]};
+      			
+      			for (c = 1; c <= columnsIdx.length; c++) {
+      				n['column' + c] = jsDataSet[i][columnsIdx[c - 1]];
+      			}
+      			
       			var icon = jsDataSet[i][iconIdx];
       			if(icon) n.icon = icon;
       			var parentChildren = fancyTreeJSON;
