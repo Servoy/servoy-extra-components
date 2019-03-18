@@ -721,6 +721,7 @@ return {
 						$scope.model.sortDirection = null;
 					}
 				}
+				return [$scope];
 			});
 		}
 
