@@ -15,6 +15,7 @@
 		"expandedIndex"					: {"type" :"object", "tags": { "scope" :"private" }, "pushToServer" : "allow"},
 		"tabSeq"						: { "type": "tabseq", "tags": { "scope": "design" } },
 		"containedForm"					: {"type" :"form"},
+		"relationName"					: "relation",
 		"sidenavWidth"					: {"type" :"int", "default":"300"},
 		"responsiveHeight" 				: {"type" :"int", "default":0},
 		
