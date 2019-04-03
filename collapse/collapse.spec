@@ -14,7 +14,8 @@
 		"collapsibles"			: { "type": "collapsible[]", "droppable": true, "pushToServer": "shallow" },
 		"accordionMode"			: { "type": "boolean", "default": "true" },
 		"expandedIndices"		: { "type": "int[]", "tags": { "scope": "design" } },
-		"styleClass"			: { "type": "styleclass" }
+		"styleClass"			: { "type": "styleclass" },
+		"tabSeq" : {"type" :"tabseq", "tags": { "scope" :"design" }}
 	},
 	"api": 
 	{
