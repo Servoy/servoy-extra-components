@@ -78,7 +78,9 @@ angular.module('servoyextraFileupload', ['servoy', 'sabloApp']).directive('servo
 						$scope.upload = Upload.upload({
 							url: uploadURL,
 							file: uploadFiles
-						}).then(function(resp) {
+						});
+						
+						$scope.upload.then(function(resp) {
 								$scope.upload = null;
 								hideProgress();
 							},
@@ -110,6 +112,16 @@ angular.module('servoyextraFileupload', ['servoy', 'sabloApp']).directive('servo
 						return $scope.model.uploadText;
 					}
 				}
+				
+				$scope.checkReject = function(ev, ev2){
+					var type = ev.dataTransfer.items[0].type;
+					var mockExtension = type.substring(type.indexOf("/")+1);
+					if($scope.model.accept.indexOf(".") !== -1)
+						return 'svy-fu-dragover';
+					else
+						return $scope.isValidFile(new File([""], "mockFile",  {type: ev.dataTransfer.items[0].type })) 
+							? 'svy-fu-dragover' : 'svy-fu-dragover-invalid';					
+				}	
 
 				$scope.getProgress = function(postFix) {
 					if (progress) return Math.round(progress) + postFix;
@@ -121,9 +133,15 @@ angular.module('servoyextraFileupload', ['servoy', 'sabloApp']).directive('servo
 						$scope.upload.abort();
 					}
 				}
+				
+				$scope.isValidFile = function(file){
+					if(file)
+						return Upload.validatePattern(file, $scope.model.accept)
+					else return true;
+				}
 
 				$scope.$watch('files', function(newV, oldV) {
-						if (newV) {
+						if(newV && $scope.isValidFile(newV)){
 							upload(newV);
 						}
 					});
