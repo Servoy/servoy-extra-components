@@ -109,13 +109,15 @@ angular.module('servoyextraFileupload', ['servoy', 'sabloApp']).directive('servo
 							return $scope.model.uploadProgressText;
 						}
 					} else {
+						if($scope.errorText)
+							return $scope.errorText;
 						return $scope.model.uploadText;
 					}
 				}
 				
-				$scope.checkReject = function(ev, ev2){
-					var type = ev.dataTransfer.items[0].type;
-					var mockExtension = type.substring(type.indexOf("/")+1);
+				$scope.checkReject = function(ev){
+					//if accept property  is not mimetype we cannot validate, so we will display 
+					// acceptedClass
 					if($scope.model.accept.indexOf(".") !== -1)
 						return 'svy-fu-dragover';
 					else
@@ -142,8 +144,10 @@ angular.module('servoyextraFileupload', ['servoy', 'sabloApp']).directive('servo
 
 				$scope.$watch('files', function(newV, oldV) {
 						if(newV && $scope.isValidFile(newV)){
+							$scope.errorText = "";
 							upload(newV);
-						}
+						}else if (newV)
+							$scope.errorText = $scope.model.uploadNotSupportedText;
 					});
 
 			}
