@@ -15,7 +15,7 @@
 		"autoRefresh": {"type":"boolean", "default":true},
 	    "selection" : {"type":"object[]", "tags": { "scope": "private" }},
 	    "levelVisibility" : {"type":"levelVisibilityType", "tags": { "scope": "private" }, "pushToServer": "shallow"},
-		"responsiveHeight": { "type": "int", "default": 300 }
+		"responsiveHeight": { "type": "int", "default": 0 }
 	},	
 	"api":
 	{
