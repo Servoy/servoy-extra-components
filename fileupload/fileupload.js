@@ -72,7 +72,7 @@ angular.module('servoyextraFileupload', ['servoy', 'sabloApp']).directive('servo
 					}
 
 					if (beanname && formname) {
-						var uploadURL = "resources/upload/" + $sabloApplication.getSessionId() + "/" + formname + "/" + beanname + "/dataProviderID";
+						var uploadURL = "resources/upload/" + $sabloApplication.getClientnr() + "/" + formname + "/" + beanname + "/dataProviderID";
 						$scope.errorText = "";
 						progress = 0;
 						$scope.upload = Upload.upload({
