@@ -49,6 +49,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
                         } else {
                             $element.css("display","");
                         }
+                        break;
 					case "valuelistID":
 						// TODO if valuelist changes relookup all selected values
 						// updateTags();
@@ -125,6 +126,8 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
                 options.multiple = true;
 				options.selectOnClose = $scope.model.selectOnClose;
 				options.closeOnSelect = $scope.model.closeOnSelect;
+				options.scrollAfterSelect = false;
+				
 				if ($scope.model.placeholderText) options.placeholder = $scope.model.placeholderText;
 				
 				// options.tokenSeparators = [',', ' '];
