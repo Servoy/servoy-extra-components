@@ -51,10 +51,10 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
                         }
                         break;
 					case "valuelistID":
-						// TODO if valuelist changes relookup all selected values
-						// updateTags();
-						// initTokanizer();
-						break;
+						if ($log.debugEnabled) log.debug("selec2-autoTokenizer: valuelist changed");
+						// let the dataprovider to be reset as the display can be different for the new valuelist
+						// only break here if there is no display value
+						if(!tokenizer || !tokenizer.val() || !tokenizer.val().length) break;
 					case "dataProviderID":
 						// reset the hashMap
 						hashMap = {};
