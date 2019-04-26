@@ -42,7 +42,13 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 						break;
 					case "readOnly":
 						tokenizer.prop("disabled", !isEnabled());
-						break;
+                        break;
+                    case "visible":
+                        if(!$scope.model.visible){
+                            $element.css("display","none");
+                        } else {
+                            $element.css("display","");
+                        }
 					case "valuelistID":
 						// TODO if valuelist changes relookup all selected values
 						// updateTags();
@@ -113,14 +119,10 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 					options.dropdownCssClass += " " + $scope.model.styleClass;
 				}
 				
-				if(!$scope.model.visible){
-					$element.css("display","none")
-				}
-				
 				//options.containerCssClass = "custom-red"
 				//options.dropdownCssClass = "custom-red"
 				// placeholder
-				options.multiple = true;
+                options.multiple = true;
 				options.selectOnClose = $scope.model.selectOnClose;
 				options.closeOnSelect = $scope.model.closeOnSelect;
 				if ($scope.model.placeholderText) options.placeholder = $scope.model.placeholderText;
@@ -374,7 +376,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 			 *  */
 			function selectRealValue(realValue, values) {
 				var optionId = $scope.model.svyMarkupId + '__' + realValue
-
+                
 				$scope.model.valuelistID.getDisplayValue(realValue).then(getDisplayValueSuccess, getDisplayValueFailure);
 				
 				// success
@@ -386,22 +388,22 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 						data = realValue
 					}
 					
-					// add option into the select2
-					delete hashMap[realValue];
-					tokenizer.append('<option id=' + optionId +' value="' + realValue + '">' + data +'</option>');
-					
-					// trigger tokenizer change once all the displayValues have been retrieved
-					if (getObjectLength(hashMap) === 0) {
-						tokenizer.val(values);
-						tokenizer.trigger('change');
-					}
-				}
+                        					// add option into the select2
+                            delete hashMap[realValue];
+                            tokenizer.append('<option id=' + optionId +' value="' + realValue + '">' + data +'</option>');
+                            
+                            // trigger tokenizer change once all the displayValues have been retrieved
+                            if (getObjectLength(hashMap) === 0) {
+                                tokenizer.val(values);
+                                tokenizer.trigger('change');
+                            }
+                    }
 				
 				// fails retrieving displayValue
 				function getDisplayValueFailure(e) {
 					$log.error(e);
 					getDisplayValueFailure("");
-				}
+                }
 			}
 			
 			function getObjectLength(o) {

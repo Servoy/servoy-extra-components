@@ -1,24 +1,24 @@
 .svyextra-lightboxgallery {
 }
 
-/* Why using flex Box ? */
-.svyextra-lightboxgallery-image-set {
-	/*
-	display: flex;
-    flex-wrap: wrap;
-    flex-direction: row-reverse;
-    */  
-      
+.svyextra-lightboxgallery-image-container {
+    display: inline-block;
+    position: relative;
+}
+
+.svyextra-lightboxgallery-image-container:hover .svyextra-lightboxgallery-image-delete {
+	visibility: visible;
 }
 
 .svyextra-lightboxgallery-image-cell {
 	display: inline-block;
+    margin: 0 0.5rem 1rem 0.5rem;
+    text-align: center;
 }
 
 .svyextra-lightboxgallery-image {
     display: inline-block;
     padding: 2px;
-    margin: 0 0.5rem 1rem 0.5rem;
     background-color: #fff;
     line-height: 0;
     border-radius: 4px;
@@ -36,6 +36,40 @@ a.svyextra-lightboxgallery-image {
     outline: 0;
 }
 
+.svyextra-lightboxgallery-image-caption {
+    font-size: 1.4rem;
+    text-align: center;
+    height: 20px;
+    overflow: hidden;
+    margin: 5px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.svyextra-lightboxgallery-image-delete {
+	visibility: hidden;
+    position: absolute;
+    background: #ffffff;
+    opacity: 0.8;
+    top: 7%;
+    right: 7%;
+    width: 35px;
+    height: 35px;
+    z-index: 1;
+    border-radius: 100px;
+    cursor: pointer;
+}
+
+.svyextra-lightboxgallery-image-delete > i {
+	position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    line-height: 35px;
+    text-align: center;
+}
+
 .svyextra-lightboxgallery-thumbnail {
     border-radius: 4px;
     border: 0;
@@ -44,6 +78,7 @@ a.svyextra-lightboxgallery-image {
 .svyextra-lightboxgallery img {
 	max-width: 100%;
 }
+
 .svy-wrapper > * > .svyextra-lightboxgallery img {
 	max-width: 100%;
 	max-height: 100%;

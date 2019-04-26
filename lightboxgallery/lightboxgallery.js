@@ -3,7 +3,8 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 			restrict: 'E',
 			scope: {
 				model: '=svyModel',
-				api: "=svyApi"
+				api: "=svyApi",
+				handlers: "=svyHandlers"
 			},
 			link: function($scope, $element, $attrs) {
 				$scope.images = [];
@@ -17,7 +18,8 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 						var image = {
 							url: row.image && row.image.url ? row.image.url.split('?')[0] : null,
 							thumbUrl: row.thumbnail && row.thumbnail.url ? row.thumbnail.url.split('?')[0] : null,
-							caption: row.caption ? row.caption : null
+							caption: row.caption ? row.caption : null,
+							imageId: row.imageId
 						}
 						if (!image.url) continue;
 						images.push(image);
@@ -67,6 +69,18 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 					}
 					return style;
 				}
+
+				$scope.getCaptionStyle = function() {
+					var style = { };
+					if ($scope.model.maxImageWidth) {
+						if ($scope.model.maxImageWidth == -1) {
+							style.maxWidth = 'none';
+						} else {
+							style.maxWidth = $scope.model.maxImageWidth + 'px';
+						}
+					}
+					return style;
+				}				
 
 				$scope.api.showLightbox = function() {
 					var firstImg = angular.element($element[0].querySelector('a'));
