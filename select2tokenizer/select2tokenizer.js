@@ -52,7 +52,10 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
                         break;
 					case "valuelistID":
 						if ($log.debugEnabled) log.debug("selec2-autoTokenizer: valuelist changed");
-						// let the dataprovider to be reset as the display can be different for the new valuelist
+						if(tokenizer && tokenizer.data('select2').isOpen()) {
+							break;
+						}
+						// if select is not open, let the dataprovider to be reset as the display can be different for the new valuelist
 					case "dataProviderID":
 						// reset the hashMap
 						hashMap = {};
@@ -391,7 +394,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 					
                         					// add option into the select2
                             delete hashMap[realValue];
-                            tokenizer.append('<option id=' + optionId +' value="' + realValue + '">' + data +'</option>');
+                            tokenizer.append('<option id=' + optionId +' value="' + realValue + '" selected>' + data +'</option>');
                             
                             // trigger tokenizer change once all the displayValues have been retrieved
                             if (getObjectLength(hashMap) === 0) {
