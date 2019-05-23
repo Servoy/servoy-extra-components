@@ -12,7 +12,8 @@
 		"styleclass"   	: {"type": "styleclass"},
 		"size" 			: {"type":"dimension",  "default" : {"width":25, "height":25}},
 		"toolTipText" : { "type" : "tagstring"}, 
-		"visible" 		: "visible"
+		"visible" 		: "visible",
+		"alignment" : {"type":"string" , "tags": { "scope" :"design" }, "default" : "text",  "values" :["center", "center-horizontally", "center-vertically"]}
 	}, "handlers":
 	{
 		"onActionMethodID": {"parameters":[

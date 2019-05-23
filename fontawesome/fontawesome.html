@@ -1,4 +1,4 @@
-<div class="svy-fa"
+<div class="{{model.alignment != null ? 'svy-fa-' + model.alignment : 'svy-fa'}}"
 	 ng-class="model.styleclass" 
 	 ng-disabled="!model.enabled"
 	 ng-if='model.visible'
