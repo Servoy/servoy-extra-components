@@ -328,6 +328,7 @@ return {
 			}
 		}
 		$(window).on('resize', windowResizeHandler);
+		$scope.$on("dialogResize", windowResizeHandler);
 
 		$scope.$watch(function() { return $element.is(':visible') }, function(isVisible) {
 			if(isVisible) windowResizeHandler();
