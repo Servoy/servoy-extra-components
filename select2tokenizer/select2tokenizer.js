@@ -106,6 +106,9 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 			// data can already be here, if so call the modelChange function so that it is initialized correctly.
 			var modelChangFunction = $scope.model[$sabloConstants.modelChangeNotifier];
 			for (var key in $scope.model) {
+				// skip valuelist, we only need to track its changes after initialization, firing changes for it now
+				// will cause the dataprovider to be set twice
+				if(key == "valuelistID") continue; 
 				modelChangFunction(key,$scope.model[key]);
 			}
 							
