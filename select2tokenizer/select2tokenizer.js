@@ -49,11 +49,13 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
                         } else {
                             $element.css("display","");
                         }
+                        break;
 					case "valuelistID":
-						// TODO if valuelist changes relookup all selected values
-						// updateTags();
-						// initTokanizer();
-						break;
+						if ($log.debugEnabled) log.debug("selec2-autoTokenizer: valuelist changed");
+						if(tokenizer && tokenizer.data('select2').isOpen()) {
+							break;
+						}
+						// if select is not open, let the dataprovider to be reset as the display can be different for the new valuelist
 					case "dataProviderID":
 						// reset the hashMap
 						hashMap = {};
@@ -104,6 +106,9 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 			// data can already be here, if so call the modelChange function so that it is initialized correctly.
 			var modelChangFunction = $scope.model[$sabloConstants.modelChangeNotifier];
 			for (var key in $scope.model) {
+				// skip valuelist, we only need to track its changes after initialization, firing changes for it now
+				// will cause the dataprovider to be set twice
+				if(key == "valuelistID") continue; 
 				modelChangFunction(key,$scope.model[key]);
 			}
 							
@@ -125,6 +130,8 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
                 options.multiple = true;
 				options.selectOnClose = $scope.model.selectOnClose;
 				options.closeOnSelect = $scope.model.closeOnSelect;
+				options.scrollAfterSelect = false;
+				
 				if ($scope.model.placeholderText) options.placeholder = $scope.model.placeholderText;
 				
 				// options.tokenSeparators = [',', ' '];
@@ -390,7 +397,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 					
                         					// add option into the select2
                             delete hashMap[realValue];
-                            tokenizer.append('<option id=' + optionId +' value="' + realValue + '">' + data +'</option>');
+                            tokenizer.append('<option id=' + optionId +' value="' + realValue + '" selected>' + data +'</option>');
                             
                             // trigger tokenizer change once all the displayValues have been retrieved
                             if (getObjectLength(hashMap) === 0) {

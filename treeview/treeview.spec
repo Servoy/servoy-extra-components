@@ -19,6 +19,13 @@
       						"type":"object"
       						}
       					]},
+      	"onNodeRightClicked": {
+		      		"parameters":[
+      						{
+      						"name":"nodeId",
+      						"type":"object"
+      						}
+      					]},
 		"onNodeDoubleClicked": {
 		      		"parameters":[
       						{

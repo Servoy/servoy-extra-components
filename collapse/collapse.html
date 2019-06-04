@@ -1,13 +1,15 @@
 <div 
 	class="svy-collapse {{model.styleClass}}" 
-	id="{{::model.svyMarkupId}}" >
-
+	id="{{::model.svyMarkupId}}" 
+	sablo-tabseq='model.tabSeq' 
+    sablo-tabseq-config="{container: true, reservedGap: 100}">
 	<!-- //collapsibles -->
 	<div 
 		class="svy-collapse-collapsible {{collapsible.styleClass ? collapsible.styleClass : ''}}" 
 		id="{{::model.svyMarkupId}}-{{$index}}"
 		ng-repeat="collapsible in model.collapsibles" 
 		ng-init="collapsibleIndex = $index"
+		sablo-tabseq='$index+1' sablo-tabseq-config="{container: true}"
 		>
 		
 		<!-- //header -->
@@ -78,7 +80,8 @@
 					ng-include="getCardFormIfVisible(collapsible, card)" 
 					ng-class="card.styleClass" 
 					ng-style="getFormStyle(card.form)"
-					class="svy-collapse-card-body-container" 
+					class="svy-collapse-card-body-container"
+					sablo-tabseq='$index+1' sablo-tabseq-config="{container: true}" 
 					id="{{::model.svyMarkupId}}-{{collapsibleIndex}}-collapsible-card-container-{{$index}}" >
 				</div>
 		    </div>

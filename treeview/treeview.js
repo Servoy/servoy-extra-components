@@ -13,6 +13,8 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
     		  $element.html("<div class=\"tree_design\"></div>");
     	  }
     	  
+    	var renderedAsTable = false;
+    	var columnsLength = 0;
     	var treeJSON;
     	var theTree;
     	var clickTimeout;
@@ -21,7 +23,13 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 			if($scope.model.jsDataSet) {
 				treeJSON = toTreeJSON($scope.model.jsDataSet);
 				if(theTree) {
-					theTree.reload(treeJSON);
+					if (renderedAsTable == isTableView()) {
+						// reload the data
+						theTree.reload(treeJSON);
+					} else {
+						// reload the tree if switching between table and non-table view
+						initTree();
+					}
 				}
 				else {
 					initTree();
@@ -30,13 +38,14 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 		})    	
     	
       	function initTree() {
-      		theTree = $element.find("div").fancytree(
-     	 	{
+      		var treeOptions = {
  				source: treeJSON,
  				selectMode: 1,
 // 				extensions: ["wide"],
  				activate: function(event, data) {
 					if(!data.node.isSelected()) data.node.setSelected();
+				},
+				click: function(event, data) {	
 					if ($scope.handlers.onNodeClicked) {
 
 						// if double click available execute timeout
@@ -46,15 +55,12 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 							}
 							clickTimeout = $timeout(function() {
 									$scope.handlers.onNodeClicked(data.node.key);
-								}, 200);
+								}, 400);
 						} else {
 							// if no double click execute immediately the click
 							$scope.handlers.onNodeClicked(data.node.key);
 						}
 					}
-				},
-				click: function(event, data) {	
-
 				},
 				dblclick: function(event, data) {
 					if($scope.handlers.onNodeDoubleClicked)  {
@@ -79,9 +85,84 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 // 					iconSpacing: "0.5em", // Adjust this if @fancy-icon-spacing != "3px"
 // 					levelOfs: "1.5em"     // Adjust this if ul padding != "16px"
 // 				},
- 			});
+ 			};
+      		
+		    /*Bind context menu for every node when its DOM element is created.
+	        We do it here, so we can also bind to lazy nodes, which do not
+	        exist at load-time.*/
+      		if ($scope.handlers.onNodeRightClicked) {
+      			treeOptions.createNode = function(event, data){
+			        bindContextMenu(data.node.span);
+			    }
+      		}
+      		
+      		/** if should be rendered as a table */
+      		if (isTableView()) {
+					treeOptions.extensions = ["table"]
+					treeOptions.table = {
+	 					nodeColumnIdx: 0         // render node expander, icon, and title to this column (default: #0)
+	 				}
+					treeOptions.renderColumns = function(event, data) {					
+	 			        var node = data.node,
+				        $tdList = $(node.tr).find(">td");
+	 			        
+	 			        for (var i = 1; i <= columnsLength; i++) {
+	 				        $tdList.eq(i).text(node.data['column' + i]);
+	 			        } 			        
+						return;
+	 				}
+	      		
+	 			var columnHeaders = toTreeColumnHeaders($scope.model.jsDataSet);
+ 				
+	 			var table = '<table class="treeview"><colgroup>';
+	 			var thead = '<thead><tr>';
+	 			
+ 				// sets the title for the other columns
+	 			for (var i = 0; i < columnHeaders.length; i++) {
+	 				table += '<col></col>';
+	 				if (columnHeaders[i] != null && columnHeaders[i] != undefined) {
+	 					thead += '<th>' + columnHeaders[i] + '</th>'; 
+	 				} else {
+	 					thead += '<th></th>';
+	 				}
+	 			}
+	 			
+	 			table += '</colgroup>';
+	 			thead +='</tr></thead><tbody></tbody>';
+	 			table += thead;
+	 			table += '</table>'
+	 			
+	 			$element.append(table);
+	 			$element.find('div').css('display','none');
+	 				
+	      		theTree = $element.find("table").fancytree(treeOptions);
+	      		renderedAsTable = true;
+      		} else {
+	      		theTree = $element.find("div").fancytree(treeOptions);
+	      		renderedAsTable = false;
+      		}
+      		
       		theTree = theTree.fancytree("getTree");
      	}
+		
+     	  // --- Contextmenu helper --------------------------------------------------
+     	  function bindContextMenu(span) {
+     	    // Add context menu to this node:
+     	    
+     		 if ($scope.handlers.onNodeRightClicked) {
+	     	    $(span).contextmenu(function(event) {
+	     	      // The event was bound to the <span> tag, but the node object
+	     	      // is stored in the parent <li> tag
+	     	      if ($scope.handlers.onNodeRightClicked) {     	    	
+		     	      var node = $.ui.fancytree.getNode(event.target);
+					  event.preventDefault();
+					  if (node) {
+					  	 $scope.handlers.onNodeRightClicked(node.key);
+					  }
+	     	      }
+	     	    });
+     		 }
+     	  };
 
   		function findParent(parentId, children) {
   			if(children != null) {
@@ -92,7 +173,32 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
   			}
   			return null;
   		};
+  		
+  		function isTableView() {
+  			return columnsLength === 0 ? false : true;
+  		}
+  		
+  		/**
+  		 * Returns the column headers sorted by index
+  		 * */
+  		function toTreeColumnHeaders(jsDataSet) {
+      		// index for extra columns
+      		var columnHeaders = [];
+      		if (jsDataSet) {
+      			columnHeaders.push(jsDataSet[1][jsDataSet[0].indexOf("treeColumn")])
+      		}
+      		for (var c = 0; jsDataSet && c < jsDataSet[0].length; c++) {
+      			if (jsDataSet[0][c].indexOf("column") === 0) {
+      				columnHeaders.push(jsDataSet[1][c]);
+      			}
+      		}
+      		return columnHeaders;
+  		}
 
+  		/**
+  		 * Returns the treeJSON
+  		 * 
+  		 * */
       	function toTreeJSON(jsDataSet) {
       		var fancyTreeJSON = new Array();
       		
@@ -100,8 +206,27 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       		var pidIdx = jsDataSet[0].indexOf("pid")
       		var iconIdx = jsDataSet[0].indexOf("icon");
       		var treeColumnIdx = jsDataSet[0].indexOf("treeColumn");
-      		for(var i = 1; i < jsDataSet.length; i++) {
+      		
+      		// index for extra columns
+      		var columnsIdx = [];
+      		for (var c = 0; c < jsDataSet[0].length; c++) {
+      			if (jsDataSet[0][c].indexOf("column") === 0) {
+      				columnsIdx.push(c);
+      			}
+      		}
+      		
+      		// sets the column length. Not very nice coded;
+      		columnsLength = columnsIdx.length;
+      		
+      		// in table view the first contains the table header names
+      		var i = columnsIdx.length ? 2 : 1;
+      		for(i; i < jsDataSet.length; i++) {
       			var n = {key: jsDataSet[i][idIdx], title: jsDataSet[i][treeColumnIdx]};
+      			
+      			for (c = 1; c <= columnsIdx.length; c++) {
+      				n['column' + c] = jsDataSet[i][columnsIdx[c - 1]];
+      			}
+      			
       			var icon = jsDataSet[i][iconIdx];
       			if(icon) n.icon = icon;
       			var parentChildren = fancyTreeJSON;

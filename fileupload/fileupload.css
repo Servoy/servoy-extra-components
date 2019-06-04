@@ -15,6 +15,10 @@
     border: 5px dashed blue;
 }
 
+.svy-fu-dragover-invalid {
+    border: 5px dashed red;
+}
+
 .svy-fu-progress-bar {
   float: left;
   width: 0;

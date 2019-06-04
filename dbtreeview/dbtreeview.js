@@ -593,6 +593,15 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 			}
 	  	})
 		
+		if(!$scope.svyServoyapi.isInAbsoluteLayout()){
+			$scope.$watch('model.responsiveHeight', function(newValue){
+					var dbtreeviewEl = $element.find(".dbtreeview")[0];
+					if(newValue && dbtreeviewEl) {
+						dbtreeviewEl.style.height = newValue+'px';
+					}
+			})
+		}
+		
       },
       templateUrl: 'servoyextra/dbtreeview/dbtreeview.html'
     };

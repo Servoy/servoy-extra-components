@@ -1,8 +1,29 @@
 .svy-fa {
 	display: inline;
+	
 }
 
 .svy-wrapper > * > .svy-fa {
 	display: block;
 	/* text-align: center; */
 }
+
+.svy-fa-center {
+   height: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.svy-fa-center-horizontally {
+   height: 100%;
+   display: flex;
+   justify-content: center;
+}
+
+.svy-fa-center-vertically {
+   height: 100%;
+   display: flex;
+   align-items: center;
+}
+
