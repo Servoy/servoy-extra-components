@@ -1,11 +1,10 @@
-.svy-fa {
-	display: inline;
-	
-}
-
-.svy-wrapper > * > .svy-fa {
+.svy-wrapper > * > .svy-fa-default {
 	display: block;
 	/* text-align: center; */
+}
+
+.svy-fa-default {
+  display: inline;
 }
 
 .svy-fa-center {
@@ -26,4 +25,5 @@
    display: flex;
    align-items: center;
 }
+
 
