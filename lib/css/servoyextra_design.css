@@ -6,3 +6,7 @@
 	height: 100%;
 	border: 1px dotted black;
 }
+
+.svy-layoutcontainer > * > .svy-onrenderlabel {
+	min-height: 20px;
+}

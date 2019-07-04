@@ -4,7 +4,7 @@
 	"version": 1,
 	"icon": "servoyextra/onrenderlabel/label.png",
 	"definition": "servoyextra/onrenderlabel/onrenderlabel.js",
-	"libraries": [],
+	"libraries": [{"name":"onrenderlabel-css", "version":"1.0", "url":"servoyextra/onrenderlabel/onrenderlabel.css", "mimetype":"text/css"}],
 	"model":
 	{
 	        "dataProviderID" : { "type":"dataprovider", "tags": { "scope": "design", "main": true}, "displayTagsPropertyName" : "displaysTags"}, 
