@@ -13,5 +13,14 @@
 		"responsivePageSize": "int",
 		"styleClass" : { "type" :"styleclass", "tags": { "scope" :"design" }, "default": "svy-listformcomponent" },
 		"selectionClass": { "type": "styleclass", "tags": { "scope" :"design" }}
+	},
+	"handlers" : {
+		"onSelectionChanged": {
+			"description": "Called after the foundset selection changed",
+			"parameters": [{
+				"name": "event",
+				"type": "JSEvent"
+			}]
+		}
 	}
 }
