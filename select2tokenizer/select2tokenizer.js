@@ -382,37 +382,40 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 			 *  
 			 *  */
 			function selectRealValue(realValue, values) {
-				var optionId = $scope.model.svyMarkupId + '__' + realValue
-                
-				$scope.model.valuelistID.getDisplayValue(realValue).then(getDisplayValueSuccess, getDisplayValueFailure);
-				
-				// success
-				function getDisplayValueSuccess(data) {
-					if ($log.debugEnabled) $log.debug('selec2-autoTokenizer: realValue: ' + realValue + ' displayValue: ' +  data);
-					
-					// show realValue if there is no displayValue
-					if (data === null) {
-						data = realValue
-					}
-					
-                        					// add option into the select2
-                            delete hashMap[realValue];
-                            tokenizer.append('<option id=' + optionId +' value="' + realValue + '" selected>' + data +'</option>');
-                            
-                            // trigger tokenizer change once all the displayValues have been retrieved
-                            if (getObjectLength(hashMap) === 0) {
-                                tokenizer.val(values);
-                                tokenizer.trigger('change');
-                            }
+                // show realValue if there is no displayValue
+                var found = false;
+                for (i = 0; i < $scope.model.valuelistID.length; i++) {
+                    if($scope.model.valuelistID[i].realValue == realValue) {
+                            addOptionToSelect2(realValue, values, $scope.model.valuelistID[i].displayValue);
+                            found = true;
+                        break;
                     }
-				
-				// fails retrieving displayValue
-				function getDisplayValueFailure(e) {
-					$log.error(e);
-					getDisplayValueFailure("");
+                }
+
+                if(!found) {
+                    $scope.model.valuelistID.getDisplayValue($scope.model.dataProviderID).then(function(displayValue) {
+                        if (displayValue === null)
+                            displayValue = realValue;
+    
+                        addOptionToSelect2(realValue, values, displayValue);
+                    });
                 }
 			}
-			
+            
+            function addOptionToSelect2(realValue, values,data) {
+                var optionId = $scope.model.svyMarkupId + '__' + realValue;
+                if ($log.debugEnabled) $log.debug('selec2-autoTokenizer: realValue: ' + realValue + ' displayValue: ' +  data);
+
+                // add option into the select2
+                delete hashMap[realValue];
+                tokenizer.append('<option id=' + optionId +' value="' + realValue + '" selected>' + data +'</option>');
+                
+                // trigger tokenizer change once all the displayValues have been retrieved
+                if (getObjectLength(hashMap) === 0) {
+                    tokenizer.val(values);
+                    tokenizer.trigger('change');
+                }
+            }
 			function getObjectLength(o) {
 				var count = 0;
 				for (var k in o) count++;
