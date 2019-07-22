@@ -74,7 +74,7 @@ angular.module('servoyextraFileupload', ['servoy', 'sabloApp']).directive('servo
 					if (beanname && formname) {
 						var uploadURL = "resources/upload/" + $sabloApplication.getClientnr() + "/" + formname + "/" + beanname + "/dataProviderID";
 						$scope.errorText = "";
-						progress = 0;
+                        progress = 0;
 						$scope.upload = Upload.upload({
 							url: uploadURL,
 							file: uploadFiles
@@ -82,7 +82,10 @@ angular.module('servoyextraFileupload', ['servoy', 'sabloApp']).directive('servo
 						
 						$scope.upload.then(function(resp) {
 								$scope.upload = null;
-								hideProgress();
+                                hideProgress();
+                                if($scope.handlers.afterFileUploadMethodID) {
+                                    $scope.handlers.afterFileUploadMethodID(event);
+                                }
 							},
 							function(resp) {
 								$scope.upload = null;
@@ -141,15 +144,19 @@ angular.module('servoyextraFileupload', ['servoy', 'sabloApp']).directive('servo
 						return Upload.validatePattern(file, $scope.model.accept)
 					else return true;
 				}
+                    
+                $scope.uploadFiles = function(files) {
+                    $scope.errorText = "";
+                    angular.forEach(files, function(file) {
+                        if(file && !$scope.isValidFile(file)){
+                            $scope.errorText = $scope.model.uploadNotSupportedText;
+                        }
+                    });
 
-				$scope.$watch('files', function(newV, oldV) {
-						if(newV && $scope.isValidFile(newV)){
-							$scope.errorText = "";
-							upload(newV);
-						}else if (newV)
-							$scope.errorText = $scope.model.uploadNotSupportedText;
-					});
-
+                    if(!$scope.errorText) {
+                        upload(files);
+                    }
+                };
 			}
 		};
 	}])

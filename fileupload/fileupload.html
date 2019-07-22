@@ -3,7 +3,9 @@
 	class="svy-extra-fileupload {{model.styleClass}} {{model.styleClassExpression}}"  
 	id="{{::model.svyMarkupId}}">
 	<div 
-		ngf-drop ngf-select 
+        ngf-drop="uploadFiles($files)"
+        ngf-select="uploadFiles($files)"
+        ngf-multiple="{{model.multiFileUpload}}"
 		ng-model="$parent.files" 
 		class="svy-fu-drop-box" 
 		ngf-drag-over-class="{pattern: model.accept, accept:'svy-fu-dragover', reject:checkReject($event)}"

@@ -20,7 +20,8 @@
 	        "iconStyleClass" 			: { "type" : "styleclass", "tags": { "scope" :"design" }, "default": "fa fa-upload fa-3x", "values" :[]}, 
 	        "successIconStyleClass" 	: { "type" : "styleclass", "tags": { "scope" :"design" }, "default": "fa fa-check fa-3x", "values" :[]}, 
 			"showFileName" 				: { "type" : "boolean", "default": true },
-			"showProgress" 				: { "type" : "boolean", "default": true },
+            "showProgress" 				: { "type" : "boolean", "default": true },
+            "multiFileUpload"           : { "type" : "boolean", "default": false},
 			"toolTipText" 				: { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags" },
 			"uploadText" 				: { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "Drop a file here or click to upload"},  
 			"uploadProgressText" 		: { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "Uploading click to cancel"},  
@@ -39,7 +40,15 @@
 								{ "name": "newValue", "type" : "${dataproviderType}" }, 
 								{ "name": "event", "type" : "JSEvent" } 
 							 ]
-	        }
+            },
+            "afterFileUploadMethodID" : {
+                "parameters":[
+                    {
+                      "name":"event",
+                      "type":"JSEvent"
+                    } 
+                 ]
+            }
 	},
 	"api":
 	{
