@@ -87,8 +87,8 @@ angular.module('servoyextraCollapse', ['servoy']) //$NON-NLS-1$ //$NON-NLS-2$
 								otherCollapse.isCollapsed = true;
 								collapse(i, 'hide');  //$NON-NLS-1$
 								if (otherCollapse.form) {
-									//a form needs to be hidden
-									$scope.svyServoyapi.hideForm(otherCollapse.form);
+                                    //a form needs to be hidden
+                                    $scope.svyServoyapi.hideForm(otherCollapse.form, otherCollapse.relationName);
 								} else if (otherCollapse.cards) {
 									//maybe cards have forms to hide
 									toggleCardVisibility(otherCollapse.cards, true);
@@ -100,11 +100,11 @@ angular.module('servoyextraCollapse', ['servoy']) //$NON-NLS-1$ //$NON-NLS-2$
 					//toggle form visibility
 					if (collapsibleToChange.form) {
 						if (state === false) {
-							$scope.svyServoyapi.formWillShow(collapsibleToChange.form).then(function() {
+							$scope.svyServoyapi.formWillShow(collapsibleToChange.form, collapsibleToChange.relationName).then(function() {
 								$scope.model.collapsibles[index].isCollapsed = state;
 							});
 						} else if (state === true) {
-							$scope.svyServoyapi.hideForm(collapsibleToChange.form).then(function() {
+							$scope.svyServoyapi.hideForm(collapsibleToChange.form, collapsibleToChange.relationName).then(function() {
 								$scope.model.collapsibles[index].isCollapsed = state;
 							});
 						}
@@ -127,9 +127,9 @@ angular.module('servoyextraCollapse', ['servoy']) //$NON-NLS-1$ //$NON-NLS-2$
 					function toggleFormVisibility(card) {
 						if (card.form) {
 							if (state === false) {
-								return $scope.svyServoyapi.formWillShow(card.form);
+								return  $scope.svyServoyapi.formWillShow(card.form, card.relationName);
 							} else {
-								return $scope.svyServoyapi.hideForm(card.form);
+								return $scope.svyServoyapi.hideForm(card.form, card.relationName);
 							}
 						} else {
 							return true;
@@ -288,7 +288,7 @@ angular.module('servoyextraCollapse', ['servoy']) //$NON-NLS-1$ //$NON-NLS-2$
 									minResponsiveHeight: collapsibleOrCard.minResponsiveHeight
 								};
 								if (formWillShow) {
-									$scope.svyServoyapi.formWillShow(form);
+									$scope.svyServoyapi.formWillShow(form, collapsibleOrCard.relationName);
 								}
 							}
 						}
