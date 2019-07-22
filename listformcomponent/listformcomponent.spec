@@ -7,7 +7,7 @@
 	"libraries": [],	
 	"model":
 	{
-		"foundset" : {"type": "foundset", "default" : {"foundsetSelector":""} , "tags": { "scope" :"design" }},
+		"foundset" : {"type": "foundset", "default" : {"foundsetSelector":""}},
 		"containedForm": {"type":"formcomponent", "forFoundset":"foundset", "tags": { "scope" :"design" }},
 		"pageLayout" : {"type" : "string" , "values" : ["cardview","listview"] , "initialValue" : "cardview" },
 		"responsivePageSize": "int",
