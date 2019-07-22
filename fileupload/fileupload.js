@@ -72,7 +72,13 @@ angular.module('servoyextraFileupload', ['servoy', 'sabloApp']).directive('servo
 					}
 
 					if (beanname && formname) {
-						var uploadURL = "resources/upload/" + $sabloApplication.getClientnr() + "/" + formname + "/" + beanname + "/dataProviderID";
+                        var uploadURL = "resources/upload/" + $sabloApplication.getClientnr() + "/" + formname + "/" + beanname + "/dataProviderID";
+                        if($scope.handlers.fileUploadMethodID) {
+                            uploadURL = "resources/upload/" + $sabloApplication.getClientnr() + "/" + formname + "/" + beanname + "/fileUploadMethodID";
+                        } else if($scope.model.multiFileUpload == true) {
+                            console.warn("Multifile upload without fileUploadMethod isn't supported. To upload multi file start using fileUploadMethod");
+                        }
+                        
 						$scope.errorText = "";
                         progress = 0;
 						$scope.upload = Upload.upload({

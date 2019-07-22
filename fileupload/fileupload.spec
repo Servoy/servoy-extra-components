@@ -41,6 +41,7 @@
 								{ "name": "event", "type" : "JSEvent" } 
 							 ]
             },
+            "fileUploadMethodID" : {},
             "afterFileUploadMethodID" : {
                 "parameters":[
                     {
