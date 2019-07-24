@@ -41,8 +41,8 @@
 								{ "name": "event", "type" : "JSEvent" } 
 							 ]
             },
-            "fileUploadMethodID" : {},
-            "afterFileUploadMethodID" : {
+            "onFileUploadedMethodID" : {},
+            "onFileTransferFinishedMethodID" : {
                 "parameters":[
                     {
                       "name":"event",

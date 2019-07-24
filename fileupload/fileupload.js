@@ -73,10 +73,10 @@ angular.module('servoyextraFileupload', ['servoy', 'sabloApp']).directive('servo
 
 					if (beanname && formname) {
                         var uploadURL = "resources/upload/" + $sabloApplication.getClientnr() + "/" + formname + "/" + beanname + "/dataProviderID";
-                        if($scope.handlers.fileUploadMethodID) {
-                            uploadURL = "resources/upload/" + $sabloApplication.getClientnr() + "/" + formname + "/" + beanname + "/fileUploadMethodID";
+                        if($scope.handlers.onFileUploadedMethodID) {
+                            uploadURL = "resources/upload/" + $sabloApplication.getClientnr() + "/" + formname + "/" + beanname + "/onFileUploadedMethodID";
                         } else if($scope.model.multiFileUpload == true) {
-                            console.warn("Multifile upload without fileUploadMethod isn't supported. To upload multi file start using fileUploadMethod");
+                            console.warn("Multifile upload without onFileUploaded Method isn't supported. To upload multi file start using onFileUploaded Method");
                         }
                         
 						$scope.errorText = "";
@@ -89,8 +89,8 @@ angular.module('servoyextraFileupload', ['servoy', 'sabloApp']).directive('servo
 						$scope.upload.then(function(resp) {
 								$scope.upload = null;
                                 hideProgress();
-                                if($scope.handlers.afterFileUploadMethodID) {
-                                    $scope.handlers.afterFileUploadMethodID(event);
+                                if($scope.handlers.onFileTransferFinishedMethodID) {
+                                    $scope.handlers.onFileTransferFinishedMethodID(event);
                                 }
 							},
 							function(resp) {
