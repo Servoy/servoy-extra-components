@@ -130,7 +130,8 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
                 options.multiple = true;
 				options.selectOnClose = $scope.model.selectOnClose;
 				options.closeOnSelect = $scope.model.closeOnSelect;
-				options.scrollAfterSelect = false;
+                options.scrollAfterSelect = false;
+                options.maximumSelectionLength = $scope.model.maximumSelectionSize;
 				
 				if ($scope.model.placeholderText) options.placeholder = $scope.model.placeholderText;
 				
