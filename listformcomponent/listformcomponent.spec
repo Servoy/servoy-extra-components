@@ -4,7 +4,9 @@
 	"version": 1,
 	"icon": "servoyextra/listformcomponent/listformcomponent.png",
 	"definition": "servoyextra/listformcomponent/listformcomponent.js", 
-	"libraries": [],	
+	"libraries": [],
+	"deprecated" : "true",
+	"replacement": "servoycore-listformcomponent",	
 	"model":
 	{
 		"foundset" : {"type": "foundset", "default" : {"foundsetSelector":""}},
