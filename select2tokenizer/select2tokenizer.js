@@ -35,6 +35,9 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 			
 			var className = null;
 		
+			// promise for valuelist get display value requests
+			var valuelistGetDisplayValuePromise = null;
+
 			Object.defineProperty($scope.model,$sabloConstants.modelChangeNotifier, {configurable:true,value:function(property,value) {
 				switch(property) {
 					case "enabled":
@@ -52,7 +55,9 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
                         break;
 					case "valuelistID":
 						if ($log.debugEnabled) log.debug("selec2-autoTokenizer: valuelist changed");
-						if(tokenizer && tokenizer.data('select2').isOpen()) {
+						// ignore valuelist changes when tokenizer is open or when valuelist get display value
+						// was called, in this case if the valuelist is global, change is always called
+						if((tokenizer && tokenizer.data('select2').isOpen()) || valuelistGetDisplayValuePromise) {
 							break;
 						}
 						// if select is not open, let the dataprovider to be reset as the display can be different for the new valuelist
@@ -394,12 +399,15 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
                 }
 
                 if(!found) {
-                    $scope.model.valuelistID.getDisplayValue($scope.model.dataProviderID).then(function(displayValue) {
+                    valuelistGetDisplayValuePromise = $scope.model.valuelistID.getDisplayValue($scope.model.dataProviderID).then(function(displayValue) {
+						valuelistGetDisplayValuePromise = null;
                         if (displayValue === null)
                             displayValue = realValue;
     
                         addOptionToSelect2(realValue, values, displayValue);
-                    });
+                    }, function(reason) {
+						valuelistGetDisplayValuePromise = null;
+					});
                 }
 			}
             
