@@ -152,15 +152,16 @@ angular.module('servoyextraFileupload', ['servoy', 'sabloApp']).directive('servo
 				}
                     
                 $scope.uploadFiles = function(files) {
-                    $scope.errorText = "";
-                    angular.forEach(files, function(file) {
-                        if(file && !$scope.isValidFile(file)){
-                            $scope.errorText = $scope.model.uploadNotSupportedText;
+                    if (files && files.length) {
+                        $scope.errorText = "";
+                        angular.forEach(files, function(file) {
+                            if(file && !$scope.isValidFile(file)){
+                                $scope.errorText = $scope.model.uploadNotSupportedText;
+                            }
+                        });
+                        if(!$scope.errorText) {
+                            upload(files);
                         }
-                    });
-
-                    if(!$scope.errorText) {
-                        upload(files);
                     }
                 };
 			}
