@@ -29,9 +29,8 @@
 		"enabled"					: { "type": "boolean", "default": "false" }
 	},
 	"api": {
-		"showLightbox": {
-			
-		}
+		"showLightbox": {},
+		"refresh":{}
 	},
 	"handlers": {
 		"onHoverButtonClicked": {

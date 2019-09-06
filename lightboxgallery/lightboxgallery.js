@@ -88,6 +88,10 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 						$window.lightbox.start(firstImg);
 					}
 				}
+				
+				$scope.api.refresh = function() {
+					createImagesFromFs();
+				}
 			},
 			controller: function($scope, $element, $attrs) { },
 			templateUrl: 'servoyextra/lightboxgallery/lightboxgallery.html'
