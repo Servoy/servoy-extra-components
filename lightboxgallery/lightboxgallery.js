@@ -20,7 +20,14 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 							thumbUrl: row.thumbnail && row.thumbnail.url ? row.thumbnail.url.split('?')[0] : null,
 							caption: row.caption ? row.caption : null,
 							imageId: row.imageId
-						}
+						}	
+						
+						//check if using url strings instead of media/blob
+						image = {
+							url: typeof row.image == 'string' ? row.image : image.url,
+							thumbUrl: typeof row.thumbnail == 'string' ? row.thumbnail : image.thumbUrl						
+						}	
+						
 						if (!image.url) continue;
 						images.push(image);
 					}
