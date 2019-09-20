@@ -423,11 +423,9 @@ return {
 					isScrollWidthChange = true;
 				}
 	
-				if(isScrollWidthChange || $scope.model.enableColumnResize) {
+				if(isScrollWidthChange) {
 					setColumnsToInitalWidthAndInitAutoColumns();	// reset column model width to inital value
-					if(isScrollWidthChange) {
-						columnStyleCache = []; // clear style cache so header style (width) is re-calculated
-					}
+					columnStyleCache = []; // clear style cache so header style (width) is re-calculated
 				}
 
 				if(needToUpdateAutoColumnsWidth) {
