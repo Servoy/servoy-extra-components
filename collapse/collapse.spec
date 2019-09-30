@@ -74,16 +74,22 @@
 			] 
 		},
 		"toggle"			: { 
+			"async": true,
+			"delayUntilFormLoads": true,
 			"parameters": [ 
 				{ "name": "index", "type": "int", "optional": true } 
 			] 
 		},
 		"show"				: { 
+			"async": true,
+			"delayUntilFormLoads": true,
 			"parameters": [ 
 				{ "name": "index", "type": "int", "optional": true } 
 			] 
 		},
 		"hide"				: { 
+			"async": true,
+			"delayUntilFormLoads": true,
 			"parameters": [ 
 				{ "name": "index", "type": "int", "optional": true } 
 			] 

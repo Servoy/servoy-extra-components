@@ -127,7 +127,7 @@ angular.module('servoyextraCollapse', ['servoy']) //$NON-NLS-1$ //$NON-NLS-2$
 					function toggleFormVisibility(card) {
 						if (card.form) {
 							if (state === false) {
-								return  $scope.svyServoyapi.formWillShow(card.form, card.relationName);
+								return $scope.svyServoyapi.formWillShow(card.form, card.relationName);
 							} else {
 								return $scope.svyServoyapi.hideForm(card.form, card.relationName);
 							}
