@@ -670,7 +670,8 @@ return {
 					// ignore value change triggered by the watch initially with the same value except for when it was a form re-show and the selected index changed meanwhile
 					var selectedIdxs = $scope.model.foundset.selectedRowIndexes
 					if (!oldSelectedIdxs) oldSelectedIdxs = selectedIdxs; // initial value of the foundset then, not a change, so old = new
-					selectedIndexesChanged(selectedIdxs, oldSelectedIdxs, !foundsetChanges[$foundsetTypeConstants.NOTIFY_SCROLL_TO_SELECTION]);
+					selectedIndexesChanged(selectedIdxs, oldSelectedIdxs,
+						!(foundsetChanges[$foundsetTypeConstants["NOTIFY_SCROLL_TO_SELECTION"]] || foundsetChanges[$foundsetTypeConstants["NOTIFY_USER_SET_SELECTION"]]));
 				}
 				
 				if (shouldGenerateWholeTemplate) generateTemplate(true);
