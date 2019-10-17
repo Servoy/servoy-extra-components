@@ -23,10 +23,8 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 						}	
 						
 						//check if using url strings instead of media/blob
-						image = {
-							url: typeof row.image == 'string' ? row.image : image.url,
-							thumbUrl: typeof row.thumbnail == 'string' ? row.thumbnail : image.thumbUrl						
-						}	
+						image.url = typeof row.image == 'string' ? row.image : image.url;
+						image.thumbUrl = typeof row.thumbnail == 'string' ? row.thumbnail : image.thumbUrl;
 						
 						if (!image.url) continue;
 						images.push(image);
