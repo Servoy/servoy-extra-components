@@ -12,6 +12,7 @@
 		"foundset": { "type": "foundset", "default" : {"foundsetSelector":""}, "pushToServer": "allow", "initialPreferredViewPortSize": 130, "sendSelectionViewportInitially": true },
 		"pageSize": { "type": "int", "default": 20 },
 		"styleClass": { "type": "styleclass", "tags": { "scope": "design" }, "default": "table", "values": ["table", "table-striped", "table-bordered", "table-hover", "table-condensed"] },
+		"sortStyleClass": { "type": "styleclass", "default": "selected-column " },
 		"selectionClass": { "type": "styleclass", "default": "table-servoyextra-selected " },
 		"rowStyleClassDataprovider": { "type": "dataprovider", "forFoundset": "foundset" },
 		"tabSeq": { "type": "tabseq", "tags": { "scope": "design" } },
@@ -52,6 +53,15 @@
 		}
 	},
 	"handlers": {
+		"onViewPortChanged":{
+		"parameters": [{
+				"name": "start",
+				"type": "int"
+			},{
+				"name": "end",
+				"type": "int"
+			}]
+		},	
 		"onCellClick": {
 			"description": "Called when the mouse is clicked on a row/cell (foundset and column indexes are given) or\nwhen the ENTER key is used then only the selected foundset index is given\nUse the record to exactly match where the user clicked on",
 			"parameters": [{
@@ -123,6 +133,20 @@
 			}],
 			"returns": "string"
 		},
+		"onHeaderRightClick": {
+			"parameters": [{
+				"name": "columnindex",
+				"type": "int"
+			}, {
+				"name": "sortdirection",
+				"type": "string"
+			}, {
+				"name": "event",
+				"type": "JSEvent",
+				"optional": true
+			}],
+			"returns": "string"
+		},
 		"onColumnResize": {
 			"parameters": [{
 				"name": "event",
@@ -146,6 +170,19 @@
 		}
 	},
 	"api": {
+	 	"setSelectedHeader": {
+	         "parameters": [{
+	           "name": "columnIndex",
+	           "type": "int"
+	         }]
+	     },
+		 "getViewPortPosition": {
+	            "returns": "array"
+	     },
+	     "getSortClass": {
+	       "parameters": [{"name": "columnIndex", "type": "int"}],
+	       "returns": "string"
+	     },
 		"requestFocus": {
 			"parameters": [{
 				"name": "mustExecuteOnFocusGainedMethod",
