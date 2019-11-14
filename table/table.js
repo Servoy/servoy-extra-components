@@ -1787,6 +1787,7 @@ return {
 				endIndex = renderedSize - 1;
 
 				renderedStartIndex = vp.startIndex + rowOffSet;
+				window.dispatchEvent(new Event('resize')); //fix issue with resizing within a dialog.
 			}
 
 			var formatFilter = $filter("formatFilter");
