@@ -921,6 +921,9 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 							case "open":
 								animateMenuHover($scope.model.open);
 								animateSlideMenu(value);
+								setTimeout(function() {
+									window.dispatchEvent(new Event('resize')); //fix issue with resize
+								}, 500);
 								break;
 							case "styleClass":
 								if (className) sidenav.removeClass(className);
