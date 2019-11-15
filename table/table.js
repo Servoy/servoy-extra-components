@@ -1061,6 +1061,8 @@ return {
 						$scope.model.sortDirection = null;
 					}
 					$scope.handlers.onHeaderClick(column, $scope.model.sortDirection, event).then(function(ret) {
+					      if (ret == "override")
+					         return;
 							if ($scope.model.enableSort) {
 								$scope.model.sortColumnIndex = column;
 								$scope.model.sortDirection = ret;
@@ -1076,6 +1078,17 @@ return {
 					doFoundsetSQLSort($scope.model.sortColumnIndex);
 				}
 
+			}
+			$scope.api.setSelectedHeader = function(columnIndex) {
+			   $scope.headerClicked(null, columnIndex);
+			}
+		}
+
+		if ($scope.handlers.onHeaderRightClick) {
+			$scope.headerRightClicked = function(event, column) {
+				if ($scope.handlers.onHeaderRightClick) {
+					$scope.handlers.onHeaderRightClick(column, $scope.model.sortDirection, event);
+				}
 			}
 		}
 
@@ -1774,6 +1787,7 @@ return {
 				endIndex = renderedSize - 1;
 
 				renderedStartIndex = vp.startIndex + rowOffSet;
+				window.dispatchEvent(new Event('resize')); //fix issue with resizing within a dialog.
 			}
 
 			var formatFilter = $filter("formatFilter");
@@ -2074,6 +2088,13 @@ return {
 					var renderedStartIndexInLoaded = renderedStartIndex - vp.startIndex; // so relative to loaded viewport, not to start of foundset
 					var renderedSizeBefore = renderedSize;
 					var visibleViewport;
+
+					//on viewport changed
+					var vpStart = getVisibleArea()[0];
+					var vpEnd = getVisibleArea()[0] + getVisibleArea()[1];
+					if ($scope.handlers.onViewPortChanged) {
+							$scope.handlers.onViewPortChanged(vpStart, vpEnd);
+						}
 					
 					// see if more rows are needed on top
 					if (tbody.scrollTop() - (topSpaceDiv ? topSpaceDiv.height() : 0) < tbody.height()) {
@@ -2337,6 +2358,23 @@ return {
 				tBodyEl.style[p] = tBodyStyle[p];
 			}
 		}
+
+		$scope.getSortStyleClass = function(column) {
+		   var lv_styles = "";
+
+
+        if ($scope.model.enableSort) {
+           if (($scope.model.sortColumnIndex == -1 &&
+               column                       == 0) ||
+               $scope.model.sortColumnIndex == column) 
+           {
+              lv_styles = $scope.model.sortStyleClass;
+           }
+        }
+        
+		   return lv_styles + " " + $scope.model.columns[column].headerStyleClass;
+		};
+
 		var columnStyleCache = []
 		$scope.getColumnStyle = function(column) {
 			var columnStyle = columnStyleCache[column];
@@ -2505,6 +2543,12 @@ return {
 			skipOnce = mustExecuteOnFocusGainedMethod === false;
 			tbl.focus();
 		}
+
+		$scope.api.getViewPortPosition = function(){			
+			var vpStart = getVisibleArea()[0];
+			var vpEnd = getVisibleArea()[0] + getVisibleArea()[1];			
+			return [vpStart,vpEnd];
+		}	
 	},
 	templateUrl: 'servoyextra/table/table.html'
 };
