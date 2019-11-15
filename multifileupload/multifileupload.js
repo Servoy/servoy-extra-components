@@ -17,7 +17,6 @@ angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
 				var uppyProperties;
 				var dashboardProperties;
 				var xhrProperties;
-				var uppyLocaleStrings = null;
 				
 				var elementName = $attrs.name;
 				var usesCssPosition = $scope.$parent.formProperties.useCssPosition && $scope.$parent.formProperties.useCssPosition[elementName] ? true : false;
@@ -169,14 +168,14 @@ angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
 						uppy.on('complete', function(result) {
 							var filesSuccess = [];
 							if (result.successful) {
-								for (var s = 0; s < result.successful.length; s++) {
-									filesSuccess.push(createUppyFile(result.successful[s]));
+								for (var o = 0; o < result.successful.length; o++) {
+									filesSuccess.push(createUppyFile(result.successful[o]));
 								}
 							}
 							var filesFailed = [];
 							if (result.failed) {
-								for (var s = 0; s < result.failed.length; s++) {
-									filesFailed.push(createUppyFile(result.failed[s]));
+								for (var f = 0; f < result.failed.length; f++) {
+									filesFailed.push(createUppyFile(result.failed[f]));
 								}
 							}
 							
@@ -186,6 +185,10 @@ angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
 
 					if ($scope.handlers.onRestrictionFailed) {
 						uppy.on('restriction-failed', function(file, error) {
+							if (error.message === 'Cannot add the file because onBeforeFileAdded returned false.') {
+								//onBeforeFileAdded is now synchronous and we need to swallow this in case that returned false
+								return;
+							}
 							$scope.handlers.onRestrictionFailed(createUppyFile(file), error.message);
 						});
 					}
@@ -200,7 +203,7 @@ angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
 						uppy.on('file-removed', function(file) {
 							$scope.handlers.onFileRemoved(createUppyFile(file));
 						});
-					}					
+					}
 				}
 				
 				var filesToBeAdded = [];
@@ -293,6 +296,7 @@ angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
 				}
 				
 				function setUppyOptions() {
+					console.log('Setting options')
 					var uppyLanguage = $scope.model.language;
 					
 					if (uppyLanguage === 'English') {
@@ -307,6 +311,44 @@ angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
 						uppyLanguage = Uppy.locales.it_IT;
 					} else if (uppyLanguage === 'Spanish') {
 						uppyLanguage = Uppy.locales.es_ES;
+					} else if (uppyLanguage === 'Chinese') {
+						uppyLanguage = Uppy.locales.zh_CN;
+					} else if (uppyLanguage === 'Czech') {
+						uppyLanguage = Uppy.locales.cs_CZ;
+					} else if (uppyLanguage === 'Danish') {
+						uppyLanguage = Uppy.locales.da_DK;
+					} else if (uppyLanguage === 'Finnish') {
+						uppyLanguage = Uppy.locales.fi_FI;
+					} else if (uppyLanguage === 'Greek') {
+						uppyLanguage = Uppy.locales.el_GR;
+					} else if (uppyLanguage === 'Hungarian') {
+						uppyLanguage = Uppy.locales.hu_HU;
+					} else if (uppyLanguage === 'Japanese') {
+						uppyLanguage = Uppy.locales.ja_JP;
+					} else if (uppyLanguage === 'Persian') {
+						uppyLanguage = Uppy.locales.fa_IR;
+					} else if (uppyLanguage === 'Russian') {
+						uppyLanguage = Uppy.locales.ru_RU;
+					} else if (uppyLanguage === 'Swedish') {
+						uppyLanguage = Uppy.locales.sv_SE;
+					} else if (uppyLanguage === 'Turkish') {
+						uppyLanguage = Uppy.locales.tr_TR;
+					}
+					
+					if ($scope.model.localeStrings) {
+						var locale = { strings: {} };
+						for ( var key in $scope.model.localeStrings ) {
+							var localeString = $scope.model.localeStrings[key];
+							if (key.indexOf('.') !== -1) {
+								var keyParts = key.split('.');
+								if (!locale.strings.hasOwnProperty(keyParts[0])) {
+									locale.strings[keyParts[0]] = {};
+								} 
+								locale.strings[keyParts[0]][keyParts[1]] = localeString;
+							} else {
+								locale.strings[key] = localeString;
+							}
+						}
 					}
 					
 					dashboardProperties = {
@@ -334,7 +376,8 @@ angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
 						metaFields: $scope.model.metaFields || [],
 						thumbnailWidth: 280,
 						closeModalOnClickOutside: false,
-						disablePageScrollWhenModalOpen: true
+						disablePageScrollWhenModalOpen: true,
+						locale: locale || null
 					}
 					
 					if ($scope.model.options) {
@@ -347,7 +390,7 @@ angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
 						autoProceed: $scope.model.autoProceed,
 						allowMultipleUploads: $scope.model.allowMultipleUploads, 
 						restrictions: $scope.model.restrictions,
-						locale: uppyLocaleStrings ? { strings: uppyLocaleStrings } : uppyLanguage,
+						locale: uppyLanguage,
 						onBeforeFileAdded: onBeforeFileAdded
 					}
 					
@@ -369,6 +412,12 @@ angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
 						}
 					}
 					xhrProperties.metaFields = meta || [];
+					
+					if (uppy) {
+						uppy.setOptions(uppyProperties);
+						uppy.getPlugin('Dashboard').setOptions(dashboardProperties);
+						uppy.getPlugin('XHRUpload').setOptions(xhrProperties);
+					}					
 				}
 
 				//this would allow to provide a JSON file in the media library to provide translations
@@ -392,73 +441,76 @@ angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
 				Object.defineProperty($scope.model, $sabloConstants.modelChangeNotifier, {configurable: true, value: function(property, value) {
 					switch(property) {
 						case "inline":
-							$scope.api.initialize();
+							setUppyOptions();
 							break;
 						case "localization":
-							$scope.api.initialize();
+							setUppyOptions();
 	                        break;
 	                    case "allowMultipleUploads":
-							$scope.api.initialize();
+							setUppyOptions();
 	                        break;
 	                    case "showProgressDetails":
-							$scope.api.initialize();
+							setUppyOptions();
 	                        break;	                        
 	                    case "hideUploadButton":
-							$scope.api.initialize();
+							setUppyOptions();
 	                        break;	                        
 	                    case "hideRetryButton":
-							$scope.api.initialize();
+							setUppyOptions();
 	                        break;	                        
 	                    case "hidePauseResumeButton":
-							$scope.api.initialize();
+							setUppyOptions();
 	                        break;	                        
 	                    case "hideCancelButton":
-							$scope.api.initialize();
+							setUppyOptions();
 	                        break;	                        
 	                    case "hideProgressAfterFinish":
-							$scope.api.initialize();
+							setUppyOptions();
 	                        break;	                        
 	                    case "disableStatusBar":
-							$scope.api.initialize();
+							setUppyOptions();
 	                        break;	                        
 	                    case "disableInformer":
-							$scope.api.initialize();
+							setUppyOptions();
 	                        break;	                        
 	                    case "disableThumbnailGenerator":
-							$scope.api.initialize();
+							setUppyOptions();
 	                        break;	                        
 	                    case "animateOpenClose":
-							$scope.api.initialize();
+							setUppyOptions();
 	                        break;	                        
 	                    case "proudlyDisplayPoweredByUppy":
-							$scope.api.initialize();
+							setUppyOptions();
 	                        break;	                        
 	                    case "showSelectedFiles":
-							$scope.api.initialize();
+							setUppyOptions();
 	                        break;	                        
 	                    case "restrictions":
-							$scope.api.initialize();
+							setUppyOptions();
 	                        break;	                        
 	                    case "note":
-							$scope.api.initialize();
+							setUppyOptions();
 	                        break;	                        
 	                    case "closeModalOnClickOutside":
-							$scope.api.initialize();
+							setUppyOptions();
 	                        break;	                        
 	                    case "closeAfterFinish":
-							$scope.api.initialize();
+							setUppyOptions();
 	                        break;	                        
 	                    case "disablePageScrollWhenModalOpen":
-							$scope.api.initialize();
+							setUppyOptions();
 	                        break;	                        
 	                    case "metaFields":
-							$scope.api.initialize();
+							setUppyOptions();
 	                        break;	                        
 	                    case "sources":
-							$scope.api.initialize();
+							setUppyOptions();
 	                        break;	                        
 	                    case "language":
-							$scope.api.initialize();
+							setUppyOptions();
+	                        break;	                        
+	                    case "localeStrings":
+							setUppyOptions();
 	                        break;	                        
 					}
 				}});

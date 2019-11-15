@@ -8,12 +8,23 @@ Uppy.DragDrop = require('@uppy/drag-drop')
 Uppy.Informer = require('@uppy/informer')
 Uppy.StatusBar = require('@uppy/status-bar')
 Uppy.locales = {}
+Uppy.locales.zh_CN = require('@uppy/locales/lib/zh_CN')
 Uppy.locales.nl_NL = require('@uppy/locales/lib/nl_NL')
 Uppy.locales.de_DE = require('@uppy/locales/lib/de_DE')
 Uppy.locales.fr_FR = require('@uppy/locales/lib/fr_FR')
 Uppy.locales.it_IT = require('@uppy/locales/lib/it_IT')
 Uppy.locales.es_ES = require('@uppy/locales/lib/es_ES')
-},{"@uppy/core":9,"@uppy/dashboard":27,"@uppy/drag-drop":36,"@uppy/informer":37,"@uppy/locales/lib/de_DE":38,"@uppy/locales/lib/es_ES":39,"@uppy/locales/lib/fr_FR":40,"@uppy/locales/lib/it_IT":41,"@uppy/locales/lib/nl_NL":42,"@uppy/status-bar":45,"@uppy/webcam":87,"@uppy/xhr-upload":89}],2:[function(require,module,exports){
+Uppy.locales.cs_CZ = require('@uppy/locales/lib/cs_CZ')
+Uppy.locales.da_DK = require('@uppy/locales/lib/da_DK')
+Uppy.locales.fi_FI = require('@uppy/locales/lib/fi_FI')
+Uppy.locales.el_GR = require('@uppy/locales/lib/el_GR')
+Uppy.locales.hu_HU = require('@uppy/locales/lib/hu_HU')
+Uppy.locales.ja_JP = require('@uppy/locales/lib/ja_JP')
+Uppy.locales.fa_IR = require('@uppy/locales/lib/fa_IR')
+Uppy.locales.ru_RU = require('@uppy/locales/lib/ru_RU')
+Uppy.locales.sv_SE = require('@uppy/locales/lib/sv_SE')
+Uppy.locales.tr_TR = require('@uppy/locales/lib/tr_TR')
+},{"@uppy/core":9,"@uppy/dashboard":27,"@uppy/drag-drop":36,"@uppy/informer":37,"@uppy/locales/lib/cs_CZ":38,"@uppy/locales/lib/da_DK":39,"@uppy/locales/lib/de_DE":40,"@uppy/locales/lib/el_GR":41,"@uppy/locales/lib/es_ES":42,"@uppy/locales/lib/fa_IR":43,"@uppy/locales/lib/fi_FI":44,"@uppy/locales/lib/fr_FR":45,"@uppy/locales/lib/hu_HU":46,"@uppy/locales/lib/it_IT":47,"@uppy/locales/lib/ja_JP":48,"@uppy/locales/lib/nl_NL":49,"@uppy/locales/lib/ru_RU":50,"@uppy/locales/lib/sv_SE":51,"@uppy/locales/lib/tr_TR":52,"@uppy/locales/lib/zh_CN":53,"@uppy/status-bar":56,"@uppy/webcam":100,"@uppy/xhr-upload":102}],2:[function(require,module,exports){
 'use strict';
 
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
@@ -131,15 +142,11 @@ function (_RequestClient) {
     return this.get(this.id + "/list/" + (directory || ''));
   };
 
-  _proto.logout = function logout(redirect) {
+  _proto.logout = function logout() {
     var _this3 = this;
 
-    if (redirect === void 0) {
-      redirect = location.href;
-    }
-
     return new Promise(function (resolve, reject) {
-      _this3.get(_this3.id + "/logout?redirect=" + redirect).then(function (res) {
+      _this3.get(_this3.id + "/logout").then(function (res) {
         _this3.uppy.getPlugin(_this3.pluginId).storage.removeItem(_this3.tokenKey).then(function () {
           return resolve(res);
         }).catch(reject);
@@ -213,7 +220,8 @@ function () {
   var _proto = RequestClient.prototype;
 
   _proto.headers = function headers() {
-    return Promise.resolve(_extends({}, this.defaultHeaders, this.opts.serverHeaders || {}));
+    var userHeaders = this.opts.companionHeaders || this.opts.serverHeaders || {};
+    return Promise.resolve(_extends({}, this.defaultHeaders, {}, userHeaders));
   };
 
   _proto._getPostResponseFunc = function _getPostResponseFunc(skip) {
@@ -398,7 +406,7 @@ function () {
   }]);
 
   return RequestClient;
-}(), _class.VERSION = "1.3.0", _temp);
+}(), _class.VERSION = "1.4.1", _temp);
 },{"./AuthError":2}],5:[function(require,module,exports){
 var ee = require('namespace-emitter');
 
@@ -406,22 +414,38 @@ module.exports =
 /*#__PURE__*/
 function () {
   function UppySocket(opts) {
+    this.opts = opts;
+    this._queued = [];
+    this.isOpen = false;
+    this.emitter = ee();
+    this._handleMessage = this._handleMessage.bind(this);
+    this.close = this.close.bind(this);
+    this.emit = this.emit.bind(this);
+    this.on = this.on.bind(this);
+    this.once = this.once.bind(this);
+    this.send = this.send.bind(this);
+
+    if (!opts || opts.autoOpen !== false) {
+      this.open();
+    }
+  }
+
+  var _proto = UppySocket.prototype;
+
+  _proto.open = function open() {
     var _this = this;
 
-    this.queued = [];
-    this.isOpen = false;
-    this.socket = new WebSocket(opts.target);
-    this.emitter = ee();
+    this.socket = new WebSocket(this.opts.target);
 
     this.socket.onopen = function (e) {
       _this.isOpen = true;
 
-      while (_this.queued.length > 0 && _this.isOpen) {
-        var first = _this.queued[0];
+      while (_this._queued.length > 0 && _this.isOpen) {
+        var first = _this._queued[0];
 
         _this.send(first.action, first.payload);
 
-        _this.queued = _this.queued.slice(1);
+        _this._queued = _this._queued.slice(1);
       }
     };
 
@@ -429,28 +453,23 @@ function () {
       _this.isOpen = false;
     };
 
-    this._handleMessage = this._handleMessage.bind(this);
     this.socket.onmessage = this._handleMessage;
-    this.close = this.close.bind(this);
-    this.emit = this.emit.bind(this);
-    this.on = this.on.bind(this);
-    this.once = this.once.bind(this);
-    this.send = this.send.bind(this);
-  }
-
-  var _proto = UppySocket.prototype;
+  };
 
   _proto.close = function close() {
-    return this.socket.close();
+    if (this.socket) {
+      this.socket.close();
+    }
   };
 
   _proto.send = function send(action, payload) {
     // attach uuid
     if (!this.isOpen) {
-      this.queued.push({
+      this._queued.push({
         action: action,
         payload: payload
       });
+
       return;
     }
 
@@ -483,8 +502,8 @@ function () {
 
   return UppySocket;
 }();
-},{"namespace-emitter":101}],6:[function(require,module,exports){
-'use-strict';
+},{"namespace-emitter":114}],6:[function(require,module,exports){
+'use strict';
 /**
  * Manages communications with Companion
  */
@@ -601,6 +620,11 @@ function () {
     });
   };
 
+  _proto.setOptions = function setOptions(newOpts) {
+    this.opts = _extends({}, this.opts, {}, newOpts);
+    this.setPluginState(); // so that UI re-renders with new options
+  };
+
   _proto.update = function update(state) {
     if (typeof this.el === 'undefined') {
       return;
@@ -714,7 +738,7 @@ function () {
 
   return Plugin;
 }();
-},{"@uppy/utils/lib/findDOMElement":55,"preact":103}],9:[function(require,module,exports){
+},{"@uppy/utils/lib/findDOMElement":69,"preact":116}],9:[function(require,module,exports){
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -817,6 +841,7 @@ function () {
         youCanOnlyUploadFileTypes: 'You can only upload: %{types}',
         companionError: 'Connection with Companion failed',
         companionAuthError: 'Authorization required',
+        companionUnauthorizeHint: 'To unauthorize to your %{provider} account, please go to %{url}',
         failedToUpload: 'Failed to upload %{file}',
         noInternetConnection: 'No Internet connection',
         connectedToInternet: 'Connected to the Internet',
@@ -845,8 +870,7 @@ function () {
           1: 'Added %{smart_count} files from %{folder}',
           2: 'Added %{smart_count} files from %{folder}'
         }
-      } // set default options
-
+      }
     };
     var defaultOptions = {
       id: 'uppy',
@@ -867,12 +891,15 @@ function () {
         return files;
       },
       store: DefaultStore(),
-      logger: nullLogger // Merge default options with the ones set by user
+      logger: nullLogger // Merge default options with the ones set by user,
+      // making sure to merge restrictions too
 
     };
-    this.opts = _extends({}, defaultOptions, opts);
-    this.opts.restrictions = _extends({}, defaultOptions.restrictions, this.opts.restrictions); // Support debug: true for backwards-compatability, unless logger is set in opts
-    // opts instead of this.opts to avoid comparing objects — we set logger: nullLogger in defaultOptions
+    this.opts = _extends({}, defaultOptions, {}, opts, {
+      restrictions: _extends({}, defaultOptions.restrictions, {}, opts && opts.restrictions) // Support debug: true for backwards-compatability, unless logger is set in opts
+      // opts instead of this.opts to avoid comparing objects — we set logger: nullLogger in defaultOptions
+
+    });
 
     if (opts && opts.logger && opts.debug) {
       this.log('You are using a custom `logger`, but also set `debug: true`, which uses built-in logger to output logs to console. Ignoring `debug: true` and using your custom `logger`.', 'warning');
@@ -883,14 +910,10 @@ function () {
     this.log("Using Core v" + this.constructor.VERSION);
 
     if (this.opts.restrictions.allowedFileTypes && this.opts.restrictions.allowedFileTypes !== null && !Array.isArray(this.opts.restrictions.allowedFileTypes)) {
-      throw new Error("'restrictions.allowedFileTypes' must be an array");
-    } // i18n
+      throw new TypeError('`restrictions.allowedFileTypes` must be an array');
+    }
 
-
-    this.translator = new Translator([this.defaultLocale, this.opts.locale]);
-    this.locale = this.translator.locale;
-    this.i18n = this.translator.translate.bind(this.translator);
-    this.i18nArray = this.translator.translateArray.bind(this.translator); // Container for different types of plugins
+    this.i18nInit(); // Container for different types of plugins
 
     this.plugins = {};
     this.getState = this.getState.bind(this);
@@ -1021,6 +1044,33 @@ function () {
     this.setState({
       files: _extends({}, this.getState().files, (_extends2 = {}, _extends2[fileID] = _extends({}, this.getState().files[fileID], state), _extends2))
     });
+  };
+
+  _proto.i18nInit = function i18nInit() {
+    this.translator = new Translator([this.defaultLocale, this.opts.locale]);
+    this.locale = this.translator.locale;
+    this.i18n = this.translator.translate.bind(this.translator);
+    this.i18nArray = this.translator.translateArray.bind(this.translator);
+  };
+
+  _proto.setOptions = function setOptions(newOpts) {
+    this.opts = _extends({}, this.opts, {}, newOpts, {
+      restrictions: _extends({}, this.opts.restrictions, {}, newOpts && newOpts.restrictions)
+    });
+
+    if (newOpts.meta) {
+      this.setMeta(newOpts.meta);
+    }
+
+    this.i18nInit();
+
+    if (newOpts.locale) {
+      this.iteratePlugins(function (plugin) {
+        plugin.setOptions();
+      });
+    }
+
+    this.setState(); // so that UI re-renders with new options
   };
 
   _proto.resetProgress = function resetProgress() {
@@ -1211,6 +1261,36 @@ function () {
         throw new RestrictionError(this.i18n('exceedsSize') + " " + prettyBytes(maxFileSize));
       }
     }
+  };
+
+  _proto._showOrLogErrorAndThrow = function _showOrLogErrorAndThrow(err, _temp) {
+    var _ref = _temp === void 0 ? {} : _temp,
+        _ref$showInformer = _ref.showInformer,
+        showInformer = _ref$showInformer === void 0 ? true : _ref$showInformer,
+        _ref$file = _ref.file,
+        file = _ref$file === void 0 ? null : _ref$file;
+
+    var message = typeof err === 'object' ? err.message : err;
+    var details = typeof err === 'object' && err.details ? err.details : ''; // Restriction errors should be logged, but not as errors,
+    // as they are expected and shown in the UI.
+
+    if (err.isRestriction) {
+      this.log(message + " " + details);
+      this.emit('restriction-failed', file, err);
+    } else {
+      this.log(message + " " + details, 'error');
+    } // Sometimes informer has to be shown manually by the developer,
+    // for example, in `onBeforeFileAdded`.
+
+
+    if (showInformer) {
+      this.info({
+        message: message,
+        details: details
+      }, 'error', 5000);
+    }
+
+    throw typeof err === 'object' ? err : new Error(err);
   }
   /**
    * Add a new file to `state.files`. This will run `onBeforeFileAdded`,
@@ -1223,25 +1303,17 @@ function () {
   ;
 
   _proto.addFile = function addFile(file) {
-    var _this3 = this,
-        _extends3;
+    var _extends3,
+        _this3 = this;
 
     var _this$getState2 = this.getState(),
         files = _this$getState2.files,
         allowNewUpload = _this$getState2.allowNewUpload;
 
-    var onError = function onError(msg) {
-      var err = typeof msg === 'object' ? msg : new Error(msg);
-
-      _this3.log(err.message);
-
-      _this3.info(err.message, 'error', 5000);
-
-      throw err;
-    };
-
     if (allowNewUpload === false) {
-      onError(new Error('Cannot add new files: already uploading.'));
+      this._showOrLogErrorAndThrow(new RestrictionError('Cannot add new files: already uploading.'), {
+        file: file
+      });
     }
 
     var fileType = getFileType(file);
@@ -1249,8 +1321,11 @@ function () {
     var onBeforeFileAddedResult = this.opts.onBeforeFileAdded(file, files);
 
     if (onBeforeFileAddedResult === false) {
-      this.log('Not adding file because onBeforeFileAdded returned false');
-      return;
+      // Don’t show UI info for this error, as it should be done by the developer
+      this._showOrLogErrorAndThrow(new RestrictionError('Cannot add the file because onBeforeFileAdded returned false.'), {
+        showInformer: false,
+        file: file
+      });
     }
 
     if (typeof onBeforeFileAddedResult === 'object' && onBeforeFileAddedResult) {
@@ -1270,6 +1345,13 @@ function () {
     var fileExtension = getFileNameAndExtension(fileName).extension;
     var isRemote = file.isRemote || false;
     var fileID = generateFileID(file);
+
+    if (files[fileID]) {
+      this._showOrLogErrorAndThrow(new RestrictionError("Cannot add the duplicate file '" + fileName + "', it already exists."), {
+        file: file
+      });
+    }
+
     var meta = file.meta || {};
     meta.name = fileName;
     meta.type = fileType; // `null` means the size is unknown.
@@ -1299,8 +1381,9 @@ function () {
     try {
       this._checkRestrictions(newFile);
     } catch (err) {
-      this.emit('restriction-failed', newFile, err);
-      onError(err);
+      this._showOrLogErrorAndThrow(err, {
+        file: newFile
+      });
     }
 
     this.setState({
@@ -1571,12 +1654,12 @@ function () {
 
     this.on('error', function (error) {
       _this6.setState({
-        error: error.message
+        error: error.message || 'Unknown error'
       });
     });
     this.on('upload-error', function (file, error, response) {
       _this6.setFileState(file.id, {
-        error: error.message,
+        error: error.message || 'Unknown error',
         response: response
       });
 
@@ -1621,6 +1704,12 @@ function () {
     });
     this.on('upload-progress', this._calculateProgress);
     this.on('upload-success', function (file, uploadResp) {
+      if (!_this6.getFile(file.id)) {
+        _this6.log("Not setting progress for a file that has been removed: " + file.id);
+
+        return;
+      }
+
       var currentProgress = _this6.getFile(file.id).progress;
 
       _this6.setFileState(file.id, {
@@ -1770,7 +1859,7 @@ function () {
     var existsPluginAlready = this.getPlugin(pluginId);
 
     if (existsPluginAlready) {
-      var _msg = "Already found a plugin named '" + existsPluginAlready.id + "'. " + ("Tried to use: '" + pluginId + "'.\n") + "Uppy plugins must have unique 'id' options. See https://uppy.io/docs/plugins/#id.";
+      var _msg = "Already found a plugin named '" + existsPluginAlready.id + "'. " + ("Tried to use: '" + pluginId + "'.\n") + 'Uppy plugins must have unique `id` options. See https://uppy.io/docs/plugins/#id.';
 
       throw new Error(_msg);
     }
@@ -2199,28 +2288,7 @@ function () {
 
       return _this10._runUpload(uploadID);
     }).catch(function (err) {
-      var message = typeof err === 'object' ? err.message : err;
-      var details = typeof err === 'object' && err.details ? err.details : '';
-
-      if (err.isRestriction) {
-        _this10.emit('restriction-failed', null, err);
-
-        _this10.log(message + " " + details, 'info');
-
-        _this10.info({
-          message: message,
-          details: details
-        }, 'info', 5000);
-      } else {
-        _this10.log(message + " " + details, 'error');
-
-        _this10.info({
-          message: message,
-          details: details
-        }, 'error', 5000);
-      }
-
-      throw typeof err === 'object' ? err : new Error(err);
+      _this10._showOrLogErrorAndThrow(err);
     });
   };
 
@@ -2234,7 +2302,7 @@ function () {
   return Uppy;
 }();
 
-Uppy.VERSION = "1.4.0";
+Uppy.VERSION = "1.6.0";
 
 module.exports = function (opts) {
   return new Uppy(opts);
@@ -2244,7 +2312,7 @@ module.exports = function (opts) {
 module.exports.Uppy = Uppy;
 module.exports.Plugin = Plugin;
 module.exports.debugLogger = debugLogger;
-},{"./Plugin":8,"./loggers":10,"./supportsUploadProgress":11,"@uppy/store-default":46,"@uppy/utils/lib/Translator":50,"@uppy/utils/lib/generateFileID":56,"@uppy/utils/lib/getFileNameAndExtension":63,"@uppy/utils/lib/getFileType":64,"@uppy/utils/lib/prettyBytes":77,"cuid":91,"lodash.throttle":98,"mime-match":100,"namespace-emitter":101}],10:[function(require,module,exports){
+},{"./Plugin":8,"./loggers":10,"./supportsUploadProgress":11,"@uppy/store-default":57,"@uppy/utils/lib/Translator":64,"@uppy/utils/lib/generateFileID":70,"@uppy/utils/lib/getFileNameAndExtension":77,"@uppy/utils/lib/getFileType":78,"@uppy/utils/lib/prettyBytes":90,"cuid":104,"lodash.throttle":111,"mime-match":113,"namespace-emitter":114}],10:[function(require,module,exports){
 var getTimeStamp = require('@uppy/utils/lib/getTimeStamp'); // Swallow logs, default if logger is not set or debug: false
 
 
@@ -2289,7 +2357,7 @@ module.exports = {
   nullLogger: nullLogger,
   debugLogger: debugLogger
 };
-},{"@uppy/utils/lib/getTimeStamp":68}],11:[function(require,module,exports){
+},{"@uppy/utils/lib/getTimeStamp":82}],11:[function(require,module,exports){
 // Edge 15.x does not fire 'progress' events on uploads.
 // See https://github.com/transloadit/uppy/issues/945
 // And https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/12224510/
@@ -2492,7 +2560,7 @@ function (_Component) {
 }(Component);
 
 module.exports = AddFiles;
-},{"./icons":26,"preact":103}],13:[function(require,module,exports){
+},{"./icons":26,"preact":116}],13:[function(require,module,exports){
 var _require = require('preact'),
     h = _require.h;
 
@@ -2519,7 +2587,7 @@ var AddFilesPanel = function AddFilesPanel(props) {
 };
 
 module.exports = AddFilesPanel;
-},{"./AddFiles":12,"preact":103}],14:[function(require,module,exports){
+},{"./AddFiles":12,"preact":116}],14:[function(require,module,exports){
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 var FileList = require('./FileList');
@@ -2622,7 +2690,7 @@ module.exports = function Dashboard(props) {
     return props.getPlugin(target.id).render(props.state);
   })))));
 };
-},{"./AddFiles":12,"./AddFilesPanel":13,"./FileCard":15,"./FileList":22,"./PickerPanelContent":24,"./PickerPanelTopBar":25,"@uppy/utils/lib/isTouchDevice":74,"classnames":90,"preact":103,"preact-css-transition-group":102}],15:[function(require,module,exports){
+},{"./AddFiles":12,"./AddFilesPanel":13,"./FileCard":15,"./FileList":22,"./PickerPanelContent":24,"./PickerPanelTopBar":25,"@uppy/utils/lib/isTouchDevice":88,"classnames":103,"preact":116,"preact-css-transition-group":115}],15:[function(require,module,exports){
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
@@ -2680,6 +2748,7 @@ function (_Component) {
       return metaFields.map(function (field) {
         var id = "uppy-Dashboard-FileCard-input-" + field.id;
         return h("fieldset", {
+          key: field.id,
           class: "uppy-Dashboard-FileCard-fieldset"
         }, h("label", {
           class: "uppy-Dashboard-FileCard-label",
@@ -2771,7 +2840,7 @@ function (_Component) {
 }(Component);
 
 module.exports = FileCard;
-},{"../../utils/getFileTypeIcon":31,"../../utils/ignoreEvent.js":32,"../FilePreview":23,"preact":103}],16:[function(require,module,exports){
+},{"../../utils/getFileTypeIcon":31,"../../utils/ignoreEvent.js":32,"../FilePreview":23,"preact":116}],16:[function(require,module,exports){
 var _require = require('preact'),
     h = _require.h;
 
@@ -2835,7 +2904,7 @@ module.exports = function Buttons(props) {
     className: "uppy-DashboardItem-actionWrapper"
   }, renderEditButton(props), renderCopyLinkButton(props), renderRemoveButton(props));
 };
-},{"../../../utils/copyToClipboard":28,"../../icons":26,"preact":103}],17:[function(require,module,exports){
+},{"../../../utils/copyToClipboard":28,"../../icons":26,"preact":116}],17:[function(require,module,exports){
 var _require = require('preact'),
     h = _require.h;
 
@@ -2893,7 +2962,7 @@ module.exports = function FileInfo(props) {
     class: "uppy-DashboardItem-status"
   }, renderFileSize(props), renderFileSource(props)));
 };
-},{"../../../utils/truncateString":35,"@uppy/utils/lib/prettyBytes":77,"preact":103}],18:[function(require,module,exports){
+},{"../../../utils/truncateString":35,"@uppy/utils/lib/prettyBytes":90,"preact":116}],18:[function(require,module,exports){
 var _require = require('preact'),
     h = _require.h;
 
@@ -2917,7 +2986,7 @@ module.exports = function FilePreviewAndLink(props) {
     file: props.file
   }));
 };
-},{"../../../utils/getFileTypeIcon":31,"../../FilePreview":23,"preact":103}],19:[function(require,module,exports){
+},{"../../../utils/getFileTypeIcon":31,"../../FilePreview":23,"preact":116}],19:[function(require,module,exports){
 var _require = require('preact'),
     h = _require.h; // http://codepen.io/Harkko/pen/rVxvNM
 // https://css-tricks.com/svg-line-animation-works/
@@ -2984,7 +3053,7 @@ module.exports = function PauseResumeCancelIcon(props) {
     points: "14 22.5 7 15.2457065 8.99985857 13.1732815 14 18.3547104 22.9729883 9 25 11.1005634"
   }));
 };
-},{"preact":103}],20:[function(require,module,exports){
+},{"preact":116}],20:[function(require,module,exports){
 var _require = require('preact'),
     h = _require.h;
 
@@ -3065,7 +3134,7 @@ module.exports = function FileProgress(props) {
     })));
   }
 };
-},{"../../icons":26,"./PauseResumeCancelIcon":19,"preact":103}],21:[function(require,module,exports){
+},{"../../icons":26,"./PauseResumeCancelIcon":19,"preact":116}],21:[function(require,module,exports){
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 var _require = require('preact'),
@@ -3101,7 +3170,7 @@ module.exports = pure(function FileItem(props) {
   }, {
     'is-paused': isPaused
   }, {
-    'is-error': error
+    'is-error': !!error
   }, {
     'is-resumable': props.resumableUploads
   }, {
@@ -3115,10 +3184,11 @@ module.exports = pure(function FileItem(props) {
   }, h(FilePreviewAndLink, {
     file: file,
     showLinkToFileUploadResult: props.showLinkToFileUploadResult
-  }), h(FileProgress, _extends({
+  }), h(FileProgress, _extends({}, props, {
+    file: file,
     error: error,
     isUploaded: isUploaded
-  }, props))), h("div", {
+  }))), h("div", {
     class: "uppy-DashboardItem-fileInfoAndButtons"
   }, h(FileInfo, {
     file: file,
@@ -3139,7 +3209,7 @@ module.exports = pure(function FileItem(props) {
     info: props.info
   })));
 });
-},{"../../utils/pure":33,"./Buttons":16,"./FileInfo":17,"./FilePreviewAndLink":18,"./FileProgress":20,"classnames":90,"preact":103}],22:[function(require,module,exports){
+},{"../../utils/pure":33,"./Buttons":16,"./FileInfo":17,"./FilePreviewAndLink":18,"./FileProgress":20,"classnames":103,"preact":116}],22:[function(require,module,exports){
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 var FileItem = require('./FileItem/index.js');
@@ -3184,12 +3254,14 @@ module.exports = function (props) {
     ,
     tabindex: "-1"
   }, Object.keys(props.files).map(function (fileID) {
-    return h(FileItem, _extends({}, fileProps, {
+    return h(FileItem, _extends({
+      key: fileID
+    }, fileProps, {
       file: props.files[fileID]
     }));
   }));
 };
-},{"./FileItem/index.js":21,"classnames":90,"preact":103}],23:[function(require,module,exports){
+},{"./FileItem/index.js":21,"classnames":103,"preact":116}],23:[function(require,module,exports){
 var getFileTypeIcon = require('../utils/getFileTypeIcon');
 
 var _require = require('preact'),
@@ -3232,7 +3304,7 @@ module.exports = function FilePreview(props) {
     "fill-rule": "evenodd"
   })));
 };
-},{"../utils/getFileTypeIcon":31,"preact":103}],24:[function(require,module,exports){
+},{"../utils/getFileTypeIcon":31,"preact":116}],24:[function(require,module,exports){
 var _require = require('preact'),
     h = _require.h;
 
@@ -3266,7 +3338,7 @@ function PickerPanelContent(props) {
 }
 
 module.exports = PickerPanelContent;
-},{"../utils/ignoreEvent.js":32,"preact":103}],25:[function(require,module,exports){
+},{"../utils/ignoreEvent.js":32,"preact":116}],25:[function(require,module,exports){
 var _require = require('preact'),
     h = _require.h;
 
@@ -3363,8 +3435,7 @@ function PanelTopBar(props) {
 
   return h("div", {
     class: "uppy-DashboardContent-bar"
-  }, // always on the left
-  !props.isAllComplete ? h("button", {
+  }, !props.isAllComplete ? h("button", {
     class: "uppy-DashboardContent-back",
     type: "button",
     onclick: props.cancelAll
@@ -3372,8 +3443,7 @@ function PanelTopBar(props) {
     class: "uppy-DashboardContent-title",
     role: "heading",
     "aria-level": "h1"
-  }, h(UploadStatus, props)), // always on the right
-  allowNewUpload ? h("button", {
+  }, h(UploadStatus, props)), allowNewUpload ? h("button", {
     class: "uppy-DashboardContent-addMore",
     type: "button",
     "aria-label": props.i18n('addMoreFiles'),
@@ -3387,7 +3457,7 @@ function PanelTopBar(props) {
 }
 
 module.exports = PanelTopBar;
-},{"./icons":26,"preact":103}],26:[function(require,module,exports){
+},{"./icons":26,"preact":116}],26:[function(require,module,exports){
 var _require = require('preact'),
     h = _require.h; // https://css-tricks.com/creating-svg-icon-system-react/
 
@@ -3670,7 +3740,7 @@ module.exports = {
   iconCross: iconCross,
   iconPlus: iconPlus
 };
-},{"preact":103}],27:[function(require,module,exports){
+},{"preact":116}],27:[function(require,module,exports){
 var _class, _temp;
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
@@ -3842,6 +3912,7 @@ function (_Plugin) {
       width: 750,
       height: 550,
       thumbnailWidth: 280,
+      waitForThumbnailsBeforeUpload: false,
       defaultPickerIcon: defaultPickerIcon,
       showLinkToFileUploadResult: true,
       showProgressDetails: false,
@@ -3865,11 +3936,10 @@ function (_Plugin) {
       browserBackButtonClose: false // merge default options with the ones set by user
 
     };
-    _this.opts = _extends({}, defaultOptions, {}, opts); // i18n
+    _this.opts = _extends({}, defaultOptions, {}, opts);
 
-    _this.translator = new Translator([_this.defaultLocale, _this.uppy.locale, _this.opts.locale]);
-    _this.i18n = _this.translator.translate.bind(_this.translator);
-    _this.i18nArray = _this.translator.translateArray.bind(_this.translator);
+    _this.i18nInit();
+
     _this.openModal = _this.openModal.bind(_assertThisInitialized(_this));
     _this.closeModal = _this.closeModal.bind(_assertThisInitialized(_this));
     _this.requestCloseModal = _this.requestCloseModal.bind(_assertThisInitialized(_this));
@@ -3906,6 +3976,19 @@ function (_Plugin) {
 
   var _proto = Dashboard.prototype;
 
+  _proto.setOptions = function setOptions(newOpts) {
+    _Plugin.prototype.setOptions.call(this, newOpts);
+
+    this.i18nInit();
+  };
+
+  _proto.i18nInit = function i18nInit() {
+    this.translator = new Translator([this.defaultLocale, this.uppy.locale, this.opts.locale]);
+    this.i18n = this.translator.translate.bind(this.translator);
+    this.i18nArray = this.translator.translateArray.bind(this.translator);
+    this.setPluginState(); // so that UI re-renders and we see the updated locale
+  };
+
   _proto.removeTarget = function removeTarget(plugin) {
     var pluginState = this.getPluginState(); // filter out the one we want to remove
 
@@ -3924,7 +4007,7 @@ function (_Plugin) {
 
     if (callerPluginType !== 'acquirer' && callerPluginType !== 'progressindicator' && callerPluginType !== 'presenter') {
       var msg = 'Dashboard: Modal can only be used by plugins of types: acquirer, progressindicator, presenter';
-      this.uppy.log(msg);
+      this.uppy.log(msg, 'error');
       return;
     }
 
@@ -4636,7 +4719,8 @@ function (_Plugin) {
     if (!this.opts.disableThumbnailGenerator) {
       this.uppy.use(ThumbnailGenerator, {
         id: this.id + ":ThumbnailGenerator",
-        thumbnailWidth: this.opts.thumbnailWidth
+        thumbnailWidth: this.opts.thumbnailWidth,
+        waitForThumbnailsBeforeUpload: this.opts.waitForThumbnailsBeforeUpload
       });
     }
 
@@ -4675,8 +4759,8 @@ function (_Plugin) {
   };
 
   return Dashboard;
-}(Plugin), _class.VERSION = "1.3.0", _temp);
-},{"./components/Dashboard":14,"./components/icons":26,"./utils/createSuperFocus":29,"./utils/trapFocus":34,"@uppy/core":9,"@uppy/informer":37,"@uppy/status-bar":45,"@uppy/thumbnail-generator":48,"@uppy/utils/lib/Translator":50,"@uppy/utils/lib/findAllDOMElements":54,"@uppy/utils/lib/getDroppedFiles":58,"@uppy/utils/lib/toArray":81,"cuid":91,"memoize-one":99,"resize-observer-polyfill":104}],28:[function(require,module,exports){
+}(Plugin), _class.VERSION = "1.5.0", _temp);
+},{"./components/Dashboard":14,"./components/icons":26,"./utils/createSuperFocus":29,"./utils/trapFocus":34,"@uppy/core":9,"@uppy/informer":37,"@uppy/status-bar":56,"@uppy/thumbnail-generator":59,"@uppy/utils/lib/Translator":64,"@uppy/utils/lib/findAllDOMElements":68,"@uppy/utils/lib/getDroppedFiles":72,"@uppy/utils/lib/toArray":94,"cuid":104,"memoize-one":112,"resize-observer-polyfill":117}],28:[function(require,module,exports){
 /**
  * Copies text to clipboard by creating an almost invisible textarea,
  * adding text there, then running execCommand('copy').
@@ -4751,7 +4835,7 @@ module.exports = function createSuperFocus() {
     // [Practical check] without this line, typing in the search input in googledrive overlay won't work.
 
     if (isFocusInOverlay && lastFocusWasOnSuperFocusableEl) return;
-    var superFocusableEl = overlayEl.querySelector("[data-uppy-super-focusable]"); // If we are already in the topmost overlay, AND there are no super focusable elements yet, - leave focus up to the user.
+    var superFocusableEl = overlayEl.querySelector('[data-uppy-super-focusable]'); // If we are already in the topmost overlay, AND there are no super focusable elements yet, - leave focus up to the user.
     // [Practical check] without this line, if you are in an empty folder in google drive, and something's uploading in the bg, - focus will be jumping to Done all the time.
 
     if (isFocusInOverlay && !superFocusableEl) return;
@@ -4777,7 +4861,7 @@ module.exports = function createSuperFocus() {
 
   return debounce(superFocus, 260);
 };
-},{"./getActiveOverlayEl":30,"@uppy/utils/lib/FOCUSABLE_ELEMENTS":49,"lodash.debounce":97}],30:[function(require,module,exports){
+},{"./getActiveOverlayEl":30,"@uppy/utils/lib/FOCUSABLE_ELEMENTS":61,"lodash.debounce":110}],30:[function(require,module,exports){
 /**
  * @returns {HTMLElement} - either dashboard element, or the overlay that's most on top
  */
@@ -4906,7 +4990,7 @@ module.exports = function pure(Inner) {
     }(Component)
   );
 };
-},{"is-shallow-equal":96,"preact":103}],34:[function(require,module,exports){
+},{"is-shallow-equal":109,"preact":116}],34:[function(require,module,exports){
 var toArray = require('@uppy/utils/lib/toArray');
 
 var getActiveOverlayEl = require('./getActiveOverlayEl');
@@ -4970,7 +5054,7 @@ module.exports = {
     }
   }
 };
-},{"./getActiveOverlayEl":30,"@uppy/utils/lib//FOCUSABLE_ELEMENTS":49,"@uppy/utils/lib/toArray":81}],35:[function(require,module,exports){
+},{"./getActiveOverlayEl":30,"@uppy/utils/lib//FOCUSABLE_ELEMENTS":61,"@uppy/utils/lib/toArray":94}],35:[function(require,module,exports){
 /**
  * Truncates a string to the given number of chars (maxLength) by inserting '...' in the middle of that string.
  * Partially taken from https://stackoverflow.com/a/5723274/3192470.
@@ -5048,14 +5132,13 @@ function (_Plugin) {
       note: null // Merge default options with the ones set by user
 
     };
-    _this.opts = _extends({}, defaultOpts, opts); // Check for browser dragDrop support
+    _this.opts = _extends({}, defaultOpts, {}, opts); // Check for browser dragDrop support
 
     _this.isDragDropSupported = isDragDropSupported();
-    _this.removeDragOverClassTimeout = null; // i18n
+    _this.removeDragOverClassTimeout = null;
 
-    _this.translator = new Translator([_this.defaultLocale, _this.uppy.locale, _this.opts.locale]);
-    _this.i18n = _this.translator.translate.bind(_this.translator);
-    _this.i18nArray = _this.translator.translateArray.bind(_this.translator); // Bind `this` to class methods
+    _this.i18nInit(); // Bind `this` to class methods
+
 
     _this.handleInputChange = _this.handleInputChange.bind(_assertThisInitialized(_this));
     _this.handleDragOver = _this.handleDragOver.bind(_assertThisInitialized(_this));
@@ -5067,6 +5150,19 @@ function (_Plugin) {
   }
 
   var _proto = DragDrop.prototype;
+
+  _proto.setOptions = function setOptions(newOpts) {
+    _Plugin.prototype.setOptions.call(this, newOpts);
+
+    this.i18nInit();
+  };
+
+  _proto.i18nInit = function i18nInit() {
+    this.translator = new Translator([this.defaultLocale, this.uppy.locale, this.opts.locale]);
+    this.i18n = this.translator.translate.bind(this.translator);
+    this.i18nArray = this.translator.translateArray.bind(this.translator);
+    this.setPluginState(); // so that UI re-renders and we see the updated locale
+  };
 
   _proto.addFile = function addFile(file) {
     try {
@@ -5236,8 +5332,8 @@ function (_Plugin) {
   };
 
   return DragDrop;
-}(Plugin), _class.VERSION = "1.3.0", _temp);
-},{"@uppy/core":9,"@uppy/utils/lib/Translator":50,"@uppy/utils/lib/getDroppedFiles":58,"@uppy/utils/lib/isDragDropSupported":71,"@uppy/utils/lib/toArray":81,"preact":103}],37:[function(require,module,exports){
+}(Plugin), _class.VERSION = "1.4.0", _temp);
+},{"@uppy/core":9,"@uppy/utils/lib/Translator":64,"@uppy/utils/lib/getDroppedFiles":72,"@uppy/utils/lib/isDragDropSupported":85,"@uppy/utils/lib/toArray":94,"preact":116}],37:[function(require,module,exports){
 var _class, _temp;
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
@@ -5309,8 +5405,315 @@ function (_Plugin) {
   };
 
   return Informer;
-}(Plugin), _class.VERSION = "1.3.0", _temp);
-},{"@uppy/core":9,"preact":103}],38:[function(require,module,exports){
+}(Plugin), _class.VERSION = "1.3.2", _temp);
+},{"@uppy/core":9,"preact":116}],38:[function(require,module,exports){
+var cs_CZ = {};
+cs_CZ.strings = {
+  addMore: 'Přidat další',
+  addMoreFiles: 'Přidat další soubory',
+  addingMoreFiles: 'Přidávání dalších souborů',
+  allowAccessDescription: 'Pokud chcete pořizovat fotografie vaším zařízením, povolte prosím přístup ke kameře.',
+  allowAccessTitle: 'Povolte prosím přístup ke kameře.',
+  authenticateWith: 'Připojit k %{pluginName}',
+  authenticateWithTitle: 'Prosím přihlaste se k %{pluginName} pro výběr souborů',
+  back: 'Zpět',
+  browse: 'procházet',
+  cancel: 'Zrušit',
+  cancelUpload: 'Zrušit nahrávání',
+  chooseFiles: 'Vyberte soubory',
+  closeModal: 'Zavřít dialog',
+  companionAuthError: 'Vyžadováno přihlášení',
+  companionError: 'Spojení s modulem Companion se nezdařilo',
+  complete: 'Hotovo',
+  connectedToInternet: 'Připojeno k internetu',
+  copyLink: 'Zkopírovat odkaz',
+  copyLinkToClipboardFallback: 'Zkopírujte odkaz níže',
+  copyLinkToClipboardSuccess: 'Odkaz zkopírován do schránky',
+  creatingAssembly: 'Nahrávání se připravuje...',
+  creatingAssemblyFailed: 'Transloadit: Nelze vytvořit Assembly',
+  dashboardTitle: 'Nahrát soubory',
+  dashboardWindowTitle: 'Okno pro nahrání souborů. (Stiskněte ESC pro zavření.)',
+  dataUploadedOfTotal: '%{complete} z %{total}',
+  done: 'Dokončeno',
+  dropHereOr: 'Přetáhněte soubory sem nebo %{browse}',
+  dropHint: 'Přetáhněte soubory sem',
+  dropPaste: 'Přetáhněte soubory sem, vložte je, nebo %{browse}',
+  dropPasteImport: 'Přetáhněte soubory sem, vložte je, %{browse} nebo je importujte',
+  edit: 'Upravit',
+  editFile: 'Upravit soubor',
+  editing: 'Upravujete %{file}',
+  emptyFolderAdded: 'Nebyly přidány žádné soubory, adresář je prázdný.',
+  encoding: 'Převádění...',
+  enterCorrectUrl: 'Chybná URL: Ujistěte se, že vkládáte přímý odkaz na soubor.',
+  enterUrlToImport: 'Vložte URL pro import souboru.',
+  exceedsSize: 'Tento soubor překračuje maximální povolenou velikost: ',
+  failedToFetch: 'Modulu Companion se nepodařilo stáhnout soubor z této URL, zkontrolujte prosím, jestli je URL správná.',
+  failedToUpload: 'Nepodařilo se nahrát soubor %{file}',
+  fileSource: 'Zdroj souboru: %{name}',
+  filesUploadedOfTotal: {
+    '0': '%{complete} z %{smart_count} souboru nahráno',
+    '1': '%{complete} z %{smart_count} souborů nahráno',
+    '2': '%{complete} z %{smart_count} souborů nahráno'
+  },
+  filter: 'Filtrovat',
+  finishEditingFile: 'Dokončit editaci souboru',
+  folderAdded: {
+    '0': 'Přidán %{smart_count} soubor z adresáře %{folder}',
+    '1': 'Přidáno %{smart_count} souborů z adresáře %{folder}',
+    '2': 'Přidáno %{smart_count} souborů z adresáře %{folder}'
+  },
+  generatingThumbnails: 'Vytvářím miniatury...',
+  import: 'Importovat',
+  importFrom: 'Importovat z %{name}',
+  link: 'Odkaz',
+  loading: 'Nahrávání...',
+  logOut: 'Odhlásit',
+  myDevice: 'Moje zařízení',
+  noFilesFound: 'Nenalezeny žádné soubory ani adresáře',
+  noInternetConnection: 'Nepřipojeno k internetu',
+  openFolderNamed: 'Otevřít adresář %{name}',
+  pause: 'Pozastavit',
+  pauseUpload: 'Pozastavit nahrávání',
+  paused: 'Pozastaveno',
+  poweredBy: 'Vytvořeno pomocí ',
+  preparingUpload: 'Připavuje se nahrávání...',
+  processingXFiles: {
+    '0': 'Zpracování %{smart_count} souborů',
+    '1': 'Zpracování %{smart_count} souborů',
+    '2': 'Zpracování %{smart_count} souborů'
+  },
+  removeFile: 'Odebrat soubor',
+  resetFilter: 'Reset filtru',
+  resume: 'Pokřačovat',
+  resumeUpload: 'Pokračovat v nahrávání',
+  retry: 'Opakovat',
+  retryUpload: 'Opakovat nahrávání',
+  saveChanges: 'Uložit změny',
+  selectAllFilesFromFolderNamed: 'Vybrat vše z adresáře %{name}',
+  selectFileNamed: 'Vybrat soubor %{name}',
+  selectX: {
+    '0': 'Vybrat %{smart_count}',
+    '1': 'Vybrat %{smart_count}',
+    '2': 'Vybrat %{smart_count}'
+  },
+  smile: 'Úsměv prosím!',
+  startRecording: 'Spustit nahrávání videa',
+  stopRecording: 'Zastavit nahrávání videa',
+  takePicture: 'Pořídit fotografii',
+  timedOut: 'Stav nahrávání se nezměnil %{seconds} sekund, ruším nahrávání.',
+  unselectAllFilesFromFolderNamed: 'Zrušit výběr všech souborů z adresáře %{name}',
+  unselectFileNamed: 'Zrušit výběr souboru %{name}',
+  upload: 'Nahrát',
+  uploadComplete: 'Nahrání dokončeno',
+  uploadFailed: 'Nahrání se nezdařilo',
+  uploadPaused: 'Nahrání dokončeno',
+  uploadXFiles: {
+    '0': 'Nahrát %{smart_count} soubor',
+    '1': 'Nahrát %{smart_count} souborů',
+    '2': 'Nahrát %{smart_count} souborů'
+  },
+  uploadXNewFiles: {
+    '0': 'Nahrát +%{smart_count} soubor',
+    '1': 'Nahrát +%{smart_count} souborů',
+    '2': 'Nahrát +%{smart_count} souborů'
+  },
+  uploading: 'Nahrávání',
+  uploadingXFiles: {
+    '0': 'Nahrávám %{smart_count} soubor',
+    '1': 'Nahrávám %{smart_count} souborů',
+    '2': 'Nahrávám %{smart_count} souborů'
+  },
+  xFilesSelected: {
+    '0': '%{smart_count} soubor vybrán',
+    '1': '%{smart_count} soubory vybrány',
+    '2': '%{smart_count} soubory vybrány'
+  },
+  xMoreFilesAdded: {
+    '0': '%{smart_count} další soubor přidán',
+    '1': '%{smart_count} dalších souborů přidáno',
+    '2': '%{smart_count} dalších souborů přidáno'
+  },
+  xTimeLeft: '%{time} zbývá',
+  youCanOnlyUploadFileTypes: 'Lze nahrát pouze následující typy souborů: %{types}',
+  youCanOnlyUploadX: {
+    '0': 'Lze nahrát pouze %{smart_count} soubor',
+    '1': 'Lze nahrát pouze %{smart_count} souborů',
+    '2': 'Lze nahrát pouze %{smart_count} souborů'
+  },
+  youHaveToAtLeastSelectX: {
+    '0': 'Je třeba vybrat alespoň %{smart_count} soubor',
+    '1': 'Je třeba vybrat alespoň %{smart_count} souborů',
+    '2': 'Je třeba vybrat alespoň %{smart_count} souborů'
+  }
+};
+
+cs_CZ.pluralize = function (n) {
+  if (n === 1) {
+    return 0;
+  }
+
+  return 1;
+};
+
+if (typeof window !== 'undefined' && typeof window.Uppy !== 'undefined') {
+  window.Uppy.locales.cs_CZ = cs_CZ;
+}
+
+module.exports = cs_CZ;
+},{}],39:[function(require,module,exports){
+var da_DK = {};
+da_DK.strings = {
+  addMore: 'Tilføj flere',
+  addMoreFiles: 'Tilføj flere filer',
+  addingMoreFiles: 'Tilføj flere filer',
+  allowAccessDescription: 'For at kunne tage billeder eller video med dit kamera, skal du tillade adgang til dit kamera for denne side.',
+  allowAccessTitle: 'Venligst giv adgang til dit kamera',
+  authenticateWith: 'Forbind til %{pluginName}',
+  authenticateWithTitle: 'Venligst autentificer med %{pluginName} for at vælge filer',
+  back: 'Tilbage',
+  browse: 'gennemse',
+  cancel: 'Annuller',
+  cancelUpload: 'Annuller upload',
+  chooseFiles: 'Vælg filer',
+  closeModal: 'Luk Modal',
+  companionAuthError: 'Autorisation påkrævet',
+  companionError: 'Forbindelse til Companion fejlede',
+  complete: 'Afsluttet',
+  connectedToInternet: 'Forbundet til internettet',
+  copyLink: 'Kopier link',
+  copyLinkToClipboardFallback: 'Kopier URLen forneden',
+  copyLinkToClipboardSuccess: 'Link kopieret til udklipsholderen',
+  creatingAssembly: 'Forbereder upload...',
+  creatingAssemblyFailed: 'Transloadit: Kunne ikke oprette Assembly',
+  dashboardTitle: 'Fil Uploader',
+  dashboardWindowTitle: 'Fil Uploader Vindue (Tryk escape for at lukke)',
+  dataUploadedOfTotal: '%{complete} af %{total}',
+  done: 'Færdig',
+  dropHereOr: 'Træk filer her eller %{browse}',
+  dropHint: 'Træk dine filer her',
+  dropPaste: 'Træk filer her, sæt ind eller %{browse}',
+  dropPasteImport: 'Træk filer her, sæt ind, %{browse} eller importer fra',
+  edit: 'Rediger',
+  editFile: 'Rediger fil',
+  editing: 'Redigerer %{file}',
+  emptyFolderAdded: 'Ingen filer blev tilføjet fra en tom mappe',
+  encoding: 'Encoding...',
+  enterCorrectUrl: 'Forkert URL: Venligst sørg for at du indtaster et direkte link til en fil',
+  enterUrlToImport: 'Indtast URL for at importerer en fil',
+  exceedsSize: 'Denne fil overskrider den maksimale tilladte størrelse af',
+  failedToFetch: 'Companion kunne ikke hente denne URL, venligst undersøg om denne er korrekt',
+  failedToUpload: 'Fejlede upload af %{file}',
+  fileSource: 'Fil kilde: %{name}',
+  filesUploadedOfTotal: {
+    '0': '%{complete} af %{smart_count} filer uploaded',
+    '1': '%{complete} af %{smart_count} fil uploaded',
+    '2': '%{complete} af %{smart_count} filer uploaded'
+  },
+  filter: 'Filter',
+  finishEditingFile: 'Færddiggør redigering af fil',
+  folderAdded: {
+    '0': 'Tilføjet %{smart_count} filer fra %{folder}',
+    '1': 'Tilføjet %{smart_count} fil fra %{folder}',
+    '2': 'Tilføjet %{smart_count} filer fra %{folder}'
+  },
+  import: 'Importer',
+  importFrom: 'Importer fra %{name}',
+  link: 'Link',
+  loading: 'Loading...',
+  logOut: 'Log ud',
+  myDevice: 'Min enhed',
+  noFilesFound: 'Du har ingen filer eller mapper her',
+  noInternetConnection: 'Ingen Internet forbindelse',
+  openFolderNamed: 'Åben mappe %{name}',
+  pause: 'Pause',
+  pauseUpload: 'Pause upload',
+  paused: 'Sat på pause',
+  poweredBy: 'Drevet af',
+  preparingUpload: 'Forbereder upload...',
+  processingXFiles: {
+    '0': 'Behandler %{smart_count} filer',
+    '1': 'Behandler %{smart_count} fil',
+    '2': 'Behandler %{smart_count} filer'
+  },
+  removeFile: 'Fjern fil',
+  resetFilter: 'Nulstil filter',
+  resume: 'Genoptag',
+  resumeUpload: 'Genoptag upload',
+  retry: 'Forsøg igen',
+  retryUpload: 'Forsøg upload igen',
+  saveChanges: 'Gem ændringer',
+  selectAllFilesFromFolderNamed: 'Vælg alle filer fra mappen %{name}',
+  selectFileNamed: 'Vælg fil %{name}',
+  selectX: {
+    '0': 'Vælg %{smart_count}',
+    '1': 'Vælg %{smart_count}',
+    '2': 'Vælg %{smart_count}'
+  },
+  smile: 'Smil!',
+  startRecording: 'Start video optagelse',
+  stopRecording: 'Stop video optagelse',
+  takePicture: 'Tag et billede',
+  timedOut: 'Upload gået i stå for %{seconds} sekunder, afbryder.',
+  unselectAllFilesFromFolderNamed: 'Afmarker alle filer fra mappen %{name}',
+  unselectFileNamed: 'Afmarker filen %{name}',
+  upload: 'Upload',
+  uploadComplete: 'Upload færdig',
+  uploadFailed: 'Upload fejlede',
+  uploadPaused: 'Upload sat på pause',
+  uploadXFiles: {
+    '0': 'Upload %{smart_count} fil',
+    '1': 'Upload %{smart_count} filer',
+    '2': 'Upload %{smart_count} filer'
+  },
+  uploadXNewFiles: {
+    '0': 'Upload +%{smart_count} fil',
+    '1': 'Upload +%{smart_count} filer',
+    '2': 'Upload +%{smart_count} filer'
+  },
+  uploading: 'Uploader',
+  uploadingXFiles: {
+    '0': 'Uploader %{smart_count} fil',
+    '1': 'Uploader %{smart_count} filer',
+    '2': 'Uploader %{smart_count} filer'
+  },
+  xFilesSelected: {
+    '0': '%{smart_count} fil valgt',
+    '1': '%{smart_count} filer valgt',
+    '2': '%{smart_count} filer valgt'
+  },
+  xMoreFilesAdded: {
+    '0': '%{smart_count} flere filer tilføjet',
+    '1': '%{smart_count} flere filer tilføjet',
+    '2': '%{smart_count} flere filer tilføjet'
+  },
+  xTimeLeft: '%{time} tilbage',
+  youCanOnlyUploadFileTypes: 'Du kan kun uploade: %{types}',
+  youCanOnlyUploadX: {
+    '0': 'Du kan kun uploade %{smart_count} fil',
+    '1': 'Du kan kun uploade %{smart_count} filer',
+    '2': 'Du kan kun uploade %{smart_count} filer'
+  },
+  youHaveToAtLeastSelectX: {
+    '0': 'Du skal vælge mindst %{smart_count} fil',
+    '1': 'Du skal vælge mindst %{smart_count} filer',
+    '2': 'Du skal vælge mindst %{smart_count} filer'
+  }
+};
+
+da_DK.pluralize = function (n) {
+  if (n === 1) {
+    return 0;
+  }
+
+  return 1;
+};
+
+if (typeof window !== 'undefined' && typeof window.Uppy !== 'undefined') {
+  window.Uppy.locales.da_DK = da_DK;
+}
+
+module.exports = da_DK;
+},{}],40:[function(require,module,exports){
 var de_DE = {};
 de_DE.strings = {
   addMoreFiles: 'Dateien hinzufügen',
@@ -5463,7 +5866,160 @@ if (typeof window !== 'undefined' && typeof window.Uppy !== 'undefined') {
 }
 
 module.exports = de_DE;
-},{}],39:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
+var el_GR = {};
+el_GR.strings = {
+  addMore: 'Προσθέστε περισσότερα',
+  addMoreFiles: 'Προσθέστε περισσότερα αρχεία',
+  addingMoreFiles: 'Προσθήκη αρχείων',
+  allowAccessDescription: 'Για να βγάλετε φωτογραφίες ή βίντεο με την κάμερά σας, παρακαλούμε επιτρέψτε την πρόσβαση στην κάμερά σας για αυτόν τον ιστότοπο.',
+  allowAccessTitle: 'Παρακαλούμε επιτρέψτε την πρόσβαση στην κάμερά σας',
+  authenticateWith: 'Σύνδεση με %{pluginName}',
+  authenticateWithTitle: 'Παρακαλούμε συνδεθείτε με %{pluginName} για να επιλέξετε αρχεία',
+  back: 'Πίσω',
+  browse: 'Περιήγηση',
+  cancel: 'Άκυρο',
+  cancelUpload: 'Ακύρωση μεταφόρτωσης',
+  chooseFiles: 'Επιλέξτε αρχεία',
+  closeModal: 'Κλείσιμο παραθύρου',
+  companionAuthError: 'Απαιτείται εξουσιοδότηση',
+  companionError: 'Η σύνδεση με το Companion απέτυχε',
+  complete: 'Ολοκληρώθηκε',
+  connectedToInternet: 'Συνδεθήκατε στο Internet',
+  copyLink: 'Αντιγραφή συνδέσμου',
+  copyLinkToClipboardFallback: 'Αντιγραφή του παρακάτω συνδέσμου',
+  copyLinkToClipboardSuccess: 'Ο σύνδεσμος αντιγράφηκε',
+  creatingAssembly: 'Προετοιμασία μεταφόρτωσης...',
+  creatingAssemblyFailed: 'Transloadit: Σφάλμα κατά την προετοιμασία',
+  dashboardTitle: 'Μεταφόρτωση αρχείων',
+  dashboardWindowTitle: 'Παράθυρο μεταφόρτωσης αρχείων (Πατήστε escape για να κλείσει)',
+  dataUploadedOfTotal: '%{complete} από %{total}',
+  done: 'Τέλος',
+  dropHereOr: 'Ρίξτε τα αρχεία εδώ ή %{browse}',
+  dropHint: 'Ρίξτε τα αρχεία σας εδώ',
+  dropPaste: 'Ρίξτε τα αρχεία εδώ, κάντε επικόλληση ή %{browse}',
+  dropPasteImport: 'Ρίξτε αρχεία εδώ, κάντε επικόλληση, %{browse} ή εισαγωγή από',
+  edit: 'Επεξεργασία',
+  editFile: 'Επεξεργασία αρχείου',
+  editing: 'Γίνεται επεξεργασία %{file}',
+  emptyFolderAdded: 'Δεν προστέθηκαν αρχεία από τον άδειο φάκελο',
+  encoding: 'Γίνεται κωδικοποίηση...',
+  enterCorrectUrl: 'Λανθασμένο URL: Παρακαλούμε βεβαιωθείτε ότι εισάγετε έναν άμεσο σύνδεσμο προς κάποιο αρχείο',
+  enterUrlToImport: 'Εισάγετε URL για να γίνει εισαγωγή του αρχείου',
+  exceedsSize: 'Το αρχείο υπερβαίνει το μέγιστο επιτρεπτό όριο που είναι',
+  failedToFetch: 'Δεν ήταν δυνατή η λήψη από το URL, παρακαλούμε βεβαιωθείτε ότι είναι σωστό',
+  failedToUpload: 'Δεν ήταν δυνατή η μεταφόρτωση %{file}',
+  fileSource: 'Πηγή αρχείου: %{name}',
+  filesUploadedOfTotal: {
+    '0': '%{complete} από %{smart_count} αρχεία ανέβηκαν',
+    '1': '%{complete} από %{smart_count} αρχείο ανέβηκε',
+    '2': '%{complete} από %{smart_count} αρχεία ανέβηκαν'
+  },
+  filter: 'Φιλτράρισμα',
+  finishEditingFile: 'Ολοκλήρωση επεξεργασίας αρχείου',
+  folderAdded: {
+    '0': 'Προστέθηκαν %{smart_count} αρχεία από %{folder}',
+    '1': 'Προστέθηκε %{smart_count} αρχείο από %{folder}',
+    '2': 'Προστέθηκαν %{smart_count} αρχεία από %{folder}'
+  },
+  import: 'Εισαγωγή',
+  importFrom: 'Εισαγωγή από %{name}',
+  link: 'Σύνδεσμος',
+  loading: 'Φορτώνει...',
+  logOut: 'Αποσύνδεση',
+  myDevice: 'Η συσκευή μου',
+  noFilesFound: 'Δεν υπάρχουν αρχεία ή φάκελοι εδώ',
+  noInternetConnection: 'Δεν υπάρχει σύνδεση στο Internet',
+  openFolderNamed: 'Άνοιγμα φακέλου %{name}',
+  pause: 'Παύση',
+  pauseUpload: 'Παύση μεταφόρτωσης',
+  paused: 'Έγινε παύση',
+  poweredBy: 'Με τη δύναμη τού',
+  preparingUpload: 'Προετοιμασία μεταφόρτωσης...',
+  processingXFiles: {
+    '0': 'Προετοιμασία %{smart_count} αρχείων',
+    '1': 'Προετοιμασία %{smart_count} αρχείου',
+    '2': 'Προετοιμασία %{smart_count} αρχείων'
+  },
+  removeFile: 'Αφαίρεση αρχείου',
+  resetFilter: 'Επαναφορά φίλτρου',
+  resume: 'Συνέχεια',
+  resumeUpload: 'Συνέχεια μεταφόρτωσης',
+  retry: 'Προσπάθεια ξανά',
+  retryUpload: 'Προσπάθεια μεταφόρτωσης ξανά',
+  saveChanges: 'Αποθήκευση αλλαγών',
+  selectAllFilesFromFolderNamed: 'Επιλογή όλων των αρχείων από τον φάκελο %{name}',
+  selectFileNamed: 'Επιλογή αρχείου %{name}',
+  selectX: {
+    '0': 'Επιλογή %{smart_count}',
+    '1': 'Επιλογή %{smart_count}',
+    '2': 'Επιλογή %{smart_count}'
+  },
+  smile: 'Χαμογελάστε!',
+  startRecording: 'Ξεκίνημα εγγραφής βίντεο',
+  stopRecording: 'Σταμάτημα εγγραφής βίντεο',
+  takePicture: 'Βγάλτε μια φωτογραφία',
+  timedOut: 'Η μεταφόρτωση σταμάτησε για %{seconds} δευτερόλεπτα, γίνεται ακύρωση.',
+  unselectAllFilesFromFolderNamed: 'Αποεπιλογή όλων των αρχείων από τον φάκελο %{name}',
+  unselectFileNamed: 'Αποεπιλογή αρχείου %{name}',
+  upload: 'Μεταφόρτωση',
+  uploadComplete: 'Μεταφόρτωση ολοκληρώθηκε',
+  uploadFailed: 'Μεταφόρτωση απέτυχε',
+  uploadPaused: 'Μεταφόρτωση σε παύση',
+  uploadXFiles: {
+    '0': 'Μεταφόρτωση %{smart_count} αρχείων',
+    '1': 'Μεταφόρτωση %{smart_count} αρχείου',
+    '2': 'Μεταφόρτωση %{smart_count} αρχείων'
+  },
+  uploadXNewFiles: {
+    '0': 'Μεταφόρτωση +%{smart_count} αρχείων',
+    '1': 'Μεταφόρτωση +%{smart_count} αρχείου',
+    '2': 'Μεταφόρτωση +%{smart_count} αρχείων'
+  },
+  uploading: 'Γίνεται μεταφόρτωση',
+  uploadingXFiles: {
+    '0': 'Μεταφορτώνονται %{smart_count} αρχεία',
+    '1': 'Μεταφορτώνεται %{smart_count} αρχείο',
+    '2': 'Μεταφορτώνονται %{smart_count} αρχεία'
+  },
+  xFilesSelected: {
+    '0': '%{smart_count} επιλεγμένα αρχεία',
+    '1': '%{smart_count} επιλεγμένο αρχείο',
+    '2': '%{smart_count} επιλεγμένα αρχεία'
+  },
+  xMoreFilesAdded: {
+    '0': '%{smart_count} ακόμα αρχεία προστέθηκαν',
+    '1': '%{smart_count} ακόμα αρχείο προστέθηκε',
+    '2': '%{smart_count} ακόμα αρχεία προστέθηκαν'
+  },
+  xTimeLeft: '%{time} απομένουν',
+  youCanOnlyUploadFileTypes: 'Μπορείτε να ανεβάσετε μόνο: %{types}',
+  youCanOnlyUploadX: {
+    '0': 'Μπορείτε να ανεβάσετε μόνο %{smart_count} αρχεία',
+    '1': 'Μπορείτε να ανεβάσετε μόνο %{smart_count} αρχείο',
+    '2': 'Μπορείτε να ανεβάσετε μόνο %{smart_count} αρχεία'
+  },
+  youHaveToAtLeastSelectX: {
+    '0': 'Πρέπει να επιλέξετε τουλάχιστον %{smart_count} αρχεία',
+    '1': 'Πρέπει να επιλέξετε τουλάχιστον %{smart_count} αρχείο',
+    '2': 'Πρέπει να επιλέξετε τουλάχιστον %{smart_count} αρχεία'
+  }
+};
+
+el_GR.pluralize = function (n) {
+  if (n === 1) {
+    return 1;
+  }
+
+  return 0;
+};
+
+if (typeof window !== 'undefined' && typeof window.Uppy !== 'undefined') {
+  window.Uppy.locales.el_GR = el_GR;
+}
+
+module.exports = el_GR;
+},{}],42:[function(require,module,exports){
 var es_ES = {};
 es_ES.strings = {
   addMoreFiles: 'Agregar más archivos',
@@ -5616,7 +6172,313 @@ if (typeof window !== 'undefined' && typeof window.Uppy !== 'undefined') {
 }
 
 module.exports = es_ES;
-},{}],40:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
+var fa_IR = {};
+fa_IR.strings = {
+  addMoreFiles: 'افزودن فایل‌های بیشتر',
+  addingMoreFiles: 'درحال افزودن فایل‌ها',
+  allowAccessDescription: 'برای استفاده از دوربین جهت عکس و فیلمبرداری، لطفا به این سایت اجازه‌ی دسترسی به دوربین را بدهید',
+  allowAccessTitle: 'لطفا به دوربین اجازه‌ی دسترسی بدهید',
+  authenticateWith: 'در حال اتصال به %{pluginName}',
+  authenticateWithTitle: 'احراز هویت %{pluginName} برای انتخاب فایل ضروریست!',
+  back: 'بازگشت',
+  addMore: 'اضافه کردن بیشتر',
+  browse: 'انتخاب کنید',
+  cancel: 'انصراف',
+  cancelUpload: 'لغو بارگذاری',
+  chooseFiles: 'انتخاب فایل',
+  closeModal: 'بستن پنجره',
+  companionAuthError: 'نیازمند تایید هویت',
+  companionError: 'Connection with Companion failed',
+  complete: 'کامل شد',
+  connectedToInternet: 'م به شبکه اینترنت متصل شد',
+  copyLink: 'کپی پیوند',
+  copyLinkToClipboardFallback: 'پیوند زیر را کپی کنید',
+  copyLinkToClipboardSuccess: 'پیوند به حافظه‌ی موقت منتقل شد',
+  creatingAssembly: 'درحال آماده سازی برای بارگذاری',
+  creatingAssemblyFailed: 'Transloadit: Could not create Assembly',
+  dashboardTitle: 'بارگذاری فایل',
+  dashboardWindowTitle: 'پنجره بارگذاری فایل. برای لغو کلید esc را بفشارید',
+  dataUploadedOfTotal: '%{complete} از %{total}',
+  done: 'انجام شد',
+  dropHereOr: 'فایل را بکشید و اینجا رها کنید یا  %{browse}',
+  dropHint: 'فایل‌ها را بکشید و اینجا رها کنید',
+  dropPaste: 'فایلها اینجا رها کنید، بچسبانید یا  %{browse}',
+  dropPasteImport: 'فایلها را اینجا رها کنید، بچسبانید یا %{browse}',
+  edit: 'ویرایش',
+  editFile: 'ویرایش فایل',
+  editing: 'در حال ویرایش %{file}',
+  emptyFolderAdded: 'از پوشه‌ی خالی هیچ فایلی افزوده نشد',
+  encoding: 'رمزگذاری...',
+  enterCorrectUrl: 'آدرس نامعتبر. لطفا مطمئن شوید که آدرس مستقیم به یک فایل را انتخاب کرده‌اید.',
+  enterUrlToImport: 'آدرس فایل را برای بارگذاری بنویسید',
+  exceedsSize: 'اندازه‌ی این فایل از حد مجاز بیشتر است!',
+  failedToFetch: 'Companion failed to fetch this URL, please make sure it’s correct',
+  failedToUpload: 'شکست در بارگذاری %{file}',
+  fileSource: 'منبع فایل: %{name}',
+  filesUploadedOfTotal: {
+    '0': '%{complete} از %{smart_count} فایل بارگذاری شد.',
+    '1': '%{complete} از %{smart_count} فایل بارگذاری شد.',
+    '2': '%{complete} از %{smart_count} فایل بارگذاری شد.'
+  },
+  filter: 'پالایش',
+  finishEditingFile: 'اتمام ویرایش فایل',
+  folderAdded: {
+    '0': '%{smart_count} فایل از %{folder} افزوده شد.',
+    '1': '%{smart_count} فایل از %{folder} افزوده شد.',
+    '2': '%{smart_count} فایل از %{folder} افزوده شد.'
+  },
+  import: 'واردکردن',
+  importFrom: 'واردکردن از %{name}',
+  link: 'پیوند',
+  loading: 'درحال بارگذاری',
+  logOut: 'خروج',
+  myDevice: 'دستگاه من',
+  noFilesFound: 'هیچ فایل یا پوشه‌ای اینجا ندارید',
+  noInternetConnection: 'عدم اتصال به اینترنت',
+  pause: 'توقف',
+  pauseUpload: 'توقف بارگذاری',
+  paused: 'متوقف شده',
+  poweredBy: 'قدرت گرفته از',
+  preparingUpload: 'درحال آماده سازی برای بارگذاری',
+  processingXFiles: {
+    '0': 'درحال پردازش %{smart_count} فایل',
+    '1': 'درحال پردازش %{smart_count} فایل',
+    '2': 'درحال پردازش %{smart_count} فایل'
+  },
+  removeFile: 'حذف فایل',
+  resetFilter: 'بازنشانی فیلتر',
+  resume: 'ادامه',
+  resumeUpload: 'ادامه بارگذاری',
+  retry: 'تلاش دوباره',
+  retryUpload: 'تلاش دوباره بارگذاری',
+  saveChanges: 'ذخیره‌ی تغییرات',
+  selectX: {
+    '0': 'را انتخاب کنید %{smart_count}',
+    '1': 'را انتخاب کنید %{smart_count}',
+    '2': 'را انتخاب کنید %{smart_count}'
+  },
+  smile: 'Smile!',
+  startRecording: 'آغاز تصویربرداری',
+  stopRecording: 'توقف تصویربرداری',
+  takePicture: 'عکس بگیرید',
+  timedOut: 'بارگذاری به مدت %{seconds} ثانیه متوقف شد, درحال متوقف کردن.',
+  upload: 'بارگذاری',
+  uploadComplete: 'بارگذاری انجام شد',
+  uploadFailed: 'بارگذاری شکست خورد',
+  uploadPaused: 'بارگذاری متوقف شد',
+  uploadXFiles: {
+    '0': 'بارگذاری %{smart_count} فایل',
+    '1': 'بارگذاری %{smart_count} فایل',
+    '2': 'بارگذاری %{smart_count} فایل'
+  },
+  uploadXNewFiles: {
+    '0': 'بارگذاری +%{smart_count} فایل',
+    '1': 'بارگذاری +%{smart_count} فایل',
+    '2': 'بارگذاری +%{smart_count} فایل'
+  },
+  uploading: 'بارگذاری',
+  uploadingXFiles: {
+    '0': 'بارگذاری %{smart_count} فایل',
+    '1': 'بارگذاری %{smart_count} فایل',
+    '2': 'بارگذاری %{smart_count} fiفایلles'
+  },
+  xFilesSelected: {
+    '0': '%{smart_count} فایل انتخاب شده',
+    '1': '%{smart_count} فایل انتخاب شده',
+    '2': '%{smart_count} فایل انتخاب شده'
+  },
+  xMoreFilesAdded: {
+    '0': '%{smart_count} فایل دیگر افزوده شد',
+    '1': '%{smart_count} فایل دیگر افزوده شد',
+    '2': '%{smart_count} فایل دیگر افزوده شد'
+  },
+  xTimeLeft: '%{time} left',
+  youCanOnlyUploadFileTypes: 'فایل‌های قابل قبول: %{types}',
+  youCanOnlyUploadX: {
+    '0': 'فقط می‌توانید %{smart_count} فایل انتخاب کنید',
+    '1': 'فقط می‌توانید %{smart_count} فایل انتخاب کنید',
+    '2': 'فقط می‌توانید %{smart_count} فایل انتخاب کنید'
+  },
+  youHaveToAtLeastSelectX: {
+    '0': 'می‌بایست حداقل %{smart_count} فایل انتخاب کنید',
+    '1': 'می‌بایست حداقل %{smart_count} فایل انتخاب کنید',
+    '2': 'می‌بایست حداقل %{smart_count} فایل انتخاب کنید'
+  },
+  selectAllFilesFromFolderNamed: 'همه فایل ها را از پوشه انتخاب کنید %{name}',
+  unselectAllFilesFromFolderNamed: 'همه فایل ها را از پوشه حذف کنید %{name}',
+  selectFileNamed: 'فایل را انتخاب کنید %{name}',
+  unselectFileNamed: 'لغو انتخاب پرونده %{name}',
+  openFolderNamed: 'پوشه باز کنید %{name}'
+};
+
+fa_IR.pluralize = function (n) {
+  if (n === 1) {
+    return 0;
+  }
+
+  return 1;
+};
+
+if (typeof window !== 'undefined' && typeof window.Uppy !== 'undefined') {
+  window.Uppy.locales.fa_IR = fa_IR;
+}
+
+module.exports = fa_IR;
+},{}],44:[function(require,module,exports){
+var fi_FI = {};
+fi_FI.strings = {
+  addMore: 'Lisää',
+  addMoreFiles: 'Lisää tiedostoja',
+  addingMoreFiles: 'Lisätään tiedostoja',
+  allowAccessDescription: 'Jotta voit lähettää kuvia tai videota kamerastasi, sinun tulee antaa tälle sivustolle oikeus käyttää kameraasi.',
+  allowAccessTitle: 'Salli kameran käyttö, kiitos',
+  authenticateWith: 'Mene %{pluginName}',
+  authenticateWithTitle: '%{pluginName} vaadittu tunnistautumiseen, jotta voit valita tiedostoja',
+  back: 'Takaisin',
+  browse: 'selaa',
+  cancel: 'Peruuta',
+  cancelUpload: 'Peruuta lähetys',
+  chooseFiles: 'Valitse tiedostot',
+  closeModal: 'Sulje ikkuna',
+  companionAuthError: 'Käyttöoikeus vaadittu',
+  companionError: 'Yhdistäminen Companioniin epäonnistui',
+  complete: 'Valmis',
+  connectedToInternet: 'Yhdistetty Internettiin',
+  copyLink: 'Kopioi linkki',
+  copyLinkToClipboardFallback: 'Kopioi alla oleva linkki',
+  copyLinkToClipboardSuccess: 'Linkki kopioitu leikepöydälle',
+  creatingAssembly: 'Valmistellaan lähetystä...',
+  creatingAssemblyFailed: 'Transloadit: Assemblyn luonti epäonnistui',
+  dashboardTitle: 'Tiedoston Lataaja',
+  dashboardWindowTitle: 'Tiedoston latausikkuna (Paina Esc sulkeaksesi)',
+  dataUploadedOfTotal: '%{complete} / %{total}',
+  done: 'Valmis',
+  dropHereOr: 'Raahaa tiedostot tähän tai %{browse}',
+  dropHint: 'Raahaa tiedostot tähän',
+  dropPaste: 'Raahaa tiedostot tähän, liitä tai %{browse}',
+  dropPasteImport: 'Raahaa tiedostot tähän, liitä, %{browse} tai tuo',
+  edit: 'Muokkaa',
+  editFile: 'Muokkaa tiedostoa',
+  editing: 'Muokataan %{file}',
+  emptyFolderAdded: 'Ei lisätty tiedostoja tyhjästä kansiosta',
+  encoding: 'Koodataan...',
+  enterCorrectUrl: 'Epäkelpo osoite: Varmista, että osoite osoittaa suoraan tiedostoon',
+  enterUrlToImport: 'Anna osoite tuodaksesi tiedoston',
+  exceedsSize: 'Tiedoston koko ylittää sallitun maksimin',
+  failedToFetch: 'Companion ei voinut ladata tiedostoa osoitteesta, onko osoite varmasti oikea?',
+  failedToUpload: 'Ei voitu lähettää tiedostoa %{file}',
+  fileSource: 'Tiedoston lähde: %{name}',
+  filesUploadedOfTotal: {
+    '0': '%{complete} / %{smart_count} tiedostosta lähetetty',
+    '1': '%{complete} / %{smart_count} tiedostoa lähetetty',
+    '2': '%{complete} / %{smart_count} tiedostoa lähetetty'
+  },
+  filter: 'Suodata',
+  finishEditingFile: 'Lopeta tiedoston muokkaus',
+  folderAdded: {
+    '0': 'Lisätty %{smart_count} tiedosto kansiosta %{folder}',
+    '1': 'Lisätty %{smart_count} tiedostoa kansiosta %{folder}',
+    '2': 'Lisätty %{smart_count} tiedostoa kansiosta %{folder}'
+  },
+  import: 'Tuo',
+  importFrom: 'Tuo %{name}',
+  link: 'Linkki',
+  loading: 'Ladataan...',
+  logOut: 'Kirjaudu ulos',
+  myDevice: 'Laitteeltani',
+  noFilesFound: 'Sinulla ei ole tiedostoja tai kansioita täällä',
+  noInternetConnection: 'Ei Internet-yhteyttä',
+  openFolderNamed: 'Avaa kansio %{name}',
+  pause: 'Keskeytä',
+  pauseUpload: 'Keskeytä lähetys',
+  paused: 'Keskeytetty',
+  poweredBy: 'Powered by',
+  preparingUpload: 'Valmistellaan lähetystä...',
+  processingXFiles: {
+    '0': 'Käsitellään %{smart_count} tiedostoa',
+    '1': 'Käsitellään %{smart_count} tiedostoa',
+    '2': 'Käsitellään %{smart_count} tiedostoa'
+  },
+  removeFile: 'Poista tiedosto',
+  resetFilter: 'Resetoi suodatin',
+  resume: 'Jatka',
+  resumeUpload: 'Jatka lähetystä',
+  retry: 'Yritä uudelleen',
+  retryUpload: 'Yritä lähetystä uudelleen',
+  saveChanges: 'Tallenna muutokset',
+  selectAllFilesFromFolderNamed: 'Valitse kaikki tiedostot kansiosta %{name}',
+  selectFileNamed: 'Valitse tiedosto %{name}',
+  selectX: {
+    '0': 'Valitse %{smart_count}',
+    '1': 'Valitse %{smart_count}',
+    '2': 'Valitse %{smart_count}'
+  },
+  smile: 'Hymyile!',
+  startRecording: 'Aloita videon tallennus',
+  stopRecording: 'Lopeta videon tallennus',
+  takePicture: 'Ota kuva',
+  timedOut: 'Lähetys jumittunut %{seconds} sekunniksi, keskeytetään.',
+  unselectAllFilesFromFolderNamed: 'Poista tiedostojen valinta kansiossa %{name}',
+  unselectFileNamed: 'Poista valinta tiedostosta %{name}',
+  upload: 'Lähetä',
+  uploadComplete: 'Lähetys valmis',
+  uploadFailed: 'Lähetys epäonnistui',
+  uploadPaused: 'Lähetys keskeytetty',
+  uploadXFiles: {
+    '0': 'Lähetä %{smart_count} tiedosto',
+    '1': 'Lähetä %{smart_count} tiedostoa',
+    '2': 'Lähetä %{smart_count} tiedostoa'
+  },
+  uploadXNewFiles: {
+    '0': 'Lähetä +%{smart_count} tiedosto',
+    '1': 'Lähetä +%{smart_count} tiedostoa',
+    '2': 'Lähetä +%{smart_count} tiedostoa'
+  },
+  uploading: 'Lähetetään',
+  uploadingXFiles: {
+    '0': 'Lähetetään %{smart_count} tiedosto',
+    '1': 'Lähetetään %{smart_count} tiedostoa',
+    '2': 'Lähetetään %{smart_count} tiedostoa'
+  },
+  xFilesSelected: {
+    '0': '%{smart_count} tiedosto valittu',
+    '1': '%{smart_count} tiedostoa valittu',
+    '2': '%{smart_count} tiedostoa valittu'
+  },
+  xMoreFilesAdded: {
+    '0': '%{smart_count} tiedosto added',
+    '1': '%{smart_count} tiedostoa added',
+    '2': '%{smart_count} tiedostoa added'
+  },
+  xTimeLeft: '%{time} jäljellä',
+  youCanOnlyUploadFileTypes: 'Sallitut tiedostomuodot: %{types}',
+  youCanOnlyUploadX: {
+    '0': 'Voit lähettää vain %{smart_count} tiedosto',
+    '1': 'Voit lähettää vain %{smart_count} tiedostoa',
+    '2': 'Voit lähettää vain %{smart_count} tiedostoa'
+  },
+  youHaveToAtLeastSelectX: {
+    '0': 'Sinun pitää valita vähintään %{smart_count} tiedosto',
+    '1': 'Sinun pitää valita vähintään %{smart_count} tiedostoa',
+    '2': 'Sinun pitää valita vähintään %{smart_count} tiedostoa'
+  }
+};
+
+fi_FI.pluralize = function (n) {
+  if (n === 1) {
+    return 0;
+  }
+
+  return 1;
+};
+
+if (typeof window !== 'undefined' && typeof window.Uppy !== 'undefined') {
+  window.Uppy.locales.fi_FI = fi_FI;
+}
+
+module.exports = fi_FI;
+},{}],45:[function(require,module,exports){
 var fr_FR = {};
 fr_FR.strings = {
   addMoreFiles: 'Ajouter d\'autres fichiers',
@@ -5769,7 +6631,157 @@ if (typeof window !== 'undefined' && typeof window.Uppy !== 'undefined') {
 }
 
 module.exports = fr_FR;
-},{}],41:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
+var hu_HU = {};
+hu_HU.contributors = ['nagyv'];
+hu_HU.strings = {
+  addMore: 'Adj hozzá többet',
+  addMoreFiles: 'További fájlok hozzáadása',
+  addingMoreFiles: 'További fájlok hozzáadása',
+  allowAccessDescription: 'A képek vagy videó felvételéhez, kérjük engedélyezze a kamera használatát ezen az oldalon.',
+  allowAccessTitle: 'Engedélyezze a kamera használatát',
+  authenticateWith: 'Kapcsolódás a %{pluginName}-val',
+  authenticateWithTitle: 'Kérjük lépjen be a %{pluginName}-ba a fájlok kiválasztásához',
+  back: 'Vissza',
+  browse: 'válasszon',
+  cancel: 'Mégse',
+  cancelUpload: 'Feltöltés megszakítása',
+  chooseFiles: 'Fájlok kiválasztása',
+  closeModal: 'Ablak bezárása',
+  companionAuthError: 'Bejelentkezés szükséges',
+  companionError: 'A Companion-hoz történő kapcsolódás nem sikerült',
+  complete: 'Kész',
+  connectedToInternet: 'Kapcsolódótt az Internethez',
+  copyLink: 'Link másolása',
+  copyLinkToClipboardFallback: 'Másolja ki az alábbi URL-t',
+  copyLinkToClipboardSuccess: 'Link a vágólapra másolva',
+  creatingAssembly: 'Feltöltés előkészítése...',
+  creatingAssemblyFailed: 'Transloadit: Nem sikerült létrehozni az Assembly-t',
+  dashboardTitle: 'Fájlfeltöltő',
+  dashboardWindowTitle: 'Fájlfeltöltő ablak (Escape a bezáráshoz)',
+  dataUploadedOfTotal: '%{complete} / %{total}',
+  done: 'Kész',
+  dropHereOr: 'Ejtse ide vagy %{browse} fájlt',
+  dropHint: 'Ejtse ide a fájlokat',
+  dropPaste: 'Ejtse vagy másolja ide a fájlokat, vagy %{browse}',
+  dropPasteImport: 'Ejtse vagy másolja ide a fájlokat, vagy %{browse} vagy importálja',
+  edit: 'Szerkesztés',
+  editFile: 'Fájl szerkesztése',
+  editing: '%{file} szerkesztése',
+  emptyFolderAdded: 'Az üres mappából nem kerültek fájlok hozzáadásra',
+  encoding: 'Kódolás...',
+  enterCorrectUrl: 'Érvénytelen URL: Bizonyosodjon meg róla, hogy egy fájlra mutató közvetlen linket ír be',
+  enterUrlToImport: 'Adjon meg egy URL-t a fájl importálásához',
+  exceedsSize: 'Ez a fájl meghaladja a maximális megengedett méretet',
+  failedToFetch: 'A Companion-nak nem sikerült az URL letöltése, győzödjön meg az URL helyességéről',
+  failedToUpload: '%{file}-t nem sikerült feltölteni',
+  fileSource: 'Fájl forrása: %{name}',
+  filesUploadedOfTotal: {
+    '0': 'A %{smart_count}-ból %{complete} fájl feltöltve',
+    '1': 'A %{smart_count}-ból %{complete} fájl feltöltve',
+    '2': 'A %{smart_count}-ból %{complete} fájl feltöltve'
+  },
+  filter: 'Szűrő',
+  finishEditingFile: 'Fájl szerkesztésének befejezése',
+  folderAdded: {
+    '0': 'A %{folder}-ból %{smart_count} fájl hozzáadva',
+    '1': 'A %{folder}-ból %{smart_count} fájl hozzáadva',
+    '2': 'A %{folder}-ból %{smart_count} fájl hozzáadva'
+  },
+  import: 'Importálás',
+  importFrom: 'Importálás innen: %{name}',
+  link: 'Link',
+  loading: 'Töltés...',
+  logOut: 'Kijelentkezés',
+  myDevice: 'Eszközöm',
+  noFilesFound: 'Nem találhatóak fájlok vagy könyvtárak',
+  noInternetConnection: 'Nincsen Internetkapcsolat',
+  pause: 'Szünet',
+  pauseUpload: 'Feltöltés szüneteltetése',
+  paused: 'Szüneteltetve',
+  poweredBy: 'Meghajtja az',
+  preparingUpload: 'Feltöltés előkészítése...',
+  processingXFiles: {
+    '0': '%{smart_count} fájl feldolgozása',
+    '1': '%{smart_count} fájl feldolgozása',
+    '2': '%{smart_count} fájl feldolgozása'
+  },
+  removeFile: 'Fájl törlése',
+  resetFilter: 'Szűrő visszaállítása',
+  resume: 'Folytatás',
+  resumeUpload: 'Feltöltés folytatása',
+  retry: 'Újra',
+  retryUpload: 'Próbálja újra a feltöltést',
+  saveChanges: 'Változtatások mentése',
+  selectX: {
+    '0': 'Válassza az %{smart_count} lehetőséget',
+    '1': 'Válassza az %{smart_count} lehetőséget',
+    '2': 'Válassza az %{smart_count} lehetőséget'
+  },
+  smile: 'Csíííz!',
+  startRecording: 'Videófeltével indul',
+  stopRecording: 'Videófelvétel megáll',
+  takePicture: 'Fénykép',
+  timedOut: 'A feltöltés elakadt %{seconds} másodpercig, a feltöltés leáll.',
+  upload: 'Feltöltés',
+  uploadComplete: 'A feltöltés kész',
+  uploadFailed: 'Sikertelen feltöltés',
+  uploadPaused: 'Szüneteltetett feltöltés',
+  uploadXFiles: {
+    '0': '%{smart_count} fájl feltöltése',
+    '1': '%{smart_count} fájl feltöltése',
+    '2': '%{smart_count} fájl feltöltése'
+  },
+  uploadXNewFiles: {
+    '0': '+%{smart_count} fájl feltöltése',
+    '1': '+%{smart_count} fájl feltöltése',
+    '2': '+%{smart_count} fájl feltöltése'
+  },
+  uploading: 'Feltölés',
+  uploadingXFiles: {
+    '0': '+%{smart_count} fájl feltöltése',
+    '1': '+%{smart_count} fájl feltöltése',
+    '2': '+%{smart_count} fájl feltöltése'
+  },
+  xFilesSelected: {
+    '0': '%{smart_count} fájl kiválasztva',
+    '1': '%{smart_count} fájl kiválasztva',
+    '2': '%{smart_count} fájl kiválasztva'
+  },
+  xMoreFilesAdded: {
+    '0': 'további %{smart_count} fájl hozzáadva',
+    '1': 'további %{smart_count} fájl hozzáadva',
+    '2': 'további %{smart_count} fájl hozzáadva'
+  },
+  xTimeLeft: '%{time} van hátra',
+  youCanOnlyUploadFileTypes: 'Feltölthető formátumok: %{types}',
+  youCanOnlyUploadX: {
+    '0': 'Csak %{smart_count} fájl tölthető fel',
+    '1': 'Csak %{smart_count} fájl tölthető fel',
+    '2': 'Csak %{smart_count} fájl tölthető fel'
+  },
+  youHaveToAtLeastSelectX: {
+    '0': 'Legalább %{smart_count} fájlt ki kell választania',
+    '1': 'Legalább %{smart_count} fájlt ki kell választania',
+    '2': 'Legalább %{smart_count} fájlt ki kell választania'
+  },
+  selectAllFilesFromFolderNamed: 'Válassza ki az összes fájlt a mappából %{name}',
+  unselectAllFilesFromFolderNamed: 'Az összes fájl törlése a mappából %{name}',
+  selectFileNamed: 'Válaszd ki a fájlt %{name}',
+  unselectFileNamed: 'A fájl törlése %{name}',
+  openFolderNamed: 'Nyitott mappa %{name}'
+};
+
+hu_HU.pluralize = function (n) {
+  return 0;
+};
+
+if (typeof window !== 'undefined' && typeof window.Uppy !== 'undefined') {
+  window.Uppy.locales.hu_HU = hu_HU;
+}
+
+module.exports = hu_HU;
+},{}],47:[function(require,module,exports){
 var it_IT = {};
 it_IT.strings = {
   addMoreFiles: 'Aggiungi più file',
@@ -5922,7 +6934,160 @@ if (typeof window !== 'undefined' && typeof window.Uppy !== 'undefined') {
 }
 
 module.exports = it_IT;
-},{}],42:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
+var ja_JP = {};
+ja_JP.strings = {
+  addMore: 'さらに追加',
+  addMoreFiles: 'ファイルを追加',
+  addingMoreFiles: 'ファイルを追加しています',
+  allowAccessDescription: 'カメラやビデオの機能を使用するには、カメラへのアクセスを許可してください。',
+  allowAccessTitle: 'カメラへのアクセスを許可してください',
+  authenticateWith: '%{pluginName}に接続します',
+  authenticateWithTitle: 'ファイルを選択するには%{pluginName}で認証してください',
+  back: '戻る',
+  browse: '参照',
+  cancel: 'キャンセル',
+  cancelUpload: 'アップロードをキャンセル',
+  chooseFiles: 'ファイルを選択',
+  closeModal: 'モーダルを閉じる',
+  companionAuthError: '認証が必要です',
+  companionError: 'Companionとの接続に失敗しました',
+  complete: '完了しました',
+  connectedToInternet: 'インターネットに接続しました',
+  copyLink: 'リンクをコピー',
+  copyLinkToClipboardFallback: '以下のURLをコピー',
+  copyLinkToClipboardSuccess: 'リンクをクリップボードにコピーしました',
+  creatingAssembly: 'アップロードの準備をしています...',
+  creatingAssemblyFailed: 'Transloadit: アセンブリを作成できませんでした',
+  dashboardTitle: 'ファイルアップローダー',
+  dashboardWindowTitle: 'ファイルアップローダーウィンドウ（閉じるにはEscapeキーを押してください）',
+  dataUploadedOfTotal: '%{total} %{complete}',
+  done: '完了しました',
+  dropHereOr: 'ここにファイルをドロップするか%{browse}してください',
+  dropHint: 'ここにファイルをドロップしてください',
+  dropPaste: 'ここにファイルをドロップするか、貼り付けるか、%{browse}してください',
+  dropPasteImport: 'ここにファイルをドロップするか、貼り付けるか、%{browse}するか、以下からインポートしてください',
+  edit: '編集',
+  editFile: 'ファイルを編集',
+  editing: '%{file}を編集しています',
+  emptyFolderAdded: 'フォルダが空なためファイルが追加されませんでした',
+  encoding: 'エンコードしています...',
+  enterCorrectUrl: '不正なURL: ファイルへの直接リンクが入力されていることを確認してください',
+  enterUrlToImport: 'ファイルをインポートするためのURLを入力してください',
+  exceedsSize: 'ファイルサイズが大きすぎます',
+  failedToFetch: 'CompanionがURLを取得できませんでした。URLが正しいか確認してください',
+  failedToUpload: '%{file}のアップロードに失敗しました',
+  fileSource: '元ファイル：%{name}',
+  filesUploadedOfTotal: {
+    '0': '%{smart_count} 個のファイルのアップロードが%{complete}',
+    '1': '%{smart_count} 個のファイルのアップロードが%{complete}',
+    '2': '%{cmart_count} 個のファイルのアップロードが%{complete}'
+  },
+  filter: 'フィルタ',
+  finishEditingFile: 'ファイルの編集を終了',
+  folderAdded: {
+    '0': '%{folder} から% {smart_count} 個のファイルを追加しました',
+    '1': '%{folder} から% {smart_count} 個のファイルを追加しました',
+    '2': '%{folder} から% {smart_count} 個のファイルを追加しました'
+  },
+  import: 'インポート',
+  importFrom: '%{name}からインポート',
+  link: 'リンク',
+  loading: 'ロード中...',
+  logOut: 'ログアウト',
+  myDevice: 'マイデバイス',
+  noFilesFound: 'ファイルやフォルダがありません',
+  noInternetConnection: 'インターネット接続がありません',
+  pause: '一時停止',
+  pauseUpload: 'アップロードを一時停止',
+  paused: '停止中',
+  poweredBy: 'Powered by',
+  preparingUpload: 'アップロードを準備中...',
+  processingXFiles: {
+    '0': '%{smart_count} ファイル処理中',
+    '1': '%{smart_count} ファイル処理中',
+    '2': '%{smart_count} ファイル処理中'
+  },
+  removeFile: 'ファイルを消す',
+  resetFilter: 'フィルタをリセット',
+  resume: '再開',
+  resumeUpload: 'アップロードを再開',
+  retry: 'リトライ',
+  retryUpload: 'アップロードをリトライ',
+  saveChanges: '変更を保存',
+  selectX: {
+    '0': '%{smart_count} を選択',
+    '1': '%{smart_count} を選択',
+    '2': '%{smart_count} を選択'
+  },
+  smile: 'スマイル〜！',
+  startRecording: '録画開始',
+  stopRecording: '録画停止',
+  takePicture: '写真を撮る',
+  timedOut: 'アップロードが %{seconds} 秒間止まった為中断しました',
+  upload: 'アップロード',
+  uploadComplete: 'アップロード完了',
+  uploadFailed: 'アップロード失敗',
+  uploadPaused: 'アップロード一時停止',
+  uploadXFiles: {
+    '0': '%{smart_count} ファイルをアップロード',
+    '1': '%{smart_count} ファイルをアップロード',
+    '2': '%{smart_count} ファイルをアップロード'
+  },
+  uploadXNewFiles: {
+    '0': '+%{smart_count} ファイルをアップロード',
+    '1': '+%{smart_count} ファイルをアップロード',
+    '2': '+%{smart_count} ファイルをアップロード'
+  },
+  uploading: 'アップロード中',
+  uploadingXFiles: {
+    '0': '%{smart_count} ファイルアップロード中',
+    '1': '%{smart_count} ファイルアップロード中',
+    '2': '%{smart_count} ファイルアップロード中'
+  },
+  xFilesSelected: {
+    '0': '%{smart_count} ファイルを選択',
+    '1': '%{smart_count} ファイルを選択',
+    '2': '%{smart_count} ファイルを選択'
+  },
+  xMoreFilesAdded: {
+    '0': '%{smart_count} ファイルを追加',
+    '1': '%{smart_count} ファイルを追加',
+    '2': '%{smart_count} ファイルを追加'
+  },
+  xTimeLeft: '残り %{time}',
+  youCanOnlyUploadFileTypes: '許可されているファイル形式は次の物です: %{types}',
+  youCanOnlyUploadX: {
+    '0': '%{smart_count} ファイル数のみアップロード可能です',
+    '1': '%{smart_count} ファイル数のみアップロード可能です',
+    '2': '%{smart_count} ファイル数のみアップロード可能です'
+  },
+  youHaveToAtLeastSelectX: {
+    '0': '最低でも %{smart_count} ファイル選択してください',
+    '1': '最低でも %{smart_count} ファイル選択してください',
+    '2': '最低でも %{smart_count} ファイル選択してください'
+  },
+  selectAllFilesFromFolderNamed: 'フォルダからすべてのファイルを選択 %{name}',
+  unselectAllFilesFromFolderNamed: 'フォルダからすべてのファイルを選択解除 %{name}',
+  selectFileNamed: 'ファイルを選ぶ %{name}',
+  unselectFileNamed: 'ファイルの選択を解除 %{name}',
+  openFolderNamed: '開いたフォルダ %{name}'
+};
+
+ja_JP.pluralize = function (n) {
+  if (n === 1) {
+    return 0;
+  }
+
+  return 1;
+};
+
+if (typeof window !== 'undefined' && typeof window.Uppy !== 'undefined') {
+  window.Uppy.locales.ja_JP = ja_JP;
+}
+
+module.exports = ja_JP;
+},{}],49:[function(require,module,exports){
 var nl_NL = {};
 nl_NL.strings = {
   addMoreFiles: 'Extra bestanden toevoegen',
@@ -6075,7 +7240,626 @@ if (typeof window !== 'undefined' && typeof window.Uppy !== 'undefined') {
 }
 
 module.exports = nl_NL;
-},{}],43:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
+var ru_RU = {};
+ru_RU.strings = {
+  addMoreFiles: 'Добавить еще файлы',
+  addingMoreFiles: 'Добавление дополнительных файлов',
+  allowAccessDescription: 'Чтобы сделать фото или видео, пожалуйста, разрешите доступ к камере для этого сайта',
+  allowAccessTitle: 'Пожалуйста, разрешите доступ к вашей камере',
+  authenticateWithTitle: 'Пожалуйста, авторизуйтесь в %{pluginName} чтобы выбрать файлы',
+  authenticateWith: 'Подключиться к %{pluginName}',
+  back: 'Назад',
+  addMore: 'Добавить еще',
+  browse: 'выберите',
+  cancel: 'Отменить',
+  cancelUpload: 'Отменить загрузку',
+  chooseFiles: 'Выбрать файлы',
+  closeModal: 'Закрыть окно',
+  companionAuthError: 'Требуется авторизация',
+  companionError: 'Не удалось подключиться к Companion',
+  // «Готово» вместо «загрузка завершена», потому что кроме загрузки бывает encoding — транскодирование файлов
+  complete: 'Готово',
+  // «Нет подключения к интернету» — «Подключено к интернету»
+  connectedToInternet: 'Подключено к интернету',
+  copyLink: 'Скопировать ссылку',
+  copyLinkToClipboardFallback: 'Скопируйте ссылку',
+  copyLinkToClipboardSuccess: 'Ссылка скопирована в буфер обмена',
+  creatingAssembly: 'Подготовка загрузки...',
+  creatingAssemblyFailed: 'Transloadit: Не удалось создать Assembly',
+  dashboardTitle: 'Загрузчик файлов',
+  dashboardWindowTitle: 'Окно загрузчика файлов (Нажмите escape, чтобы закрыть)',
+  dataUploadedOfTotal: '%{complete} из %{total}',
+  done: 'Готово',
+  dropHereOr: 'Перетащите файлы или %{browse}',
+  dropHint: 'Перетащите файлы сюда',
+  dropPaste: 'Перетащите файлы, вставьте или %{browse}',
+  dropPasteImport: 'Перетащите файлы, вставьте, %{browse} или импортируйте',
+  edit: 'Редактировать',
+  editFile: 'Редактировать файл',
+  editing: 'Редактируется %{file}',
+  emptyFolderAdded: 'Файлы не были добавлены — папка пуста',
+  encoding: 'Обработка...',
+  enterCorrectUrl: 'Неправильный адрес: пожалуйста, убедитесь что вы используете прямую ссылку на файл',
+  enterUrlToImport: 'Введите адрес, чтобы импортировать файл',
+  exceedsSize: 'Этот файл больше максимально разрешенного размера в',
+  failedToFetch: 'Companion не смог загрузить файл по ссылке, пожалуйста, убедитесь, что адрес верный',
+  failedToUpload: 'Ошибка загрузки %{file}',
+  fileSource: 'Источник файла: %{name}',
+  filesUploadedOfTotal: {
+    '0': '%{complete} из %{smart_count} файла загружено',
+    '1': '%{complete} из %{smart_count} файлов загружено',
+    '2': '%{complete} из %{smart_count} файлов загружено'
+  },
+  filter: 'Фильтр',
+  finishEditingFile: 'Закончить редактирование файла',
+  folderAdded: {
+    '0': 'Добавлен %{smart_count} файл из %{folder}',
+    '1': 'Добавлено %{smart_count} файла из %{folder}',
+    '2': 'Добавлено %{smart_count} файлов из %{folder}'
+  },
+  import: 'Импортировать',
+  importFrom: 'Импортировать из %{name}',
+  link: 'Ссылка',
+  loading: 'Загрузка...',
+  logOut: 'Выйти',
+  myDevice: 'Мое устройство',
+  noFilesFound: 'Здесь нет файлов или папок',
+  noInternetConnection: 'Нет подключения к интернету',
+  pause: 'Поставить на паузу',
+  pauseUpload: 'Поставить загрузку на паузу',
+  paused: 'На паузе',
+  preparingUpload: 'Подготовка к загрузке...',
+  processingXFiles: {
+    '0': 'Обрабатывается %{smart_count} файл',
+    '1': 'Обрабатываются %{smart_count} файла',
+    '2': 'Обрабатываются %{smart_count} файлов'
+  },
+  poweredBy: 'Работает на',
+  removeFile: 'Удалить файл',
+  resetFilter: 'Сбросить фильтр',
+  resume: 'Продолжить',
+  resumeUpload: 'Продолжить загрузку',
+  retry: 'Повторить попытку',
+  retryUpload: 'Повторить попытку загрузки',
+  saveChanges: 'Сохранить',
+  selectX: {
+    '0': 'Выбрать %{smart_count}',
+    '1': 'Выбрать %{smart_count}',
+    '2': 'Выбрать %{smart_count}'
+  },
+  smile: 'Улыбнитесь!',
+  startRecording: 'Начать запись видео',
+  stopRecording: 'Закончить запись видео',
+  takePicture: 'Сделать фотографию',
+  timedOut: 'Загрузка остановилась на %{seconds} секунд, отмена',
+  upload: 'Загрузить',
+  uploadComplete: 'Загрузка завершена',
+  uploadFailed: 'Загрузка не удалась',
+  uploadPaused: 'Загрузка на паузе',
+  uploadXFiles: {
+    '0': 'Загрузить %{smart_count} файл',
+    '1': 'Загрузить %{smart_count} файла',
+    '2': 'Загрузить %{smart_count} файлов'
+  },
+  uploadXNewFiles: {
+    '0': 'Загрузить +%{smart_count} файл',
+    '1': 'Загрузить +%{smart_count} файла',
+    '2': 'Загрузить +%{smart_count} файлов'
+  },
+  uploading: 'Загрузка',
+  uploadingXFiles: {
+    '0': 'Загружается %{smart_count} файл',
+    '1': 'Загружается %{smart_count} файла',
+    '2': 'Загружается %{smart_count} файлов'
+  },
+  xFilesSelected: {
+    '0': '%{smart_count} файл выбран',
+    '1': '%{smart_count} файла выбрано',
+    '2': '%{smart_count} файлов выбрано'
+  },
+  xMoreFilesAdded: {
+    '0': '%{smart_count} дополнительный файл добавлен',
+    '1': '%{smart_count} дополнительных файла добавлено',
+    '2': '%{smart_count} дополнительных файлов добавлено'
+  },
+  xTimeLeft: 'осталось %{time}',
+  youCanOnlyUploadFileTypes: 'Вы можете загрузить только: %{types}',
+  youCanOnlyUploadX: {
+    '0': 'Вы можете загрузить только %{smart_count} файл',
+    '1': 'Вы можете загрузить только %{smart_count} файла',
+    '2': 'Вы можете загрузить только %{smart_count} файлов'
+  },
+  youHaveToAtLeastSelectX: {
+    '0': 'Вы должны выбрать хотя бы %{smart_count} файл',
+    '1': 'Вы должны выбрать хотя бы %{smart_count} файла',
+    '2': 'Вы должны выбрать хотя бы %{smart_count} файлов'
+  },
+  selectAllFilesFromFolderNamed: 'Выбрать все файлы из папки %{name}',
+  unselectAllFilesFromFolderNamed: 'Отменить выбор всех файлов из папки %{name}',
+  selectFileNamed: 'Выбрать файл %{name}',
+  unselectFileNamed: 'Отменить выбор файла %{name}',
+  openFolderNamed: 'Открыть папку %{name}'
+};
+
+ru_RU.pluralize = function (n) {
+  if (n % 10 === 1 && n % 100 !== 11) {
+    return 0;
+  }
+
+  if (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) {
+    return 1;
+  }
+
+  return 2;
+};
+
+if (typeof window !== 'undefined' && typeof window.Uppy !== 'undefined') {
+  window.Uppy.locales.ru_RU = ru_RU;
+}
+
+module.exports = ru_RU;
+},{}],51:[function(require,module,exports){
+var sv_SE = {};
+sv_SE.strings = {
+  addMore: 'Lägg till',
+  addMoreFiles: 'Lägg till filer',
+  addingMoreFiles: 'Lägger till fler filer',
+  allowAccessDescription: 'För att kunna ta bilder eller spela in video behöver du ge sidan behörighet att använda din kamera.',
+  allowAccessTitle: 'Tillåt användning av kameran',
+  authenticateWith: 'Anslut till %{pluginName}',
+  authenticateWithTitle: 'Anslut till %{pluginName} för att välja filer',
+  back: 'Tillbaka',
+  browse: 'bläddra',
+  cancel: 'Avbryt',
+  cancelUpload: 'Avbryt uppladdning',
+  chooseFiles: 'Välj filer',
+  closeModal: 'Stäng fönster',
+  companionAuthError: 'Inloggning krävs',
+  companionError: 'Anslutning till Companion misslyckades',
+  complete: 'Klart',
+  connectedToInternet: 'Ansluten till internet',
+  copyLink: 'Kopiera länk',
+  copyLinkToClipboardFallback: 'Kopiera länken nedanför',
+  copyLinkToClipboardSuccess: 'Länken kopierad till urklipp',
+  creatingAssembly: 'Förbereder uppladdning...',
+  creatingAssemblyFailed: 'Transloadit: Kunde inte skapa Assembly',
+  dashboardTitle: 'Filuppladdare',
+  dashboardWindowTitle: 'Uppladdningsfönster (Tryck på Esc-tangenten för att stänga)',
+  dataUploadedOfTotal: '%{complete} av %{total}',
+  done: 'Klart',
+  dropHereOr: 'Släpp filer här eller %{browse}',
+  dropHint: 'Släpp dina filer här',
+  dropPaste: 'Släpp filer här, klistra in eller %{browse}',
+  dropPasteImport: 'Släpp filer här, klistra in, %{browse} eller importera från',
+  edit: 'Redigera',
+  editFile: 'Redigera fil',
+  editing: 'Redigerar %{file}',
+  emptyFolderAdded: 'Inga filer lades till från en tom mapp',
+  encoding: 'Kodar...',
+  enterCorrectUrl: 'Ogiltig URL: Kontrollera att adressen du anger är en direktlänk till en fil.',
+  enterUrlToImport: 'Ange URL för att importera en fil',
+  exceedsSize: 'Storleken på filen överstiger den tillåtna maxgränsen på',
+  failedToFetch: 'Companion kunde inte ladda ner filen, kontrollera att adressen är korrekt',
+  failedToUpload: 'Kunde inte ladda upp %{file}',
+  fileSource: 'Källa: %{name}',
+  filesUploadedOfTotal: {
+    '0': '%{complete} av %{smart_count} fil uppladdad',
+    '1': '%{complete} av %{smart_count} filer uppladdade',
+    '2': '%{complete} av %{smart_count} filer uppladdade'
+  },
+  filter: 'Filtrera',
+  finishEditingFile: 'Avsluta redigering av filen',
+  folderAdded: {
+    '0': 'La till %{smart_count} fil från %{folder}',
+    '1': 'La till %{smart_count} filer från %{folder}',
+    '2': 'La till %{smart_count} filer från %{folder}'
+  },
+  import: 'Importera',
+  importFrom: 'Importera från %{name}',
+  link: 'Länk',
+  loading: 'Laddar...',
+  logOut: 'Logga ut',
+  myDevice: 'Min enhet',
+  noFilesFound: 'Du har inga filer eller mappar här',
+  noInternetConnection: 'Ingen internetuppkoppling',
+  openFolderNamed: 'Öppna mappen %{name}',
+  pause: 'Pausa',
+  pauseUpload: 'Pausa uppladdning',
+  paused: 'Pausad',
+  poweredBy: 'Drivs av',
+  preparingUpload: 'Förbereder uppladdning...',
+  processingXFiles: {
+    '0': 'Processerar %{smart_count} fil',
+    '1': 'Processerar %{smart_count} filer',
+    '2': 'Processerar %{smart_count} filer'
+  },
+  removeFile: 'Ta bort fil',
+  resetFilter: 'Nollställ filter',
+  resume: 'Återuppta',
+  resumeUpload: 'Återuppta uppladdning',
+  retry: 'Försök igen',
+  retryUpload: 'Försök igen',
+  saveChanges: 'Spara ändringar',
+  selectAllFilesFromFolderNamed: 'Välj alla filer i mappen %{name}',
+  selectFileNamed: 'Välj fil %{name}',
+  selectX: {
+    '0': 'Välj %{smart_count}',
+    '1': 'Välj %{smart_count}',
+    '2': 'Välj %{smart_count}'
+  },
+  smile: 'Säg omelett!',
+  // translates to "Say cheese!" - which works well in this context in Swedish
+  startRecording: 'Starta inspelning',
+  stopRecording: 'Avbryt inspelning',
+  takePicture: 'Ta bild',
+  timedOut: 'Uppladdningen har stått stilla i %{seconds} sekunder; avbryter.',
+  unselectAllFilesFromFolderNamed: 'Avmarkera alla filer i mappen %{name}',
+  unselectFileNamed: 'Avmarkera filen %{name}',
+  upload: 'Ladda upp',
+  uploadComplete: 'Uppladdning slutförd',
+  uploadFailed: 'Uppladdning misslyckad',
+  uploadPaused: 'Uppladdning pausad',
+  uploadXFiles: {
+    '0': 'Ladda upp %{smart_count} fil',
+    '1': 'Ladda upp %{smart_count} filer',
+    '2': 'Ladda upp %{smart_count} filer'
+  },
+  uploadXNewFiles: {
+    '0': 'Ladda upp %{smart_count} fil',
+    '1': 'Ladda upp %{smart_count} filer',
+    '2': 'Ladda upp %{smart_count} filer'
+  },
+  uploading: 'Laddar upp',
+  uploadingXFiles: {
+    '0': 'Ladda upp %{smart_count} fil',
+    '1': 'Ladda upp %{smart_count} filer',
+    '2': 'Ladda upp %{smart_count} filer'
+  },
+  xFilesSelected: {
+    '0': '%{smart_count} fil vald',
+    '1': '%{smart_count} filer valda',
+    '2': '%{smart_count} filer valda'
+  },
+  xMoreFilesAdded: {
+    '0': '%{smart_count} fil tillagd',
+    '1': '%{smart_count} filer tillagda',
+    '2': '%{smart_count} filer tillagda'
+  },
+  xTimeLeft: '%{time} återstår',
+  youCanOnlyUploadFileTypes: 'Du kan endast ladda upp: %{types}',
+  youCanOnlyUploadX: {
+    '0': 'Du kan endast ladda upp %{smart_count} fil',
+    '1': 'Du kan endast ladda upp %{smart_count} filer',
+    '2': 'Du kan endast ladda upp %{smart_count} filer'
+  },
+  youHaveToAtLeastSelectX: {
+    '0': 'Du måste välja minst %{smart_count} fil',
+    '1': 'Du måste välja minst %{smart_count} filer',
+    '2': 'Du måste välja minst %{smart_count} filer'
+  }
+};
+
+sv_SE.pluralize = function (n) {
+  if (n === 1) {
+    return 0;
+  }
+
+  return 1;
+};
+
+if (typeof window !== 'undefined' && typeof window.Uppy !== 'undefined') {
+  window.Uppy.locales.sv_SE = sv_SE;
+}
+
+module.exports = sv_SE;
+},{}],52:[function(require,module,exports){
+var tr_TR = {};
+tr_TR.strings = {
+  addMore: 'Daha ekle',
+  addMoreFiles: 'Daha fazla dosya ekle',
+  addingMoreFiles: 'Daha fazla dosya ekleniyor',
+  allowAccessDescription: 'Kameranızla fotoğraf çekmek veya video kaydetmek için lütfen erişim izni verin.',
+  allowAccessTitle: 'Lütfen kameranıza erişim izni verin',
+  authenticateWith: '%{pluginName} ile bağlan',
+  authenticateWithTitle: 'Lütfen dosyaları seçmek için %{pluginName} ile bağlanın',
+  back: 'Geri',
+  browse: 'gözat',
+  cancel: 'İptal',
+  cancelUpload: 'Yüklemeyi İptal Et',
+  chooseFiles: 'Dosyaları seç',
+  closeModal: 'Kapat',
+  companionAuthError: 'Bağlantı izni gerekli',
+  companionError: 'Bağlantı başarısız',
+  complete: 'Yüklendi',
+  connectedToInternet: 'İnternete bağlanıldı',
+  copyLink: 'Linki kopyala',
+  copyLinkToClipboardFallback: 'Aşağıdaki linki kopyala',
+  copyLinkToClipboardSuccess: 'Link panoya kopyalandı',
+  creatingAssembly: 'Yüklemeye hazırlanıyor...',
+  creatingAssemblyFailed: 'Transloadit: Yükleme oluşturulamadı',
+  dashboardTitle: 'Dosya Yükle',
+  dashboardWindowTitle: 'Dosya Yükle (Kapatmak için Esc)',
+  dataUploadedOfTotal: '%{complete} / %{total}',
+  done: 'Bitti',
+  dropHereOr: 'Sürükleyip bırak veya %{browse}',
+  dropHint: 'Buraya sürükleyip bırakın',
+  dropPaste: 'Sürükleyip bırak, yapıştır veya %{browse}',
+  dropPasteImport: 'Sürükleyip bırak, yapıştır, %{browse} veya içeri aktar',
+  edit: 'Düzenle',
+  editFile: 'Dosyayı düzenle',
+  editing: '%{file} düzenleniyor',
+  emptyFolderAdded: 'Klasör boş',
+  encoding: 'Çözümleniyor...',
+  enterCorrectUrl: 'Hatalı URL: Lütfen bir dosyaya doğrudan bağlantı girdiğinizden emin olun.',
+  enterUrlToImport: 'Dosya URL’sini buraya yapıştırın',
+  exceedsSize: 'Bu dosya izin verilen maksimum boyutu aşıyor',
+  failedToFetch: 'Bu URL’den alınamadı, lütfen doğru olduğundan emin olun',
+  failedToUpload: '%{file} dosyası yüklenemedi',
+  fileSource: 'Dosya kaynağı: %{name}',
+  filesUploadedOfTotal: {
+    '0': '%{complete} / %{smart_count} dosya yüklendi',
+    '1': '%{complete} / %{smart_count} dosya yüklendi',
+    '2': '%{complete} / %{smart_count} dosya yüklendi'
+  },
+  filter: 'Filtre',
+  finishEditingFile: 'Düzenlemeyi bitir',
+  folderAdded: {
+    '0': '%{folder} klasöründen %{smart_count} dosya eklendi',
+    '1': '%{folder} klasöründen %{smart_count} dosya eklendi',
+    '2': '%{folder} klasöründen %{smart_count} dosya eklendi'
+  },
+  import: 'Ekle',
+  importFrom: '%{name} Ekle',
+  link: 'Link',
+  loading: 'Yükleniyor...',
+  logOut: 'Çıkış',
+  myDevice: 'Dosyalarım',
+  noFilesFound: 'Dosya veya klasör bulunamadı',
+  noInternetConnection: 'İnternet bağlantınız yok',
+  pause: 'Durdur',
+  pauseUpload: 'Yükleme Durdu',
+  paused: 'Durdu',
+  poweredBy: 'Powered by',
+  preparingUpload: 'Yüklemeye hazırlanıyor...',
+  processingXFiles: {
+    '0': '%{smart_count} dosya işleniyor',
+    '1': '%{smart_count} dosya işleniyor',
+    '2': '%{smart_count} dosya işleniyor'
+  },
+  removeFile: 'Dosyayı kaldır',
+  resetFilter: 'Filtreyi temizle',
+  resume: 'Devam Et',
+  resumeUpload: 'Yüklemeye devam et',
+  retry: 'Tekrar',
+  retryUpload: 'Tekrar yükle',
+  saveChanges: 'Değişiklikleri kaydet',
+  selectX: {
+    '0': '%{smart_count} seç',
+    '1': '%{smart_count} seç',
+    '2': '%{smart_count} seç'
+  },
+  smile: 'Gülümse!',
+  startRecording: 'Video kaydına başla',
+  stopRecording: 'Video kaydını durdur',
+  takePicture: 'Fotoğraf çek',
+  timedOut: 'Yükleme işlemi %{seconds} saniyeden fazla sürdüğü için iptal edildi.',
+  upload: 'Yükle',
+  uploadComplete: 'Yükleme tamamlandı',
+  uploadFailed: 'Yükleme başarısız',
+  uploadPaused: 'Yükleme durduruldu',
+  uploadXFiles: {
+    '0': '%{smart_count} dosyayı yükle',
+    '1': '%{smart_count} dosyayı yükle',
+    '2': '%{smart_count} dosyayı yükle'
+  },
+  uploadXNewFiles: {
+    '0': '+%{smart_count} dosyayı yükle',
+    '1': '+%{smart_count} dosyayı yükle',
+    '2': '+%{smart_count} dosyayı yükle'
+  },
+  uploading: 'Yükleniyor',
+  uploadingXFiles: {
+    '0': '%{smart_count} dosya yükleniyor',
+    '1': '%{smart_count} dosya yükleniyor',
+    '2': '%{smart_count} dosya yükleniyor'
+  },
+  xFilesSelected: {
+    '0': '%{smart_count} dosya seçildi',
+    '1': '%{smart_count} dosya seçildi',
+    '2': '%{smart_count} dosya seçildi'
+  },
+  xMoreFilesAdded: {
+    '0': '%{smart_count} dosya daha eklendi',
+    '1': '%{smart_count} dosya daha eklendi',
+    '2': '%{smart_count} dosya daha eklendi'
+  },
+  xTimeLeft: 'kalan süre %{time}',
+  youCanOnlyUploadFileTypes: 'Sadece %{types} yükleyebilirsiniz',
+  youCanOnlyUploadX: {
+    '0': 'Sadece %{smart_count} dosya yükleyebilirsiniz',
+    '1': 'Sadece %{smart_count} dosya yükleyebilirsiniz',
+    '2': 'Sadece %{smart_count} dosya yükleyebilirsiniz'
+  },
+  youHaveToAtLeastSelectX: {
+    '0': 'En az %{smart_count} dosya seçmelisin',
+    '1': 'En az %{smart_count} dosya seçmelisin',
+    '2': 'En az %{smart_count} dosya seçmelisin'
+  },
+  selectAllFilesFromFolderNamed: 'Klasördeki tüm dosyaları seç %{name}',
+  unselectAllFilesFromFolderNamed: 'Klasördeki tüm dosyaların seçimini kaldır %{name}',
+  selectFileNamed: 'Dosya Seç %{name}',
+  unselectFileNamed: 'Dosya seçimini kaldır %{name}',
+  openFolderNamed: 'Açık dosya %{name}'
+};
+
+tr_TR.pluralize = function (n) {
+  if (n === 1) {
+    return 0;
+  }
+
+  return 1;
+};
+
+if (typeof window !== 'undefined' && typeof window.Uppy !== 'undefined') {
+  window.Uppy.locales.tr_TR = tr_TR;
+}
+
+module.exports = tr_TR;
+},{}],53:[function(require,module,exports){
+var zh_CN = {};
+zh_CN.strings = {
+  addMoreFiles: '添加更多文件',
+  addingMoreFiles: '正在添加更多文件',
+  allowAccessDescription: '为了通过您的相机进行拍照或录像，请给网站相机的访问权限',
+  allowAccessTitle: '请允许对相机的访问权限',
+  authenticateWith: '连接到%{pluginName}',
+  authenticateWithTitle: '请使用%{pluginName}进行身份验证以选择文件',
+  back: '返回',
+  addMore: '添加更多',
+  browse: '浏览',
+  cancel: '取消',
+  cancelUpload: '取消上传',
+  chooseFiles: '选择文件',
+  closeModal: '关闭模态',
+  companionAuthError: '需要认证',
+  companionError: '与Companion的连接失败',
+  complete: '完成',
+  connectedToInternet: '连接至网络',
+  copyLink: '复制链接',
+  copyLinkToClipboardFallback: '复制以下网址',
+  copyLinkToClipboardSuccess: '链接已复制到剪贴板',
+  creatingAssembly: '准备上传中...',
+  creatingAssemblyFailed: 'Transloadit：无法创建程序集',
+  dashboardTitle: '文件上传工具',
+  dashboardWindowTitle: '文件上传工具窗口（点击离开以关闭）',
+  dataUploadedOfTotal: '%{total}%{complete}',
+  done: '完成',
+  dropHereOr: '拖动文件到这里或%{browse}',
+  dropHint: '拖动文件到这里',
+  dropPaste: '拖动文件到这里，粘贴或者%{browse}',
+  dropPasteImport: '拖动文件到这里，粘贴，%{browse}或者导入',
+  edit: '编辑',
+  editFile: '编辑文件',
+  editing: '正在编辑%{file}',
+  emptyFolderAdded: '无法从空文件夹添加文件',
+  encoding: '编码中...',
+  enterCorrectUrl: '错误链接： 请确认您输入的是文件的链接',
+  enterUrlToImport: '输入链接或者导入文件',
+  exceedsSize: '此文件超出允许的最大大小',
+  failedToFetch: 'Companion无法抓取此链接，请确保它是正确的',
+  failedToUpload: '上传%{file}失败',
+  fileSource: '文件源：%{name}',
+  filesUploadedOfTotal: {
+    '0': '%{smart_count}个文件上传%{complete}',
+    '1': '%{smart_count}个文件上传%{complete}',
+    '2': '%{smart_count}个文件上传%{complete}'
+  },
+  filter: '筛选器',
+  finishEditingFile: '完成文件编辑',
+  folderAdded: {
+    '0': '从%{folder}添加了%{smart_count}个文件',
+    '1': '从%{folder}添加了%{smart_count}个文件',
+    '2': '从%{folder}添加了%{smart_count}个文件'
+  },
+  import: '导入',
+  importFrom: '从%{name}导入',
+  link: '链接',
+  loading: '载入中...',
+  logOut: '登出',
+  myDevice: '我的设备',
+  noFilesFound: '这里空空如也',
+  noInternetConnection: '无法连接到网络',
+  pause: '暂停',
+  pauseUpload: '暂停上传',
+  paused: '已暂停',
+  poweredBy: '强力驱动于',
+  preparingUpload: '准备上传中...',
+  processingXFiles: {
+    '0': '%{smart_count}个文件处理中',
+    '1': '%{smart_count}个文件处理中',
+    '2': '%{smart_count}个文件处理中'
+  },
+  removeFile: '移除文件',
+  resetFilter: '重置筛选器',
+  resume: '恢复',
+  resumeUpload: '恢复上传',
+  retry: '重试',
+  retryUpload: '重试上传',
+  saveChanges: '保存变更',
+  selectX: {
+    '0': '选择%{smart_count}',
+    '1': '选择%{smart_count}',
+    '2': '选择%{smart_count}'
+  },
+  smile: '笑！',
+  startRecording: '开始视频录制',
+  stopRecording: '停止视频录制',
+  takePicture: '拍照',
+  timedOut: '上传已经停滞不前%{seconds}秒，中止上传',
+  upload: '上传',
+  uploadComplete: '上传完成',
+  uploadFailed: '上传失败',
+  uploadPaused: '上传暂停',
+  uploadXFiles: {
+    '0': '上传%{smart_count}个文件',
+    '1': '上传%{smart_count}个文件',
+    '2': '上传%{smart_count}个文件'
+  },
+  uploadXNewFiles: {
+    '0': '新上传了%{smart_count}个文件',
+    '1': '新上传了%{smart_count}个文件',
+    '2': '新上传了%{smart_count}个文件'
+  },
+  uploading: '正在上传',
+  uploadingXFiles: {
+    '0': '正在上传%{smart_count}个文件',
+    '1': '正在上传%{smart_count}个文件',
+    '2': '正在上传%{smart_count}个文件'
+  },
+  xFilesSelected: {
+    '0': '%{smart_count}个文件被选中',
+    '1': '%{smart_count}个文件被选中',
+    '2': '%{smart_count}个文件被选中'
+  },
+  xMoreFilesAdded: {
+    '0': '又有%{smart_count}个文件被添加',
+    '1': '又有%{smart_count}个文件被添加',
+    '2': '又有%{smart_count}个文件被添加'
+  },
+  xTimeLeft: '还剩下%{time}',
+  youCanOnlyUploadFileTypes: '您只能上传这些文件类型：%{types}',
+  youCanOnlyUploadX: {
+    '0': '您只能上传%{smart_count}个文件',
+    '1': '您只能上传%{smart_count}个文件',
+    '2': '您只能上传%{smart_count}个文件'
+  },
+  youHaveToAtLeastSelectX: {
+    '0': '您至少要选择%{smart_count}个文件',
+    '1': '您至少要选择%{smart_count}个文件',
+    '2': '您至少要选择%{smart_count}个文件'
+  },
+  selectAllFilesFromFolderNamed: '从文件夹中选择所有文件 %{name}',
+  unselectAllFilesFromFolderNamed: '取消选择文件夹中的所有文件 %{name}',
+  selectFileNamed: '选择文件 %{name}',
+  unselectFileNamed: '取消选择文件 %{name}',
+  openFolderNamed: '打开文件夹 %{name}'
+};
+
+zh_CN.pluralize = function (n) {
+  if (n === 1) {
+    return 0;
+  }
+
+  return 1;
+};
+
+if (typeof window !== 'undefined' && typeof window.Uppy !== 'undefined') {
+  window.Uppy.locales.zh_CN = zh_CN;
+}
+
+module.exports = zh_CN;
+},{}],54:[function(require,module,exports){
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 var throttle = require('lodash.throttle');
@@ -6472,7 +8256,7 @@ var ProgressBarError = function ProgressBarError(_ref2) {
     role: "tooltip"
   }, "?"));
 };
-},{"./StatusBarStates":44,"@uppy/utils/lib/prettyBytes":77,"@uppy/utils/lib/prettyETA":78,"classnames":90,"lodash.throttle":98,"preact":103}],44:[function(require,module,exports){
+},{"./StatusBarStates":55,"@uppy/utils/lib/prettyBytes":90,"@uppy/utils/lib/prettyETA":91,"classnames":103,"lodash.throttle":111,"preact":116}],55:[function(require,module,exports){
 module.exports = {
   STATE_ERROR: 'error',
   STATE_WAITING: 'waiting',
@@ -6481,7 +8265,7 @@ module.exports = {
   STATE_POSTPROCESSING: 'postprocessing',
   STATE_COMPLETE: 'complete'
 };
-},{}],45:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 var _class, _temp;
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
@@ -6572,18 +8356,30 @@ function (_Plugin) {
       hidePauseResumeButton: false,
       hideCancelButton: false,
       showProgressDetails: false,
-      hideAfterFinish: true // merge default options with the ones set by user
-
+      hideAfterFinish: true
     };
-    _this.opts = _extends({}, defaultOptions, opts);
-    _this.translator = new Translator([_this.defaultLocale, _this.uppy.locale, _this.opts.locale]);
-    _this.i18n = _this.translator.translate.bind(_this.translator);
+    _this.opts = _extends({}, defaultOptions, {}, opts);
+
+    _this.i18nInit();
+
     _this.render = _this.render.bind(_assertThisInitialized(_this));
     _this.install = _this.install.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   var _proto = StatusBar.prototype;
+
+  _proto.setOptions = function setOptions(newOpts) {
+    _Plugin.prototype.setOptions.call(this, newOpts);
+
+    this.i18nInit();
+  };
+
+  _proto.i18nInit = function i18nInit() {
+    this.translator = new Translator([this.defaultLocale, this.uppy.locale, this.opts.locale]);
+    this.i18n = this.translator.translate.bind(this.translator);
+    this.setPluginState(); // so that UI re-renders and we see the updated locale
+  };
 
   _proto.getTotalSpeed = function getTotalSpeed(files) {
     var totalSpeed = 0;
@@ -6741,8 +8537,8 @@ function (_Plugin) {
   };
 
   return StatusBar;
-}(Plugin), _class.VERSION = "1.3.0", _temp);
-},{"./StatusBar":43,"./StatusBarStates":44,"@uppy/core":9,"@uppy/utils/lib/Translator":50,"@uppy/utils/lib/getBytesRemaining":57,"@uppy/utils/lib/getSpeed":67}],46:[function(require,module,exports){
+}(Plugin), _class.VERSION = "1.4.0", _temp);
+},{"./StatusBar":54,"./StatusBarStates":55,"@uppy/core":9,"@uppy/utils/lib/Translator":64,"@uppy/utils/lib/getBytesRemaining":71,"@uppy/utils/lib/getSpeed":81}],57:[function(require,module,exports){
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 /**
@@ -6800,7 +8596,7 @@ DefaultStore.VERSION = "1.2.0";
 module.exports = function defaultStore() {
   return new DefaultStore();
 };
-},{}],47:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 var ORIENTATIONS = {
   1: {
     rotation: 0,
@@ -6844,12 +8640,10 @@ var ORIENTATIONS = {
   }
 };
 module.exports = ORIENTATIONS;
-},{}],48:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 var _class, _temp;
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
 
@@ -6857,6 +8651,8 @@ var Exif = require('exif-js');
 
 var _require = require('@uppy/core'),
     Plugin = _require.Plugin;
+
+var Translator = require('@uppy/utils/lib/Translator');
 
 var dataURItoBlob = require('@uppy/utils/lib/dataURItoBlob');
 
@@ -6879,21 +8675,97 @@ function (_Plugin) {
     var _this;
 
     _this = _Plugin.call(this, uppy, opts) || this;
-    _this.type = 'thumbnail';
+
+    _this.onFileAdded = function (file) {
+      if (!file.preview) {
+        _this.addToQueue(file);
+      }
+    };
+
+    _this.onFileRemoved = function (file) {
+      var index = _this.queue.indexOf(file);
+
+      if (index !== -1) {
+        _this.queue.splice(index, 1);
+      } // Clean up object URLs.
+
+
+      if (file.preview && isObjectURL(file.preview)) {
+        URL.revokeObjectURL(file.preview);
+      }
+    };
+
+    _this.onRestored = function () {
+      var _this$uppy$getState = _this.uppy.getState(),
+          files = _this$uppy$getState.files;
+
+      var fileIDs = Object.keys(files);
+      fileIDs.forEach(function (fileID) {
+        var file = _this.uppy.getFile(fileID);
+
+        if (!file.isRestored) return; // Only add blob URLs; they are likely invalid after being restored.
+
+        if (!file.preview || isObjectURL(file.preview)) {
+          _this.addToQueue(file);
+        }
+      });
+    };
+
+    _this.waitUntilAllProcessed = function (fileIDs) {
+      fileIDs.forEach(function (fileID) {
+        var file = _this.uppy.getFile(fileID);
+
+        _this.uppy.emit('preprocess-progress', file, {
+          mode: 'indeterminate',
+          message: _this.i18n('generatingThumbnails')
+        });
+      });
+      return new Promise(function (resolve, reject) {
+        if (_this.queueProcessing) {
+          _this.uppy.once('thumbnail:all-generated', function () {
+            resolve();
+          });
+        } else {
+          resolve();
+        }
+      });
+    };
+
+    _this.type = 'modifier';
     _this.id = _this.opts.id || 'ThumbnailGenerator';
     _this.title = 'Thumbnail Generator';
     _this.queue = [];
     _this.queueProcessing = false;
     _this.defaultThumbnailDimension = 200;
+    _this.defaultLocale = {
+      strings: {
+        generatingThumbnails: 'Generating thumbnails...'
+      }
+    };
     var defaultOptions = {
       thumbnailWidth: null,
-      thumbnailHeight: null
+      thumbnailHeight: null,
+      waitForThumbnailsBeforeUpload: false
     };
     _this.opts = _extends({}, defaultOptions, {}, opts);
-    _this.onFileAdded = _this.onFileAdded.bind(_assertThisInitialized(_this));
-    _this.onFileRemoved = _this.onFileRemoved.bind(_assertThisInitialized(_this));
-    _this.onRestored = _this.onRestored.bind(_assertThisInitialized(_this));
+
+    _this.i18nInit();
+
     return _this;
+  }
+
+  var _proto = ThumbnailGenerator.prototype;
+
+  _proto.setOptions = function setOptions(newOpts) {
+    _Plugin.prototype.setOptions.call(this, newOpts);
+
+    this.i18nInit();
+  };
+
+  _proto.i18nInit = function i18nInit() {
+    this.translator = new Translator([this.defaultLocale, this.uppy.locale, this.opts.locale]);
+    this.i18n = this.translator.translate.bind(this.translator);
+    this.setPluginState(); // so that UI re-renders and we see the updated locale
   }
   /**
    * Create a thumbnail for the given Uppy file object.
@@ -6902,9 +8774,7 @@ function (_Plugin) {
    * @param {number} width
    * @returns {Promise}
    */
-
-
-  var _proto = ThumbnailGenerator.prototype;
+  ;
 
   _proto.createThumbnail = function createThumbnail(file, targetWidth, targetHeight) {
     var _this2 = this;
@@ -6973,8 +8843,18 @@ function (_Plugin) {
   };
 
   _proto.getOrientation = function getOrientation(file) {
+    var _this3 = this;
+
     return new Promise(function (resolve) {
-      Exif.getData(file.data, function callback() {
+      var uppy = _this3.uppy;
+      Exif.getData(file.data, function exifGetDataCallback() {
+        var exifdata = Exif.getAllTags(this); // delete the thumbnail from exif metadata, because it contains a blob
+        // and we don’t blobs in meta — it might lead to unexpected issues on the server
+
+        delete exifdata.thumbnail;
+        uppy.setFileMeta(file.id, {
+          exifdata: exifdata
+        });
         var orientation = Exif.getTag(this, 'Orientation') || 1;
         resolve(ORIENTATIONS[orientation]);
       });
@@ -7130,7 +9010,7 @@ function (_Plugin) {
   };
 
   _proto.processQueue = function processQueue() {
-    var _this3 = this;
+    var _this4 = this;
 
     this.queueProcessing = true;
 
@@ -7138,7 +9018,7 @@ function (_Plugin) {
       var current = this.queue.shift();
       return this.requestThumbnail(current).catch(function (err) {}) // eslint-disable-line handle-callback-err
       .then(function () {
-        return _this3.processQueue();
+        return _this4.processQueue();
       });
     } else {
       this.queueProcessing = false;
@@ -7148,81 +9028,288 @@ function (_Plugin) {
   };
 
   _proto.requestThumbnail = function requestThumbnail(file) {
-    var _this4 = this;
+    var _this5 = this;
 
     if (isPreviewSupported(file.type) && !file.isRemote) {
       return this.createThumbnail(file, this.opts.thumbnailWidth, this.opts.thumbnailHeight).then(function (preview) {
-        _this4.setPreviewURL(file.id, preview);
+        _this5.setPreviewURL(file.id, preview);
 
-        _this4.uppy.log("[ThumbnailGenerator] Generated thumbnail for " + file.id);
+        _this5.uppy.log("[ThumbnailGenerator] Generated thumbnail for " + file.id);
 
-        _this4.uppy.emit('thumbnail:generated', _this4.uppy.getFile(file.id), preview);
+        _this5.uppy.emit('thumbnail:generated', _this5.uppy.getFile(file.id), preview);
       }).catch(function (err) {
-        _this4.uppy.log("[ThumbnailGenerator] Failed thumbnail for " + file.id + ":", 'warning');
+        _this5.uppy.log("[ThumbnailGenerator] Failed thumbnail for " + file.id + ":", 'warning');
 
-        _this4.uppy.log(err, 'warning');
+        _this5.uppy.log(err, 'warning');
 
-        _this4.uppy.emit('thumbnail:error', _this4.uppy.getFile(file.id), err);
+        _this5.uppy.emit('thumbnail:error', _this5.uppy.getFile(file.id), err);
       });
     }
 
     return Promise.resolve();
   };
 
-  _proto.onFileAdded = function onFileAdded(file) {
-    if (!file.preview) {
-      this.addToQueue(file);
-    }
-  };
-
-  _proto.onFileRemoved = function onFileRemoved(file) {
-    var index = this.queue.indexOf(file);
-
-    if (index !== -1) {
-      this.queue.splice(index, 1);
-    } // Clean up object URLs.
-
-
-    if (file.preview && isObjectURL(file.preview)) {
-      URL.revokeObjectURL(file.preview);
-    }
-  };
-
-  _proto.onRestored = function onRestored() {
-    var _this5 = this;
-
-    var _this$uppy$getState = this.uppy.getState(),
-        files = _this$uppy$getState.files;
-
-    var fileIDs = Object.keys(files);
-    fileIDs.forEach(function (fileID) {
-      var file = _this5.uppy.getFile(fileID);
-
-      if (!file.isRestored) return; // Only add blob URLs; they are likely invalid after being restored.
-
-      if (!file.preview || isObjectURL(file.preview)) {
-        _this5.addToQueue(file);
-      }
-    });
-  };
-
   _proto.install = function install() {
     this.uppy.on('file-added', this.onFileAdded);
     this.uppy.on('file-removed', this.onFileRemoved);
     this.uppy.on('restored', this.onRestored);
+
+    if (this.opts.waitForThumbnailsBeforeUpload) {
+      this.uppy.addPreProcessor(this.waitUntilAllProcessed);
+    }
   };
 
   _proto.uninstall = function uninstall() {
     this.uppy.off('file-added', this.onFileAdded);
     this.uppy.off('file-removed', this.onFileRemoved);
     this.uppy.off('restored', this.onRestored);
+
+    if (this.opts.waitForThumbnailsBeforeUpload) {
+      this.uppy.removePreProcessor(this.waitUntilAllProcessed);
+    }
   };
 
   return ThumbnailGenerator;
-}(Plugin), _class.VERSION = "1.3.0", _temp);
-},{"./image-orientations":47,"@uppy/core":9,"@uppy/utils/lib/dataURItoBlob":52,"@uppy/utils/lib/isObjectURL":72,"@uppy/utils/lib/isPreviewSupported":73,"exif-js":95}],49:[function(require,module,exports){
+}(Plugin), _class.VERSION = "1.5.0", _temp);
+},{"./image-orientations":58,"@uppy/core":9,"@uppy/utils/lib/Translator":64,"@uppy/utils/lib/dataURItoBlob":66,"@uppy/utils/lib/isObjectURL":86,"@uppy/utils/lib/isPreviewSupported":87,"exif-js":108}],60:[function(require,module,exports){
+/**
+ * Create a wrapper around an event emitter with a `remove` method to remove
+ * all events that were added using the wrapped emitter.
+ */
+module.exports =
+/*#__PURE__*/
+function () {
+  function EventTracker(emitter) {
+    this._events = [];
+    this._emitter = emitter;
+  }
+
+  var _proto = EventTracker.prototype;
+
+  _proto.on = function on(event, fn) {
+    this._events.push([event, fn]);
+
+    return this._emitter.on(event, fn);
+  };
+
+  _proto.remove = function remove() {
+    var _this = this;
+
+    this._events.forEach(function (_ref) {
+      var event = _ref[0],
+          fn = _ref[1];
+
+      _this._emitter.off(event, fn);
+    });
+  };
+
+  return EventTracker;
+}();
+},{}],61:[function(require,module,exports){
 module.exports = ['a[href]:not([tabindex^="-"]):not([inert]):not([aria-hidden])', 'area[href]:not([tabindex^="-"]):not([inert]):not([aria-hidden])', 'input:not([disabled]):not([inert]):not([aria-hidden])', 'select:not([disabled]):not([inert]):not([aria-hidden])', 'textarea:not([disabled]):not([inert]):not([aria-hidden])', 'button:not([disabled]):not([inert]):not([aria-hidden])', 'iframe:not([tabindex^="-"]):not([inert]):not([aria-hidden])', 'object:not([tabindex^="-"]):not([inert]):not([aria-hidden])', 'embed:not([tabindex^="-"]):not([inert]):not([aria-hidden])', '[contenteditable]:not([tabindex^="-"]):not([inert]):not([aria-hidden])', '[tabindex]:not([tabindex^="-"]):not([inert]):not([aria-hidden])'];
-},{}],50:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
+/**
+ * Helper to abort upload requests if there has not been any progress for `timeout` ms.
+ * Create an instance using `timer = new ProgressTimeout(10000, onTimeout)`
+ * Call `timer.progress()` to signal that there has been progress of any kind.
+ * Call `timer.done()` when the upload has completed.
+ */
+var ProgressTimeout =
+/*#__PURE__*/
+function () {
+  function ProgressTimeout(timeout, timeoutHandler) {
+    this._timeout = timeout;
+    this._onTimedOut = timeoutHandler;
+    this._isDone = false;
+    this._aliveTimer = null;
+    this._onTimedOut = this._onTimedOut.bind(this);
+  }
+
+  var _proto = ProgressTimeout.prototype;
+
+  _proto.progress = function progress() {
+    // Some browsers fire another progress event when the upload is
+    // cancelled, so we have to ignore progress after the timer was
+    // told to stop.
+    if (this._isDone) return;
+
+    if (this._timeout > 0) {
+      if (this._aliveTimer) clearTimeout(this._aliveTimer);
+      this._aliveTimer = setTimeout(this._onTimedOut, this._timeout);
+    }
+  };
+
+  _proto.done = function done() {
+    if (this._aliveTimer) {
+      clearTimeout(this._aliveTimer);
+      this._aliveTimer = null;
+    }
+
+    this._isDone = true;
+  };
+
+  return ProgressTimeout;
+}();
+
+module.exports = ProgressTimeout;
+},{}],63:[function(require,module,exports){
+module.exports =
+/*#__PURE__*/
+function () {
+  function RateLimitedQueue(limit) {
+    if (typeof limit !== 'number' || limit === 0) {
+      this.limit = Infinity;
+    } else {
+      this.limit = limit;
+    }
+
+    this.activeRequests = 0;
+    this.queuedHandlers = [];
+  }
+
+  var _proto = RateLimitedQueue.prototype;
+
+  _proto._call = function _call(fn) {
+    var _this = this;
+
+    this.activeRequests += 1;
+    var _done = false;
+    var cancelActive;
+
+    try {
+      cancelActive = fn();
+    } catch (err) {
+      this.activeRequests -= 1;
+      throw err;
+    }
+
+    return {
+      abort: function abort() {
+        if (_done) return;
+        _done = true;
+        _this.activeRequests -= 1;
+        cancelActive();
+
+        _this._queueNext();
+      },
+      done: function done() {
+        if (_done) return;
+        _done = true;
+        _this.activeRequests -= 1;
+
+        _this._queueNext();
+      }
+    };
+  };
+
+  _proto._queueNext = function _queueNext() {
+    var _this2 = this;
+
+    // Do it soon but not immediately, this allows clearing out the entire queue synchronously
+    // one by one without continuously _advancing_ it (and starting new tasks before immediately
+    // aborting them)
+    Promise.resolve().then(function () {
+      _this2._next();
+    });
+  };
+
+  _proto._next = function _next() {
+    if (this.activeRequests >= this.limit) {
+      return;
+    }
+
+    if (this.queuedHandlers.length === 0) {
+      return;
+    } // Dispatch the next request, and update the abort/done handlers
+    // so that cancelling it does the Right Thing (and doesn't just try
+    // to dequeue an already-running request).
+
+
+    var next = this.queuedHandlers.shift();
+
+    var handler = this._call(next.fn);
+
+    next.abort = handler.abort;
+    next.done = handler.done;
+  };
+
+  _proto._queue = function _queue(fn) {
+    var _this3 = this;
+
+    var handler = {
+      fn: fn,
+      abort: function abort() {
+        _this3._dequeue(handler);
+      },
+      done: function done() {
+        throw new Error('Cannot mark a queued request as done: this indicates a bug');
+      }
+    };
+    this.queuedHandlers.push(handler);
+    return handler;
+  };
+
+  _proto._dequeue = function _dequeue(handler) {
+    var index = this.queuedHandlers.indexOf(handler);
+
+    if (index !== -1) {
+      this.queuedHandlers.splice(index, 1);
+    }
+  };
+
+  _proto.run = function run(fn) {
+    if (this.activeRequests < this.limit) {
+      return this._call(fn);
+    }
+
+    return this._queue(fn);
+  };
+
+  _proto.wrapPromiseFunction = function wrapPromiseFunction(fn) {
+    var _this4 = this;
+
+    return function () {
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      return new Promise(function (resolve, reject) {
+        var queuedRequest = _this4.run(function () {
+          var cancelError;
+          var promise;
+
+          try {
+            promise = Promise.resolve(fn.apply(void 0, args));
+          } catch (err) {
+            promise = Promise.reject(err);
+          }
+
+          promise.then(function (result) {
+            if (cancelError) {
+              reject(cancelError);
+            } else {
+              queuedRequest.done();
+              resolve(result);
+            }
+          }, function (err) {
+            if (cancelError) {
+              reject(cancelError);
+            } else {
+              queuedRequest.done();
+              reject(err);
+            }
+          });
+          return function () {
+            cancelError = new Error('Cancelled');
+          };
+        });
+      });
+    };
+  };
+
+  return RateLimitedQueue;
+}();
+},{}],64:[function(require,module,exports){
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 var has = require('./hasProperty');
@@ -7371,7 +9458,7 @@ function () {
 
   return Translator;
 }();
-},{"./hasProperty":69}],51:[function(require,module,exports){
+},{"./hasProperty":83}],65:[function(require,module,exports){
 var dataURItoBlob = require('./dataURItoBlob');
 /**
  * Save a <canvas> element's content to a Blob object.
@@ -7392,7 +9479,7 @@ module.exports = function canvasToBlob(canvas, type, quality) {
     return dataURItoBlob(canvas.toDataURL(type, quality), {});
   });
 };
-},{"./dataURItoBlob":52}],52:[function(require,module,exports){
+},{"./dataURItoBlob":66}],66:[function(require,module,exports){
 module.exports = function dataURItoBlob(dataURI, opts, toFile) {
   // get the base64 data
   var data = dataURI.split(',')[1]; // user may provide mime type, if not get it from data URI
@@ -7429,7 +9516,7 @@ module.exports = function dataURItoBlob(dataURI, opts, toFile) {
     type: mimeType
   });
 };
-},{}],53:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 var throttle = require('lodash.throttle');
 
 function _emitSocketProgress(uploader, progressData, file) {
@@ -7451,7 +9538,7 @@ module.exports = throttle(_emitSocketProgress, 300, {
   leading: true,
   trailing: true
 });
-},{"lodash.throttle":98}],54:[function(require,module,exports){
+},{"lodash.throttle":111}],68:[function(require,module,exports){
 var isDOMElement = require('./isDOMElement');
 /**
  * Find one or more DOM elements.
@@ -7471,7 +9558,7 @@ module.exports = function findAllDOMElements(element) {
     return [element];
   }
 };
-},{"./isDOMElement":70}],55:[function(require,module,exports){
+},{"./isDOMElement":84}],69:[function(require,module,exports){
 var isDOMElement = require('./isDOMElement');
 /**
  * Find a DOM element.
@@ -7494,7 +9581,7 @@ module.exports = function findDOMElement(element, context) {
     return element;
   }
 };
-},{"./isDOMElement":70}],56:[function(require,module,exports){
+},{"./isDOMElement":84}],70:[function(require,module,exports){
 /**
  * Takes a file object and turns it into fileID, by converting file.name to lowercase,
  * removing extra characters and adding type, size and lastModified
@@ -7505,7 +9592,7 @@ module.exports = function findDOMElement(element, context) {
  */
 module.exports = function generateFileID(file) {
   // filter is needed to not join empty values with `-`
-  return ['uppy', file.name ? encodeFilename(file.name.toLowerCase()) : '', file.type, file.data.size, file.data.lastModified].filter(function (val) {
+  return ['uppy', file.name ? encodeFilename(file.name.toLowerCase()) : '', file.type, file.meta && file.meta.relativePath ? encodeFilename(file.meta.relativePath.toLowerCase()) : '', file.data.size, file.data.lastModified].filter(function (val) {
     return val;
   }).join('-');
 };
@@ -7521,11 +9608,11 @@ function encodeFilename(name) {
 function encodeCharacter(character) {
   return character.charCodeAt(0).toString(32);
 }
-},{}],57:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 module.exports = function getBytesRemaining(fileProgress) {
   return fileProgress.bytesTotal - fileProgress.bytesUploaded;
 };
-},{}],58:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 var webkitGetAsEntryApi = require('./utils/webkitGetAsEntryApi/index');
 
 var fallbackApi = require('./utils/fallbackApi');
@@ -7552,7 +9639,7 @@ module.exports = function getDroppedFiles(dataTransfer, _temp) {
     return fallbackApi(dataTransfer);
   }
 };
-},{"./utils/fallbackApi":59,"./utils/webkitGetAsEntryApi/index":62}],59:[function(require,module,exports){
+},{"./utils/fallbackApi":73,"./utils/webkitGetAsEntryApi/index":76}],73:[function(require,module,exports){
 var toArray = require('../../toArray'); // .files fallback, should be implemented in any browser
 
 
@@ -7560,7 +9647,7 @@ module.exports = function fallbackApi(dataTransfer) {
   var files = toArray(dataTransfer.files);
   return Promise.resolve(files);
 };
-},{"../../toArray":81}],60:[function(require,module,exports){
+},{"../../toArray":94}],74:[function(require,module,exports){
 /**
  * Recursive function, calls the original callback() when the directory is entirely parsed.
  *
@@ -7589,7 +9676,7 @@ module.exports = function getFilesAndDirectoriesFromDirectory(directoryReader, o
     onSuccess(oldEntries);
   });
 };
-},{}],61:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 /**
  * Get the relative path from the FileEntry#fullPath, because File#webkitRelativePath is always '', at least onDrop.
  *
@@ -7606,7 +9693,7 @@ module.exports = function getRelativePath(fileEntry) {
     return fileEntry.fullPath;
   }
 };
-},{}],62:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 var toArray = require('../../../toArray');
 
 var getRelativePath = require('./getRelativePath');
@@ -7665,7 +9752,7 @@ module.exports = function webkitGetAsEntryApi(dataTransfer, logDropError) {
     return files;
   });
 };
-},{"../../../toArray":81,"./getFilesAndDirectoriesFromDirectory":60,"./getRelativePath":61}],63:[function(require,module,exports){
+},{"../../../toArray":94,"./getFilesAndDirectoriesFromDirectory":74,"./getRelativePath":75}],77:[function(require,module,exports){
 /**
  * Takes a full filename string and returns an object {name, extension}
  *
@@ -7681,7 +9768,7 @@ module.exports = function getFileNameAndExtension(fullFileName) {
     extension: fileExt
   };
 };
-},{}],64:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 var getFileNameAndExtension = require('./getFileNameAndExtension');
 
 var mimeTypes = require('./mimeTypes');
@@ -7701,7 +9788,7 @@ module.exports = function getFileType(file) {
     return 'application/octet-stream';
   }
 };
-},{"./getFileNameAndExtension":63,"./mimeTypes":76}],65:[function(require,module,exports){
+},{"./getFileNameAndExtension":77,"./mimeTypes":89}],79:[function(require,module,exports){
 // TODO Check which types are actually supported in browsers. Chrome likes webm
 // from my testing, but we may need more.
 // We could use a library but they tend to contain dozens of KBs of mappings,
@@ -7721,7 +9808,7 @@ module.exports = function getFileTypeExtension(mimeType) {
   mimeType = mimeType.replace(/;.*$/, '');
   return mimeToExtensions[mimeType] || null;
 };
-},{}],66:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 module.exports = function getSocketHost(url) {
   // get the host domain
   var regex = /^(?:https?:\/\/|\/\/)?(?:[^@\n]+@)?(?:www\.)?([^\n]+)/i;
@@ -7729,14 +9816,14 @@ module.exports = function getSocketHost(url) {
   var socketProtocol = /^http:\/\//i.test(url) ? 'ws' : 'wss';
   return socketProtocol + "://" + host;
 };
-},{}],67:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 module.exports = function getSpeed(fileProgress) {
   if (!fileProgress.bytesUploaded) return 0;
   var timeElapsed = new Date() - fileProgress.uploadStarted;
   var uploadSpeed = fileProgress.bytesUploaded / (timeElapsed / 1000);
   return uploadSpeed;
 };
-},{}],68:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 /**
  * Returns a timestamp in the format of `hours:minutes:seconds`
  */
@@ -7755,11 +9842,11 @@ module.exports = function getTimeStamp() {
 function pad(str) {
   return str.length !== 2 ? 0 + str : str;
 }
-},{}],69:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 module.exports = function has(object, key) {
   return Object.prototype.hasOwnProperty.call(object, key);
 };
-},{}],70:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 /**
  * Check if an object is a DOM element. Duck-typing based on `nodeType`.
  *
@@ -7768,7 +9855,7 @@ module.exports = function has(object, key) {
 module.exports = function isDOMElement(obj) {
   return obj && typeof obj === 'object' && obj.nodeType === Node.ELEMENT_NODE;
 };
-},{}],71:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 /**
  * Checks if the browser supports Drag & Drop (not supported on mobile devices, for example).
  *
@@ -7791,7 +9878,7 @@ module.exports = function isDragDropSupported() {
 
   return true;
 };
-},{}],72:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 /**
  * Check if a URL string is an object URL from `URL.createObjectURL`.
  *
@@ -7801,7 +9888,7 @@ module.exports = function isDragDropSupported() {
 module.exports = function isObjectURL(url) {
   return url.indexOf('blob:') === 0;
 };
-},{}],73:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 module.exports = function isPreviewSupported(fileType) {
   if (!fileType) return false;
   var fileTypeSpecific = fileType.split('/')[1]; // list of images that browsers can preview
@@ -7812,7 +9899,7 @@ module.exports = function isPreviewSupported(fileType) {
 
   return false;
 };
-},{}],74:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 module.exports = function isTouchDevice() {
   // works on most browsers
   if ('ontouchstart' in window) {
@@ -7823,50 +9910,7 @@ module.exports = function isTouchDevice() {
 
   return !!navigator.maxTouchPoints;
 };
-},{}],75:[function(require,module,exports){
-/**
- * Limit the amount of simultaneously pending Promises.
- * Returns a function that, when passed a function `fn`,
- * will make sure that at most `limit` calls to `fn` are pending.
- *
- * @param {number} limit
- * @returns {function()}
- */
-module.exports = function limitPromises(limit) {
-  var pending = 0;
-  var queue = [];
-  return function (fn) {
-    return function () {
-      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-      }
-
-      var call = function call() {
-        pending++;
-        var promise = fn.apply(void 0, args);
-        promise.then(onfinish, onfinish);
-        return promise;
-      };
-
-      if (pending >= limit) {
-        return new Promise(function (resolve, reject) {
-          queue.push(function () {
-            call().then(resolve, reject);
-          });
-        });
-      }
-
-      return call();
-    };
-  };
-
-  function onfinish() {
-    pending--;
-    var next = queue.shift();
-    if (next) next();
-  }
-};
-},{}],76:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 // ___Why not add the mime-types package?
 //    It's 19.7kB gzipped, and we only need mime types for well-known extensions (for file previews).
 // ___Where to take new extensions from?
@@ -7914,7 +9958,7 @@ module.exports = {
   log: 'text/plain',
   pdf: 'application/pdf'
 };
-},{}],77:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 // Adapted from https://github.com/Flet/prettier-bytes/
 // Changing 1000 bytes to 1024, so we can keep uppercase KB vs kB
 // ISC License (c) Dan Flettre https://github.com/Flet/prettier-bytes/blob/master/LICENSE
@@ -7948,7 +9992,7 @@ function prettierBytes(num) {
     return (neg ? '-' : '') + num.toFixed(1) + ' ' + unit;
   }
 }
-},{}],78:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 var secondsToTime = require('./secondsToTime');
 
 module.exports = function prettyETA(seconds) {
@@ -7963,7 +10007,7 @@ module.exports = function prettyETA(seconds) {
   var secondsStr = time.hours ? '' : minutesVal ? ' ' + secondsVal + 's' : secondsVal + 's';
   return "" + hoursStr + minutesStr + secondsStr;
 };
-},{"./secondsToTime":79}],79:[function(require,module,exports){
+},{"./secondsToTime":92}],92:[function(require,module,exports){
 module.exports = function secondsToTime(rawSeconds) {
   var hours = Math.floor(rawSeconds / 3600) % 24;
   var minutes = Math.floor(rawSeconds / 60) % 60;
@@ -7974,7 +10018,7 @@ module.exports = function secondsToTime(rawSeconds) {
     seconds: seconds
   };
 };
-},{}],80:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 module.exports = function settle(promises) {
   var resolutions = [];
   var rejections = [];
@@ -7997,14 +10041,14 @@ module.exports = function settle(promises) {
     };
   });
 };
-},{}],81:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
 /**
  * Converts list into array
  */
 module.exports = function toArray(list) {
   return Array.prototype.slice.call(list || [], 0);
 };
-},{}],82:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 var _require = require('preact'),
     h = _require.h;
 
@@ -8021,7 +10065,7 @@ module.exports = function (props) {
     "fill-rule": "evenodd"
   }));
 };
-},{"preact":103}],83:[function(require,module,exports){
+},{"preact":116}],96:[function(require,module,exports){
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
 
 var _require = require('preact'),
@@ -8077,7 +10121,7 @@ function (_Component) {
 }(Component);
 
 module.exports = CameraScreen;
-},{"./RecordButton":85,"./SnapshotButton":86,"preact":103}],84:[function(require,module,exports){
+},{"./RecordButton":98,"./SnapshotButton":99,"preact":116}],97:[function(require,module,exports){
 var _require = require('preact'),
     h = _require.h;
 
@@ -8090,7 +10134,7 @@ module.exports = function (props) {
     class: "uppy-Webcam-title"
   }, props.i18n('allowAccessTitle')), h("p", null, props.i18n('allowAccessDescription')));
 };
-},{"preact":103}],85:[function(require,module,exports){
+},{"preact":116}],98:[function(require,module,exports){
 var _require = require('preact'),
     h = _require.h;
 
@@ -8143,7 +10187,7 @@ module.exports = function RecordButton(_ref) {
     r: "40"
   })));
 };
-},{"preact":103}],86:[function(require,module,exports){
+},{"preact":116}],99:[function(require,module,exports){
 var _require = require('preact'),
     h = _require.h;
 
@@ -8161,7 +10205,7 @@ module.exports = function (_ref) {
     "data-uppy-super-focusable": true
   }, CameraIcon());
 };
-},{"./CameraIcon":82,"preact":103}],87:[function(require,module,exports){
+},{"./CameraIcon":95,"preact":116}],100:[function(require,module,exports){
 var _class, _temp;
 
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
@@ -8253,14 +10297,12 @@ function (_Plugin) {
       modes: ['video-audio', 'video-only', 'audio-only', 'picture'],
       mirror: true,
       facingMode: 'user',
-      preferredVideoMimeType: null // merge default options with the ones set by user
-
+      preferredVideoMimeType: null
     };
-    _this.opts = _extends({}, defaultOptions, opts); // i18n
+    _this.opts = _extends({}, defaultOptions, {}, opts);
 
-    _this.translator = new Translator([_this.defaultLocale, _this.uppy.locale, _this.opts.locale]);
-    _this.i18n = _this.translator.translate.bind(_this.translator);
-    _this.i18nArray = _this.translator.translateArray.bind(_this.translator);
+    _this.i18nInit();
+
     _this.install = _this.install.bind(_assertThisInitialized(_this));
     _this.setPluginState = _this.setPluginState.bind(_assertThisInitialized(_this));
     _this.render = _this.render.bind(_assertThisInitialized(_this)); // Camera controls
@@ -8282,6 +10324,19 @@ function (_Plugin) {
   }
 
   var _proto = Webcam.prototype;
+
+  _proto.setOptions = function setOptions(newOpts) {
+    _Plugin.prototype.setOptions.call(this, newOpts);
+
+    this.i18nInit();
+  };
+
+  _proto.i18nInit = function i18nInit() {
+    this.translator = new Translator([this.defaultLocale, this.uppy.locale, this.opts.locale]);
+    this.i18n = this.translator.translate.bind(this.translator);
+    this.i18nArray = this.translator.translateArray.bind(this.translator);
+    this.setPluginState(); // so that UI re-renders and we see the updated locale
+  };
 
   _proto.isSupported = function isSupported() {
     return !!this.mediaDevices;
@@ -8579,12 +10634,12 @@ function (_Plugin) {
   };
 
   return Webcam;
-}(Plugin), _class.VERSION = "1.3.0", _temp);
-},{"./CameraIcon":82,"./CameraScreen":83,"./PermissionsScreen":84,"./supportsMediaRecorder":88,"@uppy/core":9,"@uppy/utils/lib/Translator":50,"@uppy/utils/lib/canvasToBlob":51,"@uppy/utils/lib/getFileTypeExtension":65,"preact":103}],88:[function(require,module,exports){
+}(Plugin), _class.VERSION = "1.4.0", _temp);
+},{"./CameraIcon":95,"./CameraScreen":96,"./PermissionsScreen":97,"./supportsMediaRecorder":101,"@uppy/core":9,"@uppy/utils/lib/Translator":64,"@uppy/utils/lib/canvasToBlob":65,"@uppy/utils/lib/getFileTypeExtension":79,"preact":116}],101:[function(require,module,exports){
 module.exports = function supportsMediaRecorder() {
   return typeof MediaRecorder === 'function' && !!MediaRecorder.prototype && typeof MediaRecorder.prototype.start === 'function';
 };
-},{}],89:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 var _class, _temp;
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
@@ -8611,7 +10666,11 @@ var getSocketHost = require('@uppy/utils/lib/getSocketHost');
 
 var settle = require('@uppy/utils/lib/settle');
 
-var limitPromises = require('@uppy/utils/lib/limitPromises');
+var EventTracker = require('@uppy/utils/lib/EventTracker');
+
+var ProgressTimeout = require('@uppy/utils/lib/ProgressTimeout');
+
+var RateLimitedQueue = require('@uppy/utils/lib/RateLimitedQueue');
 
 function buildResponseError(xhr, error) {
   // No error message
@@ -8713,31 +10772,41 @@ function (_Plugin) {
       validateStatus: function validateStatus(status, responseText, response) {
         return status >= 200 && status < 300;
       }
-    }; // Merge default options with the ones set by user
+    };
+    _this.opts = _extends({}, defaultOptions, {}, opts);
 
-    _this.opts = _extends({}, defaultOptions, opts); // i18n
+    _this.i18nInit();
 
-    _this.translator = new Translator([_this.defaultLocale, _this.uppy.locale, _this.opts.locale]);
-    _this.i18n = _this.translator.translate.bind(_this.translator);
-    _this.i18nArray = _this.translator.translateArray.bind(_this.translator);
     _this.handleUpload = _this.handleUpload.bind(_assertThisInitialized(_this)); // Simultaneous upload limiting is shared across all uploads with this plugin.
+    // __queue is for internal Uppy use only!
 
-    if (typeof _this.opts.limit === 'number' && _this.opts.limit !== 0) {
-      _this.limitUploads = limitPromises(_this.opts.limit);
+    if (_this.opts.__queue instanceof RateLimitedQueue) {
+      _this.requests = _this.opts.__queue;
     } else {
-      _this.limitUploads = function (fn) {
-        return fn;
-      };
+      _this.requests = new RateLimitedQueue(_this.opts.limit);
     }
 
     if (_this.opts.bundle && !_this.opts.formData) {
       throw new Error('`opts.formData` must be true when `opts.bundle` is enabled.');
     }
 
+    _this.uploaderEvents = Object.create(null);
     return _this;
   }
 
   var _proto = XHRUpload.prototype;
+
+  _proto.setOptions = function setOptions(newOpts) {
+    _Plugin.prototype.setOptions.call(this, newOpts);
+
+    this.i18nInit();
+  };
+
+  _proto.i18nInit = function i18nInit() {
+    this.translator = new Translator([this.defaultLocale, this.uppy.locale, this.opts.locale]);
+    this.i18n = this.translator.translate.bind(this.translator);
+    this.setPluginState(); // so that UI re-renders and we see the updated locale
+  };
 
   _proto.getOptions = function getOptions(file) {
     var overrides = this.uppy.getState().xhrUpload;
@@ -8757,54 +10826,6 @@ function (_Plugin) {
     }
 
     return opts;
-  } // Helper to abort upload requests if there has not been any progress for `timeout` ms.
-  // Create an instance using `timer = createProgressTimeout(10000, onTimeout)`
-  // Call `timer.progress()` to signal that there has been progress of any kind.
-  // Call `timer.done()` when the upload has completed.
-  ;
-
-  _proto.createProgressTimeout = function createProgressTimeout(timeout, timeoutHandler) {
-    var uppy = this.uppy;
-    var self = this;
-    var isDone = false;
-
-    function onTimedOut() {
-      uppy.log("[XHRUpload] timed out");
-      var error = new Error(self.i18n('timedOut', {
-        seconds: Math.ceil(timeout / 1000)
-      }));
-      timeoutHandler(error);
-    }
-
-    var aliveTimer = null;
-
-    function progress() {
-      // Some browsers fire another progress event when the upload is
-      // cancelled, so we have to ignore progress after the timer was
-      // told to stop.
-      if (isDone) return;
-
-      if (timeout > 0) {
-        if (aliveTimer) clearTimeout(aliveTimer);
-        aliveTimer = setTimeout(onTimedOut, timeout);
-      }
-    }
-
-    function done() {
-      uppy.log("[XHRUpload] timer done");
-
-      if (aliveTimer) {
-        clearTimeout(aliveTimer);
-        aliveTimer = null;
-      }
-
-      isDone = true;
-    }
-
-    return {
-      progress: progress,
-      done: done
-    };
   };
 
   _proto.addMetadata = function addMetadata(formData, meta, opts) {
@@ -8862,17 +10883,21 @@ function (_Plugin) {
     var opts = this.getOptions(file);
     this.uppy.log("uploading " + current + " of " + total);
     return new Promise(function (resolve, reject) {
-      var data = opts.formData ? _this3.createFormDataUpload(file, opts) : _this3.createBareUpload(file, opts);
+      _this3.uppy.emit('upload-started', file);
 
-      var timer = _this3.createProgressTimeout(opts.timeout, function (error) {
+      var data = opts.formData ? _this3.createFormDataUpload(file, opts) : _this3.createBareUpload(file, opts);
+      var timer = new ProgressTimeout(opts.timeout, function () {
         xhr.abort();
+        var error = new Error(_this3.i18n('timedOut', {
+          seconds: Math.ceil(opts.timeout / 1000)
+        }));
 
         _this3.uppy.emit('upload-error', file, error);
 
         reject(error);
       });
-
       var xhr = new XMLHttpRequest();
+      _this3.uploaderEvents[file.id] = new EventTracker(_this3.uppy);
       var id = cuid();
       xhr.upload.addEventListener('loadstart', function (ev) {
         _this3.uppy.log("[XHRUpload] " + id + " started");
@@ -8896,6 +10921,13 @@ function (_Plugin) {
         _this3.uppy.log("[XHRUpload] " + id + " finished");
 
         timer.done();
+        queuedRequest.done();
+
+        if (_this3.uploaderEvents[file.id]) {
+          _this3.uploaderEvents[file.id].remove();
+
+          _this3.uploaderEvents[file.id] = null;
+        }
 
         if (opts.validateStatus(ev.target.status, xhr.responseText, xhr)) {
           var body = opts.getResponseData(xhr.responseText, xhr);
@@ -8931,6 +10963,14 @@ function (_Plugin) {
         _this3.uppy.log("[XHRUpload] " + id + " errored");
 
         timer.done();
+        queuedRequest.done();
+
+        if (_this3.uploaderEvents[file.id]) {
+          _this3.uploaderEvents[file.id].remove();
+
+          _this3.uploaderEvents[file.id] = null;
+        }
+
         var error = buildResponseError(xhr, opts.getResponseError(xhr.responseText, xhr));
 
         _this3.uppy.emit('upload-error', file, error);
@@ -8949,19 +10989,22 @@ function (_Plugin) {
       Object.keys(opts.headers).forEach(function (header) {
         xhr.setRequestHeader(header, opts.headers[header]);
       });
-      xhr.send(data);
 
-      _this3.uppy.on('file-removed', function (removedFile) {
-        if (removedFile.id === file.id) {
+      var queuedRequest = _this3.requests.run(function () {
+        xhr.send(data);
+        return function () {
           timer.done();
           xhr.abort();
-          reject(new Error('File removed'));
-        }
+        };
       });
 
-      _this3.uppy.on('cancel-all', function () {
-        timer.done();
-        xhr.abort();
+      _this3.onFileRemove(file.id, function () {
+        queuedRequest.abort();
+        reject(new Error('File removed'));
+      });
+
+      _this3.onCancelAll(file.id, function () {
+        queuedRequest.abort();
         reject(new Error('Upload cancelled'));
       });
     });
@@ -8972,6 +11015,8 @@ function (_Plugin) {
 
     var opts = this.getOptions(file);
     return new Promise(function (resolve, reject) {
+      _this4.uppy.emit('upload-started', file);
+
       var fields = {};
       var metaFields = Array.isArray(opts.metaFields) ? opts.metaFields // Send along all fields by default.
       : Object.keys(file.meta);
@@ -8990,8 +11035,33 @@ function (_Plugin) {
         var token = res.token;
         var host = getSocketHost(file.remote.companionUrl);
         var socket = new Socket({
-          target: host + "/api/" + token
+          target: host + "/api/" + token,
+          autoOpen: false
         });
+        _this4.uploaderEvents[file.id] = new EventTracker(_this4.uppy);
+
+        _this4.onFileRemove(file.id, function () {
+          socket.send('pause', {});
+          queuedRequest.abort();
+          resolve("upload " + file.id + " was removed");
+        });
+
+        _this4.onCancelAll(file.id, function () {
+          socket.send('pause', {});
+          queuedRequest.abort();
+          resolve("upload " + file.id + " was canceled");
+        });
+
+        _this4.onRetry(file.id, function () {
+          socket.send('pause', {});
+          socket.send('resume', {});
+        });
+
+        _this4.onRetryAll(file.id, function () {
+          socket.send('pause', {});
+          socket.send('resume', {});
+        });
+
         socket.on('progress', function (progressData) {
           return emitSocketProgress(_this4, progressData, file);
         });
@@ -9006,7 +11076,14 @@ function (_Plugin) {
 
           _this4.uppy.emit('upload-success', file, uploadResp);
 
-          socket.close();
+          queuedRequest.done();
+
+          if (_this4.uploaderEvents[file.id]) {
+            _this4.uploaderEvents[file.id].remove();
+
+            _this4.uploaderEvents[file.id] = null;
+          }
+
           return resolve();
         });
         socket.on('error', function (errData) {
@@ -9017,7 +11094,27 @@ function (_Plugin) {
 
           _this4.uppy.emit('upload-error', file, error);
 
+          queuedRequest.done();
+
+          if (_this4.uploaderEvents[file.id]) {
+            _this4.uploaderEvents[file.id].remove();
+
+            _this4.uploaderEvents[file.id] = null;
+          }
+
           reject(error);
+        });
+
+        var queuedRequest = _this4.requests.run(function () {
+          socket.open();
+
+          if (file.isPaused) {
+            socket.send('pause', {});
+          }
+
+          return function () {
+            return socket.close();
+          };
         });
       });
     });
@@ -9035,9 +11132,11 @@ function (_Plugin) {
       var formData = _this5.createBundledUpload(files, _extends({}, _this5.opts, {}, optsFromState || {}));
 
       var xhr = new XMLHttpRequest();
-
-      var timer = _this5.createProgressTimeout(_this5.opts.timeout, function (error) {
+      var timer = new ProgressTimeout(_this5.opts.timeout, function () {
         xhr.abort();
+        var error = new Error(_this5.i18n('timedOut', {
+          seconds: Math.ceil(_this5.opts.timeout / 1000)
+        }));
         emitError(error);
         reject(error);
       });
@@ -9119,36 +11218,55 @@ function (_Plugin) {
   _proto.uploadFiles = function uploadFiles(files) {
     var _this6 = this;
 
-    var actions = files.map(function (file, i) {
+    var promises = files.map(function (file, i) {
       var current = parseInt(i, 10) + 1;
       var total = files.length;
 
       if (file.error) {
-        return function () {
-          return Promise.reject(new Error(file.error));
-        };
+        return Promise.reject(new Error(file.error));
       } else if (file.isRemote) {
-        // We emit upload-started here, so that it's also emitted for files
-        // that have to wait due to the `limit` option.
-        _this6.uppy.emit('upload-started', file);
-
-        return _this6.uploadRemote.bind(_this6, file, current, total);
+        return _this6.uploadRemote(file, current, total);
       } else {
-        _this6.uppy.emit('upload-started', file);
-
-        return _this6.upload.bind(_this6, file, current, total);
+        return _this6.upload(file, current, total);
       }
-    });
-    var promises = actions.map(function (action) {
-      var limitedAction = _this6.limitUploads(action);
-
-      return limitedAction();
     });
     return settle(promises);
   };
 
-  _proto.handleUpload = function handleUpload(fileIDs) {
+  _proto.onFileRemove = function onFileRemove(fileID, cb) {
+    this.uploaderEvents[fileID].on('file-removed', function (file) {
+      if (fileID === file.id) cb(file.id);
+    });
+  };
+
+  _proto.onRetry = function onRetry(fileID, cb) {
+    this.uploaderEvents[fileID].on('upload-retry', function (targetFileID) {
+      if (fileID === targetFileID) {
+        cb();
+      }
+    });
+  };
+
+  _proto.onRetryAll = function onRetryAll(fileID, cb) {
     var _this7 = this;
+
+    this.uploaderEvents[fileID].on('retry-all', function (filesToRetry) {
+      if (!_this7.uppy.getFile(fileID)) return;
+      cb();
+    });
+  };
+
+  _proto.onCancelAll = function onCancelAll(fileID, cb) {
+    var _this8 = this;
+
+    this.uploaderEvents[fileID].on('cancel-all', function () {
+      if (!_this8.uppy.getFile(fileID)) return;
+      cb();
+    });
+  };
+
+  _proto.handleUpload = function handleUpload(fileIDs) {
+    var _this9 = this;
 
     if (fileIDs.length === 0) {
       this.uppy.log('[XHRUpload] No files to upload!');
@@ -9161,7 +11279,7 @@ function (_Plugin) {
 
     this.uppy.log('[XHRUpload] Uploading...');
     var files = fileIDs.map(function (fileID) {
-      return _this7.uppy.getFile(fileID);
+      return _this9.uppy.getFile(fileID);
     });
 
     if (this.opts.bundle) {
@@ -9213,8 +11331,8 @@ function (_Plugin) {
   };
 
   return XHRUpload;
-}(Plugin), _class.VERSION = "1.3.0", _temp);
-},{"@uppy/companion-client":6,"@uppy/core":9,"@uppy/utils/lib/Translator":50,"@uppy/utils/lib/emitSocketProgress":53,"@uppy/utils/lib/getSocketHost":66,"@uppy/utils/lib/limitPromises":75,"@uppy/utils/lib/settle":80,"cuid":91}],90:[function(require,module,exports){
+}(Plugin), _class.VERSION = "1.4.0", _temp);
+},{"@uppy/companion-client":6,"@uppy/core":9,"@uppy/utils/lib/EventTracker":60,"@uppy/utils/lib/ProgressTimeout":62,"@uppy/utils/lib/RateLimitedQueue":63,"@uppy/utils/lib/Translator":64,"@uppy/utils/lib/emitSocketProgress":67,"@uppy/utils/lib/getSocketHost":80,"@uppy/utils/lib/settle":93,"cuid":104}],103:[function(require,module,exports){
 /*!
   Copyright (c) 2017 Jed Watson.
   Licensed under the MIT License (MIT), see
@@ -9268,7 +11386,7 @@ function (_Plugin) {
 	}
 }());
 
-},{}],91:[function(require,module,exports){
+},{}],104:[function(require,module,exports){
 /**
  * cuid.js
  * Collision-resistant UID generator for browsers and node.
@@ -9354,7 +11472,7 @@ cuid.fingerprint = fingerprint;
 
 module.exports = cuid;
 
-},{"./lib/fingerprint.js":92,"./lib/getRandomValue.js":93,"./lib/pad.js":94}],92:[function(require,module,exports){
+},{"./lib/fingerprint.js":105,"./lib/getRandomValue.js":106,"./lib/pad.js":107}],105:[function(require,module,exports){
 var pad = require('./pad.js');
 
 var env = typeof window === 'object' ? window : self;
@@ -9368,7 +11486,7 @@ module.exports = function fingerprint () {
   return clientId;
 };
 
-},{"./pad.js":94}],93:[function(require,module,exports){
+},{"./pad.js":107}],106:[function(require,module,exports){
 
 var getRandomValue;
 
@@ -9385,13 +11503,13 @@ if (crypto) {
 
 module.exports = getRandomValue;
 
-},{}],94:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 module.exports = function pad (num, size) {
   var s = '000000000' + num;
   return s.substr(s.length - size);
 };
 
-},{}],95:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 (function() {
 
     var debug = false;
@@ -10452,7 +12570,7 @@ module.exports = function pad (num, size) {
 }.call(this));
 
 
-},{}],96:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 module.exports = function isShallowEqual (a, b) {
   if (a === b) return true
   for (var i in a) if (!(i in b)) return false
@@ -10460,7 +12578,7 @@ module.exports = function isShallowEqual (a, b) {
   return true
 }
 
-},{}],97:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -10841,7 +12959,7 @@ function toNumber(value) {
 module.exports = debounce;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],98:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -11284,7 +13402,7 @@ function toNumber(value) {
 module.exports = throttle;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],99:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 'use strict';
 
 function areInputsEqual(newInputs, lastInputs) {
@@ -11324,7 +13442,7 @@ function memoizeOne(resultFn, isEqual) {
 
 module.exports = memoizeOne;
 
-},{}],100:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 var wildcard = require('wildcard');
 var reMimePartSplit = /[\/\+\.]/;
 
@@ -11350,7 +13468,7 @@ module.exports = function(target, pattern) {
   return pattern ? test(pattern.split(';')[0]) : test;
 };
 
-},{"wildcard":105}],101:[function(require,module,exports){
+},{"wildcard":118}],114:[function(require,module,exports){
 /**
 * Create an event emitter with namespaces
 * @name createNamespaceEmitter
@@ -11488,7 +13606,7 @@ module.exports = function createNamespaceEmitter () {
   return emitter
 }
 
-},{}],102:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('preact')) :
   typeof define === 'function' && define.amd ? define(['preact'], factory) :
@@ -12047,7 +14165,7 @@ return CSSTransitionGroup;
 })));
 
 
-},{"preact":103}],103:[function(require,module,exports){
+},{"preact":116}],116:[function(require,module,exports){
 !function() {
     'use strict';
     function VNode() {}
@@ -12456,7 +14574,7 @@ return CSSTransitionGroup;
     if ('undefined' != typeof module) module.exports = preact; else self.preact = preact;
 }();
 
-},{}],104:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 (function (global){
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -13396,7 +15514,7 @@ return CSSTransitionGroup;
 })));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],105:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 /* jshint node: true */
 'use strict';
 

@@ -24,7 +24,8 @@
         "closeAfterFinish": 			{ "type": "boolean", "default": false },
         "sources": 						{ "type": "string[]", "elementConfig": { "values": [{"Webcam": "Webcam"}], "default": "Webcam" } },
         "metaFields": 					{ "type": "metaField[]" },
-        "language": 					{ "type": "string", "default": "English", "values": ["English", "Spanish", "German", "French", "Dutch", "Italian"] },
+        "language": 					{ "type": "string", "default": "English", "values": ["English", "Spanish", "German", "French", "Dutch", "Italian", "Chinese", "Czech", "Danish", "Finnish", "Greek", "Hungarian", "Japanese", "Persian", "Russian", "Swedish", "Turkish"] },
+        "localeStrings":				{ "type": "map" }, 
         "size": 						{ "type": "dimension", "default": { "width": 290, "height": 450 } },
         "options": 						{ "type": "map" }
     },
