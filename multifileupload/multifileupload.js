@@ -297,9 +297,53 @@ angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
 				
 				function setUppyOptions() {
 					console.log('Setting options')
-					var uppyLanguage = $scope.model.language;
 					
-					if (uppyLanguage === 'English') {
+					var uppyLanguage = $scope.model.language;
+					var locale = $sabloApplication.getLocale();
+					
+					var browserLanguage = locale.language;
+					if (browserLanguage && !locale.country) {
+						var language = browserLanguage.split('-').join('_');
+						if (language === 'en') {
+							browserLanguage = 'en_US'
+						} else if (language === 'de') {
+							browserLanguage = 'de_DE'							
+						} else if (language === 'nl') {
+							browserLanguage = 'nl_NL'							
+						} else if (language === 'fr') {
+							browserLanguage = 'fr_FR'							
+						} else if (language === 'it') {
+							browserLanguage = 'it_IT'							
+						} else if (language === 'es') {
+							browserLanguage = 'es_ES'							
+						} else if (language === 'zh') {
+							browserLanguage = 'zh_CN'							
+						} else if (language === 'cs') {
+							browserLanguage = 'cs_CZ'							
+						} else if (language === 'da') {
+							browserLanguage = 'da_DK'							
+						} else if (language === 'fi') {
+							browserLanguage = 'fi_FI'							
+						} else if (language === 'el') {
+							browserLanguage = 'el_GR'							
+						} else if (language === 'hu') {
+							browserLanguage = 'hu_HU'							
+						} else if (language === 'ja') {
+							browserLanguage = 'ja_JP'							
+						} else if (language === 'fa') {
+							browserLanguage = 'fa_IR'							
+						} else if (language === 'ru') {
+							browserLanguage = 'ru_RU'							
+						} else if (language === 'sv') {
+							browserLanguage = 'sv_SE'							
+						} else if (language === 'tr') {
+							browserLanguage = 'tr_TR'							
+						}
+					} else if (browserLanguage) {
+						browserLanguage += '_' + locale.country
+					}
+					
+					if (uppyLanguage === 'English' || !uppyLanguage) {
 						uppyLanguage = null;
 					} else if (uppyLanguage === 'German') {
 						uppyLanguage = Uppy.locales.de_DE;
@@ -333,6 +377,10 @@ angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
 						uppyLanguage = Uppy.locales.sv_SE;
 					} else if (uppyLanguage === 'Turkish') {
 						uppyLanguage = Uppy.locales.tr_TR;
+					}
+					
+					if (!uppyLanguage && browserLanguage && Uppy.locales[browserLanguage]) {
+						uppyLanguage = Uppy.locales[browserLanguage];
 					}
 					
 					if ($scope.model.localeStrings) {
