@@ -27,7 +27,8 @@
 		"sortColumnIndex": { "type": "int", "default": -1, "tags": { "scope": "runtime" }, "pushToServer": "shallow" },
 		"sortDirection": { "type": "string", "tags": { "scope": "runtime" }, "pushToServer": "shallow" },
 		"lastSelectionFirstElement": { "type": "int", "default": -1, "tags": { "scope": "private" }, "pushToServer": "shallow" },
-		"performanceSettings" : { "type": "settings", "tags": { "scope": "design" } }
+		"performanceSettings" : { "type": "settings", "tags": { "scope": "design" } },
+		"keyCodeSettings" : { "type": "keyCodeSettings", "tags": { "scope": "design" } }
 	},
 	"types": {
 		"column": {
@@ -50,6 +51,15 @@
 			"maxLoadedRows" : { "type": "int", "default": 1000 },
 			"fastScrollRenderThresholdFactor" : { "type": "int", "default": 3.0 }, 
 			"fastScrollLoadThresholdFactor" : { "type": "int", "default": 2.3 }
+		},
+		"keyCodeSettings": {
+			"pageUp" : { "type": "boolean", "default": true },
+			"pageDown" : { "type": "boolean", "default": true },
+			"arrowUp" : { "type": "boolean", "default": true },
+			"arrowDown" : { "type": "boolean", "default": true },
+			"home" : { "type": "boolean", "default": true },
+			"end" : { "type": "boolean", "default": true },
+			"enter" : { "type": "boolean", "default": true }
 		}
 	},
 	"handlers": {

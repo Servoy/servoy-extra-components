@@ -1153,6 +1153,7 @@ return {
 				var oldSelectedIdxs = fs.selectedRowIndexes.slice();
 				var selection = fs.selectedRowIndexes[0];
 				if (event.keyCode == 33) { // PAGE UP KEY
+					if (!$scope.model.keyCodeSettings.pageUp) return;
 					var child = getFirstVisibleChild();
 					if (child) {
 						if (child.previousSibling) child = child.previousSibling;
@@ -1166,6 +1167,7 @@ return {
 							child.scrollIntoView(false);
 					}
 				} else if (event.keyCode == 34) { // PAGE DOWN KEY
+					if (!$scope.model.keyCodeSettings.pageDown) return;
 					var child = getLastVisibleChild();
 					if (child) {
 						// if this is the last visible child we should get the child after that to make visible.
@@ -1180,6 +1182,7 @@ return {
 							child.scrollIntoView(true);
 					}
 				} else if (event.keyCode == 38) { // ARROW UP KEY
+					if (!$scope.model.keyCodeSettings.arrowUp) return;
 					if (selection > 0) {
 						fs.selectedRowIndexes = [selection - 1];
 						if ( (fs.viewPort.startIndex) <= selection - 1) {
@@ -1189,6 +1192,7 @@ return {
 					}
 					event.preventDefault();
 				} else if (event.keyCode == 40) { // ARROW DOWN KEY
+					if (!$scope.model.keyCodeSettings.arrowDown) return;
 					if (selection < fs.serverSize - 1) {
 						fs.selectedRowIndexes = [selection + 1];
 						if ( (fs.viewPort.startIndex + fs.viewPort.size) > selection + 1) {
@@ -1198,10 +1202,12 @@ return {
 					}
 					event.preventDefault();
 				} else if (event.keyCode == 13) { // ENTER KEY
+					if (!$scope.model.keyCodeSettings.enter) return;
 					if ($scope.handlers.onCellClick) {
 						$scope.handlers.onCellClick(selection + 1, null, fs.viewPort.rows[selection])
 					}
 				} else if (event.keyCode == 36) { // HOME
+					if (!$scope.model.keyCodeSettings.home) return;
 					var allowedBounds = calculateAllowedLoadedDataBounds();
 					if (fs.viewPort.startIndex > allowedBounds.startIdx) { // see if we have the first record loaded
 						function loadFirstRecordsIfNeeded() {
@@ -1229,6 +1235,7 @@ return {
 					event.preventDefault()
 					event.stopPropagation();
 				} else if (event.keyCode == 35) { // END
+					if (!$scope.model.keyCodeSettings.end) return;
 					var allowedBounds = calculateAllowedLoadedDataBounds();
 					if (fs.viewPort.startIndex + fs.viewPort.size < allowedBounds.startIdx + allowedBounds.size) { // see if we already have the last record loaded or not
 						function loadLastRecordsIfNeeded() {
