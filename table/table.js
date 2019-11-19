@@ -244,7 +244,7 @@ return {
 		$scope.scrollWidth = 0;
 		function getComponentWidth() {
 			if ($scope.componentWidth === undefined) {
-				$scope.componentWidth = $element.parent().width();
+				$scope.componentWidth = Math.floor($element.parent().width());
 			}
 			return $scope.componentWidth;
 		}
@@ -298,7 +298,7 @@ return {
 						$scope.$apply(function() {
 							if(tbody) {
 								if ($scope.model.columns) {
-									var newComponentWidth = $element.parent().width();
+									var newComponentWidth = Math.floor($element.parent().width());
 									var deltaWidth = newComponentWidth - getComponentWidth();
 									if (deltaWidth != 0) {
 										$scope.componentWidth = newComponentWidth;
@@ -415,7 +415,7 @@ return {
 			$timeout(function() {
 				var isScrollWidthChange = false;
 				if(tbody && (tbody[0].scrollHeight > tbody[0].clientHeight && ($scope.scrollWidth == 0))) {
-					$scope.scrollWidth = tbody[0].offsetWidth - tbody[0].clientWidth;
+					$scope.scrollWidth = tbody[0].offsetWidth - tbody[0].clientWidth + 2;
 					isScrollWidthChange = true;
 				}
 				else if(tbody && (tbody[0].scrollHeight <= tbody[0].clientHeight) && ($scope.scrollWidth > 0)) {
@@ -438,7 +438,7 @@ return {
 					var headers = tbl.find("th");
 					if ($(headers).length && $(headers).eq(0).is(":visible")) {
 						for (var i = 0; i < $scope.model.columns.length; i++) {
-							sumColumnsWidth += $(headers.get(i)).outerWidth(false);
+							sumColumnsWidth += Math.floor($(headers.get(i)).outerWidth(false));
 							if(!ignoreScrollWidth && ($scope.model.columns[i].width == "" || $scope.model.columns[i].width == "auto")) {
 								ignoreScrollWidth = true;
 							}
@@ -462,7 +462,7 @@ return {
 						if (autoColumns.columns[i]) {
 							if(autoColumns.minWidth[i] < 0) {
 								autoColumns.minWidth[i] = 1;
-								$scope.model.columns[i].width = $(headers.get(i)).outerWidth(false) + "px";
+								$scope.model.columns[i].width = Math.floor($(headers.get(i)).outerWidth(false)) + "px";
 							}
 							updateTableColumnStyleClass(i, { width: $scope.model.columns[i].width, minWidth: $scope.model.columns[i].width, maxWidth: $scope.model.columns[i].width });
 						}
@@ -2411,7 +2411,7 @@ return {
 				if (isAutoResizeColumn(column) || w < 0) {
 					var tbl = $element.find("table:first");
 					var headers = tbl.find("th");
-					w = $(headers.get(column)).outerWidth(false);
+					w = Math.floor($(headers.get(column)).outerWidth(false));
 				}
 				if (w > -1) {
 					cellStyle.minWidth = w + "px";
