@@ -258,7 +258,7 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 	    			if(binding.tooltiptextdataprovider) item.tooltip = foundset.viewPort.rows[i][binding.tooltiptextdataprovider];
 	    			if(binding.imageurldataprovider) item.icon = getIconURL(foundset.viewPort.rows[i][binding.imageurldataprovider]);
 	    			item.checkbox = binding.hascheckboxdataprovider !== undefined && foundset.viewPort.rows[i][binding.hascheckboxdataprovider];
-	    			if(!item.checkbox) {
+	    			if(item.checkbox) {
 	    				item.selected = Boolean(foundset.viewPort.rows[i][binding.checkboxvaluedataprovider])
 	    			}
 					
