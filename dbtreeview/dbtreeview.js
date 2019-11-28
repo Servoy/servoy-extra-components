@@ -1,4 +1,4 @@
-angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).directive('servoyextraDbtreeview', ['$timeout', '$window', 'foundset_manager', '$applicationService', '$q', function($timeout, $window, foundset_manager, $applicationService, $q) {
+angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).directive('servoyextraDbtreeview', ['$timeout', '$window', 'foundset_manager', '$applicationService', '$q', '$utils', function($timeout, $window, foundset_manager, $applicationService, $q, $utils) {
     return {
       restrict: 'E',
       scope: {
@@ -117,10 +117,29 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 							nodeChildrenInfo.foundsethash,
 							nodeChildrenInfo.rowid,
 							nodeChildrenInfo.relation).then(getRelatedFoundSetCallback(dfd,data.node, nodeChildrenInfo.sort, nodeChildrenInfo.level));
-				}
+				},
+				createNode: function(event, data){
+			        bindContextMenu(data.node.span);
+			    }
  			});
       		theTree = theTree.fancytree("getTree");
      	}
+    	
+		function bindContextMenu(span) {
+			// Add context menu to this node:
+			$(span).contextmenu(function(event) {
+				// The event was bound to the <span> tag, but the node object
+				// is stored in the parent <li> tag
+				var node = $.ui.fancytree.getNode(event.target);
+				event.preventDefault();
+				if (node && node.data.methodToCallOnRightClick) {
+					var jsevent = $utils.createJSEvent(event.originalEvent, 'rightClick');
+					$window.executeInlineScript(node.data.methodToCallOnRightClick.formname,
+						node.data.methodToCallOnRightClick.script,
+						[node.data.methodToCallOnRightClickParamValue, jsevent]);
+				}
+			});
+		}    	
     	 
     	function getIconURL(iconPath) {
     		if(iconPath && iconPath.indexOf("media://") == 0) {
@@ -173,6 +192,9 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
     		}    		
     		if(binding.methodToCallOnDoubleClick) {
     			dataproviders[binding.methodToCallOnDoubleClick.param] = binding.methodToCallOnDoubleClick.param;
+    		}    		    		
+    		if(binding.methodToCallOnRightClick) {
+    			dataproviders[binding.methodToCallOnRightClick.param] = binding.methodToCallOnRightClick.param;
     		}    		    		
 
     		return dataproviders;
@@ -282,7 +304,7 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 	    				item.data.checkboxvaluedataprovidertype = typeof foundset.viewPort.rows[i][binding.checkboxvaluedataprovider];
 	    			}
 	 	
-	    			if(binding.callbackinfo || binding.methodToCallOnCheckBoxChange || binding.methodToCallOnDoubleClick)
+	    			if(binding.callbackinfo || binding.methodToCallOnCheckBoxChange || binding.methodToCallOnDoubleClick || binding.methodToCallOnRightClick)
 	    			{
 	    				if(binding.callbackinfo) {
 	    					item.data.callbackinfo = binding.callbackinfo.f;
@@ -295,6 +317,10 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 	    				if(binding.methodToCallOnDoubleClick) {
 	    					item.data.methodToCallOnDoubleClick = binding.methodToCallOnDoubleClick.f;
 	    					item.data.methodToCallOnDoubleClickParamValue = foundset.viewPort.rows[i][binding.methodToCallOnDoubleClick.param];
+	    				}    				    				
+	    				if(binding.methodToCallOnRightClick) {
+	    					item.data.methodToCallOnRightClick = binding.methodToCallOnRightClick.f;
+	    					item.data.methodToCallOnRightClickParamValue = foundset.viewPort.rows[i][binding.methodToCallOnRightClick.param];
 	    				}    				    				
 	    			}
 	    			
@@ -576,9 +602,9 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 		})
 		
   		$scope.$watch('model.levelVisibility', function(newValue) {
-  			if(newValue) {
+			if (newValue && theTree) {
 				expandChildNodes(theTree.getRootNode(), newValue.level, newValue.state);
-	      	}
+			}
 		})
 		
 		$scope.$watch('model.enabled', function(newValue, oldValue) {

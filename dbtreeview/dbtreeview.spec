@@ -196,6 +196,22 @@
 							"type": "string"
 		                	}
 						 ]
+        },        
+		"setMethodToCallOnRightClick": {
+			"parameters":[
+							{                                                                 
+							"name":"datasource",
+							"type": "string"
+		                	},
+							{                                                                 
+							"name":"callbackfunction",
+							"type": "function"
+		                	},
+		                	{                                                                 
+							"name":"param",
+							"type": "string"
+		                	}
+						 ]
         },
 		"setSelectionPath": {
 			"parameters":[
@@ -251,6 +267,7 @@
 	  		"callbackinfo": "callback",
 	  		"methodToCallOnCheckBoxChange": "callback",
 	  		"methodToCallOnDoubleClick": "callback",
+	  		"methodToCallOnRightClick": "callback",
 			"nRelationInfos": "relationInfo[]"
 	  },
 	  "levelVisibilityType": {

@@ -155,6 +155,20 @@ $scope.api.setChildSortDataprovider = function(datasource, childsortdataprovider
 */
 $scope.api.setMethodToCallOnDoubleClick = function(datasource, callbackfunction, param) {
 	$scope.getBinding(datasource).methodToCallOnDoubleClick = {f: callbackfunction, param: param }  		
+}   
+
+/**
+* Set callback info for a datasource foundset right click event. 
+* 
+* @example
+* %%elementName%%.setMethodToCallOnRightClick(databaseManager.getDataSource('example_data', 'categories'),'myfunction','arg');
+* 
+* @param datasource 
+* @param callbackfunction callback function name
+* @param param
+*/
+$scope.api.setMethodToCallOnRightClick = function(datasource, callbackfunction, param) {
+	$scope.getBinding(datasource).methodToCallOnRightClick = {f: callbackfunction, param: param }  		
 }
 
 $scope.getBinding = function(datasource) {
