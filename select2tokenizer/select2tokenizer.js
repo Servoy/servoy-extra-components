@@ -399,7 +399,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
                 }
 
                 if(!found) {
-                    valuelistGetDisplayValuePromise = $scope.model.valuelistID.getDisplayValue($scope.model.dataProviderID).then(function(displayValue) {
+                    valuelistGetDisplayValuePromise = $scope.model.valuelistID.getDisplayValue(realValue).then(function(displayValue) {
 						valuelistGetDisplayValuePromise = null;
                         if (displayValue === null)
                             displayValue = realValue;
