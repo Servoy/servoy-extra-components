@@ -187,7 +187,7 @@
 	         }]
 	     },
 		 "getViewPortPosition": {
-	            "returns": "array"
+	            "returns": "object"
 	     },
 	     "getSortClass": {
 	       "parameters": [{"name": "columnIndex", "type": "int"}],
