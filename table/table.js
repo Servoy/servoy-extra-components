@@ -2043,7 +2043,7 @@ return {
 			if (!tbody || !columns || columns.length == 0) return;
 			var tbodyJQ = tbody;
 			var tblHead = $element.find("thead");
-			if (tbodyJQ.length == 0 || $(tblHead).height() <= 0) {
+			if (tbodyJQ.length == 0) {
 				if ($element.closest("body").length > 0) $timeout(generateTemplate);
 				return;
 			}
