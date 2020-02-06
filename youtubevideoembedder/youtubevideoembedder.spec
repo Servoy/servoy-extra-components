@@ -7,7 +7,7 @@
     "icon": "servoyextra/youtubevideoembedder/youtubevideoembedder.png",
 	"model": {
         "embeddedVideoURL": { "type": "string" },
-	
+        "dataProviderID": { "type":"dataprovider", "tags": { "scope": "design"}},
 		"videoWidth": { "type": "int", "default": 426 },
 		"videoHeight": { "type": "int", "default": 240 },
 		"allowFullScreen": { "type": "boolean", "default": true },

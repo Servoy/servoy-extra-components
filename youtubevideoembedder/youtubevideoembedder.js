@@ -12,13 +12,13 @@ angular.module('servoyextraYoutubevideoembedder', ['servoy', 'ngSanitize'])
     	  
     	  function updateURLWithParams() {
     		  var m = $scope.model;
-    		  if (! m.embeddedVideoURL) {
+    		  if (!m.embeddedVideoURL && !m.dataProviderID) {
     			  urlWithParams = "";
     			  return;
     		  }
     		  
     		  // see https://developers.google.com/youtube/player_parameters for more info on the params and their default values
-    		  urlWithParams = m.embeddedVideoURL;
+    		  urlWithParams = m.dataProviderID || m.embeddedVideoURL;
     		  var params = "";
     		  
     		  // in these if's we rely on YouTube defaults as well; we only set them when non-default
@@ -37,7 +37,10 @@ angular.module('servoyextraYoutubevideoembedder', ['servoy', 'ngSanitize'])
     	  $scope.getEmbedURL = function() {
     		  return $sce.trustAsResourceUrl(urlWithParams);
     	  }
-    	  
+          
+          $scope.$watch('model.dataProviderID', function(newValue, oldValue) {
+            updateURLWithParams();
+        });
     	  // TODO if needed add support for more URL parameters and for YouTube iframe javascript API and callbacks
     	  
     	  Object.defineProperty($scope.model, $sabloConstants.modelChangeNotifier, { configurable: true, value: function(property, value) {
