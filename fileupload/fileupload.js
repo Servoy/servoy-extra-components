@@ -60,7 +60,7 @@ angular.module('servoyextraFileupload', ['servoy', 'sabloApp']).directive('servo
 							}
 						}
 					}
-
+					var rowID = parent['rowID'];
 					var formname = parent['formname'];
 					while (!formname) {
 						if (parent.$parent) {
@@ -78,7 +78,7 @@ angular.module('servoyextraFileupload', ['servoy', 'sabloApp']).directive('servo
                         } else if($scope.model.multiFileUpload == true) {
                             console.warn("Multifile upload without onFileUploaded Method isn't supported. To upload multi file start using onFileUploaded Method");
                         }
-                        
+                        if (rowID) {uploadURL += "/" + encodeURIComponent(rowID)}
 						$scope.errorText = "";
                         progress = 0;
 						$scope.upload = Upload.upload({
