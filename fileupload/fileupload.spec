@@ -27,7 +27,8 @@
 			"uploadProgressText" 		: { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "Uploading click to cancel"},  
 			"uploadSuccessText" 		: { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "Successfully uploaded"},  
 			"uploadCancelText" 			: { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "Upload canceled"},  
-			"uploadNotSupportedText" 	: { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "File Drag/Drop is not supported for this browser"}, 
+            "uploadNotSupportedText" 	: { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "File Drag/Drop is not supported for this browser"},
+            "uploadNotSupportedFileText": { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "File type is not supported for upload"},
 			"resultDisplayTimeout"		: { "type" : "int", "default": 2000 },
 	        "visible" 					: { "type" : "visible" } 
 	},

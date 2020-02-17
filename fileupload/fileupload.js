@@ -146,17 +146,23 @@ angular.module('servoyextraFileupload', ['servoy', 'sabloApp']).directive('servo
 				}
 				
 				$scope.isValidFile = function(file){
-					if(file)
-						return Upload.validatePattern(file, $scope.model.accept)
-					else return true;
+                    if(file)
+                    {
+                        var fileObj = {name: file.name, type: file.type||"application/octet-stream"}
+                        return Upload.validatePattern(fileObj, $scope.model.accept)
+                    }else {
+                        return true;
+                    }
 				}
                     
                 $scope.uploadFiles = function(files) {
                     if (files && files.length) {
                         $scope.errorText = "";
                         angular.forEach(files, function(file) {
-                            if(file && !$scope.isValidFile(file)){
+                            if(!file){
                                 $scope.errorText = $scope.model.uploadNotSupportedText;
+                            } else if(file && !$scope.isValidFile(file)) {
+                                $scope.errorText = $scope.model.uploadNotSupportedFileText;
                             }
                         });
                         if(!$scope.errorText) {
