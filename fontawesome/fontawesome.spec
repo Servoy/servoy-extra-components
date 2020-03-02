@@ -7,7 +7,7 @@
 	"libraries": [{"name":"fontawesome-custom.css", "version":"1.0.0", "url":"servoyextra/fontawesome/fontawesome.css", "mimetype":"text/css"}],
 	"model":
 	{
-		"faclass"      	: {"type":"string", "default": "fa", "tags": { "scope" :"design" }},
+		"faclass"      	: {"type":"string", "default": "fa"},
 		"enabled" 		: {"type": "enabled", "blockingOn": false, "default": true, "for": ["dataProviderID","onActionMethodID"] },
 		"styleclass"   	: {"type": "styleclass"},
 		"size" 			: {"type":"dimension",  "default" : {"width":25, "height":25}},
