@@ -1793,8 +1793,11 @@ return {
 				startIndex = 0;
 				endIndex = renderedSize - 1;
 
-				renderedStartIndex = vp.startIndex + rowOffSet;
-				window.dispatchEvent(new Event('resize')); //fix issue with resizing within a dialog.
+                renderedStartIndex = vp.startIndex + rowOffSet;
+                //fix issue with resizing within a dialog.
+                setTimeout(function() {
+                    window.dispatchEvent(new Event('resize'));
+                },0);
 			}
 
 			var formatFilter = $filter("formatFilter");
