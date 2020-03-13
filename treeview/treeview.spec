@@ -17,6 +17,10 @@
       						{
       						"name":"nodeId",
       						"type":"object"
+      						},
+      						{
+      						"name":"event",
+      						"type":"jsevent"
       						}
       					]},
       	"onNodeRightClicked": {
@@ -24,6 +28,10 @@
       						{
       						"name":"nodeId",
       						"type":"object"
+      						},
+      						{
+      						"name":"event",
+      						"type":"jsevent"
       						}
       					]},
 		"onNodeDoubleClicked": {
@@ -31,6 +39,10 @@
       						{
       						"name":"nodeId",
       						"type":"object"
+      						},
+      						{
+      						"name":"event",
+      						"type":"jsevent"
       						}
       					]},
 		"onNodeExpanded": {

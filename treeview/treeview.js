@@ -54,11 +54,11 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 								$timeout.cancel(clickTimeout);
 							}
 							clickTimeout = $timeout(function() {
-									$scope.handlers.onNodeClicked(data.node.key);
+									$scope.handlers.onNodeClicked(data.node.key, data.originalEvent);
 								}, 400);
 						} else {
 							// if no double click execute immediately the click
-							$scope.handlers.onNodeClicked(data.node.key);
+							$scope.handlers.onNodeClicked(data.node.key, data.originalEvent);
 						}
 					}
 				},
@@ -68,7 +68,7 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 			    			$timeout.cancel(clickTimeout);
 			    			clickTimeout = null;
 			    		}	
-						$scope.handlers.onNodeDoubleClicked(data.node.key);
+						$scope.handlers.onNodeDoubleClicked(data.node.key, data.originalEvent);
 					}
 				},
 				select: function(event, data) {
@@ -157,7 +157,7 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 		     	      var node = $.ui.fancytree.getNode(event.target);
 					  event.preventDefault();
 					  if (node) {
-					  	 $scope.handlers.onNodeRightClicked(node.key);
+					  	 $scope.handlers.onNodeRightClicked(node.key, event);
 					  }
 	     	      }
 	     	    });
