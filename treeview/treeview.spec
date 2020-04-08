@@ -20,7 +20,7 @@
       						},
       						{
       						"name":"event",
-      						"type":"jsevent"
+      						"type":"JSEvent"
       						}
       					]},
       	"onNodeRightClicked": {
@@ -31,7 +31,7 @@
       						},
       						{
       						"name":"event",
-      						"type":"jsevent"
+      						"type":"JSEvent"
       						}
       					]},
 		"onNodeDoubleClicked": {
@@ -42,7 +42,7 @@
       						},
       						{
       						"name":"event",
-      						"type":"jsevent"
+      						"type":"JSEvent"
       						}
       					]},
 		"onNodeExpanded": {
