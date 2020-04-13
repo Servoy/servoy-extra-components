@@ -87,6 +87,14 @@
       					]
       	},
       	
+        "expandAll": {
+      		"parameters":[],
+      		"returns": "boolean"
+      	},
+      	"collapseAll": {
+      		"parameters":[],
+      		"returns": "boolean"
+      	},
       	"expandNode": {
       		"parameters":[
       						{

@@ -270,6 +270,40 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       	}
       	
       	/**
+      	 * 
+		 * Expand all nodes
+		 *
+		 * @example
+		 * %%elementName%%.expandeAll
+		 * 
+		 * @return {Boolean}
+		 *
+		 */
+      	$scope.api.expandAll = function() {
+      		if(theTree) {
+	  			theTree.expandAll(true);
+	  			return true;
+      		}
+      		return false;
+      	}
+
+      	/**
+		 * Collapse all nodes
+		 *
+		 * @example
+		 * %%elementName%%.collapseAll()
+		 * 
+		 * @return {Boolean}
+		 */
+      	$scope.api.collapseAll = function() {
+      		if(theTree) {
+	  			theTree.expandAll(false);
+	  			return true;
+      		}
+      		return false;
+      	}
+      	
+      	/**
 		 * Expand a node by id.
 		 *
 		 * @example
