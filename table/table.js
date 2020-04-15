@@ -331,7 +331,15 @@ return {
 		$scope.$on("dialogResize", windowResizeHandler);
 
 		$scope.$watch(function() { return $element.is(':visible') }, function(isVisible) {
-			if(isVisible) windowResizeHandler();
+			if (isVisible) {
+				windowResizeHandler();
+				
+				// sometimes when using default tabpanel, if the tab you switch to has an extra-table it will create it's elements in DOM
+				// before the tabpanel makes it's tab container display: block (it is still display: none, (foundset prop. listener comes before that if it has changes));
+				// that means that the scrollToRenderedIfNeeded() call that happened when initially rendering the table had no sizes/offset to visually scroll to rendered
+				// or selected; do it again now as well to make sure it is called
+				scrollToRenderedIfNeeded(); 
+			}
 		});
 
 
@@ -385,10 +393,28 @@ return {
 				}
 
 				if (shouldScroll) {
-					var computedInterval = centerIntervalAroundOldIntervalIfPossible(targetIntervalPosition, targetIntervalSize, renderedStartIndex, renderedSize, Math.floor(tbody.height() / getAverageRowHeight()));
-					tbody.scrollTop(tbody.children()[computedInterval[0] - renderedStartIndex + (topSpaceDiv ? 1 : 0)].offsetTop);
+					var targetIntervalStartOffsetTop = tbody.children()[(topSpaceDiv ? 1 : 0) + targetIntervalPosition - renderedStartIndex].offsetTop;
+					var targetIntervalEndElement = tbody.children()[(topSpaceDiv ? 1 : 0) + targetIntervalPosition - renderedStartIndex + targetIntervalSize - 1];
+					var targetIntervalEndOffsetBottom = targetIntervalEndElement.offsetTop + targetIntervalEndElement.offsetHeight - 1;
 
-					if ($log.debugEnabled && $log.debugLevel === $log.SPAM) $log.debug("svy extra table * scrollToRenderedIfNeeded did scroll to rendered viewport on initial load/refresh");
+					var allowedStartOffsetTop = tbody.children()[(topSpaceDiv ? 1 : 0)].offsetTop;
+					var allowedEndElement = tbody.children()[(topSpaceDiv ? 1 : 0) + renderedSize - 1];
+					var allowedEndOffsetBottom = allowedEndElement.offsetTop + allowedEndElement.offsetHeight - 1;
+						
+					// attempt to center on targeted row-index-interval but based on actual DOM locations/sizes, as rows might have different visual heights (from styling / data);
+					var computedInterval = centerAroundOldIntervalWithNewSizeIfPossible(targetIntervalStartOffsetTop,
+						targetIntervalEndOffsetBottom - targetIntervalStartOffsetTop,
+						allowedStartOffsetTop,
+						allowedEndOffsetBottom - allowedStartOffsetTop,
+						tbody.height());
+					
+					if ($log.debugEnabled && $log.debugLevel === $log.SPAM)
+						$log.debug("svy extra table * scrollToRenderedIfNeeded will scroll to rendered viewport on initial load/refresh (scrollPos: "
+							+ computedInterval[0] + ", tryingToCenterOnIndexInterval: ["
+							+ targetIntervalPosition + ", " + (targetIntervalPosition + targetIntervalSize - 1) + "], rendered: ["
+							+ renderedStartIndex + ", " + (renderedStartIndex + renderedSize - 1) + "])");
+
+					tbody.scrollTop(computedInterval[0]);
 				}
 			}
 		}
@@ -520,7 +546,7 @@ return {
 		}
 
 		// tries to center new interval of desired size around old interval without going past allowed bounds
-		function centerIntervalAroundOldIntervalIfPossible(oldStartIdx, oldSize, allowedStartIdx, allowedSize, newDesiredSize) {
+		function centerAroundOldIntervalWithNewSizeIfPossible(oldStartIdx, oldSize, allowedStartIdx, allowedSize, newDesiredSize) {
 			// try to compute center start index and compute size (if it doesn't fit in the beginning slide towards end of allowed as much as possible)
 			var computedStart = Math.max(Math.min(oldStartIdx - Math.floor( (newDesiredSize - oldSize) / 2), allowedStartIdx + allowedSize - 1), allowedStartIdx);
 			var computedSize = Math.min(newDesiredSize, allowedStartIdx + allowedSize - computedStart);
@@ -571,7 +597,7 @@ return {
 						if (neededVpSize < getInitialPreferredLoadedSize()) {
 							// center on currently loaded viewport and load more rows so that getInitialPreferredLoadedSize() is reached
 
-							var computedInterval = centerIntervalAroundOldIntervalIfPossible(vpStart, vpSize, allowedStart, allowedSize, getInitialPreferredLoadedSize());
+							var computedInterval = centerAroundOldIntervalWithNewSizeIfPossible(vpStart, vpSize, allowedStart, allowedSize, getInitialPreferredLoadedSize());
 							neededVpStart = computedInterval[0];
 							neededVpSize = computedInterval[1];
 						} // else needed bounds are already ok, we have at least the loaded batch size records already loaded
@@ -643,6 +669,8 @@ return {
 			// addIncomingMessageHandlingDoneTask will execute the task right away
 			$webSocket.addIncomingMessageHandlingDoneTask(function() {
 				if (!$scope.model.foundset) return; // should never happen
+				if (!$.contains(document, $element[0]) || $scope.$$destroyed) return; // this probably means that the foundset listener was called but the same message from server also has hidden the form
+				                                                                      // => so now that this IncomingMessageHandlingDoneTask is called we can just ignore it as it's no longer relevant (directive/scope destroyed)
 
 				var shouldCheckSelection = false;
 				var oldSelectedIdxs;
@@ -873,7 +901,7 @@ return {
 								var allowedSize = allowedBounds.size;
 
 								// center on the selection if possible, if not try to load 'getInitialPreferredLoadedSize()' anyway in total
-								var computedInterval = centerIntervalAroundOldIntervalIfPossible(firstSelected, 0, allowedStart, allowedSize, getInitialPreferredLoadedSize());
+								var computedInterval = centerAroundOldIntervalWithNewSizeIfPossible(firstSelected, 0, allowedStart, allowedSize, getInitialPreferredLoadedSize());
 								var neededVpStart = computedInterval[0];
 								var neededVpSize = computedInterval[1];
 
@@ -1381,7 +1409,7 @@ return {
 				// OR
 				// 2. the rendered viewport is outside of the loaded rows; so put it inside the loaded rows
 				// center new rendered viewport around current/old rendered viewport as much as possible
-				var computedInterval = centerIntervalAroundOldIntervalIfPossible(renderedStartIndex, renderedSize, correctedLoadedStartIdx, correctedLoadedSize, Math.max(minRenderSize, Math.min(renderedSize, correctedLoadedSize)));
+				var computedInterval = centerAroundOldIntervalWithNewSizeIfPossible(renderedStartIndex, renderedSize, correctedLoadedStartIdx, correctedLoadedSize, Math.max(minRenderSize, Math.min(renderedSize, correctedLoadedSize)));
 				if (renderedStartIndex != computedInterval[0]) {
 					renderedStartIndex = computedInterval[0];
 					changed = true;
@@ -1427,7 +1455,7 @@ return {
 				renderedSize = minRenderSize; // currently as this correction will do full re-render we will just revert to minRenderSize instead of lowering the current renderedSize; this could I guess be enhanced in the future by just lowering the renderedSize - but then we also need to do granular remove of some rendered rows, not full rerender
 				var visibleViewport = getVisibleArea(); // [startIndex, size]
 				
-				var computedInterval = centerIntervalAroundOldIntervalIfPossible(visibleViewport[0], visibleViewport[1], correctedLoadedStartIdx, correctedLoadedSize, renderedSize);
+				var computedInterval = centerAroundOldIntervalWithNewSizeIfPossible(visibleViewport[0], visibleViewport[1], correctedLoadedStartIdx, correctedLoadedSize, renderedSize);
 				if (renderedStartIndex != computedInterval[0]) {
 					renderedStartIndex = computedInterval[0];
 					changed = true;
@@ -1520,7 +1548,7 @@ return {
 					}
 				} else {
 					var newLoadedSize = Math.min(getInitialPreferredLoadedSize(), allowedBounds.size);	
-					var computedInterval = centerIntervalAroundOldIntervalIfPossible(visibleViewport[0], visibleViewport[1], allowedBounds.startIdx, allowedBounds.size, newLoadedSize);
+					var computedInterval = centerAroundOldIntervalWithNewSizeIfPossible(visibleViewport[0], visibleViewport[1], allowedBounds.startIdx, allowedBounds.size, newLoadedSize);
 					
 					promise = smartLoadNeededViewport(computedInterval[0], computedInterval[1]);
 				}
@@ -1752,7 +1780,7 @@ return {
 					var allowedRenderSize = Math.min(vp.startIndex + vp.size, allowedBounds.startIdx + allowedBounds.size) - allowedRowOffset - vp.startIndex;
 
 					// selection is in the viewport, try to make sure that is visible and centered in rendered viewport
-					var computedInterval = centerIntervalAroundOldIntervalIfPossible(formStartToSelection, 0, allowedRowOffset, allowedRenderSize, renderedSize);
+					var computedInterval = centerAroundOldIntervalWithNewSizeIfPossible(formStartToSelection, 0, allowedRowOffset, allowedRenderSize, renderedSize);
 					rowOffSet = computedInterval[0];
 					renderedSize = computedInterval[1];
 
