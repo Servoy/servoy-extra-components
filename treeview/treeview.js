@@ -274,7 +274,7 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 		 * Expand all nodes
 		 *
 		 * @example
-		 * %%elementName%%.expandeAll
+		 * %%elementName%%.expandAll
 		 * 
 		 * @return {Boolean}
 		 *
