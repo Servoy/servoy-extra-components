@@ -1824,7 +1824,9 @@ return {
                 renderedStartIndex = vp.startIndex + rowOffSet;
                 //fix issue with resizing within a dialog.
                 setTimeout(function() {
+                	try{
                     window.dispatchEvent(new Event('resize'));
+                	} catch (e) {console.log(e)}
                 },0);
 			}
 
