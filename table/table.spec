@@ -1,6 +1,7 @@
 {
 	"name": "servoyextra-table",
 	"displayName": "Table",
+	"categoryName": "Grids",
 	"version": 1,
 	"icon": "servoyextra/table/table.png",
 	"definition": "servoyextra/table/table.js",
