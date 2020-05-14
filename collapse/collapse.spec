@@ -1,6 +1,7 @@
 {
 	"name": "servoyextra-collapse",
 	"displayName": "Collapse",
+	"categoryName": "Form Containers",
 	"version": 1,
 	"icon": "servoyextra/collapse/collapse.png",
 	"definition": "servoyextra/collapse/collapse.js",

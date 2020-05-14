@@ -1,6 +1,7 @@
 {
     "name": "servoyextra-multifileupload",
     "displayName": "MultiFile Upload",
+    "categoryName": "Media",
     "version": 1,
     "icon": "servoyextra/multifileupload/multifileupload.png",
     "definition": "servoyextra/multifileupload/multifileupload.js",

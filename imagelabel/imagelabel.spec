@@ -1,6 +1,7 @@
 {
 	"name": "servoyextra-imagelabel",
 	"displayName": "Image Label",
+	"categoryName": "Media",
 	"definition": "servoyextra/imagelabel/imagelabel.js",
 	"icon": "servoyextra/onrenderlabel/label.png",
 	"version": 1,

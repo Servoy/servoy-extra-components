@@ -1,6 +1,7 @@
 {
 	"name": "servoyextra-onrenderlabel",
 	"displayName": "OnRender Label",
+	"categoryName": "Buttons & Text",
 	"version": 1,
 	"icon": "servoyextra/onrenderlabel/label.png",
 	"definition": "servoyextra/onrenderlabel/onrenderlabel.js",

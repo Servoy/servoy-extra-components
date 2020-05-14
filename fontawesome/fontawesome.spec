@@ -1,6 +1,7 @@
 {
 	"name": "servoyextra-fontawesome",
 	"displayName": "Font-awesome",
+	"categoryName": "Buttons & Text",
 	"version": 1,
 	"icon": "servoyextra/fontawesome/fontawesome.gif",
 	"definition": "servoyextra/fontawesome/fontawesome.js",

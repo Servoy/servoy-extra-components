@@ -1,6 +1,7 @@
 {
 	"name": "servoyextra-dbtreeview",
 	"displayName": "DBTreeview",
+	"categoryName": "Visualization",
 	"version": 1,
 	"icon": "servoyextra/dbtreeview/treeview.png",
 	"definition": "servoyextra/dbtreeview/dbtreeview.js",

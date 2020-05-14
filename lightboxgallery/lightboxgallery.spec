@@ -1,6 +1,7 @@
 {
 	"name": "servoyextra-lightboxgallery",
 	"displayName": "Lightbox Gallery",
+	"categoryName": "Media",
 	"version": 1,
 	"definition": "servoyextra/lightboxgallery/lightboxgallery.js",
 	"libraries": [
