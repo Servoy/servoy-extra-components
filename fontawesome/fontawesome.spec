@@ -6,6 +6,7 @@
 	"icon": "servoyextra/fontawesome/fontawesome.gif",
 	"definition": "servoyextra/fontawesome/fontawesome.js",
 	"libraries": [{"name":"fontawesome-custom.css", "version":"1.0.0", "url":"servoyextra/fontawesome/fontawesome.css", "mimetype":"text/css"}],
+	"keywords": ['style', 'styling'],
 	"model":
 	{
 		"faclass"      	: {"type":"string", "default": "fa"},

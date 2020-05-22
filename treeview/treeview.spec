@@ -7,6 +7,7 @@
 	"definition": "servoyextra/treeview/treeview.js",
 	"serverscript": "servoyextra/treeview/treeview_server.js",
 	"libraries": [{"name":"treeview.css", "version":"1", "url":"servoyextra/treeview/css/treeview.css", "mimetype":"text/css"}],
+	"keywords": [],
 	"model":
 	{
 	    "jsDataSet": {"type" :"dataset", "includeColumnNames": true, "columnTypes":{ "icon" : "media" }}

@@ -31,6 +31,7 @@
 			"mimetype": "text/css"
 		}
 	],
+	"keywords": [],
 	"model":
 	{
 		"dataProviderID": { "type":"dataprovider", "pushToServer": "allow","tags": { "scope" :"design" }, "ondatachange": { "onchange":"onDataChangeMethodID" , "callback":"onDataChangeCallback"}},

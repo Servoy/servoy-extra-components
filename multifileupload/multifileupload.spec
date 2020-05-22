@@ -13,6 +13,7 @@
         { "name": "uppy.min.js", "version": "1.4.0", "url": "servoyextra/multifileupload/lib/svyextra-multifileupload-bundle.js", "mimetype": "text/javascript" },
         { "name": "multifileupload.css", "version": "1.0", "url": "servoyextra/multifileupload/multifileupload.css", "mimetype": "text/css" }
     ],
+    "keywords": ['multiple'],
     "model": {
         "autoProceed": 					{ "type": "boolean", "default": false },
         "allowMultipleUploads": 		{ "type": "boolean", "default": true },

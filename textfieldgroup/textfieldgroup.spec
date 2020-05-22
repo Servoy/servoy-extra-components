@@ -6,6 +6,7 @@
 	"icon": "servoyextra/textfieldgroup/textbox_group.png",
 	"definition": "servoyextra/textfieldgroup/textfieldgroup.js",
 	"libraries": [{"name":"textboxgroup.css", "version":"1", "url":"servoyextra/textfieldgroup/textfieldgroup.css", "mimetype":"text/css"}],
+	"keywords": [],
 	"model":
 	{
 			"dataProviderID" : { "type":"dataprovider", "pushToServer": "allow","tags": { "scope" :"design" }, "ondatachange": { "onchange":"onDataChangeMethodID"}},

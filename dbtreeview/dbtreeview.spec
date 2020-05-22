@@ -7,6 +7,7 @@
 	"definition": "servoyextra/dbtreeview/dbtreeview.js",
 	"serverscript": "servoyextra/dbtreeview/dbtreeview_server.js",
 	"libraries": [{"name":"dbtreeview.css", "version":"1", "url":"servoyextra/dbtreeview/css/dbtreeview.css", "mimetype":"text/css"}],
+	"keywords": ['database'],
 	"model":
 	{
 	    "roots": {"type":"foundsetref[]", "tags": { "scope": "private" }},

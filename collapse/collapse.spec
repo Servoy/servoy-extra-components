@@ -10,6 +10,7 @@
 		{"name":"svy-collapse.css", "version":"1.0.0", "url":"servoyextra/collapse/svy-collapse.css", "mimetype":"text/css"},
 		{"name":"bootstrap", "version":"3.4.1", "url":"servoyextra/lib/js/bootstrap.min.js", "mimetype":"text/javascript"}
 	],
+	"keywords": [],
 	"model":
 	{
 		"collapsibles"			: { "type": "collapsible[]", "droppable": true, "pushToServer": "shallow" },

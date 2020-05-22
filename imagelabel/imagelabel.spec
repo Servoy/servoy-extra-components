@@ -5,6 +5,7 @@
 	"definition": "servoyextra/imagelabel/imagelabel.js",
 	"icon": "servoyextra/onrenderlabel/label.png",
 	"version": 1,
+	"keywords": [],
 	"model":
 	{
 		"enabled" : { "type": "enabled", "blockingOn": false, "default": true, "for": ["onActionMethodID","onRightClickMethodID"] },
