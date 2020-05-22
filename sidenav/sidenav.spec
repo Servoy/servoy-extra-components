@@ -1,6 +1,7 @@
 {
 	"name": "servoyextra-sidenav",
 	"displayName": "sidenav",
+	"categoryName": "Navigation",
 	"version": 1,
 	"icon": "servoyextra/sidenav/bars.png",
 	"definition": "servoyextra/sidenav/sidenav.js",

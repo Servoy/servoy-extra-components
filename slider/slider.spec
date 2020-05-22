@@ -1,6 +1,7 @@
 {
 	"name": "servoyextra-slider",
 	"displayName": "Slider",
+	"categoryName": "Input Control",
 	"version": 1,
 	"definition": "servoyextra/slider/slider.js",
 	"icon": "servoyextra/slider/slider.png",

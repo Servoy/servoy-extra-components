@@ -1,6 +1,7 @@
 {
 	"name": "servoyextra-select2tokenizer",
 	"displayName": "select2tokenizer",
+	"categoryName": "Input Control",
 	"version": "1.0.0",
 	"icon": "servoyextra/select2tokenizer/tags.png",
 	"definition": "servoyextra/select2tokenizer/select2tokenizer.js",

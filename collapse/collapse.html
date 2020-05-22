@@ -23,12 +23,14 @@
 			aria-controls="{{::model.svyMarkupId}}-{{$index}}-collapsible"
 			role="button" >
 			<div class="svy-collapse-header-container">
+                <span ng-if="collapsible.isCollapsed && collapsible.iconLocation == 'LEFT'" class="svy-collapse-header-icon svy-collapse-header-icon-left {{collapsible.collapsedIconName}}" aria-hidden="true"></span>
+				<span ng-if="!collapsible.isCollapsed && collapsible.iconLocation == 'LEFT'" class="svy-collapse-header-icon svy-collapse-header-icon-left {{collapsible.expandedIconName}}" aria-hidden="true"></span>
 				<div 
 					ng-bind-html="trustAsHtml(collapsible.headerHtml)"
 					class="svy-collapse-header-content" >
 				</div>
-				<span ng-if="collapsible.isCollapsed" class="svy-collapse-header-icon {{collapsible.collapsedIconName}}" aria-hidden="true"></span>
-				<span ng-if="!collapsible.isCollapsed" class="svy-collapse-header-icon {{collapsible.expandedIconName}}" aria-hidden="true"></span>
+				<span ng-if="collapsible.isCollapsed && collapsible.iconLocation == 'RIGHT'" class="svy-collapse-header-icon svy-collapse-header-icon-right {{collapsible.collapsedIconName}}" aria-hidden="true"></span>
+				<span ng-if="!collapsible.isCollapsed && collapsible.iconLocation == 'RIGHT'" class="svy-collapse-header-icon svy-collapse-header-icon-right {{collapsible.expandedIconName}}" aria-hidden="true"></span>
 			</div>
 		</div>
 		<!-- .//header -->
@@ -37,7 +39,7 @@
 
 		<!-- //form -->
 		<div 
-			ng-if="collapsible.form"
+			ng-if="collapsible.form && !collapsible.isCollapsed"
 			id="{{::model.svyMarkupId}}-{{$index}}-collapsible" 
 			class="svy-collapse-collapsible-container collapse {{::collapsible.isCollapsed ? '' : 'in'}}" 
 			aria-labelledby="{{::model.svyMarkupId}}-{{$index}}-header" 
@@ -90,7 +92,7 @@
 
 		<!-- //collapsibleHtml -->
 		<div 
-			ng-if="collapsible.collapsibleHtml"
+			ng-if="collapsible.collapsibleHtml && !collapsible.isCollapsed"
 			id="{{::model.svyMarkupId}}-{{$index}}-collapsible" 
 			class="svy-collapse-collapsible-container collapse {{::collapsible.isCollapsed ? '' : 'in'}}" 
 			aria-labelledby="{{::model.svyMarkupId}}-{{$index}}-header" 

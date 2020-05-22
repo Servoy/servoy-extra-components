@@ -15,8 +15,9 @@ $scope.api.createCollapsible = function(headerHtml, collapsibleId) {
 		form: null,
 		isCollapsed: true,
 		cards: [],
-		styleClass: null,
-		collapsedIconName: 'fa fa-2x fa-angle-down',
+        styleClass: null,
+        iconLocation: 'RIGHT',
+        collapsedIconName: 'fa fa-2x fa-angle-down',
 		expandedIconName: 'fa fa-2x fa-angle-up',
 		minResponsiveHeight: null,
 		maxResponsiveHeight: null

@@ -1,6 +1,7 @@
 {
 	"name": "servoyextra-textfieldgroup",
 	"displayName": "Textbox Group",
+	"categoryName": "Input Control",
 	"version": 1,
 	"icon": "servoyextra/textfieldgroup/textbox_group.png",
 	"definition": "servoyextra/textfieldgroup/textfieldgroup.js",

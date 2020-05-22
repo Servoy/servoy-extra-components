@@ -1,6 +1,7 @@
 {
 	"name": "servoyextra-youtubevideoembedder",
 	"displayName": "Embedded YouTube",
+	"categoryName": "Media",
 	"version": 1,
 	"definition": "servoyextra/youtubevideoembedder/youtubevideoembedder.js",
 	"libraries": [{ "name": "servoyextra-youtubeembed-css", "version": "1.0", "url": "servoyextra/youtubevideoembedder/youtubevideoembedder.css", "mimetype": "text/css" }],

@@ -1,9 +1,12 @@
 {
 	"name": "servoyextra-onrenderlabel",
 	"displayName": "OnRender Label",
+	"categoryName": "Buttons & Text",
 	"version": 1,
 	"icon": "servoyextra/onrenderlabel/label.png",
 	"definition": "servoyextra/onrenderlabel/onrenderlabel.js",
+	"deprecated": "Set the 'styleClassExpression' property on the DataLabel component from the Bootstrap Components package.",
+	"replacement": "bootstrapcomponents-datalabel",
 	"libraries": [{"name":"onrenderlabel-css", "version":"1.0", "url":"servoyextra/onrenderlabel/onrenderlabel.css", "mimetype":"text/css"}],
 	"model":
 	{

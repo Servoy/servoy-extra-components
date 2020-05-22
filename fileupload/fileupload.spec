@@ -1,6 +1,7 @@
 {
 	"name": "servoyextra-fileupload",
 	"displayName": "File upload",
+	"categoryName": "Media",
 	"version": 1,
 	"icon": "servoyextra/fileupload/fileupload.png",
 	"definition": "servoyextra/fileupload/fileupload.js",
