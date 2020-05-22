@@ -114,6 +114,14 @@
 			],
 			"returns" : "boolean"
 		},
+		"setSelectedMenuItemAsync": 
+		{
+			"async": true,
+			"parameters": 
+			[
+				{	"name": "menuItemId",	"type": "object" }
+			]
+		},
 		"addMenuItem" :{
 			"parameters":[
 				{

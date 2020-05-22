@@ -375,6 +375,22 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 						return $scope.selectItem(path.length, path[path.length - 1], node, null, preventSelectHandler, preventExpandHandler);
 					}
 				}
+				
+				/**
+				 * Client Side API
+				 *
+				 * Select the menu item with the given id.
+				 * 
+				 * This function doesn't wait for a return value; 
+				 * use setSelectedMenuItem if you want to know if the menu item can be select successfully
+				 * @public
+				 *
+				 * @param {String|Number} id
+				 *
+				 *  */
+				$scope.api.setSelectedMenuItemAsync = function(id) {
+					$scope.api.setSelectedMenuItem(id, false, false);
+				}
 
 				/**
 				 * Client Side API
