@@ -92,8 +92,15 @@ svy-collapse
 }
 
 /* holds the header icon */
-.svy-collapse-header-icon {
-	float: right;
+.svy-collapse-header-icon {}
+
+.svy-collapse-header-icon-left {
+    float: left;
+    padding-right: 5px;
+}
+
+.svy-collapse-header-icon-right {
+    float: right;
 }
 
 /* holds a single card container */

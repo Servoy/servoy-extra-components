@@ -154,7 +154,8 @@
 			"cards"							: { "type": "card[]" },
 			"styleClass"					: { "type": "styleclass", "default": "" },
 			"collapsedIconName"				: { "type": "string", "default": "fa fa-2x fa-angle-down" },
-			"expandedIconName"				: { "type": "string", "default": "fa fa-2x fa-angle-up" },
+            "expandedIconName"				: { "type": "string", "default": "fa fa-2x fa-angle-up" },
+            "iconLocation"                  : { "type": "string", "values":["LEFT", "RIGHT", "HIDDEN"], "default": "RIGHT"}, 
 			"minResponsiveHeight"			: { "type": "int", "default": null },
 			"maxResponsiveHeight"			: { "type": "int", "default": null }
 		}
