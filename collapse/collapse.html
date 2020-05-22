@@ -39,7 +39,7 @@
 
 		<!-- //form -->
 		<div 
-			ng-if="collapsible.form"
+			ng-if="collapsible.form && !collapsible.isCollapsed"
 			id="{{::model.svyMarkupId}}-{{$index}}-collapsible" 
 			class="svy-collapse-collapsible-container collapse {{::collapsible.isCollapsed ? '' : 'in'}}" 
 			aria-labelledby="{{::model.svyMarkupId}}-{{$index}}-header" 
@@ -92,7 +92,7 @@
 
 		<!-- //collapsibleHtml -->
 		<div 
-			ng-if="collapsible.collapsibleHtml"
+			ng-if="collapsible.collapsibleHtml && !collapsible.isCollapsed"
 			id="{{::model.svyMarkupId}}-{{$index}}-collapsible" 
 			class="svy-collapse-collapsible-container collapse {{::collapsible.isCollapsed ? '' : 'in'}}" 
 			aria-labelledby="{{::model.svyMarkupId}}-{{$index}}-header" 
