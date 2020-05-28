@@ -9,7 +9,7 @@
 		{"name":"lightbox.min.css", "version":"2.10.0", "url":"servoyextra/lightboxgallery/css/lightbox.min.css", "mimetype":"text/css"},
 		{"name":"lightboxgallery.css", "version":"1.0.0", "url":"servoyextra/lightboxgallery/lightboxgallery.css", "mimetype":"text/css"}
 	],
-	"keywords": ['collection', 'library'],
+	"keywords": ["collection", "library"],
 	"model":
 	{
 		"imagesFoundset"			: { "type": "foundset", "dataproviders": ["image", "caption", "thumbnail", "imageId"] },

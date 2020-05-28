@@ -7,7 +7,7 @@
 	"definition": "servoyextra/table/table.js",
 	"serverscript": "servoyextra/table/table_server.js",
 	"libraries": [{ "name": "servoyextra-table-css", "version": "1.0", "url": "servoyextra/table/table.css", "mimetype": "text/css" }, { "name": "colResizable", "version": "1.7", "url": "servoyextra/table/js/colResizable-1.7.js", "mimetype": "text/javascript" }],
-	"keywords": ['row', 'column'],
+	"keywords": ["row", "column"],
 	"model": {
 		"columns": { "type": "column[]", "droppable": true, "pushToServer": "shallow", "elementConfig": { "pushToServer": "shallow" } },
 		"currentPage": { "type": "int", "default": 1, "tags": { "scope": "runtime" }, "pushToServer": "shallow" },

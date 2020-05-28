@@ -6,7 +6,7 @@
 	"definition": "servoyextra/youtubevideoembedder/youtubevideoembedder.js",
 	"libraries": [{ "name": "servoyextra-youtubeembed-css", "version": "1.0", "url": "servoyextra/youtubevideoembedder/youtubevideoembedder.css", "mimetype": "text/css" }],
     "icon": "servoyextra/youtubevideoembedder/youtubevideoembedder.png",
-	"keywords": ['video', 'google', 'streaming'],
+	"keywords": ["video", "google", "streaming"],
 	"model": {
         "embeddedVideoURL": { "type": "string" },
         "dataProviderID": { "type":"dataprovider", "tags": { "scope": "design"}},

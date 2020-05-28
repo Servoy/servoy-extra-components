@@ -10,7 +10,7 @@
 		{ "name": "slider", "version": "1.0", "url": "servoyextra/slider/svy-slider.css", "mimetype": "text/css" }, 
 		{ "name": "rzslider", "version": "6.4.3", "url": "servoyextra/slider/rzslider/rzslider.min.js", "mimetype": "text/javascript" }
 	],
-	"keywords": ['step', 'move'],
+	"keywords": ["step", "move"],
 	"model":
 	{
 		"size"							: { "type": "dimension", "default": {"width": 400, "height": 70} },

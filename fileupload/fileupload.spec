@@ -8,7 +8,7 @@
 	"libraries": [
 		{"name":"fileupload.css", "version":"1", "url":"servoyextra/fileupload/fileupload.css", "mimetype":"text/css"}
 	],
-	"keywords": ['transfer'],
+	"keywords": ["transfer"],
 	"model":
 	{
 	        "dataProviderID" 			: { "type" : "dataprovider", "pushToServer": "allow", "tags": { "scope": "design", "typeName": "mediaDataprovider" }, "ondatachange": { "onchange":"onDataChangeMethodID"}, "displayTagsPropertyName" : "displaysTags"},
