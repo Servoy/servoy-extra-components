@@ -419,7 +419,7 @@ return {
 			}
 		}
 
-		function onTableRendered() {
+		function onTableRendered(isNewTBody) {
 			updateSelection($scope.model.foundset.selectedRowIndexes, null);
 			scrollToSelectionIfNeeded();
 			adjustLoadedRowsIfNeeded();
@@ -494,6 +494,9 @@ return {
 						}
 					}
 					updateTBodyStyle(tbl.find("tbody")[0]);
+				}
+				if(isNewTBody) {
+					tbody[0].style.removeProperty("overflow-x");
 				}
 			}, 0);
 		}
@@ -2085,6 +2088,18 @@ return {
 				if ($element.closest("body").length > 0) $timeout(generateTemplate);
 				return;
 			}
+
+			// if not  visible yet in DOM, clear cached styles + componentWidth, so they are recalculated when visible
+			// this only happens in firefox when using it in tab panels
+			if($scope.model.visible && !$element.is(":visible")) {
+				columnStyleCache = [];
+				$scope.componentWidth = undefined;
+				$timeout(function() { 
+					generateTemplate(full)
+				});
+				return;
+			}
+
 			if (full)
 			{
 				tableLeftOffset = 0;
@@ -2095,10 +2110,14 @@ return {
 				updateTableColumnStyleClass(c, getCellStyle(c));
 				columnStyleClasses[c] = columns[c].styleClass;
 			}
+			var isNewTBody = false;
 			if (tbodyJQ.children().length == (topSpaceDiv ? 1 : 0) + (bottomSpaceDiv ? 1 : 0) || full) {
 				var formatFilter = $filter("formatFilter");
 				var tbodyOld = tbodyJQ[0];
 				var tbodyNew = document.createElement("TBODY");
+				isNewTBody = true;
+				// if new body, hide overflow-x until it is rendered, to avoid flickering because of show/hide of it
+				tbodyNew.style.overflowX = "hidden";
 				tbody = $(tbodyNew);
 				topSpaceDiv = null;
 				bottomSpaceDiv = null;
@@ -2316,7 +2335,7 @@ return {
 				updateRenderedRows(null);
 			}
 
-			onTableRendered();
+			onTableRendered(isNewTBody);
 		}
 
 		function setCellDivValue(column, divElement, value) {
