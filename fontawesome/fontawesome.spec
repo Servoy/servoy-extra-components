@@ -7,6 +7,8 @@
 	"definition": "servoyextra/fontawesome/fontawesome.js",
 	"libraries": [{"name":"fontawesome-custom.css", "version":"1.0.0", "url":"servoyextra/fontawesome/fontawesome.css", "mimetype":"text/css"}],
 	"keywords": ["style", "styling"],
+	"deprecated": "Set the 'imageStyleClass' property of the Label or DataLabel from the Boostrap Components package.",
+	"replacement": "bootstrapcomponents-label",
 	"model":
 	{
 		"faclass"      	: {"type":"string", "default": "fa", "tags": { "doc": "Example 'fas fa-search' <br/>If you want to use Font Awesome classes you need to enable the Font Awesome service from the Servoy Package Manager. "}},
