@@ -67,7 +67,14 @@
       						"name":"nodeId",
       						"type":"object"
       						}
-      					]}
+      					]},
+      	"onReady": {
+		      	"parameters":[
+      						{
+      						"name":"event",
+      						"type":"JSEvent"
+      						}
+      			]}
 	},
 	"api":
 	{

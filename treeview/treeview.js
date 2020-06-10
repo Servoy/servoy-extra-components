@@ -79,7 +79,17 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 				},
 				collapse: function(event, data) {
 					if($scope.handlers.onNodeCollapsed) $scope.handlers.onNodeCollapsed(data.node.key);
+				},
+				init: function (event, data) {
+					if ($scope.handlers.onReady) {
+						$scope.handlers.onReady(event);
+					}
 				}
+//				create: function (event, data) {
+//					if ($scope.handlers.onReady) {
+//						$scope.handlers.onReady(event);
+//					}
+//				}
 // 				wide: {
 // 					iconWidth: "1em",     // Adjust this if @fancy-icon-width != "16px"
 // 					iconSpacing: "0.5em", // Adjust this if @fancy-icon-spacing != "3px"

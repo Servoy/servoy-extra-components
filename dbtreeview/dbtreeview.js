@@ -3,6 +3,7 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
       restrict: 'E',
       scope: {
     	  model: "=svyModel",
+		  handlers: "=svyHandlers",
     	  svyServoyapi: "=",
     	  api: "=svyApi"
       },
@@ -120,7 +121,12 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 				},
 				createNode: function(event, data){
 			        bindContextMenu(data.node.span);
-			    }
+			    },
+				init: function (event, data) {
+					if ($scope.handlers.onReady) {
+						$scope.handlers.onReady(event);
+					}
+				}
  			});
       		theTree = theTree.fancytree("getTree");
      	}
