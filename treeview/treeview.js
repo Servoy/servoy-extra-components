@@ -114,7 +114,7 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       		
       		/** if should be rendered as a table */
       		if (isTableView()) {
-					treeOptions.extensions = ["table"]
+					treeOptions.extensions.push("table");
 					treeOptions.table = {
 	 					nodeColumnIdx: 0         // render node expander, icon, and title to this column (default: #0)
 	 				}
