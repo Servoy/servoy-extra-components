@@ -39,6 +39,12 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
     	
       	function initTree() {
       		var treeOptions = {
+	      		  extensions: ["filter"],
+				  filter: {  // override default settings
+				    counter: true, // No counter badges
+				    mode: "hide",  // "dimm": Grayout unmatched nodes, "hide": remove unmatched nodes
+				    highlight: false
+				  },
  				source: treeJSON,
  				selectMode: 1,
 // 				extensions: ["wide"],
@@ -487,6 +493,56 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 	  			}
       		}
       		return rootNodesId;
+      	}
+      	
+       	/**
+       	 * Dimm or hide unmatched nodes.
+       	 * 
+       	 * <br>
+       	 * <b>NOTE</b>: This function might not work as expected if the node titles contain HTML markup.
+       	 * 
+       	 * 
+      	 * @param {String} text filter nodes matching the given text
+      	 * @param {Object} [options] filter options
+      	 * 
+       	 * <br>
+       	 * <br>
+       	 * List of options:
+       	 * <br>
+		 *	<b>autoExpand</b>, type: {boolean}, default: false
+		 * 	Temporarily expand matching node parents while filter is active.
+		 *	<br>
+		 *	<b>fuzzy</b>, type: {boolean}, default: false
+		 *	Match single characters in order, e.g. 'fb' will match 'FooBar'.
+		 *	<br>
+		 *	<b>hideExpanders</b>, type: {boolean}, default: false
+		 *	Hide hideExpanders expanders if all child nodes are hidden by filter.
+		 *	<br>
+		 *	<b>highlight</b>, type: {boolean}, default: false
+		 *	Highlight matches by wrapping inside tags.
+		 *	<br>
+		 *	<b>leavesOnly</b>, type: {boolean}, default: false
+		 *	Match end nodes only.
+		 *	<br>
+		 *	<b>mode</b>, type: {string: 'dimm' | 'hide'}, default: 'hide'
+		 *	Defines if unmatched nodes are grayed out or hidden.
+		 *	<br>
+		 *	<b>nodata</b>, type: {boolean|string|object|function}, default: true
+		 *	Display the string 'No data' if the filtered tree would be empty.
+		 *
+		 * @example <pre>
+		 * elements.tree.filterNodes(searchFilter, {mode: 'hide', autoExpand: true, leavesOnly: true});
+		 * </pre>
+		 * 
+		 */
+      	$scope.api.filterNodes = function(text, options) {
+      		if(theTree) {
+      			if (text) {
+      				theTree.filterNodes(text, options);
+      			} else {
+      				theTree.clearFilter();
+      			}
+      		}
       	}
       	
       },

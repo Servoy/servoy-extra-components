@@ -177,6 +177,19 @@
       	
 		"getRootNodes": {   	
       		"returns": "object"
+      	},
+      	"filterNodes": {
+      		"parameters":[
+      						{
+      						"name":"text",
+      						"type":"string"
+      						}, {
+      						"name":"options",
+      						"type":"object",
+      						"optional":true
+      						}
+      					],     	
+      		"returns": "int"
       	}
 	}
 }
