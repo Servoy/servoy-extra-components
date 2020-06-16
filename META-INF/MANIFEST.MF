@@ -61,3 +61,12 @@ Web-Component: True
 
 Name: multifileupload/multifileupload.spec
 Web-Component: True
+
+Name: splitpane/splitpane.spec
+Web-Component: True
+
+Name: htmlarea/htmlarea.spec
+Web-Component: True
+
+Name: spinner/spinner.spec
+Web-Component: True

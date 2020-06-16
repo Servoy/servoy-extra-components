@@ -1,0 +1,14 @@
+<div class='svy-extra-splitpane' 
+	 ng-style="getLayoutStyle()"
+     id="{{::model.svyMarkupId}}" 
+     sablo-tabseq='model.tabSeq' 
+     sablo-tabseq-config="{container: true, reservedGap: 50}">
+	<bg-splitter orientation="{{model.splitType == 1 ? 'vertical' : 'horizontal' }}" on-divider-change="onChange()">
+		<bg-pane min-size="model.pane1MinSize" paneloadchecker="split1">
+			<div ng-include="getForm(model.panes[0])" sablo-tabseq='1' sablo-tabseq-config="{container: true}" style="position:absolute;width:100%;height:100%;overflow:auto;"></div>
+		</bg-pane>
+		<bg-pane min-size="model.pane2MinSize" paneloadchecker="split2">
+			<div ng-include="getForm(model.panes[1])" sablo-tabseq='2' sablo-tabseq-config="{container: true}" style="position:absolute;width:100%;height:100%;overflow:auto;"></div>
+		</bg-pane>
+	</bg-splitter>
+</div>
