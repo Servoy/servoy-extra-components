@@ -18,7 +18,7 @@
 	        "readOnly" : { "type": "protected", "for": ["onChangeMethodID"] }, 
 	        "resizeWeight" : {"type":"double","default":0}, 
 	        "styleClass" : { "type" :"styleclass", "tags": { "scope" :"design" }, "values" :[]}, 
-	        "splitType" : {"type" :"int", "tags": { "scope" :"design" }, default:0, "values" :[{"HORIZONTAL":0}, {"VERTICAL":1}]}, 
+	        "splitType" : {"type" :"int", "tags": { "scope" :"design" }, "default":0, "values" :[{"HORIZONTAL":0}, {"VERTICAL":1}]}, 
 	        "tabSeq" : {"type" :"tabseq", "tags": { "scope" :"design" }}, 
 	        "panes" : {"type":"pane[]", "pushToServer": "allow", "droppable":true},
 	        "visible" : "visible",
