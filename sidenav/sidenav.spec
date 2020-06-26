@@ -225,6 +225,22 @@
 				{ "name": "menuItemId",	"type": "object" }
 			],
 			"returns" : "boolean"
+		},
+		"getLocation": 
+		{
+			"parameters": 
+			[
+				{ "name": "menuItemId",	"type": "object" }
+			],
+			"returns" : "point"
+		},
+		"getSize": 
+		{
+			"parameters": 
+			[
+				{ "name": "menuItemId",	"type": "object" }
+			],
+			"returns" : "dimension"
 		}
 	},
 	"types": {

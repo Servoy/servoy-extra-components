@@ -77,7 +77,8 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				var isDisabled;
 				var isNodeSelected;
 				var isNodeExpanded;
-
+				var getDOMElementByID;
+				
 				/**
 				 * @typedef {{id: String|Number ,
 				 * text: String=,
@@ -528,6 +529,39 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					}
 				}
 
+				/**
+				 * Retrieves the screen location of a specific menu item. Returns the location as point (object with x and y properties).
+				 * 
+				 * @param {object} nodeId the node to retrieve location for.
+				 * @return {point} the location of the menu item.
+				 */
+				$scope.api.getLocation = function(nodeId)
+				{
+					var domElement = getDOMElementByID(nodeId);
+					if (domElement)
+					{
+						var position = domElement.offset();
+						return {x: position.left, y: position.top};
+					}
+					return null;
+				}
+				
+				/**
+				 * Retrieves the size of a specific menu item. Returns the size as dimension (object with width and height properties).
+				 * 
+				 * @param {object} nodeId the node to retrieve size for.
+				 * @return {dimension} the size of the menu item.
+				 */
+				$scope.api.getSize = function(nodeId)
+				{
+					var domElement = getDOMElementByID(nodeId);
+					if (domElement)
+					{
+						return {width: domElement.width(), height: domElement.height()};
+					}
+					return null;
+				}
+				
 				/***********************************************************************************
 				 * Private Methoods
 				 ***********************************************************************************/
@@ -904,6 +938,22 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					var event = document.createEvent("MouseEvents");
 					event.initMouseEvent("click", false, true, window, 1, x, y, x, y, false, false, false, false, 0, null);
 					return event;
+				},
+				
+				getDOMElementByID = function(nodeId)
+				{
+					var indexPath = getPathToNode(nodeId, $scope.model.menu);
+					if (indexPath)
+					{
+						var foundElement = $element;
+						for (var i=0;i<indexPath.length;i++)
+						{
+							var foundElement = foundElement.find("ul.sn-level-"+(i+1));
+							foundElement = $(foundElement.children()[i]);
+						}
+						return foundElement;
+					}	
+					return null;
 				}
 			},
 			link: function($scope, $element, $attrs) {
@@ -938,7 +988,14 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 								animateMenuHover($scope.model.open);
 								animateSlideMenu(value);
 								setTimeout(function() {
-									window.dispatchEvent(new Event('resize')); //fix issue with resize
+									var event;
+									if (typeof(Event) === 'function') {
+										event = new Event('resize');
+									} else {
+										event = document.createEvent('Event');
+										event.initEvent('resize', true, true);
+									}
+									window.dispatchEvent(event); //fix issue with resize
 								}, 500);
 								break;
 							case "styleClass":
