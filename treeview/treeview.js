@@ -220,7 +220,8 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       		
       		var idIdx = jsDataSet[0].indexOf("id");
       		var pidIdx = jsDataSet[0].indexOf("pid")
-      		var iconIdx = jsDataSet[0].indexOf("icon");
+			var iconIdx = jsDataSet[0].indexOf("icon");
+			if(iconIdx == -1) iconIdx = jsDataSet[0].indexOf("fa-icon");
       		var treeColumnIdx = jsDataSet[0].indexOf("treeColumn");
       		
       		// index for extra columns
