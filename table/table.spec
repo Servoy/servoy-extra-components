@@ -12,7 +12,7 @@
 		"columns": { "type": "column[]", "droppable": true, "pushToServer": "shallow", "elementConfig": { "pushToServer": "shallow" } },
 		"currentPage": { "type": "int", "default": 1, "tags": { "scope": "runtime" }, "pushToServer": "shallow" },
 		"foundset": { "type": "foundset", "default" : {"foundsetSelector":""}, "pushToServer": "allow", "initialPreferredViewPortSize": 130, "sendSelectionViewportInitially": true },
-		"pageSize": { "type": "int", "default": 20 },
+		"pageSize": { "type": "int", "default": 20, "tags": { "doc" :"Number of rows per page, 0 means infinite scrolling mode." } },
 		"styleClass": { "type": "styleclass", "tags": { "scope": "design" }, "default": "table", "values": ["table", "table-striped", "table-bordered", "table-hover", "table-condensed"] },
 		"sortStyleClass": { "type": "styleclass", "default": "selected-column " },
 		"selectionClass": { "type": "styleclass", "default": "table-servoyextra-selected " },
@@ -21,16 +21,16 @@
 		"visible": "visible",
 		"enableColumnResize": { "type": "boolean", "default": false },
 		"enableSort": { "type": "boolean", "default": true },
-		"responsiveHeight": { "type": "int", "default": 300 },
-		"responsiveDynamicHeight": { "type": "boolean", "default": false },
+		"responsiveHeight": { "type": "int", "default": 300, "tags": { "doc" :"Height of the table, set only in responsive forms."} },
+		"responsiveDynamicHeight": { "type": "boolean", "default": false, "tags": { "doc" :"When is set, the height is defined by the number of rows; if the calculated height exceeds 'responsiveHeight', then the later will be used as height."} },
 		"minRowHeight": { "type": "string", "default": "25px","tags": { "scope": "design" } },
 		"sortupClass": { "type": "styleclass", "default": "table-servoyextra-sort-up " },
 		"sortdownClass": { "type": "styleclass", "default": "table-servoyextra-sort-down " },
 		"sortColumnIndex": { "type": "int", "default": -1, "tags": { "scope": "runtime" }, "pushToServer": "shallow" },
 		"sortDirection": { "type": "string", "tags": { "scope": "runtime" }, "pushToServer": "shallow" },
 		"lastSelectionFirstElement": { "type": "int", "default": -1, "tags": { "scope": "private" }, "pushToServer": "shallow" },
-		"performanceSettings" : { "type": "settings", "tags": { "scope": "design" } },
-		"keyCodeSettings" : { "type": "keyCodeSettings", "tags": { "scope": "design" } }
+		"performanceSettings" : { "type": "settings", "tags": { "scope": "design","doc" :"Settings for incremental scrolling, see github wiki for more details." } },
+		"keyCodeSettings" : { "type": "keyCodeSettings", "tags": { "scope": "design", "doc" :"Enable/Disable key bindings." } }
 	},
 	"types": {
 		"column": {

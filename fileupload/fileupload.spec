@@ -16,7 +16,7 @@
 	        "enabled" 					: { "type" : "enabled", "blockingOn": false, "default": true, "for": ["onActionMethodID","onDoubleClickMethodID","onRightClickMethodID"] }, 
 	        "location" 					: { "type" : "point" }, 
 	        "size" 						: { "type" : "dimension",  "default" : {"width":80, "height":20} }, 
-	        "accept"					: { "type" : "string", "default": "*/*" },
+	        "accept"					: { "type" : "string", "default": "*/*", "tags": { "doc" :"Html accept attribute - defines accepted files to be uploaded. Default is all files."} },
 	        "styleClass" 				: { "type" : "styleclass", "tags": { "scope" :"design" }, "values" :[] }, 
 	        "styleClassExpression" 		: { "type" : "dataprovider", "tags": { "scope" :"design" }}, 
 	        "iconStyleClass" 			: { "type" : "styleclass", "tags": { "scope" :"design" }, "default": "fa fa-upload fa-3x", "values" :[]}, 
@@ -31,7 +31,7 @@
 			"uploadCancelText" 			: { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "Upload canceled"},  
             "uploadNotSupportedText" 	: { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "File Drag/Drop is not supported for this browser"},
             "uploadNotSupportedFileText": { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "File type is not supported for upload"},
-			"resultDisplayTimeout"		: { "type" : "int", "default": 2000 },
+			"resultDisplayTimeout"		: { "type" : "int", "default": 2000, "tags": { "doc" :"Delay before displaying the upload result - in milliseconds"}  },
 	        "visible" 					: { "type" : "visible" } 
 	},
 	"handlers":

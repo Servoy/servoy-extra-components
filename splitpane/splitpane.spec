@@ -10,8 +10,8 @@
 	"keywords": [],
 	"model":
 	{
-	        "divLocation" : { "type": "double", "pushToServer": "shallow", "default": -1 }, 
-	        "divSize" : { "type": "int", "default": 5 }, 
+	        "divLocation" : { "type": "double", "pushToServer": "shallow", "default": -1 , "tags": { "doc" :"Sets the initial splitter div location, between 0 and 1 is a percentange, more than 1 is a value in pixels."}}, 
+	        "divSize" : { "type": "int", "default": 5, "tags": { "doc" :"Size of the splitter div - in pixels."} }, 
 	        "enabled" : { "type": "enabled", "blockingOn": false, "default": true, "for": ["onChangeMethodID"] }, 
 	        "pane1MinSize" : {"type":"int","default":30}, 
 	        "pane2MinSize" : {"type":"int","default":30}, 
@@ -22,7 +22,7 @@
 	        "tabSeq" : {"type" :"tabseq", "tags": { "scope" :"design" }}, 
 	        "panes" : {"type":"pane[]", "pushToServer": "allow", "droppable":true},
 	        "visible" : "visible",
-			"responsiveHeight": { "type": "int", "default": 300 }
+			"responsiveHeight": { "type": "int", "default": 300, "tags": { "doc" :"Minimum height of the splitpane, set only in responsive forms."} }
 	},
 	"handlers":
 	{

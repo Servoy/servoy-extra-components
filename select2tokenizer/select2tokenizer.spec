@@ -51,7 +51,6 @@
         "enabled" : { "type": "enabled", "blockingOn": false, "default": true, "for": ["dataProviderID","onDataChangeMethodID"] },
         "readOnly" : { "type": "protected", "blockingOn": true, "default": false,"for": ["dataProviderID","onDataChangeMethodID"], "tags": { "scope" :"runtime" } },
         "maximumSelectionSize": {"type": "int", "tags": { "scope" :"design" }},
-           
         "valueSeparator" : {"type" :"string", "tags" : {"scope" :"private"}, "values" : [{"NEW_LINE":"new_line"}, {"COMMA": "comma"}], "default" : "new_line"},    
         "size" : {"type" :"dimension",  "default" : {"width":140, "height":32}}, 
         "location" : "point"

@@ -8,8 +8,8 @@
     "icon": "servoyextra/youtubevideoembedder/youtubevideoembedder.png",
 	"keywords": ["video", "google", "streaming"],
 	"model": {
-        "embeddedVideoURL": { "type": "string" },
-        "dataProviderID": { "type":"dataprovider", "tags": { "scope": "design"}},
+        "embeddedVideoURL": { "type": "string", "tags": { "doc" :"The youtube url can be provided as dataprovider (using dataProviderID property) or as text (using embeddedVideoURL property)."} },
+        "dataProviderID": { "type":"dataprovider", "tags": { "scope": "design","doc" :"The youtube url can be provided as dataprovider (using dataProviderID property) or as text (using embeddedVideoURL property)."}},
 		"videoWidth": { "type": "int", "default": 426 },
 		"videoHeight": { "type": "int", "default": 240 },
 		"allowFullScreen": { "type": "boolean", "default": true },

@@ -14,10 +14,10 @@
 	    "bindings" : {"type":"binding[]", "tags": { "scope": "private" }},
 	    "visible" : {"type":"boolean", "default":true},
 		"enabled" : {"type":"boolean", "default":true},
-		"autoRefresh": {"type":"boolean", "default":true},
+		"autoRefresh": {"type":"boolean", "default":true, "tags": { "doc" :"If true, component listens to foundset changes and updates itself while visible."}},
 	    "selection" : {"type":"object[]", "tags": { "scope": "private" }},
 	    "levelVisibility" : {"type":"levelVisibilityType", "tags": { "scope": "private" }, "pushToServer": "shallow"},
-		"responsiveHeight": { "type": "int", "default": 0 }
+		"responsiveHeight": { "type": "int", "default": 0, "tags": { "doc" :"Height of the treeview, set only in responsive forms."} }
 	},
 	"handlers": {
 		      	"onReady": {

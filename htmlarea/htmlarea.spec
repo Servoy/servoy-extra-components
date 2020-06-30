@@ -21,7 +21,7 @@
 	        "text" : { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags" }, 
 	        "toolTipText" : { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags" }, 
 	        "visible" : "visible",
-			"responsiveHeight": { "type": "int", "default": 300 }
+			"responsiveHeight": { "type": "int", "default": 300, "tags": { "doc" :"Min height of the html editor, set only in responsive forms."} }
 	},
 	"handlers":
 	{

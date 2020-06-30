@@ -13,7 +13,7 @@
 	"keywords": ["collection", "library"],
 	"model":
 	{
-		"imagesFoundset"			: { "type": "foundset", "dataproviders": ["image", "caption", "thumbnail", "imageId"] },
+		"imagesFoundset"			: { "type": "foundset", "dataproviders": ["image", "caption", "thumbnail", "imageId"], "tags": { "doc" :"Component uses columns: imageId , image, caption and thumbnail from the foundset."} },
 		"maxImageWidth"				: { "type": "int" },
 		"maxImageHeight"			: { "type": "int" },
 		"albumLabel"				: { "type": "string", "default": "image %1 of %2" },

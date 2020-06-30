@@ -22,7 +22,7 @@
 	        "toolTipText" : { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags" },
 	        "valuelistID" : { "type" : "valuelist", "tags": { "scope" :"design" }, "for": "dataProviderID"}, 
 	        "visible" : "visible",
-			"responsiveHeight": { "type": "int", "default": 30 }
+			"responsiveHeight": { "type": "int", "default": 30 , "tags": { "doc" :"Minimum height of the spinner, set only in responsive forms."}}
 	},
 	"handlers":
 	{

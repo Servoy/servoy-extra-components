@@ -18,8 +18,8 @@
 		"tabSeq"						: { "type": "tabseq", "tags": { "scope": "design" } },
 		"containedForm"					: {"type" :"form"},
 		"relationName"					: "relation",
-		"sidenavWidth"					: {"type" :"int", "default":"300"},
-		"responsiveHeight" 				: {"type" :"int", "default":0},
+		"sidenavWidth"					: {"type" :"int", "default":"300", "tags": { "doc" :"Width of the container"}},
+		"responsiveHeight" 				: {"type" :"int", "default":0, "tags": { "doc" :"Height of the container, set only in responsive forms."}},
 		
 		"iconOpenStyleClass"			: {"type" :"styleclass", "tags": { "scope" :"design" }, "default": "fa fa-bars"},
 		"iconCloseStyleClass"			: {"type" :"styleclass", "tags": { "scope" :"design" }, "default": "fa fa-bars"},
