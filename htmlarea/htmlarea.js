@@ -273,9 +273,17 @@ angular.module('servoyextraHtmlarea',['servoy','ui.tinymce']).directive('servoye
 			* @param mustExecuteOnFocusGainedMethod (optional) if false will not execute the onFocusGained method; the default value is true
 	    	*/
 			$scope.api.requestFocus = function(mustExecuteOnFocusGainedMethod) {
-				$scope.mustExecuteOnFocusGainedMethod = mustExecuteOnFocusGainedMethod;
-				$scope.editor.focus();
-				delete $scope.mustExecuteOnFocusGainedMethod;
+			    $scope.mustExecuteOnFocusGainedMethod = mustExecuteOnFocusGainedMethod;
+                if ($scope.editor.initialized)
+                {
+                    $scope.editor.focus();
+                    delete $scope.mustExecuteOnFocusGainedMethod;
+                }
+                else {
+                    $timeout(function(){
+                        $scope.api.requestFocus(mustExecuteOnFocusGainedMethod);
+                    },10);
+                }
 			}
 			
 			var element = $element.children().first();
