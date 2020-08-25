@@ -1,4 +1,4 @@
-angular.module('servoyextraHtmlarea',['servoy','ui.tinymce']).directive('servoyextraHtmlarea', function($apifunctions, $sabloConstants, $svyProperties,$applicationService) {  
+angular.module('servoyextraHtmlarea',['servoy','ui.tinymce']).directive('servoyextraHtmlarea', function($apifunctions, $sabloConstants, $svyProperties,$applicationService,$timeout) {  
 	return {
 		restrict: 'E',
 		scope: {
