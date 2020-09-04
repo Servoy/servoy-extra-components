@@ -44,7 +44,8 @@
 			"width": { "type": "string", "default": "auto"},
 			"initialWidth": { "type": "string", "tags": { "scope": "runtime" } },
 			"autoResize": { "type": "boolean", "default": false },
-			"showAs": { "type": "string", "default": "text", "values": ["text", "html", "sanitizedHtml"] }
+			"showAs": { "type": "string", "default": "text", "values": ["text", "html", "sanitizedHtml"] },
+			"id" : {"type": "string", "tags": {"doc": "Used to identify the column in cell event handlers, because column index can change if columns are added/removed at runtime."}}
 		},
 		"settings": {
 			"minBatchSizeForRenderingMoreRows" : { "type": "int", "default": 10 }, 
@@ -91,6 +92,10 @@
 				"name": "event",
 				"type": "JSEvent",
 				"optional": true
+			}, {
+				"name": "columnid",
+				"type": "string",
+				"optional": true
 			}]
 		},
 		"onCellDoubleClick": {
@@ -109,6 +114,10 @@
 			}, {
 				"name": "event",
 				"type": "JSEvent",
+				"optional": true
+			}, {
+				"name": "columnid",
+				"type": "string",
 				"optional": true
 			}]
 		},
@@ -129,6 +138,10 @@
 				"name": "event",
 				"type": "JSEvent",
 				"optional": true
+			}, {
+				"name": "columnid",
+				"type": "string",
+				"optional": true
 			}]
 		},
 		"onHeaderClick": {
@@ -141,6 +154,10 @@
 			}, {
 				"name": "event",
 				"type": "JSEvent",
+				"optional": true
+			}, {
+				"name": "columnid",
+				"type": "string",
 				"optional": true
 			}],
 			"returns": "string"
@@ -155,6 +172,10 @@
 			}, {
 				"name": "event",
 				"type": "JSEvent",
+				"optional": true
+			}, {
+				"name": "columnid",
+				"type": "string",
 				"optional": true
 			}],
 			"returns": "string"

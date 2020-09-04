@@ -991,6 +991,7 @@ return {
 				var row_column = $(elements[i]).data("row_column");
 				if (row_column) {
 					var columnIndex = row_column.column;
+					var columnId = row_column.id;
 					var idxInFs = row_column.idxInFs;
 					var idxInViewport = getViewportIndexFromFoundsetIndex(idxInFs);
 					var newSelection = [idxInFs];
@@ -1037,23 +1038,23 @@ return {
 								$scope.timerID= setTimeout(function(){
 									$scope.timerID = null;
 									$scope.$apply(function() {
-										$scope.handlers.onCellClick(idxInFs + 1, columnIndex, $scope.model.foundset.viewPort.rows[idxInViewport], event);
+										$scope.handlers.onCellClick(idxInFs + 1, columnIndex, $scope.model.foundset.viewPort.rows[idxInViewport], event, columnId);
 									});
 								},250)
 							}
 						}
 						else
 						{
-							$scope.handlers.onCellClick(idxInFs + 1, columnIndex, $scope.model.foundset.viewPort.rows[idxInViewport], event);
+							$scope.handlers.onCellClick(idxInFs + 1, columnIndex, $scope.model.foundset.viewPort.rows[idxInViewport], event, columnId);
 						}
 					}
 
 					if (type == 2 && $scope.handlers.onCellRightClick) {
-						$scope.handlers.onCellRightClick(idxInFs + 1, columnIndex, $scope.model.foundset.viewPort.rows[idxInViewport], event);
+						$scope.handlers.onCellRightClick(idxInFs + 1, columnIndex, $scope.model.foundset.viewPort.rows[idxInViewport], event, columnId);
 					}
 					
 					if (type == 3 && $scope.handlers.onCellDoubleClick) {
-						$scope.handlers.onCellDoubleClick(idxInFs + 1, columnIndex, $scope.model.foundset.viewPort.rows[idxInViewport], event);
+						$scope.handlers.onCellDoubleClick(idxInFs + 1, columnIndex, $scope.model.foundset.viewPort.rows[idxInViewport], event, columnId);
 					}
 				}
 			}
@@ -1091,7 +1092,7 @@ return {
 					if ($scope.model.enableSort && ($scope.model.sortColumnIndex != column)) {
 						$scope.model.sortDirection = null;
 					}
-					$scope.handlers.onHeaderClick(column, $scope.model.sortDirection, event).then(function(ret) {
+					$scope.handlers.onHeaderClick(column, $scope.model.sortDirection, event, $scope.model.columns[column]['id']).then(function(ret) {
 					      if (ret == "override")
 					         return;
 							if ($scope.model.enableSort) {
@@ -1118,7 +1119,7 @@ return {
 		if ($scope.handlers.onHeaderRightClick) {
 			$scope.headerRightClicked = function(event, column) {
 				if ($scope.handlers.onHeaderRightClick) {
-					$scope.handlers.onHeaderRightClick(column, $scope.model.sortDirection, event);
+					$scope.handlers.onHeaderRightClick(column, $scope.model.sortDirection, event, $scope.model.columns[column]['id']);
 				}
 			}
 		}
@@ -1902,7 +1903,7 @@ return {
 					for (var c = columns.length; --c >= 0;) {
 						var column = columns[c];
 						var td = trChildren.eq(c);
-						td.data('row_column', { idxInFs: getFoundsetIndexFromViewportIndex(rowIdxInFoundsetViewport), column: c });
+						td.data('row_column', { idxInFs: getFoundsetIndexFromViewportIndex(rowIdxInFoundsetViewport), column: c , id: column.id});
 						var tdClass = 'c' + c;
 						if (column.styleClass) {
 							tdClass += ' ' + column.styleClass;
@@ -2358,7 +2359,7 @@ return {
 			for (var c = 0; c < columns.length; c++) {
 				var column = columns[c];
 				var td = document.createElement("TD");
-				$(td).data('row_column', { idxInFs: getFoundsetIndexFromViewportIndex(idxInLoaded), column: c });
+				$(td).data('row_column', { idxInFs: getFoundsetIndexFromViewportIndex(idxInLoaded), column: c, id: column.id });
 				var tdClass = 'c' + c;
 				if (column.styleClass) {
 					tdClass += ' ' + column.styleClass;
