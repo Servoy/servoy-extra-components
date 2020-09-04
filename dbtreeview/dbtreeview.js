@@ -45,18 +45,20 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
  				scrollParent: $element.find(".dbtreeview"),
  				checkbox: true,
 				select: function(event, data) {
-					var v = data.node.selected
-					if("number" == data.node.data.checkboxvaluedataprovidertype) {
-						v = v ? 1 : 0;
-					} else if ("string" == data.node.data.checkboxvaluedataprovidertype) {
-						v = v ? 'true' : 'false'
-					}
-					foundset_manager.updateFoundSetRow(
-							data.node.key.substring(0, data.node.key.lastIndexOf('_')),
-							data.node.data._svyRowId,
-							data.node.data.checkboxvaluedataprovider,
-							v);
-					
+					var eventType = event.type;
+					if(data.node.data.checkboxvaluedataprovider) {
+						var v = data.node.selected
+						if("number" == data.node.data.checkboxvaluedataprovidertype) {
+							v = v ? 1 : 0;
+						} else if ("string" == data.node.data.checkboxvaluedataprovidertype) {
+							v = v ? 'true' : 'false'
+						}
+						foundset_manager.updateFoundSetRow(
+								data.node.key.substring(0, data.node.key.lastIndexOf('_')),
+								data.node.data._svyRowId,
+								data.node.data.checkboxvaluedataprovider,
+								v);
+					}					
 					if(data.node.data && data.node.data.methodToCallOnCheckBoxChange) {
 						$window.executeInlineScript(
 								data.node.data.methodToCallOnCheckBoxChange.formname,
@@ -284,10 +286,25 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 	    			item.key =  foundsethash + '_' + foundset.viewPort.rows[i][foundsetpk]; 
 	    			item.title = foundset.viewPort.rows[i][binding.textdataprovider];
 	    			if(binding.tooltiptextdataprovider) item.tooltip = foundset.viewPort.rows[i][binding.tooltiptextdataprovider];
-	    			if(binding.imageurldataprovider) item.icon = getIconURL(foundset.viewPort.rows[i][binding.imageurldataprovider]);
-	    			item.checkbox = binding.hascheckboxdataprovider !== undefined && foundset.viewPort.rows[i][binding.hascheckboxdataprovider];
+					if(binding.imageurldataprovider) item.icon = getIconURL(foundset.viewPort.rows[i][binding.imageurldataprovider]);
+					
+					if(binding.checkboxvaluedataprovider) {
+						item.checkbox = Boolean(foundset.viewPort.rows[i][binding.hascheckboxdataprovider]);
+					}
+					else if(binding.hasCheckboxValue){
+						item.checkbox = binding.hasCheckboxValue.indexOf(foundset.viewPort.rows[i][foundsetpk]) != -1;
+					}
+					else {
+						item.checkbox = Boolean(binding.initialCheckboxValues);
+					}
+
 	    			if(item.checkbox) {
-	    				item.selected = Boolean(foundset.viewPort.rows[i][binding.checkboxvaluedataprovider])
+						if(binding.checkboxvaluedataprovider) {
+							item.selected = Boolean(foundset.viewPort.rows[i][binding.checkboxvaluedataprovider]);
+						}
+						else if(binding.initialCheckboxValues) {
+							item.selected = binding.initialCheckboxValues.indexOf(foundset.viewPort.rows[i][foundsetpk]) != -1;
+						}
 	    			}
 					
 					var isLevelVisible = $scope.model.levelVisibility && $scope.model.levelVisibility.state && ($scope.model.levelVisibility.level == level);
@@ -300,6 +317,7 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 	    			item.data = {}
 					item.data._svyRowId = foundset.viewPort.rows[i]._svyRowId;
 					item.data.parentItem = parentItem;
+					item.data.datasource = binding.datasource;
 					
 					if(isNodeSelected(item, $scope.model.selection)) {
 						item.active = true;
@@ -598,7 +616,78 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
       	$scope.api.getSelectionPath = function() {
       		return $scope.model.selection;
       	}
-      	
+		
+      	/**
+		 * Update checkbox state for nodes
+		 *
+		 * @example
+		 * %%elementName%%.updateCheckBoxValues(databaseManager.getDataSource('example_data', 'categories'),[1, 3, 5], true);
+		 *
+		 * @param datasource
+		 * @param pks array of pks to update state
+		 * @param state true for check / false for uncheck
+		 */	  
+		$scope.api.updateCheckBoxValues = function(datasource, pks, state) {
+			var updatedNodesPks = [];
+			if(theTree) {
+				theTree.findAll(function(node) {
+					if(node.data.datasource == datasource) {
+						var pk = getPKFromNodeKey(node.key);
+						for(var index = 0; index < pks.length; index++) {
+							if(pk == ("" + pks[index])) {
+								node.setSelected(state, {noEvents:true});
+								updatedNodesPks.push(pks[index]);
+								return true;
+							}
+						}
+					}
+					return false;
+				});
+			}
+
+			// if node state was not update, it means it was not yet created, push the check state to the binding
+			for(var index = 0; index < pks.length; index++) {
+				if(updatedNodesPks.indexOf(pks[index]) == -1) {
+					if(state) {
+						if(!getBinding(datasource).initialCheckboxValues) {
+							getBinding(datasource).initialCheckboxValues = [];
+						}
+						if(getBinding(datasource).initialCheckboxValues.indexOf(pks[index]) == -1) {
+							getBinding(datasource).initialCheckboxValues.push(pks[index]);
+						}
+					}
+					else if(getBinding(datasource).initialCheckboxValues) {
+						var index = getBinding(datasource).initialCheckboxValues.indexOf(pks[index]);
+						if(index != -1) {
+							getBinding(datasource).initialCheckboxValues.splice(index, 1);
+						}
+					}
+				}
+			}
+		}
+
+      	/**
+		 * Returns array of pk of nodes that are checked for the datasource
+		 *
+		 * @example
+		 * var arrayPkChecked = %%elementName%%.getCheckBoxValues(databaseManager.getDataSource('example_data', 'categories'));
+		 *
+		 * @param datasource
+		 * @return {Array} of pk of nodes that are checked
+		 */
+		$scope.api.getCheckBoxValues = function(datasource) {
+			var checkBoxValues = [];
+			if(theTree) {
+				var selectedNodes = theTree.getSelectedNodes();
+				for (var index = 0; index < selectedNodes.length; index++) {
+					if(selectedNodes[index].data.datasource == datasource) {
+						checkBoxValues.push(getPKFromNodeKey(selectedNodes[index].key));
+					}
+				}
+			}
+			return checkBoxValues;
+		}
+
   		$scope.$watch('model.roots', function(newValue) {
   			$scope.api.refresh();
 		})

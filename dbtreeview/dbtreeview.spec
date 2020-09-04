@@ -259,7 +259,56 @@
 							"type": "relationInfo[]"
 		                	}
 						 ]
-		}
+		},
+		"setHasCheckBoxValue": {
+			"parameters":[
+							{                                                                 
+							"name":"datasource",
+							"type": "string"
+		                	},
+							{                                                                 
+							"name":"pks",
+							"type": "object[]"
+		                	}	
+						 ]
+        },		
+		"setInitialCheckBoxValues": {
+			"parameters":[
+							{                                                                 
+							"name":"datasource",
+							"type": "string"
+		                	},
+							{                                                                 
+							"name":"pks",
+							"type": "object[]"
+		                	}	
+						 ]
+        },
+		"updateCheckBoxValues": {
+			"parameters":[
+							{                                                                 
+							"name":"datasource",
+							"type": "string"
+		                	},
+							{                                                                 
+							"name":"pks",
+							"type": "object[]"
+		                	},
+							{                                                                 
+							"name":"state",
+							"type": "boolean"
+		                	}								
+						 ]
+        },		
+		"getCheckBoxValues": {
+			"parameters":[
+							{                                                                 
+							"name":"datasource",
+							"type": "string"
+		                	}
+						 ],
+			"returns": "object[]"
+        }				
 	},
 	"types": {
 	  "callback": {
@@ -279,7 +328,9 @@
 	  		"methodToCallOnCheckBoxChange": "callback",
 	  		"methodToCallOnDoubleClick": "callback",
 	  		"methodToCallOnRightClick": "callback",
-			"nRelationInfos": "relationInfo[]"
+			"nRelationInfos": "relationInfo[]",
+			"hasCheckboxValue": "object[]",
+			"initialCheckboxValues": "object[]"
 	  },
 	  "levelVisibilityType": {
 	  		"level": "int",

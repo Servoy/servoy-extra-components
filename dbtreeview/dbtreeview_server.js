@@ -234,3 +234,29 @@ $scope.api.createRelationInfo = function(label, nRelationName) {
 $scope.api.setNRelationInfos = function(datasource, relationInfos) {
 	$scope.getBinding(datasource).nRelationInfos = relationInfos;
 }
+
+/**
+* Set intial checked checkboxes for a datasource foundset when no checkboxdataprovider is used 
+* 
+* @example
+* %%elementName%%.setInitialCheckBoxValues(databaseManager.getDataSource('example_data', 'categories'),[1, 3, 5]);
+* 
+* @param datasource 
+* @param checkboxValues array of pks that should have the checkbox checked
+*/
+$scope.api.setInitialCheckBoxValues = function(datasource, initialCheckboxValues) {
+	$scope.getBinding(datasource).initialCheckboxValues = initialCheckboxValues;
+}
+
+/**
+* Set the nodes that should have checkbox for a datasource when no hascheckboxdataprovider is used
+* 
+* @example
+* %%elementName%%.setHasCheckBoxValue(databaseManager.getDataSource('example_data', 'categories'),[1, 3, 5]);
+* 
+* @param datasource 
+* @param hasCheckboxValue array of pks that should have checkbox
+*/
+$scope.api.setHasCheckBoxValue = function(datasource, hasCheckboxValue) {
+	$scope.getBinding(datasource).hasCheckboxValue = hasCheckboxValue;
+}
