@@ -1918,6 +1918,7 @@ return {
 						if (imageMode && divChild.length == 1) {
 							divChild.remove();
 							var img = document.createElement("IMG");
+							img.setAttribute("alt", column.headerText);
 							td[0].appendChild(img);
 							divChild = td.children("div");
 						}
@@ -2372,6 +2373,7 @@ return {
 				if (column.dataprovider && column.dataprovider[idxInLoaded] && column.dataprovider[idxInLoaded].url) {
 					var img = document.createElement("IMG");
 					img.setAttribute("src", column.dataprovider[idxInLoaded].url);
+					img.setAttribute("alt", column.headerText);
 					td.appendChild(img);
 				} else {
 					var div = document.createElement("DIV");
