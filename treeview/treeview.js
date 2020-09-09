@@ -545,7 +545,20 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       			}
       		}
       	}
-      	
+		  
+		$scope.api.filterBranches = function(text) {
+			if(theTree) {
+				if (text) {
+					var rexExp = new RegExp(text, "i");
+					theTree.filterBranches(function(node) {
+						return rexExp.test(node.title);
+					  });
+				} else {
+					theTree.clearFilter();
+				}
+			}
+		}
+
       },
       templateUrl: 'servoyextra/treeview/treeview.html'
     };

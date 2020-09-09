@@ -188,8 +188,15 @@
       						"type":"object",
       						"optional":true
       						}
-      					],     	
-      		"returns": "int"
+      					]
+		},
+      	"filterBranches": {
+      		"parameters":[
+      						{
+      						"name":"text",
+      						"type":"string"
+      						}
+      					]
       	}
 	}
 }
