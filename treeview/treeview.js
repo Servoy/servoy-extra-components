@@ -546,13 +546,10 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       		}
       	}
 		  
-		$scope.api.filterBranches = function(text) {
+		$scope.api.filterBranches = function(text, options) {
 			if(theTree) {
 				if (text) {
-					var rexExp = new RegExp(text, "i");
-					theTree.filterBranches(function(node) {
-						return rexExp.test(node.title);
-					  });
+					theTree.filterBranches(text, options);
 				} else {
 					theTree.clearFilter();
 				}

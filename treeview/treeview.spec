@@ -195,6 +195,10 @@
       						{
       						"name":"text",
       						"type":"string"
+      						}, {
+      						"name":"options",
+      						"type":"object",
+      						"optional":true
       						}
       					]
       	}
