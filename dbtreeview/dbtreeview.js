@@ -299,7 +299,10 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 					}
 
 	    			if(item.checkbox) {
-						if(binding.checkboxvaluedataprovider) {
+						if(parentItem && parentItem.selected) {
+							item.selected = true;
+						}
+						else if(binding.checkboxvaluedataprovider) {
 							item.selected = Boolean(foundset.viewPort.rows[i][binding.checkboxvaluedataprovider]);
 						}
 						else if(binding.initialCheckboxValues) {
