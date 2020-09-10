@@ -41,7 +41,7 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
       		theTree = $element.find(".dbtreeview").fancytree(
      	 	{
  				source: $scope.treeJSON,
- 				selectMode: 2,
+ 				selectMode: 3,
  				scrollParent: $element.find(".dbtreeview"),
  				checkbox: true,
 				select: function(event, data) {
