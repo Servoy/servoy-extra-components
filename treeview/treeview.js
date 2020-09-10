@@ -545,7 +545,13 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       			}
       		}
       	}
-		  
+		
+		/**
+		 * Dimm or hide unmatched branches. Matching nodes are displayed together with all descendants.
+		 * 
+      	 * @param {String} text filter nodes matching the given text
+      	 * @param {Object} [options] filter options, same as for 'filterNodes'
+		 */
 		$scope.api.filterBranches = function(text, options) {
 			if(theTree) {
 				if (text) {
