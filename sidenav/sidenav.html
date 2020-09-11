@@ -22,7 +22,9 @@
 	nav-side-toggle
 	nav-hide-toggle
 -->
-<div class="svy-extra-sidenav" ng-show="model.visible">
+<div class="svy-extra-sidenav" 
+	ng-show="model.visible"
+	svy-attributes='model.attributes'>
 	<div class="svy-sidenav">
 		<div class="svy-sidenav-header">
 			<!--<input ng-model="searchText" class="svy-searchbox"></input>-->

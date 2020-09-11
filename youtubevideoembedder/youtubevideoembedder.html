@@ -1,5 +1,6 @@
 <iframe ng-if="!svyServoyapi.isInDesigner()" width="{{model.videoWidth}}" height="{{model.videoHeight}}"
 		ng-class='model.styleClass' sablo-tabseq='model.tabSeq' ng-if='model.visible'
+		svy-attributes='model.attributes'
 		id="{{::model.svyMarkupId}}"
         ng-src="{{getEmbedURL()}}"
 		allowfullscreen

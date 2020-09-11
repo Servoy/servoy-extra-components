@@ -1,4 +1,4 @@
-<div class="svyextra-lightboxgallery" ng-show="model.galleryVisible">
+<div class="svyextra-lightboxgallery" ng-show="model.galleryVisible" svy-attributes='model.attributes'>
 	<div class="svyextra-lightboxgallery-image-set" ng-class="model.maxImageHeight ? '' : 'svyextra-lightboxgallery-image-contain'">
 		<div ng-repeat="image in images" class="svyextra-lightboxgallery-image-cell">
 			<div class="svyextra-lightboxgallery-image-container">
@@ -11,7 +11,7 @@
 		</div>
 	</div>
 </div>
-<div ng-show="!model.galleryVisible && model.buttonText">
+<div ng-show="!model.galleryVisible && model.buttonText" svy-attributes='model.attributes'>
 	<button 
 		class="btn svyextra-lightboxgallery-button {{model.buttonStyleClass}}" 
 		ng-click="api.showLightbox()"

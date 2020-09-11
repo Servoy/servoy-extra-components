@@ -3,7 +3,7 @@
 	  	 <span>Drop table columns from palette</span>
 	  </label>
 </div>
-<div class="tablewrapper" ng-style="getLayoutStyle()" ng-if='model.visible'>
+<div class="tablewrapper" ng-style="getLayoutStyle()" ng-if='model.visible' svy-attributes='model.attributes'>
 	<table id="table_{{ model.svyMarkupId }}"
 		ng-style="getTableStyle()"
 		class='svy-table'

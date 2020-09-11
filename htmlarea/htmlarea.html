@@ -1,5 +1,6 @@
 <div ng-style="getLayoutStyle()"
-	 class='svy-extra-htmlarea'				
+	 class='svy-extra-htmlarea'
+	svy-attributes='model.attributes'				
    id="{{::model.svyMarkupId}}">
    <textarea ui-tinymce="tinyConfig" ng-model="tinyValue" sablo-tabseq='model.tabSeq'>{{tinyValue}}</textarea>
  </div>
