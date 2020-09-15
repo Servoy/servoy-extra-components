@@ -292,7 +292,7 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 						item.checkbox = Boolean(foundset.viewPort.rows[i][binding.hascheckboxdataprovider]);
 					}
 					else if(binding.hasCheckboxValue){
-						item.checkbox = binding.hasCheckboxValue.indexOf(foundset.viewPort.rows[i][foundsetpk]) != -1;
+						item.checkbox = binding.hasCheckboxValue.indexOf("" + foundset.viewPort.rows[i][foundsetpk]) != -1;
 					}
 					else {
 						item.checkbox = Boolean(binding.initialCheckboxValues);
@@ -306,7 +306,7 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 							item.selected = Boolean(foundset.viewPort.rows[i][binding.checkboxvaluedataprovider]);
 						}
 						else if(binding.initialCheckboxValues) {
-							item.selected = binding.initialCheckboxValues.indexOf(foundset.viewPort.rows[i][foundsetpk]) != -1;
+							item.selected = binding.initialCheckboxValues.indexOf("" + foundset.viewPort.rows[i][foundsetpk]) != -1;
 						}
 	    			}
 					
@@ -624,7 +624,7 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 		 * Update checkbox state for nodes
 		 *
 		 * @example
-		 * %%elementName%%.updateCheckBoxValues(databaseManager.getDataSource('example_data', 'categories'),[1, 3, 5], true);
+		 * %%elementName%%.updateCheckBoxValues(databaseManager.getDataSource('example_data', 'categories'),["1", "3", "5"], true);
 		 *
 		 * @param datasource
 		 * @param pks array of pks to update state
@@ -637,7 +637,7 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 					if(node.data.datasource == datasource) {
 						var pk = getPKFromNodeKey(node.key);
 						for(var index = 0; index < pks.length; index++) {
-							if(pk == ("" + pks[index])) {
+							if(pk == pks[index]) {
 								node.setSelected(state, {noEvents:true});
 								updatedNodesPks.push(pks[index]);
 								return true;

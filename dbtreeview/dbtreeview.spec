@@ -268,7 +268,7 @@
 		                	},
 							{                                                                 
 							"name":"pks",
-							"type": "object[]"
+							"type": "string[]"
 		                	}	
 						 ]
         },		
@@ -280,7 +280,7 @@
 		                	},
 							{                                                                 
 							"name":"pks",
-							"type": "object[]"
+							"type": "string[]"
 		                	}	
 						 ]
         },
@@ -292,7 +292,7 @@
 		                	},
 							{                                                                 
 							"name":"pks",
-							"type": "object[]"
+							"type": "string[]"
 		                	},
 							{                                                                 
 							"name":"state",
@@ -307,7 +307,7 @@
 							"type": "string"
 		                	}
 						 ],
-			"returns": "object[]"
+			"returns": "string[]"
         }				
 	},
 	"types": {
