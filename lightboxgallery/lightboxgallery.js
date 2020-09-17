@@ -16,8 +16,8 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 						/** @type {{image: {url: String}, thumbnail: {url: String}, caption: String}} */
 						var row = $scope.model.imagesFoundset.viewPort.rows[i];
 						var image = {
-							url: row.image && row.image.url ? row.image.url.split('?')[0] : null,
-							thumbUrl: row.thumbnail && row.thumbnail.url ? row.thumbnail.url.split('?')[0] : null,
+							url: row.image && row.image.url ? row.image.url : null,
+							thumbUrl: row.thumbnail && row.thumbnail.url ? row.thumbnail.url : null,
 							caption: row.caption ? row.caption : null,
 							imageId: row.imageId
 						}	
