@@ -2065,7 +2065,7 @@ return {
 		function updateColumnStyleClass() {
 			var columns = $scope.model.columns;
 			for (var c = 0; c < columns.length; c++) {
-				if (columns[c].styleClass != columnStyleClasses[c]) {
+				if (c < columnStyleClasses.length && columns[c].styleClass != columnStyleClasses[c]) {
 					generateTemplate();
 					break;
 				}
