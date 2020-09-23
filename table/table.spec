@@ -9,7 +9,7 @@
 	"libraries": [{ "name": "servoyextra-table-css", "version": "1.0", "url": "servoyextra/table/table.css", "mimetype": "text/css" }, { "name": "colResizable", "version": "1.7", "url": "servoyextra/table/js/colResizable-1.7.js", "mimetype": "text/javascript" }],
 	"keywords": ["row", "column"],
 	"model": {
-		"columns": { "type": "column[]", "droppable": true, "pushToServer": "shallow", "elementConfig": { "pushToServer": "shallow" } },
+		"columns": { "type": "column[]", "droppable": true, "pushToServer": "shallow", "elementConfig": { "pushToServer": "shallow" }, "tags": { "allowaccess": "visible" } },
 		"currentPage": { "type": "int", "default": 1, "tags": { "scope": "runtime" }, "pushToServer": "shallow" },
 		"foundset": { "type": "foundset", "default" : {"foundsetSelector":""}, "pushToServer": "allow", "initialPreferredViewPortSize": 130, "sendSelectionViewportInitially": true },
 		"pageSize": { "type": "int", "default": 20, "tags": { "doc" :"Number of rows per page, 0 means infinite scrolling mode." } },
@@ -28,9 +28,10 @@
 		"sortdownClass": { "type": "styleclass", "default": "table-servoyextra-sort-down " },
 		"sortColumnIndex": { "type": "int", "default": -1, "tags": { "scope": "runtime" }, "pushToServer": "shallow" },
 		"sortDirection": { "type": "string", "tags": { "scope": "runtime" }, "pushToServer": "shallow" },
-		"lastSelectionFirstElement": { "type": "int", "default": -1, "tags": { "scope": "private" }, "pushToServer": "shallow" },
+		"lastSelectionFirstElement": { "type": "int", "default": -1, "tags": { "scope": "private", "allowaccess": "visible" }, "pushToServer": "shallow" },
 		"performanceSettings" : { "type": "settings", "tags": { "scope": "design","doc" :"Settings for incremental scrolling, see github wiki for more details." } },
-		"keyCodeSettings" : { "type": "keyCodeSettings", "tags": { "scope": "design", "doc" :"Enable/Disable key bindings." } }
+		"keyCodeSettings" : { "type": "keyCodeSettings", "tags": { "scope": "design", "doc" :"Enable/Disable key bindings." } },
+		"horizontalScrollbar" : {"type": "string", "values": [{"DEFAULT": null}, {"NEVER":"NEVER"}], "tags": {"doc": "By default horizontal scrollbar is shown as needed. Setting to NEVER will always hide it."}}
 	},
 	"types": {
 		"column": {

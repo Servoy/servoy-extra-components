@@ -244,7 +244,12 @@ return {
 		$scope.scrollWidth = 0;
 		function getComponentWidth() {
 			if ($scope.componentWidth === undefined) {
-				$scope.componentWidth = Math.floor($element.parent().width());
+				if($element.is(":visible")) {
+					$scope.componentWidth = Math.floor($element.parent().width());
+				}
+				else {
+					return 0;
+				}
 			}
 			return $scope.componentWidth;
 		}
@@ -427,10 +432,12 @@ return {
 			if (!onTBodyScrollListener) {
 				onTBodyScrollListener = function() {
 					$timeout(function() {
-						tableLeftOffset = -tbody.scrollLeft();
-						var resizer = $element.find(".JCLRgrips");
-						if (resizer.get().length > 0) {
-							$(resizer).css("left", tableLeftOffset + "px");
+						if(tbody) {
+							tableLeftOffset = -tbody.scrollLeft();
+							var resizer = $element.find(".JCLRgrips");
+							if (resizer.get().length > 0) {
+								$(resizer).css("left", tableLeftOffset + "px");
+							}
 						}
 					});
 				}
@@ -495,7 +502,7 @@ return {
 					}
 					updateTBodyStyle(tbl.find("tbody")[0]);
 				}
-				if(isNewTBody) {
+				if(tbody && isNewTBody && ($scope.model.horizontalScrollbar != "NEVER")) {
 					tbody[0].style.removeProperty("overflow-x");
 				}
 			}, 0);
@@ -1616,6 +1623,7 @@ return {
 				if (!topSpaceDiv) {
 					var topTR = document.createElement("tr");
 					var topTD = document.createElement("td");
+					topTD.colSpan = $scope.model.columns && $scope.model.columns.length ? "" + $scope.model.columns.length : "1";
 					topSpaceDiv = document.createElement("div");
 					topTD.appendChild(topSpaceDiv);
 					topTR.appendChild(topTD);
@@ -1672,6 +1680,7 @@ return {
 			if (!bottomSpaceDiv) {
 				var bottomTR = document.createElement("tr");
 				var bottomTD = document.createElement("td");
+				bottomTD.colSpan = $scope.model.columns && $scope.model.columns.length ? "" + $scope.model.columns.length : "1";
 				bottomSpaceDiv = document.createElement("div");
 				bottomTD.appendChild(bottomSpaceDiv);
 				bottomTR.appendChild(bottomTD);
@@ -2091,16 +2100,6 @@ return {
 				return;
 			}
 
-			// if not  visible yet in DOM, clear cached styles + componentWidth, so they are recalculated when visible
-			// this only happens in firefox when using it in tab panels
-			if($scope.model.visible && !$element.is(":visible")) {
-				columnStyleCache = [];
-				$scope.componentWidth = undefined;
-				$timeout(function() { 
-					generateTemplate(full)
-				});
-				return;
-			}
 
 			if (full)
 			{
