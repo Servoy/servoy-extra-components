@@ -33,7 +33,8 @@
 	{"version":"2.0.0","url":"https://github.com/Servoy/servoy-extra-components/releases/download/v2.0.0/servoy-extra-components.zip", "servoy-version":"2019.9", "dependency":"fontawesome#>=4.7.0"},
 	{"version":"2.1.0","url":"https://github.com/Servoy/servoy-extra-components/releases/download/v2.1.0/servoy-extra-components.zip", "servoy-version":"2019.9", "dependency":"fontawesome#>=4.7.0"},
 	{"version":"2.1.1","url":"https://github.com/Servoy/servoy-extra-components/releases/download/v2.1.1/servoy-extra-components.zip", "servoy-version":"2020.3", "dependency":"fontawesome#>=4.7.0"},
-	{"version":"3.0.0","url":"https://github.com/Servoy/servoy-extra-components/releases/download/v3.0.0/servoy-extra-components.zip", "servoy-version":"2020.6", "dependency":"fontawesome#>=4.7.0"}
+	{"version":"3.0.0","url":"https://github.com/Servoy/servoy-extra-components/releases/download/v3.0.0/servoy-extra-components.zip", "servoy-version":"2020.6", "dependency":"fontawesome#>=4.7.0"},
+	{"version":"3.1.0","url":"https://github.com/Servoy/servoy-extra-components/releases/download/v3.1.0/servoy-extra-components.zip", "servoy-version":"2020.6", "dependency":"fontawesome#>=4.7.0"}
 	    
 	]
 }
