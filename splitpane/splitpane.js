@@ -153,11 +153,6 @@ angular.module('servoyextraSplitpane',['servoy']).directive('servoyextraSplitpan
 			}
 			$window.addEventListener('resize',onResize);
 			
-			$scope.$watch("model.resizeWeight", function(newValue,oldValue) {
-				if (newValue === oldValue) return;
-				processResize()
-			});
-
 			$scope.$watch('model.divSize', function(newValue, oldValue){
 				if(newValue != oldValue) {
 					var dividerEl = getHandlerElement();
