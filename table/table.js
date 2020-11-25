@@ -2484,7 +2484,8 @@ return {
 		}
 		// watch the table header if there are any column width changes/
 		// if that happens flush the cellStyles cache
-		$scope.$watch(function() {
+		if (!$scope.svyServoyapi.isInDesigner()) {
+			$scope.$watch(function() {
 				var array = "";
 				var columns = $scope.model.columns;
 				if (!columns || columns.length == 0) return array;
@@ -2497,6 +2498,7 @@ return {
 			}, function(newValue, oldValue) {
 				columnStyleCache = [];
 			})
+		}
 
 		var currentSortClass = [];
 		var sortClassUpdateTimer;
