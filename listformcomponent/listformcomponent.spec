@@ -18,7 +18,7 @@
 	},
 	"handlers" : {
 		"onSelectionChanged": {
-			"description": "Called after the foundset selection changed",
+			"doc": "Called after the foundset selection changed",
 			"parameters": [{
 				"name": "event",
 				"type": "JSEvent"

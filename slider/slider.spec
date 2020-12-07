@@ -71,7 +71,7 @@
 	"handlers": {
 		"onDataChangeMethodID" : {
 			"returns": "boolean", 
-			"description": "Called when the dataProvider value changed",
+			"doc": "Called when the dataProvider value changed",
 	        "parameters": [
 					{ "name": "oldValue", "type": "${dataproviderType}" }, 
 					{ "name": "newValue", "type": "${dataproviderType}" }, 
@@ -80,7 +80,7 @@
 	        },
 	    "onDataChangeHigh" : {
 			"returns": "boolean", 
-			"description": "Called when the dataProviderHigh value changed",
+			"doc": "Called when the dataProviderHigh value changed",
 	        "parameters": [
 					{ "name": "oldValue", "type": "${dataproviderType}" }, 
 					{ "name": "newValue", "type": "${dataproviderType}" }, 
@@ -88,7 +88,7 @@
 				]
 	        },
 	    "onSlideStart" : {
-			"description": "Called when user starts dragging the slider",
+			"doc": "Called when user starts dragging the slider",
 			"parameters":[
 					{ "name": "event", "type": "JSEvent"} , 
 					{ "name": "value", "type": "object", "description": "the value when the user dragged the pointer of a non-range slider or the low value in a range slider" }, 
@@ -97,7 +97,7 @@
 				]
 	        },
 	    "onSlideEnd" : {
-			"description": "Called when user stops dragging the slider",
+			"doc": "Called when user stops dragging the slider",
 			"parameters":[
 					{ "name": "event", "type": "JSEvent"}, 
 					{ "name": "value", "type": "object", "description": "the value when the user dragged the pointer of a non-range slider or the low value in a range slider" }, 
