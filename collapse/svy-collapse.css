@@ -131,3 +131,9 @@ svy-collapse
 .svy-collapse-card-body-container {
 	
 }
+
+/* make sure collapsible doesn't overflow it's container in Anchored/Simple CSS forms */
+.svy-wrapper > * > .svy-collapse {     
+     max-height: 100%; 
+     overflow: auto;    
+}
