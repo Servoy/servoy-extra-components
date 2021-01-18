@@ -24,6 +24,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 			
 			var tags = [];			// the array of valuelistItems
 			var hashMap = {}; 		// contains the realValue to be resolved in displayValue
+			var hashMapTimestamp;	// when the hashMap is re-created. Used to discard promises resolved in between
 			var searchText = "";			// the last search text
 			var observer;
 			var executeOnFocusGained = true;
@@ -63,6 +64,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 						// if select is not open, let the dataprovider to be reset as the display can be different for the new valuelist
 					case "dataProviderID":
 						// reset the hashMap
+						hashMapTimestamp = new Date().getTime();
 						hashMap = {};
 						if ($log.debugEnabled) $log.debug("selec2-autoTokenizer: change dataprovideID to " + value + ' ID:  ' + $scope.model.datProviderID);
 						if (tokenizer) {
@@ -80,7 +82,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 								
 								// select each value
 								for (realValue in hashMap) {
-									selectRealValue(realValue, values);
+									selectRealValue(realValue, values, hashMapTimestamp);
 								}
 								
 							} else {
@@ -387,12 +389,13 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 			 * If a displayValue cannot be found shows the realValue
 			 *  
 			 *  */
-			function selectRealValue(realValue, values) {
+			function selectRealValue(realValue, values, timestamp) {
                 // show realValue if there is no displayValue
                 var found = false;
                 for (i = 0; i < $scope.model.valuelistID.length; i++) {
                     if($scope.model.valuelistID[i].realValue == realValue) {
-                            addOptionToSelect2(realValue, values, $scope.model.valuelistID[i].displayValue);
+                    		if (timestamp === hashMapTimestamp) // do nothing if call is resolved after new hashMap is created
+                    			addOptionToSelect2(realValue, values, $scope.model.valuelistID[i].displayValue);
                             found = true;
                         break;
                     }
@@ -404,7 +407,8 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
                         if (displayValue === null)
                             displayValue = realValue;
     
-                        addOptionToSelect2(realValue, values, displayValue);
+                		if (timestamp === hashMapTimestamp) // do nothing if call is resolved after new hashMap is created
+                			addOptionToSelect2(realValue, values, displayValue);
                     }, function(reason) {
 						valuelistGetDisplayValuePromise = null;
 					});
