@@ -7,7 +7,7 @@
 				</a>
 				<div ng-if="handlers.onHoverButtonClicked && model.enabled" class="svyextra-lightboxgallery-image-delete" svy-click="handlers.onHoverButtonClicked($event, image.imageId)"><i class="{{model.hoverButtonIcon}}"></i></div>
 			</div>
-			<div ng-if"model.showCaptionInGallery" class="svyextra-lightboxgallery-image-caption" ng-style="getCaptionStyle()">{{image.caption ? image.caption : "&nbsp;"}}</div>
+			<div ng-if="model.showCaptionInGallery" class="svyextra-lightboxgallery-image-caption" ng-style="getCaptionStyle()">{{image.caption ? image.caption : "&nbsp;"}}</div>
 		</div>
 	</div>
 </div>
