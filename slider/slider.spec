@@ -24,12 +24,12 @@
 		"dataChangeOnSlideEnd"			: { "type": "boolean", "default": true, "tags": { "doc": "Set this to false to update the dataProvider(s) while the user drags the slider and not only when the user is done dragging" } },
 		"numberFormat"					: { "type": "format", "for":["dataProvider"], "tags": { "doc": "A Servoy number format that is used to format numbers when a formattingFunction is not provided" }},
 		"formattingFunction"			: { "type": "tagstring", "tags": { "doc": "Can be given a function code as string that can be used to format numbers client side." } },
-		"selectionBarColorFunction"		: { "type": "tagstring", "tags": { "doc": "Function code as String that returns the current color of the selection bar." } },
-		"tickColorFunction"				: { "type": "tagstring", "tags": { "doc": "Function provided as a String that returns the color of a tick." } },
-		"ticksTooltipFunction"			: { "type": "tagstring", "tags": { "doc": "Function provided as string that returns the tooltip content for a tick." } },
-		"ticksValuesTooltipFunction"	: { "type": "tagstring", "tags": { "doc": "Function provided as string that returns the tooltip content for a tick value." } },
-		"getLegendFunction"				: { "type": "tagstring", "tags": { "doc": "Can be given a function code as string that can be used to display legend under ticks" } },
-		"pointerColorFunction"			: { "type": "tagstring", "tags": { "doc": "Function provided as a String that returns the color of a tick." } },
+		"selectionBarColorFunction"		: { "type": "clientfunction", "tags": { "doc": "Function code as String that returns the current color of the selection bar." } },
+		"tickColorFunction"				: { "type": "clientfunction", "tags": { "doc": "Function provided as a String that returns the color of a tick." } },
+		"ticksTooltipFunction"			: { "type": "clientfunction", "tags": { "doc": "Function provided as string that returns the tooltip content for a tick." } },
+		"ticksValuesTooltipFunction"	: { "type": "clientfunction", "tags": { "doc": "Function provided as string that returns the tooltip content for a tick value." } },
+		"getLegendFunction"				: { "type": "clientfunction", "tags": { "doc": "Can be given a function code as string that can be used to display legend under ticks" } },
+		"pointerColorFunction"			: { "type": "clientfunction", "tags": { "doc": "Function provided as a String that returns the color of a tick." } },
 		
 		"readOnly"						: { "type": "protected", "blockingOn": true, "default": false,"for": ["dataProvider","onDataChangeMethod","dataProviderHigh","onDataChangeHigh"], "tags": {"scope":"runtime"} },
 		
