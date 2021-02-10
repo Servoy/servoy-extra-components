@@ -71,6 +71,7 @@ angular.module('servoyextraSpinner', [ 'servoy' ]).directive('servoyextraSpinner
 						var style = {};
 						if(!$scope.svyServoyapi.isInAbsoluteLayout()) {
 							style.minHeight = $scope.model.responsiveHeight + "px";
+                            style.position = "relative";
 						}
 						return style;
 					}
