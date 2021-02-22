@@ -45,8 +45,7 @@
 						<i class="svy-sidenav-item-icon" ng-class="item.iconStyleClass"></i>
 						<span class="svy-sidenav-item-text">{{item.text}}</span>
 						<i class="svy-sidenav-collapse-icon sn-level-1 pull-right" ng-class="item.menuItems ? (expandedIndex[1] == item.id ? '' + model.iconCollapseStyleClass : '' + model.iconExpandStyleClass) : 'hidden'"
-							ng-click="toggleExpandedItem(1, $index, item, $event)"
-							/>
+							ng-click="toggleExpandedItem(1, $index, item, $event)"></i>
 					</a>
 			
 					<!-- Second List -->
@@ -63,8 +62,7 @@
 								<i class="svy-sidenav-item-icon" ng-class="item2.iconStyleClass"></i>
 								<span class="svy-sidenav-item-text">{{item2.text}}</span>
 								<i class="svy-sidenav-collapse-icon sn-level-2 pull-right" ng-class="item2.menuItems ? (expandedIndex[2] == item2.id ? '' + model.iconCollapseStyleClass : '' + model.iconExpandStyleClass) : 'hidden'"
-									ng-click="toggleExpandedItem(2, $index, item2, $event)"
-									/>
+									ng-click="toggleExpandedItem(2, $index, item2, $event)"></i>
 							</a>
 
 							<!-- Third List -->
@@ -80,8 +78,7 @@
 										<i class="svy-sidenav-item-icon" ng-class="item3.iconStyleClass"></i>
 										<span class="svy-sidenav-item-text">{{item3.text}}</span>
 										<i class="svy-sidenav-collapse-icon sn-level-3 pull-right" ng-class="item3.menuItems ? (expandedIndex[3] == item3.id ? '' + model.iconCollapseStyleClass : '' + model.iconExpandStyleClass) : 'hidden'"
-											ng-click="toggleExpandedItem(3, $index, item3, $event)"
-											/>
+											ng-click="toggleExpandedItem(3, $index, item3, $event)"></i>
 									</a>
 		
 									<!-- Fourth List -->
