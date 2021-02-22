@@ -18,9 +18,13 @@ angular.module('servoyextraHtmlarea',['servoy','ui.tinymce']).directive('servoye
 					/*overwrite ui-tinymce setup routine()*/
 					setup: function(ed){
 						
-						editor = ed;
+						editor = ed
+						editor.settings.height = "100%";
 						$scope.editor = editor;
 						editor.on('init', function() {
+                            if(!$scope.svyServoyapi.isInAbsoluteLayout()) {
+                                editor.getContainer().style.minHeight = $scope.model.responsiveHeight + "px";
+                            }
 							$scope.init = true;
 							if($scope.model.editable){
 								editor.setMode('design');
@@ -135,7 +139,7 @@ angular.module('servoyextraHtmlarea',['servoy','ui.tinymce']).directive('servoye
 						var value = defaultConfiguration[key]
 						if (key === "plugins")
 						{
-							value += " tabindex resizetocontainer";
+							value += " tabindex";
 						}
 						$scope.tinyConfig[key] = value;
 					}
@@ -161,7 +165,7 @@ angular.module('servoyextraHtmlarea',['servoy','ui.tinymce']).directive('servoye
 						var value = configuration[key];
 						if (key === "plugins")
 						{
-							value += " tabindex resizetocontainer";
+							value += " tabindex";
 						}
 						$scope.tinyConfig[key] = value;
 					}
@@ -321,7 +325,7 @@ angular.module('servoyextraHtmlarea',['servoy','ui.tinymce']).directive('servoye
 			menubar : false,
 			statusbar : false,
 			readonly: 0,
-			plugins: 'tabindex resizetocontainer',
+			plugins: 'tabindex',
 			tabindex: 'element',
 			toolbar: 'fontselect fontsizeselect | bold italic underline | superscript subscript | undo redo |alignleft aligncenter alignright alignjustify | styleselect | outdent indent bullist numlist'
 	}
