@@ -246,7 +246,6 @@ return {
 			if ($scope.componentWidth === undefined) {
 				if($element.is(":visible")) {
 					$scope.componentWidth = Math.floor($element.parent().width());
-					updateTBodyStyle($element.find('tbody')[0]);
 				}
 				else {
 					return 0;
