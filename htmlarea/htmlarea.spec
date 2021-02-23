@@ -5,7 +5,7 @@
 	"version": 1,
 	"icon": "servoyextra/htmlarea/html_area.png",
 	"definition": "servoyextra/htmlarea/htmlarea.js",
-	"libraries": [{"name":"tinymce", "version":"5.6.2", "url":"servoyextra/htmlarea/lib/tinymce/tinymce.min.js", "mimetype":"text/javascript", "group":false},{"name":"ui-tinymce", "version":"1", "url":"servoyextra/htmlarea/lib/ui-tinymce.js", "mimetype":"text/javascript"}],
+	"libraries": [{"name":"tinymce", "version":"5.7.0", "url":"servoyextra/htmlarea/lib/tinymce/tinymce.min.js", "mimetype":"text/javascript", "group":false},{"name":"ui-tinymce", "version":"1", "url":"servoyextra/htmlarea/lib/ui-tinymce.js", "mimetype":"text/javascript"}],
 	"model":
 	{
 	        "dataProviderID" : { "type":"dataprovider", "pushToServer": "allow", "tags": { "scope": "design" }, "ondatachange": { "onchange":"onDataChangeMethodID"}, "displayTagsPropertyName" : "displaysTags"}, 

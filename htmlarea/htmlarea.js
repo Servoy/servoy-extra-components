@@ -1,4 +1,4 @@
-angular.module('servoyextraHtmlarea',['servoy','ui.tinymce']).directive('servoyextraHtmlarea', function($apifunctions, $sabloConstants, $svyProperties,$applicationService,$timeout) {  
+angular.module('servoyextraHtmlarea',['servoy','ui.tinymce']).directive('servoyextraHtmlarea', function($apifunctions, $sabloConstants, $svyProperties,$applicationService,$timeout, $sabloApplication) {  
 	return {
 		restrict: 'E',
 		scope: {
@@ -106,6 +106,10 @@ angular.module('servoyextraHtmlarea',['servoy','ui.tinymce']).directive('servoye
 							 return ev;
 						 }
 					}
+			}
+			var locale = $sabloApplication.getLocale();
+			if (locale && locale.language) {
+				$scope.tinyConfig.language = locale.language;
 			}
 
 			$scope.getLayoutStyle = function() {
