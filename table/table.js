@@ -1589,7 +1589,7 @@ return {
 		function updateBatchSizesIfNeeded(averageRowHeight) {
 			var oldBatchSizeForRenderingMoreRows = batchSizeForRenderingMoreRows;
 			var oldBatchSizeForLoadingMoreRows = batchSizeForLoadingMoreRows;
-			if (renderedSize > 0) {
+			if (renderedSize > 0 && averageRowHeight > 0) {
 				var visibleAreaRows = Math.ceil(tbody.height() / averageRowHeight);
 
 				batchSizeForRenderingMoreRows = Math.max(Math.ceil(visibleAreaRows * magicRenderBatchQ), performanceSettings.minBatchSizeForRenderingMoreRows); // initially render rows for 3 times the visible area - so 1 above and 1 below the visible area, but then when scrolling and more rows are needed only render one more 'visible areas' of rows
