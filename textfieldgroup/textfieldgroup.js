@@ -7,7 +7,7 @@ angular.module('servoyextraTextfieldgroup',['servoy']).directive('servoyextraTex
          	handlers: "=svyHandlers"
         },
         link: function($scope, $element, $attrs) {
-        	var EMAIL_REGEXP = /^[_a-zA-Z0-9-+^$']+(\.[_a-zA-Z0-9-+^$']+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/;
+        	var EMAIL_REGEXP = /^[_a-z0-9-+^$']+(\.[_a-z0-9-+^$']+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/i;
         	$scope.showError = false
 			
         	$scope.$watch('model.dataProviderID', function() {
