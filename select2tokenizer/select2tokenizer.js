@@ -457,7 +457,10 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 				var valuelistTags = [];
 				if (data) {
 					for (var i = 0; i < data.length; i++) {
-						valuelistTags.push({ id: data[i].realValue, text: data[i].displayValue });
+						var tagId = data[i].realValue;
+						// id must be string for select2, else unselect from dropdown won't work
+						if(tagId) tagId = '' + tagId;
+						valuelistTags.push({ id: tagId, text: data[i].displayValue });
 					}
 				}
 				// update cached tags
