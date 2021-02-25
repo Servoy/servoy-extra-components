@@ -299,11 +299,11 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 					}
 
 	    			if(item.checkbox) {
-						if(parentItem && parentItem.selected) {
-							item.selected = true;
-						}
-						else if(binding.checkboxvaluedataprovider) {
+						if(binding.checkboxvaluedataprovider) {
 							item.selected = Boolean(foundset.viewPort.rows[i][binding.checkboxvaluedataprovider]);
+						}
+						else if(parentItem && parentItem.selected) {
+							item.selected = true;
 						}
 						else if(binding.initialCheckboxValues) {
 							item.selected = binding.initialCheckboxValues.indexOf("" + foundset.viewPort.rows[i][foundsetpk]) != -1;
@@ -311,7 +311,7 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 	    			}
 					
 					var isLevelVisible = $scope.model.levelVisibility && $scope.model.levelVisibility.state && ($scope.model.levelVisibility.level == level);
-					var isNodeExpanded = (level <= $scope.expandedNodes.length) && ($scope.expandedNodes[level - 1].toString() == getPKFromNodeKey(item.key));
+					var isNodeExpanded = $scope.expandedNodes.indexOf(getPKFromNodeKey(item.key)) != -1;
 
 	    			if(isLevelVisible || isNodeExpanded) {
 	    				item.expanded = true;
@@ -489,8 +489,8 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
       			foundset_manager.removeFoundSetsFromCache();
 			
 				$scope.pendingChildrenRequests = $scope.model.roots.length;
-				if((!$scope.expandedNodes || !$scope.expandedNodes.length) && theTree) {
-					if(!$scope.expandedNodes) $scope.expandedNodes = [];
+				if(theTree) {
+					$scope.expandedNodes = [];
 		  			theTree.getRootNode().visit(function(node){
 		  				if(node.isExpanded()) {
 		  					$scope.expandedNodes.push(getPKFromNodeKey(node.key));
