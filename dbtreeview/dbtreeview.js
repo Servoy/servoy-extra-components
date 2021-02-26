@@ -13,6 +13,7 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
     	  }
     	  
 		$scope.expandedNodes = [];
+		$scope.expandedNodesOnRefresh = [];
     	$scope.pendingChildrenRequests = 0;
     	$scope.pendingRefresh = false;
     	var theTree;
@@ -311,7 +312,20 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 	    			}
 					
 					var isLevelVisible = $scope.model.levelVisibility && $scope.model.levelVisibility.state && ($scope.model.levelVisibility.level == level);
-					var isNodeExpanded = $scope.expandedNodes.indexOf(getPKFromNodeKey(item.key)) != -1;
+					var isNodeExpanded = (level <= $scope.expandedNodes.length) && ($scope.expandedNodes[level - 1].toString() == getPKFromNodeKey(item.key));
+					if($scope.expandedNodesOnRefresh.length) {
+						var keyPath = "/" + item.key;
+						var currentParentItem = parentItem;
+						while(currentParentItem) {
+							keyPath = "/" + currentParentItem.key + keyPath;
+							currentParentItem = currentParentItem.data.parentItem
+						}
+						var keyPathIdx = $scope.expandedNodesOnRefresh.indexOf(keyPath);
+						if(keyPathIdx != -1) {
+							$scope.expandedNodesOnRefresh.splice(keyPathIdx, 1);
+							isNodeExpanded = true;
+						}
+					}
 
 	    			if(isLevelVisible || isNodeExpanded) {
 	    				item.expanded = true;
@@ -490,10 +504,10 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 			
 				$scope.pendingChildrenRequests = $scope.model.roots.length;
 				if(theTree) {
-					$scope.expandedNodes = [];
+					$scope.expandedNodesOnRefresh = [];
 		  			theTree.getRootNode().visit(function(node){
 		  				if(node.isExpanded()) {
-		  					$scope.expandedNodes.push(getPKFromNodeKey(node.key));
+		  					$scope.expandedNodesOnRefresh.push(node.getKeyPath());
 		  				}	
 			        });
 	      		}
