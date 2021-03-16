@@ -6,11 +6,18 @@
 	"icon": "servoyextra/dbtreeview/treeview.png",
 	"definition": "servoyextra/dbtreeview/dbtreeview.js",
 	"serverscript": "servoyextra/dbtreeview/dbtreeview_server.js",
+	"dependencies": {
+	   "serverscript": "servoyextra/dbtreeview/dbtreeview_server_ng2.js"
+	},
 	"libraries": [{"name":"dbtreeview.css", "version":"1", "url":"servoyextra/dbtreeview/css/dbtreeview.css", "mimetype":"text/css"}],
 	"keywords": ["database"],
 	"model":
 	{
-	    "roots": {"type":"foundsetref[]", "tags": { "scope": "private" }},
+		"foundsets" : {"type": "foundsetInfo[]", "elementConfig" : { "dynamicDataproviders": true }, "tags": { "scope": "private" }},
+	    "relatedFoundsets": { "type": "foundsetInfo[]", "elementConfig" : { "dynamicDataproviders": true }, "default": [], "tags": { "scope": "private" }},
+		"datasources": {"type" : "datasource[]", "tags": {"doc": "Array where data sources are stored", "scope": "private"}, "default": []},
+		"nodes": {"type": "object[]", "tags": { "scope": "private", "doc": "Client side nodes" }, "default": []},
+		"roots": {"type":"foundsetref[]", "tags": { "scope": "private" }},
 	    "bindings" : {"type":"binding[]", "tags": { "scope": "private" }},
 	    "visible" : {"type":"boolean", "default":true},
 		"enabled" : {"type":"boolean", "default":true},
@@ -90,7 +97,7 @@
         },
         "setNRelationName": {
 			"parameters":[
-							{                                                                 
+							{                                                                  
 							"name":"datasource",
 							"type": "string"
 		                	},
@@ -242,7 +249,7 @@
 							"type": "string"
 		                	},
 							{                                                                 
-							"name":"nRelationInfo",
+							"name":"nRelationName",
 							"type": "string"
 		                	}
 						 ],
@@ -310,7 +317,15 @@
 			"returns": "string[]"
         }				
 	},
-	"types": {
+	"internalApi" : {
+        "loadRelatedFoundset" : {
+			"parameters" : [{"name": "index", "type": "int"}]
+        }, 
+		"saveNodes": {
+			"parameters" : [{"name": "nodes", "type": "object[]"}]
+		}
+     },
+	 "types": {
 	  "callback": {
 	  		"f": "function",
 	  		"param": "string"
@@ -339,6 +354,14 @@
 	  "relationInfo": {
 		  	"label": "string",
 			"nRelationName": "string"
+	  }, 
+	  "foundsetInfo": { 
+		  "datasourceID": "int",
+		  "foundset": "foundset"
+	  }, 
+	  "datasource": {
+		  "name": "string", 
+		  "id": "int"
 	  }
 	}
 }
