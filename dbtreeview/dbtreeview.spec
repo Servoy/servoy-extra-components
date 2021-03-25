@@ -16,7 +16,6 @@
 		"foundsets" : {"type": "foundsetInfo[]", "elementConfig" : { "dynamicDataproviders": true }, "tags": { "scope": "private" }},
 	    "relatedFoundsets": { "type": "foundsetInfo[]", "elementConfig" : { "dynamicDataproviders": true }, "default": [], "tags": { "scope": "private" }},
 		"datasources": {"type" : "datasource[]", "tags": {"doc": "Array where data sources are stored", "scope": "private"}, "default": []},
-		"nodes": {"type": "object[]", "tags": { "scope": "private", "doc": "Client side nodes" }, "default": []},
 		"roots": {"type":"foundsetref[]", "tags": { "scope": "private" }},
 	    "bindings" : {"type":"binding[]", "tags": { "scope": "private" }},
 	    "visible" : {"type":"boolean", "default":true},
@@ -320,10 +319,7 @@
 	"internalApi" : {
         "loadRelatedFoundset" : {
 			"parameters" : [{"name": "index", "type": "int"}]
-        }, 
-		"saveNodes": {
-			"parameters" : [{"name": "nodes", "type": "object[]"}]
-		}
+        }
      },
 	 "types": {
 	  "callback": {
@@ -357,7 +353,11 @@
 	  }, 
 	  "foundsetInfo": { 
 		  "datasourceID": "int",
-		  "foundset": "foundset"
+		  "foundset": "foundset",
+		  "foundsetpk": "string", 
+		  "foundsetInfoID": "int",
+		  "foundsetInfoParentID": "int",
+		  "indexOfTheParentRecord": "int"
 	  }, 
 	  "datasource": {
 		  "name": "string", 
