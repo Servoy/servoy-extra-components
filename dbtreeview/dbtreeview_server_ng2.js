@@ -10,8 +10,10 @@ $scope.api.addRoots = function(foundset) {
 	if(!$scope.model.foundsets) {
 		$scope.model.foundsets = []
 	}
-	$scope.model.foundsets.push({datasourceID: getDatasourceID(foundset.getDataSource()), foundset: foundset});
-	loadNextLevelOfFoundsets(foundset);
+	var foundsetPK = servoyApi.getDatasourcePKs(foundset.getDataSource())[0];
+	$scope.model.foundsets.push({datasourceID: getDatasourceID(foundset.getDataSource()),
+		 foundset: foundset, foundsetpk: foundsetPK, foundsetInfoParentID: 0, foundsetInfoID: generateFoundsetInfoID()});
+	loadNextLevelOfFoundsets(foundset, $scope.lastGeneratedFoundsetInfoID);
 	setDataproviders($scope.model.foundsets);
 }
 
@@ -19,11 +21,7 @@ $scope.api.addRoots = function(foundset) {
  * Loads the related foundsets (for a specified foundset) based on the given relations. 
  */
 $scope.loadRelatedFoundset = function(index) {
-	loadNextLevelOfFoundsets($scope.model.relatedFoundsets[index].foundset.foundset);
-}
-
-$scope.saveNodes = function(nodes) {
-	$scope.model.nodes = nodes;
+	loadNextLevelOfFoundsets($scope.model.relatedFoundsets[index].foundset.foundset, $scope.model.relatedFoundsets[index].foundsetInfoID);
 }
 
 /**
@@ -51,7 +49,7 @@ $scope.api.setTextDataprovider = function(datasource, textdataprovider) {
 	$scope.getBinding(datasource).textdataprovider = textdataprovider;
 	if($scope.model.foundsets) {
 		$scope.model.foundsets.forEach(function(element) {
-			element.dataproviders.text = textdataprovider;
+			element.foundset.dataproviders.text = textdataprovider;
 		});
 	} else {
 		if (!$scope.dataproviders) $scope.dataproviders = {};
@@ -324,22 +322,24 @@ $scope.api.setHasCheckBoxValue = function(datasource, hasCheckboxValue) {
 /**
  * Loads the related foundsets. 
  */
-function loadNextLevelOfFoundsets(foundset) {
+function loadNextLevelOfFoundsets(foundset, foundsetInfoID) {
 	var nRelationName = $scope.getBinding(foundset.getDataSource()).nrelationname;
 	var nRelationInfos = $scope.getBinding(foundset.getDataSource()).nRelationInfos;
 
 	var relatedFoundsets = [];
 	if (nRelationName && !nRelationInfos) {
 		for (var i = 1; i <= foundset.getSize(); i++) {
-			var record = foundset.getRecord(i);
-			relatedFoundsets.push(record[nRelationName]);
+			var newFoundset = foundset.getRecord(i)[nRelationName];
+			if (newFoundset) {
+				relatedFoundsets.push({foundset: newFoundset, foundsetInfoID: foundsetInfoID, indexOfTheParentRecord: i});
+			}
 		}
 		addRelatedFoundsetsToModel(relatedFoundsets);
 	} else if (nRelationInfos) {
 		nRelationInfos.forEach(function (info) {
 			for (var i = 1; i <= foundset.getSize(); i++) {
-				var record = foundset.getRecord(i);
-				relatedFoundsets.push(record[info.nRelationName]);
+				var newFoundset = foundset.getRecord(i)[info.nRelationName];
+				relatedFoundsets.push({foundset: newFoundset, foundsetInfoID: foundsetInfoID, indexOfTheParentRecord: i});
 			}
 		});
 		addRelatedFoundsetsToModel(relatedFoundsets);
@@ -361,7 +361,8 @@ function loadRelatedFoundsetsForRelationNameAPI(datasource, nrelationname) {
 				for (var i = 1; i <= foundset.getSize(); i++) {
 						var record = foundset.getRecord(i);
 						if (record[nrelationname] && !record.isRelatedFoundSetLoaded(nrelationname)) { 
-							relatedFoundsets.push(record[nrelationname]);
+							relatedFoundsets.push({foundset: record[nrelationname], foundsetInfoID: el.foundsetInfoID, indexOfTheParentRecord: i});
+							// i - 1 because on client side the index starts from 0
 						}
 				}
 			}
@@ -384,7 +385,8 @@ function loadRelatedFoundsetsForRelationInfosAPI(datasource, relationInfos) {
 					for (var i = 1; i <= foundset.getSize(); i++) {
 						var record = foundset.getRecord(i);
 						if (record[info.nRelationName] && !record.isRelatedFoundSetLoaded(info.nRelationName)) { 
-							relatedFoundsets.push(record[info.nRelationName]);
+							relatedFoundsets.push({foundset: record[info.nRelationName], foundsetInfoID: el.foundsetInfoID, indexOfTheParentRecord: (i - 1)});
+							// i - 1 because on client side the index starts from 0
 						}
 					}
 				});
@@ -399,8 +401,13 @@ function loadRelatedFoundsetsForRelationInfosAPI(datasource, relationInfos) {
  */
 function addRelatedFoundsetsToModel(relatedFoundsets) {
 	relatedFoundsets.forEach(function (element) {
-		if (element.getSize()) {
-			$scope.model.relatedFoundsets.push({ datasourceID: getDatasourceID(element.getDataSource()), foundset: element });
+		var foundset = element.foundset;
+		if (foundset.getSize()) {
+			var foundsetPK = servoyApi.getDatasourcePKs(foundset.getDataSource())[0];
+			$scope.model.relatedFoundsets.push({
+				datasourceID: getDatasourceID(foundset.getDataSource()), foundset: foundset, foundsetpk: foundsetPK, 
+				foundsetInfoParentID: element.foundsetInfoID, foundsetInfoID: generateFoundsetInfoID(),
+				indexOfTheParentRecord: element.indexOfTheParentRecord - 1});
 		}
 	});
 
@@ -420,8 +427,7 @@ function setDataproviders (foundsetsInfo) {
 			}
 		}
 		foundsetsInfo.forEach(function(element) {
-			element.foundset.dataproviders.node_id = "node_id";
-			element.foundset.dataproviders.parent_id = "parent_id";
+			element.foundset.dataproviders[element.foundsetpk] = element.foundsetpk;
 		});
 	}
 }
@@ -441,3 +447,9 @@ function getDatasourceID (name) {
 	$scope.model.datasources.push({name: name, id:lastIdx});
 	return lastIdx;
 }
+
+function generateFoundsetInfoID() {
+	return ++$scope.lastGeneratedFoundsetInfoID;
+}
+
+$scope.lastGeneratedFoundsetInfoID = 0;
