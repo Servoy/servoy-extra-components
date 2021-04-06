@@ -311,7 +311,7 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 						}
 	    			}
 					
-					var isLevelVisible = $scope.model.levelVisibility && $scope.model.levelVisibility.state && ($scope.model.levelVisibility.level == level);
+					var isLevelVisible = $scope.model.levelVisibility && $scope.model.levelVisibility.value && ($scope.model.levelVisibility.level == level);
 					var isNodeExpanded = (level <= $scope.expandedNodes.length) && ($scope.expandedNodes[level - 1].toString() == getPKFromNodeKey(item.key));
 					if($scope.expandedNodesOnRefresh.length) {
 						var keyPath = "/" + item.key;
@@ -715,7 +715,7 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 		
   		$scope.$watch('model.levelVisibility', function(newValue) {
 			if (newValue && theTree) {
-				expandChildNodes(theTree.getRootNode(), newValue.level, newValue.state);
+				expandChildNodes(theTree.getRootNode(), newValue.level, newValue.value);
 			}
 		})
 		

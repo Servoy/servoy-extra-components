@@ -25,6 +25,36 @@ $scope.loadRelatedFoundset = function(index) {
 }
 
 /**
+ * Updates the founset row with the new value for checkbox data provider.
+ */
+$scope.updateFoundsetRow = function(isRoot, fsInfoID, index, checkboxValueDP, value) {
+	isRoot ? updateFoundsetRowMethod($scope.model.foundsets, fsInfoID, index, checkboxValueDP, value)
+		   :updateFoundsetRowMethod($scope.model.relatedFoundsets, fsInfoID, index, checkboxValueDP, value);
+
+}
+
+/**
+ * Returns the ID for a given data source.
+ * -1 in case the datasource is missing
+ */
+function getDatasourceId(datasource) {
+	for(var i = 0; i < $scope.model.datasources.length; i++) {
+		if($scope.model.datasources[i].name == datasource) {
+			return $scope.model.datasources[i].id;
+		} 
+	}
+	return -1;
+}
+
+$scope.api.getCheckBoxValues = function(datasource) {
+	return $scope.api.getCheckBoxValuesFromTree(getDatasourceId(datasource));
+}
+
+$scope.api.updateCheckBoxValues = function(datasource, pks, state) {
+	$scope.api.updateCheckBoxValuesForTree(getDatasourceId(datasource), pks, state);
+}
+
+/**
 * Clears all foundset roots of the tree.
 * 
 * @example
@@ -49,11 +79,11 @@ $scope.api.setTextDataprovider = function(datasource, textdataprovider) {
 	$scope.getBinding(datasource).textdataprovider = textdataprovider;
 	if($scope.model.foundsets) {
 		$scope.model.foundsets.forEach(function(element) {
-			element.foundset.dataproviders.text = textdataprovider;
+			element.foundset.dataproviders[textdataprovider] = textdataprovider;
 		});
 	} else {
 		if (!$scope.dataproviders) $scope.dataproviders = {};
-		$scope.dataproviders["text"] = {value: textdataprovider};
+		$scope.dataproviders[textdataprovider] = {value: textdataprovider};
 	}
 }
 
@@ -86,11 +116,11 @@ $scope.api.setHasCheckBoxDataprovider = function(datasource, hascheckboxdataprov
 	$scope.getBinding(datasource).hascheckboxdataprovider = hascheckboxdataprovider;
 	if($scope.model.foundsets) {
 		$scope.model.foundsets.forEach(function(element) {
-			element.dataproviders.hascheckbox = hascheckboxdataprovider;
+			element.dataproviders[hascheckboxdataprovider] = hascheckboxdataprovider;
 		});
 	} else {
 		if (!$scope.dataproviders) $scope.dataproviders = {};
-		$scope.dataproviders["hascheckbox"] = {value: hascheckboxdataprovider};
+		$scope.dataproviders[hascheckboxdataprovider] = {value: hascheckboxdataprovider};
 	}
 }   
 
@@ -106,6 +136,14 @@ $scope.api.setHasCheckBoxDataprovider = function(datasource, hascheckboxdataprov
 */
 $scope.api.setCallBackInfo = function(datasource, callbackfunction, param) {
 	$scope.getBinding(datasource).callbackinfo = {f: callbackfunction, param: param }
+	if($scope.model.foundsets && param) {
+		$scope.model.foundsets.forEach(function(element) {
+			element.foundset.dataproviders[param] = param;
+		});
+	} else {
+		if (!$scope.dataproviders && param) $scope.dataproviders = {};
+		$scope.dataproviders[param] = {value: param};
+	} 
 }   
 
 /**
@@ -121,11 +159,11 @@ $scope.api.setCheckBoxValueDataprovider = function(datasource, checkboxvaluedata
 	$scope.getBinding(datasource).checkboxvaluedataprovider = checkboxvaluedataprovider;
 	if($scope.model.foundsets) {
 		$scope.model.foundsets.forEach(function(element) {
-			element.dataproviders.checkboxvalue = checkboxvaluedataprovider;
+			element.dataproviders[checkboxvaluedataprovider] = checkboxvaluedataprovider;
 		});
 	} else {
 		if (!$scope.dataproviders) $scope.dataproviders = {};
-		$scope.dataproviders["checkboxvalue"] = {value: checkboxvaluedataprovider};
+		$scope.dataproviders[checkboxvaluedataprovider] = {value: checkboxvaluedataprovider};
 	}
 }   
 
@@ -140,7 +178,15 @@ $scope.api.setCheckBoxValueDataprovider = function(datasource, checkboxvaluedata
 * @param param
 */
 $scope.api.setMethodToCallOnCheckBoxChange = function(datasource, callbackfunction, param) {
-	$scope.getBinding(datasource).methodToCallOnCheckBoxChange = {f: callbackfunction, param: param }  		
+	$scope.getBinding(datasource).methodToCallOnCheckBoxChange = {f: callbackfunction, param: param }
+	if($scope.model.foundsets && param) {
+		$scope.model.foundsets.forEach(function(element) {
+			element.foundset.dataproviders[param] = param;
+		});
+	} else {
+		if (!$scope.dataproviders && param) $scope.dataproviders = {};
+		$scope.dataproviders[param] = {value: param};
+	}  		
 }
 
 /**
@@ -156,11 +202,11 @@ $scope.api.setToolTipTextDataprovider = function(datasource, tooltiptextdataprov
 	$scope.getBinding(datasource).tooltiptextdataprovider = tooltiptextdataprovider;
 	if($scope.model.foundsets) {
 		$scope.model.foundsets.forEach(function(element) {
-			element.dataproviders.tooltip = tooltiptextdataprovider;
+			element.dataproviders[tooltiptextdataprovider] = tooltiptextdataprovider;
 		});
 	} else {
 		if (!$scope.dataproviders) $scope.dataproviders = {};
-		$scope.dataproviders["tooltip"] = {value: tooltiptextdataprovider};
+		$scope.dataproviders[tooltiptextdataprovider] = {value: tooltiptextdataprovider};
 	}
 }   
 
@@ -177,11 +223,11 @@ $scope.api.setImageURLDataprovider = function(datasource, imageurldataprovider) 
 	$scope.getBinding(datasource).imageurldataprovider = imageurldataprovider;
 	if($scope.model.foundsets) {
 		$scope.model.foundsets.forEach(function(element) {
-			element.dataproviders.image = imageurldataprovider;
+			element.dataproviders[imageurldataprovider] = imageurldataprovider;
 		});
 	} else {
 		if (!$scope.dataproviders) $scope.dataproviders = {};
-		$scope.dataproviders["image"] = {value: imageurldataprovider};
+		$scope.dataproviders[imageurldataprovider] = {value: imageurldataprovider};
 	}
 }   
 
@@ -209,7 +255,15 @@ $scope.api.setChildSortDataprovider = function(datasource, childsortdataprovider
 * @param param
 */
 $scope.api.setMethodToCallOnDoubleClick = function(datasource, callbackfunction, param) {
-	$scope.getBinding(datasource).methodToCallOnDoubleClick = {f: callbackfunction, param: param }  		
+	$scope.getBinding(datasource).methodToCallOnDoubleClick = {f: callbackfunction, param: param }  
+	if($scope.model.foundsets && param) {
+		$scope.model.foundsets.forEach(function(element) {
+			element.foundset.dataproviders[param] = param;
+		});
+	} else {
+		if (!$scope.dataproviders && param) $scope.dataproviders = {};
+		$scope.dataproviders[param] = {value: param};
+	} 		
 }   
 
 /**
@@ -223,7 +277,15 @@ $scope.api.setMethodToCallOnDoubleClick = function(datasource, callbackfunction,
 * @param param
 */
 $scope.api.setMethodToCallOnRightClick = function(datasource, callbackfunction, param) {
-	$scope.getBinding(datasource).methodToCallOnRightClick = {f: callbackfunction, param: param }  		
+	$scope.getBinding(datasource).methodToCallOnRightClick = {f: callbackfunction, param: param }  	
+	if($scope.model.foundsets && param) {
+		$scope.model.foundsets.forEach(function(element) {
+			element.foundset.dataproviders[param] = param;
+		});
+	} else {
+		if (!$scope.dataproviders && param) $scope.dataproviders = {};
+		$scope.dataproviders[param] = {value: param};
+	} 	
 }
 
 $scope.getBinding = function(datasource) {
@@ -266,7 +328,7 @@ $scope.api.setSelectionPath = function(pk) {
  * @param state expanded state
  */
 $scope.api.setNodeLevelVisible = function(level, state) {
-	$scope.model.levelVisibility = {level: level, state: state};	
+	$scope.model.levelVisibility = {level: level, value: state};	
 }
 
 /**
@@ -330,7 +392,8 @@ function loadNextLevelOfFoundsets(foundset, foundsetInfoID) {
 	if (nRelationName && !nRelationInfos) {
 		for (var i = 1; i <= foundset.getSize(); i++) {
 			var newFoundset = foundset.getRecord(i)[nRelationName];
-			if (newFoundset) {
+			if (newFoundset && newFoundset.getSize()) {
+				sortFoundset(foundset, newFoundset, i);
 				relatedFoundsets.push({foundset: newFoundset, foundsetInfoID: foundsetInfoID, indexOfTheParentRecord: i});
 			}
 		}
@@ -339,7 +402,10 @@ function loadNextLevelOfFoundsets(foundset, foundsetInfoID) {
 		nRelationInfos.forEach(function (info) {
 			for (var i = 1; i <= foundset.getSize(); i++) {
 				var newFoundset = foundset.getRecord(i)[info.nRelationName];
-				relatedFoundsets.push({foundset: newFoundset, foundsetInfoID: foundsetInfoID, indexOfTheParentRecord: i});
+				if (newFoundset && newFoundset.getSize()) {
+					sortFoundset(foundset, newFoundset, i);
+					relatedFoundsets.push({foundset: newFoundset, foundsetInfoID: foundsetInfoID, indexOfTheParentRecord: i});
+				}
 			}
 		});
 		addRelatedFoundsetsToModel(relatedFoundsets);
@@ -360,8 +426,10 @@ function loadRelatedFoundsetsForRelationNameAPI(datasource, nrelationname) {
 			if (foundset.getDataSource() === datasource) {
 				for (var i = 1; i <= foundset.getSize(); i++) {
 						var record = foundset.getRecord(i);
-						if (record[nrelationname] && !record.isRelatedFoundSetLoaded(nrelationname)) { 
-							relatedFoundsets.push({foundset: record[nrelationname], foundsetInfoID: el.foundsetInfoID, indexOfTheParentRecord: i});
+						var newFoundset = record[nrelationname];
+						if (newFoundset && newFoundset.getSize() && !record.isRelatedFoundSetLoaded(nrelationname)) {
+							sortFoundset(foundset, newFoundset, i);
+							relatedFoundsets.push({foundset: newFoundset, foundsetInfoID: el.foundsetInfoID, indexOfTheParentRecord: i});
 							// i - 1 because on client side the index starts from 0
 						}
 				}
@@ -384,8 +452,10 @@ function loadRelatedFoundsetsForRelationInfosAPI(datasource, relationInfos) {
 				relationInfos.forEach(function (info) {
 					for (var i = 1; i <= foundset.getSize(); i++) {
 						var record = foundset.getRecord(i);
-						if (record[info.nRelationName] && !record.isRelatedFoundSetLoaded(info.nRelationName)) { 
-							relatedFoundsets.push({foundset: record[info.nRelationName], foundsetInfoID: el.foundsetInfoID, indexOfTheParentRecord: (i - 1)});
+						var newFoundset = record[info.nRelationName];
+						if (newFoundset && newFoundset.getSize() && !record.isRelatedFoundSetLoaded(info.nRelationName)) { 
+							sortFoundset(foundset, newFoundset, i);
+							relatedFoundsets.push({foundset: newFoundset, foundsetInfoID: el.foundsetInfoID, indexOfTheParentRecord: (i - 1)});
 							// i - 1 because on client side the index starts from 0
 						}
 					}
@@ -446,6 +516,25 @@ function getDatasourceID (name) {
 	var lastIdx = $scope.model.datasources.length;
 	$scope.model.datasources.push({name: name, id:lastIdx});
 	return lastIdx;
+}
+
+/**
+ * Sort the new foundset if there is any sorting data provider set
+ */
+ function sortFoundset(foundset, newFoundset, i) {
+	var sortDataProviderID = $scope.getBinding(foundset.getDataSource()).childsortdataprovider;
+	if (sortDataProviderID) {
+		newFoundset.sort(foundset.getRecord(i)[sortDataProviderID]);
+	}
+}
+
+function updateFoundsetRowMethod(foundsets, fsInfoID, index, checkboxValueDP, value) {
+	for(var i = 0; i < foundsets.length; i++) {
+		if (foundsets[i].foundsetInfoID == fsInfoID) {
+			foundsets[i].foundset.getRecord(index)[checkboxValueDP] = value;
+			break;
+		}
+	}
 }
 
 function generateFoundsetInfoID() {

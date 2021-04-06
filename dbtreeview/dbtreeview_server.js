@@ -211,7 +211,7 @@ $scope.api.setSelectionPath = function(pk) {
  * @param state expanded state
  */
 $scope.api.setNodeLevelVisible = function(level, state) {
-	$scope.model.levelVisibility = {level: level, state: state};	
+	$scope.model.levelVisibility = {level: level, value: state};	
 }
 
 /**

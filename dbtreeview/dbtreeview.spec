@@ -317,10 +317,55 @@
         }				
 	},
 	"internalApi" : {
-        "loadRelatedFoundset" : {
-			"parameters" : [{"name": "index", "type": "int"}]
-        }
-     },
+		"loadRelatedFoundset" : {
+				"parameters" : [{"name": "index", "type": "int"}]
+		},
+		"getCheckBoxValuesFromTree": {
+			"parameters": [{"name": "datasourceID", "type": "int"}],
+			"returns": "object[]"
+		},
+		"updateCheckBoxValuesForTree": {
+						"parameters":[
+							{                                                                 
+							"name":"datasource",
+							"type": "int"
+		                	},
+							{                                                                 
+							"name":"pks",
+							"type": "string[]"
+		                	},
+							{                                                                 
+							"name":"state",
+							"type": "boolean"
+		                	}								
+						 ]
+		},
+		"updateFoundsetRow": {
+						"parameters":[
+							{                                                                 
+							"name":"isRoot",
+							"type": "boolean"
+		                	},
+							{                                                                 
+							"name":"fsInfoID",
+							"type": "int"
+		                	},
+							{                                                                 
+							"name":"index",
+							"type": "int"
+		                	},
+							{
+							"name":"checkboxValueDP",
+							"type": "string"
+		                	}, 
+						    {
+							"name":"value",
+							"type": "object"
+		                	}							
+						 ]
+		}
+	 },
+
 	 "types": {
 	  "callback": {
 	  		"f": "function",
@@ -345,7 +390,7 @@
 	  },
 	  "levelVisibilityType": {
 	  		"level": "int",
-	  		"state": "boolean"
+	  		"value": "boolean"
 	  },
 	  "relationInfo": {
 		  	"label": "string",
