@@ -50,6 +50,7 @@
         "styleClass" : {"type": "styleclass", "values" : ["select2-xs", "select2-sm", "select2-md", "select2-lg"], "default": "select2-sm"},
         "enabled" : { "type": "enabled", "blockingOn": false, "default": true, "for": ["dataProviderID","onDataChangeMethodID"] },
         "readOnly" : { "type": "protected", "blockingOn": true, "default": false,"for": ["dataProviderID","onDataChangeMethodID"], "tags": { "scope" :"runtime" } },
+        "editable" : { "type": "protected", "blockingOn": false, "default": true,"for": ["dataProviderID","onDataChangeMethodID"] },
         "maximumSelectionSize": {"type": "int", "tags": { "scope" :"design" }},
         "valueSeparator" : {"type" :"string", "tags" : {"scope" :"private"}, "values" : [{"NEW_LINE":"new_line"}, {"COMMA": "comma"}], "default" : "new_line"},    
         "size" : {"type" :"dimension",  "default" : {"width":140, "height":32}}, 

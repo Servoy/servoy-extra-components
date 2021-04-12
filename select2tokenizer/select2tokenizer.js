@@ -183,6 +183,18 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 							onChange(e);
 					});
 					
+                    wrapper.focusin(function(e) {
+                        if($scope.handlers.onFocusGainedMethodID && !isReadOnly()) {
+                            $scope.handlers.onFocusGainedMethodID(e)
+                        }
+                    });
+
+                    wrapper.focusout(function(e) {
+                        if($scope.handlers.onFocusLostMethodID && !isReadOnly()) {
+                            $scope.handlers.onFocusLostMethodID(e)
+                        }
+                    });
+
 					// called each time the dropdown is open
 					tokenizer.on("select2:open", function(e) {
 						if (executeOnFocusGained && $scope.handlers.onFocusGainedMethodID) {
@@ -476,8 +488,12 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 			}
 			
 			function isEnabled () {
-				return $scope.model.enabled === true && $scope.model.readOnly == false;
+				return $scope.model.enabled === true && isReadOnly();
 			}
+
+            function isReadOnly () {
+                return $scope.model.readOnly == false && $scope.model.editable == true;
+            }
 			
 			function isTypeString() {
 				return  !$scope.model.dataProviderID || $scope.model.dataProviderID.constructor.name === "String" || typeof($scope.model.dataProviderID) === "string";
