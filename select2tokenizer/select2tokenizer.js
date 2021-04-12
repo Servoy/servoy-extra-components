@@ -184,13 +184,13 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 					});
 					
                     wrapper.focusin(function(e) {
-                        if($scope.handlers.onFocusGainedMethodID && !isReadOnly()) {
+                        if($scope.handlers.onFocusGainedMethodID && isEditable()) {
                             $scope.handlers.onFocusGainedMethodID(e)
                         }
                     });
 
                     wrapper.focusout(function(e) {
-                        if($scope.handlers.onFocusLostMethodID && !isReadOnly()) {
+                        if($scope.handlers.onFocusLostMethodID && isEditable()) {
                             $scope.handlers.onFocusLostMethodID(e)
                         }
                     });
@@ -488,10 +488,10 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 			}
 			
 			function isEnabled () {
-				return $scope.model.enabled === true && isReadOnly();
+				return $scope.model.enabled === true && !isEditable();
 			}
 
-            function isReadOnly () {
+            function isEditable () {
                 return $scope.model.readOnly == false && $scope.model.editable == true;
             }
 			
