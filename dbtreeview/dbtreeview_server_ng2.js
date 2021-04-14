@@ -64,6 +64,7 @@ $scope.api.updateCheckBoxValues = function(datasource, pks, state) {
 $scope.api.removeAllRoots = function() {
 	if($scope.model.foundsets) {
 		$scope.model.foundsets.length = 0;
+		$scope.model.relatedFoundsets.length = 0;
 	}
 }
 /**
