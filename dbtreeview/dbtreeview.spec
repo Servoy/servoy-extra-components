@@ -6,9 +6,11 @@
 	"icon": "servoyextra/dbtreeview/treeview.png",
 	"definition": "servoyextra/dbtreeview/dbtreeview.js",
 	"serverscript": "servoyextra/dbtreeview/dbtreeview_server.js",
-	"dependencies": {
-	   "serverscript": "servoyextra/dbtreeview/dbtreeview_server_ng2.js"
-	},
+	"ng2Config": {
+    	"dependencies": {
+    	   "serverscript": "servoyextra/dbtreeview/dbtreeview_server_ng2.js"
+    	}
+    },
 	"libraries": [{"name":"dbtreeview.css", "version":"1", "url":"servoyextra/dbtreeview/css/dbtreeview.css", "mimetype":"text/css"}],
 	"keywords": ["database"],
 	"model":
