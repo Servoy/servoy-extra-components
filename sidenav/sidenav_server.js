@@ -1,8 +1,9 @@
-var getNodeById;
+var getNodeLevel;
 var getPathToNode;
 var getParentNode;
 var getParentNodeByIndexPath;
 var getNodeByIndexPath;
+var getSelectedIndexPath;
 var clearGroups;
 
 /**
@@ -54,7 +55,7 @@ $scope.api.setRootMenuItems = function(menuItems) {
  * Returns the root menu object
  * @public
  *
- * @return {Array<servoyextra-sidenav.MenuItem>}
+ * @return {Array<CustomType<servoyextra-sidenav.MenuItem>>}
  * */
 $scope.api.getRootMenuItems = function() {
 	var menuItems = $scope.model.menu;
@@ -67,7 +68,7 @@ $scope.api.getRootMenuItems = function() {
  *
  * @param {String|Number} menuItemId
  *
- * @return {servoyextra-sidenav.MenuItem}
+ * @return {CustomType<servoyextra-sidenav.MenuItem>}
  * */
 $scope.api.getMenuItem = function(menuItemId) {
 	return  getNodeById(menuItemId, $scope.model.menu);
@@ -79,9 +80,10 @@ $scope.api.getMenuItem = function(menuItemId) {
  *
  * @param {String|Number} menuItemId
  *
- * @return {servoyextra-sidenav.MenuItem}
+ * @return {CustomType<servoyextra-sidenav.MenuItem>}
  * */
 $scope.api.getParentMenuItem = function(menuItemId) {
+	/** @type {CustomType<servoyextra-sidenav.MenuItem>} */
 	var parent = getParentNode(menuItemId, $scope.model.menu);
 	return parent;
 }
@@ -222,10 +224,10 @@ $scope.api.removeMenuItem = function(menuItemId) {
 * @public
 *
 * @param {String|Number} menuItemId
-* @return {Array<servoyextra-sidenav.MenuItem>} 
+* @return {Array<CustomType<servoyextra-sidenav.MenuItem>>} 
 */
 $scope.api.getSubMenuItems = function(menuItemId) {
-	/** @type {Array<servoyextra-sidenav.MenuItem>} */
+	/** @type {Array<CustomType<servoyextra-sidenav.MenuItem>>} */
 	var menuItems;
 	var tree = $scope.model.menu;
 	var node = getNodeById(menuItemId, tree);
@@ -342,11 +344,12 @@ $scope.api.clearMenuItems = function(depth) {
  * @param {String|Number} menuItemId
  * @param {Array} nodes
  *
- * @return {servoyextra-sidenav.MenuItem} */
-getNodeById = function(menuItemId, nodes) {
-	/** @type {servoyextra-sidenav.MenuItem} */
+ * @return {CustomType<servoyextra-sidenav.MenuItem>} 
+ * */
+function getNodeById(menuItemId, nodes) {
+	/** @type {CustomType<servoyextra-sidenav.MenuItem>} */
 	var node;
-	/** @type {servoyextra-sidenav.MenuItem} */
+	/** @type {CustomType<servoyextra-sidenav.MenuItem>} */
 	var subNode;
 	if (nodes) {
 		for (var i = 0; i < nodes.length; i++) { // search in each subtree
@@ -372,11 +375,11 @@ getNodeById = function(menuItemId, nodes) {
  * @param {Array<Number>} path
  * @param {Array} nodes
  *
- * @return {servoyextra-sidenav.MenuItem}
+ * @return {CustomType<servoyextra-sidenav.MenuItem>}
  * */
 getNodeByIndexPath = function(path, nodes) {
 	
-	/** @type {servoyextra-sidenav.MenuItem} */
+	/** @type {CustomType<servoyextra-sidenav.MenuItem>} */
 	var node = null;
 	if (nodes) {
 		if (path && path.length === 1) {
@@ -427,7 +430,7 @@ getPathToNode = function(idOrNode, nodes, key) {
  * @param {String|Number} menuItemId
  * @param {Array} nodes
  *
- * @return {servoyextra-sidenav.MenuItem} */
+ * @return {CustomType<servoyextra-sidenav.MenuItem>} */
 getParentNode = function(menuItemId, nodes) {
 	var indexPath = getPathToNode(menuItemId, nodes);
 	if (indexPath && indexPath.length > 1) {
@@ -445,13 +448,29 @@ getParentNode = function(menuItemId, nodes) {
  * @param {Array} nodes
  *
  *
- * @return {servoyextra-sidenav.MenuItem} 
+ * @return {CustomType<servoyextra-sidenav.MenuItem>} 
  * */
 getParentNodeByIndexPath = function(indexPath, nodes) {
 	if (indexPath && indexPath.length > 1) {
 		return getNodeByIndexPath(indexPath.slice(0, indexPath.length - 1), nodes);
 	}
 	return null;
+}
+
+/**
+ * @private 
+ * Returns all anchestors of node
+ *
+ * @param {String|Number} nodeId
+ * @return Array
+ * */
+getNodeLevel = function(nodeId) {
+	var path = getPathToNode(nodeId, $scope.model.menu);
+	if (path) {
+		return path.length;
+	} else {
+		return null;
+	}
 }
 
 /**
@@ -473,4 +492,498 @@ clearGroups = function(level, nodes, deep) {
 			clearGroups(level, subTree.menuItems, deep + 1);
 		}
 	}
+}
+
+/**
+ * @private
+ * Returns the selected index path up-to level
+ * can't find selected node by index anymore
+ *
+ * @param {Number} [level] 1-based
+ * @return {Array<Number>}
+ * */
+getSelectedIndexPath = function(level) {
+	var selectedNode = getSelectedNode(level);
+	var path = getPathToNode(selectedNode.id, $scope.model.menu);
+	return path;
+}
+
+/**`
+ * @private
+ * Returns the selected node up-to level
+ *
+ * @param {Number} [level] 1-based
+ * @return {CustomType<servoyextra-sidenav.MenuItem>}
+ * */
+function getSelectedNode(level) {
+	var levels = $scope.model.selectedIndex ? JSON.parse($scope.model.selectedIndex) : {};
+	var maxLevel = -1;
+
+	// get the node at deeper level
+	for (var lvl in levels) {
+		if (lvl > maxLevel && (!level || lvl <= level)) {
+			maxLevel = lvl;
+		}
+	}
+
+	var nodeId = levels[maxLevel];
+	return getNodeById(nodeId, $scope.model.menu);
+}
+
+/**
+ * Server Side API
+ *
+ * Returns the selected menuItem.
+ * @public
+ *
+ * @param {Number} [level] if level is provided search for the selected menu item at level.
+ *
+ * @return {CustomType<servoyextra-sidenav.MenuItem>}
+ * */
+$scope.api.getSelectedMenuItem = function(level) {
+	// TODO if level is greater then selected level, what should return ?
+	return getSelectedNode(level);
+}
+
+/**
+ * Server Side API
+ *
+ * Select the menu item with the given id.
+ * If level is provided search is optimized since it will search only within the descendant of the selected menuItem at level.
+ * For example if a root menuItem is selected and level is equal 2 search only in the subMenuItems of the selected root.
+ * Return false if menuItemId cannot be found or is disabled.
+ * @public
+ *
+ * @param {String|Number} id
+ * @param {Boolean} [mustExecuteOnMenuItemSelect] Force the onMenuItemSelect to be executed. Default false.
+ * @param {Boolean} [mustExecuteOnMenuItemExpand] Force the onMenuItemExpand to be executed. Default false.
+ * @param {Number} [level] reduce the search to the selected menuItem at level, if any menuItem is selected at level.
+ *
+ * @return {Boolean}
+ *
+ *  */
+$scope.api.setSelectedMenuItem = function(id, mustExecuteOnMenuItemSelect, mustExecuteOnMenuItemExpand, level) {
+	
+	var nodes;
+	var levelPath = [];
+
+	// if level is provided search only in the selected node
+	if (level && level > 1) { // search in selected node only
+		levelPath = getSelectedIndexPath(level - 1);
+		var parentNode = getNodeByIndexPath(levelPath, $scope.model.menu); // retrieve the selected node at level
+		if (parentNode) nodes = parentNode.menuItems;
+	} else if (level === 1) { // search in root
+		// FIXME it searches in the whole tree
+		nodes = $scope.model.menu;
+	} else {
+		nodes = $scope.model.menu;
+	}
+
+	// search path to node
+	var path = levelPath;
+	var subPath = getPathToNode(id, nodes, 'id');
+	if (subPath) { // not found in the selected node
+		path = levelPath.concat(subPath);
+	} else {
+		return false;
+	}
+
+	// do nothing if the item is already selected
+	var selectedIndex = $scope.model.selectedIndex ? JSON.parse($scope.model.selectedIndex) : {};
+	if (isNodeSelected(id, path.length) && !selectedIndex[path.length + 1]) {
+		return true;
+	} else {
+		// search the node
+		var node = getNodeByIndexPath(subPath, nodes);
+
+		// select the item
+		var preventSelectHandler = mustExecuteOnMenuItemSelect == true ? false : true;
+		var preventExpandHandler = mustExecuteOnMenuItemExpand == true ? false : true;
+		return selectItem(path.length, path[path.length - 1], node, null, preventSelectHandler, preventExpandHandler);
+	}
+}
+
+/**
+ * Server Side API
+ *
+ * Force the menuItem to be expanded or collapsed.
+ * Return false if menuItemId cannot be found or is disabled.
+ * @public
+ *
+ * @param {String|Number} menuItemId
+ * @param {Boolean} expanded force the menuItem to expand if true, is collapsed otherwise
+ * @param {Boolean} [mustExecuteOnMenuItemExpand] Force the onMenuItemExpand to be executed. Default false.
+ *
+ * @return {Boolean}
+ *  */
+$scope.api.setMenuItemExpanded = function(menuItemId, expanded, mustExecuteOnMenuItemExpand) {
+	var node = getNodeById(menuItemId, $scope.model.menu);
+	
+	if (!node) {
+		return false;
+	}
+
+	// expandItem/collapsItem requires node level
+	var level = getNodeLevel(menuItemId);
+	var preventHandler = mustExecuteOnMenuItemExpand == true ? false : true;
+
+	if (expanded) {
+		return expandItem(level, null, node, null, preventHandler);
+	} else {
+		return collapseItem(level, null, node, null, preventHandler);
+	}
+
+}
+
+/**
+ * @private 
+ * @param {Number} level
+ * @param {Number} index
+ * @param {CustomType<servoyextra-sidenav.MenuItem>} item
+ * @param {Object} [event]
+ * @param {Object} [preventHandler]
+ * 
+ * Expand the item */
+function expandItem(level, index, item, event, preventHandler) {
+
+	// check if node is already collapsed
+	if (isNodeExpanded(item.id, level)) {
+		return true;
+	}
+
+	// prevent selection if item is disabled
+	if (isDisabled(item.id)) {
+		return false;
+	}
+	
+	// create a dummy jsevent
+	if (!event) {
+		event = createJSEvent();
+	}
+
+	// if is expanded
+	if (preventHandler != true && $scope.handlers.onMenuItemExpanded) { // change selection only if onMenuItemSelected allows it
+		try {
+			$scope.handlers.onMenuItemExpanded(item.id, event);
+		} catch (err) {
+			console.log(err);
+		}
+	}
+	setExpandedIndex(level, index, item);
+	
+
+	return true;
+}
+
+/**
+ * @private 
+ * @param {Number} level
+ * @param {Number} index
+ * @param {CustomType<servoyextra-sidenav.MenuItem>} item
+ * @param {Object} [event]
+ * @param {Object} [preventHandler]
+ *
+ * Collapse the Item */
+function collapseItem(level, index, item, event, preventHandler) {
+
+	// check if node is already collapsed
+	if (!isNodeExpanded(item.id, level)) {
+		return true;
+	}
+
+	// prevent selection if item is disabled
+	if (isDisabled(item.id)) {
+		return false;
+	}
+	
+	if (!event) { //
+		event = createJSEvent();
+	}
+
+	// call handler onMenuItemCollapsed
+	if (preventHandler != true && $scope.handlers.onMenuItemCollapsed) {
+		try {
+			$scope.handlers.onMenuItemCollapsed(item.id, event);
+		} catch (err) {
+			console.log(err);
+		}
+	}
+	clearExpandedIndex(level - 1);
+	
+	return true;
+}
+
+/**
+ * @private 
+ * Set the index at level
+ *
+ * @param {Number} [level] 1-based target level
+ * @param {Number} index value
+ * @param {CustomType<servoyextra-sidenav.MenuItem>} item the expanded node
+ *
+ * */
+function setExpandedIndex(level, index, item) {
+	var levels = $scope.model.expandedIndex ? JSON.parse($scope.model.expandedIndex) : { };
+
+	// clear sub levels
+	for (var lvl in levels) {
+		if (lvl > level) { // reset the next levels
+			delete levels[lvl];
+		}
+	}
+
+	// expand all anchestors
+	var newExpandedIndex = { }
+	var anchestors = getNodeAnchestors(item.id);
+	for (var i = 0; i < anchestors.length; i++) {
+		if (newExpandedIndex[i + 1] != anchestors[i].id) {
+			newExpandedIndex[i + 1] = anchestors[i].id;
+		}
+	}
+
+	// TODO select all parents as well
+	// expand node index
+	if (levels[level] != item.id) { // collapse the selected menu
+		newExpandedIndex[level] = item.id;
+	}
+
+	// apply selected index
+	$scope.model.expandedIndex = JSON.stringify(newExpandedIndex);
+}
+
+/**
+ * @private 
+ * Delete all indexes from level
+ * @param {Number} level
+ *  */
+function clearExpandedIndex(level) {
+	var levels = $scope.model.expandedIndex ? JSON.parse($scope.model.expandedIndex) : { };
+
+	// reset all sub levels
+	for (var lvl in levels) {
+		if (lvl > level) { // reset the next levels
+			delete levels[lvl];
+		}
+	}
+	
+	// apply selected index
+	$scope.model.expandedIndex = JSON.stringify(levels);
+}
+
+/**
+ * @private 
+ * @param {Number} level
+ * @param {Number} index
+ * @param {CustomType<servoyextra-sidenav.MenuItem>} item
+ * @param {Object} [event]
+ * @param {Object} [preventSelectHandler]
+ * @param {Object} [preventExpandHandler]
+ *
+ * Select the main Item */
+function selectItem(level, index, item, event, preventSelectHandler, preventExpandHandler) {
+
+	// prevent selection if item is disabled
+	if (isDisabled(item.id)) {
+		return false;
+	}
+	
+	// create a dummy jsevent
+	if (!event) {
+		event = createJSEvent();
+	}
+
+	if (preventSelectHandler != true && $scope.handlers.onMenuItemSelected) { // change selection only if onMenuItemSelected allows it
+		try {
+			var confirm = $scope.handlers.onMenuItemSelected(item.id, event)
+			if (confirm !== false) {
+				confirmSelection();
+			} else {
+				return false;
+			}
+		} catch (err) {
+			console.log(err);
+			return false;
+		}
+	} else {
+		confirmSelection();
+	}	
+	
+	function confirmSelection() {
+		setSelectedIndex(level, index, item);
+
+		// expand the item
+		if (item.menuItems) { // expand the node if not leaf
+			expandItem(level, index, item, event, preventExpandHandler); // TODO add collapsed argument
+		} else { // expand the parent node if is a leaf
+			var parentNode = getParentNode(item.id);
+			if (parentNode) {
+				expandItem(level - 1, null, parentNode, event, preventExpandHandler);
+			}
+		}
+	}
+	
+	return true;
+}
+
+/**
+ * @private 
+ * Set the index at level
+ *
+ * @param {Number} [level] 1-based target level
+ * @param {Number} index value
+ * @param {CustomType<servoyextra-sidenav.MenuItem>} item
+ *
+ * */
+function setSelectedIndex (level, index, item) {
+	var levels = $scope.model.selectedIndex ? JSON.parse($scope.model.selectedIndex) : {};
+
+	// clear level below selection (clearSelectedIndex)
+	
+	// reset all sub levels
+	for (var lvl in levels) {
+		if (lvl > level) { // reset the next levels
+			delete levels[lvl];
+		}
+	}
+
+	//				// update levels above selection, all anchestors
+	var newSelectedIndex = { }
+	var anchestors = getNodeAnchestors(item.id);
+	for (var i = 0; i < anchestors.length; i++) {
+		if (newSelectedIndex[i + 1] != anchestors[i].id) {
+			newSelectedIndex[i + 1] = anchestors[i].id;
+		}
+	}
+
+	// TODO select all parents as well
+	// set level index
+	if (levels[level] == item.id) { // collapse the selected menu
+		// TODO allow unselect !?
+		newSelectedIndex[level] = item.id;
+	} else {
+		newSelectedIndex[level] = item.id;
+	}
+	
+	// apply selected index
+	$scope.model.selectedIndex = JSON.stringify(newSelectedIndex);
+
+}
+
+/**
+ * @private 
+ * Check if node is selected
+ *
+ * @param {String|Number} nodeId
+ * @param {Number} [level] 1-based search in the givenLevel
+ * @return {Boolean}
+ *  */
+function isNodeSelected(nodeId, level) {
+	var levels = $scope.model.selectedIndex ? JSON.parse($scope.model.selectedIndex) : {};
+	
+	if (level) {
+		return levels[level] == nodeId;
+	} else {
+		for (level in levels) {
+			if (levels[level] == nodeId) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+/**
+ * @private 
+ * Check if node is expanded
+ *
+ * @param {Object} nodeId
+ * @param {Number} [level] 1-based search in the givenLevel
+ * @return {Boolean}
+ *  */
+function isNodeExpanded(nodeId, level) {
+	var levels = $scope.model.expandedIndex ? JSON.parse($scope.model.expandedIndex) : {};
+	if (level) {
+		return levels[level] == nodeId;
+	} else {
+		for (level in levels) {
+			if (levels[level] == nodeId) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+/**
+ * @param {String|Number} nodeId
+ * 
+ * @private 
+ * @return {Array}
+ *  */
+function getNodeAnchestors(nodeId) {
+	var anchestors = getAllNodesToNodeId(nodeId);
+	anchestors.pop();
+	return anchestors;
+}
+
+/**
+ * @private 
+ * Returns all anchestors of node
+ *
+ * @param {String|Number} nodeId
+ * @return Array
+ * */
+function getAllNodesToNodeId(nodeId) {
+	var nodes = $scope.model.menu;
+	var pathIndex = getPathToNode(nodeId, nodes);
+	var anchestors = [];
+	var node;
+
+	// returns all the anchestors of node
+	for (var i = 0; pathIndex && i < pathIndex.length; i++) {
+		node = nodes[pathIndex[i]];
+		anchestors.push(node);
+		nodes = node.menuItems;
+	}
+	return anchestors;
+}
+
+/**
+ * @private 
+ * Check if node and all it's anchestors are enabled.
+ * Return false
+ *
+ * @param {String|Number} nodeId
+ * @return {Boolean}
+ *  */
+function isDisabled(nodeId) {
+	// check if menu itself is disable
+	if ($scope.model.enabled == false) {
+		return true;
+	}
+
+	// TODO refactor: use getNodeAnchestors
+	var indexPath = getPathToNode(nodeId, $scope.model.menu);
+	var tree = $scope.model.menu;
+	/** @type {CustomType<servoyextra-sidenav.MenuItem>} */
+	var node;
+
+	if (!indexPath || !indexPath.length) {
+		return null;
+	}
+
+	for (var i = 0; i < indexPath.length; i++) {
+		node = tree[indexPath[i]];
+		if (node.enabled == false) {
+			return true;
+		}
+		tree = node.menuItems;
+	}
+	return false;
+}
+
+/** @private  */
+function createJSEvent() {
+	var event = {type:'event'}
+	return event;
 }
