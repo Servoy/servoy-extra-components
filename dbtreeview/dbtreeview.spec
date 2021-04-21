@@ -17,7 +17,6 @@
 	{
 		"foundsets" : {"type": "foundsetInfo[]", "elementConfig" : { "dynamicDataproviders": true }, "tags": { "scope": "private" }},
 	    "relatedFoundsets": { "type": "foundsetInfo[]", "elementConfig" : { "dynamicDataproviders": true }, "default": [], "tags": { "scope": "private" }},
-		"datasources": {"type" : "datasource[]", "tags": {"doc": "Array where data sources are stored", "scope": "private"}, "default": []},
 		"roots": {"type":"foundsetref[]", "tags": { "scope": "private" }},
 	    "bindings" : {"type":"binding[]", "tags": { "scope": "private" }},
 	    "visible" : {"type":"boolean", "default":true},

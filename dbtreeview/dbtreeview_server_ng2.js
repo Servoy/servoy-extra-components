@@ -1,3 +1,4 @@
+var datasources = [];
 /**
 * Add foundset to the list of foundsets used to create the tree's root nodes. 
 * 
@@ -38,9 +39,9 @@ $scope.updateFoundsetRow = function(isRoot, fsInfoID, index, checkboxValueDP, va
  * -1 in case the datasource is missing
  */
 function getDatasourceId(datasource) {
-	for(var i = 0; i < $scope.model.datasources.length; i++) {
-		if($scope.model.datasources[i].name == datasource) {
-			return $scope.model.datasources[i].id;
+	for(var i = 0; i < datasources.length; i++) {
+		if(datasources[i].name == datasource) {
+			return datasources[i].id;
 		} 
 	}
 	return -1;
@@ -508,14 +509,14 @@ function setDataproviders (foundsetsInfo) {
  * Used for passing an ID to client, not the whole data.
  */
 function getDatasourceID (name) {
-	if (!$scope.model.datasources) $scope.model.datasources = [];
-	for(var i = 0; i < $scope.model.datasources.length; i++) {
-		if($scope.model.datasources[i].name == name) {
-			return $scope.model.datasources[i].id;
+	if (!datasources) datasources = [];
+	for(var i = 0; i < datasources.length; i++) {
+		if(datasources[i].name == name) {
+			return datasources[i].id;
 		} 
 	}
-	var lastIdx = $scope.model.datasources.length;
-	$scope.model.datasources.push({name: name, id:lastIdx});
+	var lastIdx = datasources.length;
+	datasources.push({name: name, id:lastIdx});
 	return lastIdx;
 }
 
