@@ -405,10 +405,6 @@
 		  "foundsetInfoID": "int",
 		  "foundsetInfoParentID": "int",
 		  "indexOfTheParentRecord": "int"
-	  }, 
-	  "datasource": {
-		  "name": "string", 
-		  "id": "int"
 	  }
 	}
 }
