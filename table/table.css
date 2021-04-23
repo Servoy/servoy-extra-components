@@ -4,6 +4,7 @@
 
 .table-servoyextra-header-label {
 	display: table-cell;
+    vertical-align:middle;
 }
 
 .table-servoyextra-sort-show-up, .table-servoyextra-sort-show-down{
