@@ -2420,7 +2420,24 @@ return {
 					tBodyStyle.marginBottom = ($(pagination).height() + 2) + "px";
 				}
 			}
-
+            if($scope.model.responsiveDynamicHeight && $scope.model.responsiveHeight > 0) {
+                var h = 0;
+                var p = $element.find(".svy-pagination");
+                if(p.length) {
+                    h += $(p).height();
+                }
+                $element.find("tr").each(function() {
+                     h += $(this).height();
+                     if(h > $scope.model.responsiveHeight) {
+                            return false;
+                     }
+                });
+                // make sure no scrollbar is shown in this scenario
+                if(h < $scope.model.responsiveHeight) {
+                    tBodyStyle['overflow-y'] = 'hidden';
+                } 
+           }
+                    
 			for (var p in tBodyStyle) {
 				tBodyEl.style[p] = tBodyStyle[p];
 			}
