@@ -23,9 +23,8 @@ angular.module('servoyextraSplitpane',['servoy']).directive('servoyextraSplitpan
 				else if (which == "split2") {
 					splitPane2 = splitPaneElement;
 				}
-				processDivLocation();
 			} 
-			
+
 			function getHandlerElement()
 			{
 				var splitter = $element.children(0).children(0);
@@ -51,7 +50,7 @@ angular.module('servoyextraSplitpane',['servoy']).directive('servoyextraSplitpan
 				if (multiplier)
 				{
 					$scope.model.divLocation = Math.round(newValue * multiplier);
-					processDivLocation();
+					$scope.processDivLocation();
 				}	
 			}
 			
@@ -67,11 +66,11 @@ angular.module('servoyextraSplitpane',['servoy']).directive('servoyextraSplitpan
 				return { width: getWidth(), height: getHeight() };
 			}
 
-			function processDivLocation() {
+			$scope.processDivLocation = function() {
 				if(!splitPane1 || !splitPane2) return;
 				var jqueryDivEl = getHandlerElement();
 				if (jqueryDivEl.length == 0) {
-					$timeout(processDivLocation,10);
+					$timeout($scope.processDivLocation,10);
 					return;
 				}
 				initDivLocation($scope.model.splitType == 0 ? getWidth():getHeight());
@@ -161,14 +160,14 @@ angular.module('servoyextraSplitpane',['servoy']).directive('servoyextraSplitpan
 					} else {
 						dividerEl.css('width',  $scope.model.divSize + 'px'); 
 					}
-					processDivLocation()
+					$scope.processDivLocation()
 				}
 			});
 
 			//called when the divider location is changed from server side scripting
 			$scope.$watch('model.divLocation', function(newValue, oldValue){
 				if ((newValue || newValue === 0) && newValue  !== oldValue) {
-					processDivLocation();
+					$scope.processDivLocation();
 					if($scope.handlers.onChangeMethodID) {
 						$scope.$evalAsync(function() {
 							$scope.handlers.onChangeMethodID(-1,$.Event("change"));
@@ -290,6 +289,9 @@ angular.module('servoyextraSplitpane',['servoy']).directive('servoyextraSplitpan
 			for (var key in $scope.model) {
 				modelChangFunction(key, $scope.model[key]);
 			}
+		},
+		link: function($scope, $element, $attrs) {
+			$scope.processDivLocation();
 		},
 		templateUrl: 'servoyextra/splitpane/splitpane.html'
 	};
