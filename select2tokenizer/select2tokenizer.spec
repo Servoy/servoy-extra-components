@@ -103,7 +103,9 @@
 								  "type":"boolean",
 								  "optional": true
 								}
-							 ]
+							 ],
+            "delayUntilFormLoads": true,
+            "discardPreviouslyQueuedSimilarCalls": true
 	     }
 	}
 }
