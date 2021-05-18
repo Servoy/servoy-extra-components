@@ -255,6 +255,29 @@ return {
 			return $scope.componentWidth;
 		}
 
+		// when inside a collapsible container track the visibility using 'IntersectionObserver'
+		// because the watch on element's ":visible" is not triggered (the collapsible container visibility is
+		// toggeled via css - so no angular digest cycle)
+		if('IntersectionObserver' in window) {
+			var options = {
+				root: $element.get(0).parentNode,
+			};
+			new IntersectionObserver((entries, observer) => {
+			  entries.forEach(entry => {
+				if(entry.isIntersecting) {
+					if ($scope.componentWidth === undefined) {
+						// first time show, call generateTemplate so the columns width are calculated
+						generateTemplate(true);
+					}
+					else {
+						// just force the element's :visible watch
+						$scope.$digest();
+					}
+				}
+			  });
+			}, options).observe($element.get(0));
+		}
+
 		var autoColumns;
 		var needToUpdateAutoColumnsWidth = false;
 		setColumnsToInitalWidthAndInitAutoColumns();
