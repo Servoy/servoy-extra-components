@@ -70,3 +70,6 @@ Web-Component: True
 
 Name: spinner/spinner.spec
 Web-Component: True
+
+Name: gauge/gauge.spec
+Web-Component: True
