@@ -492,7 +492,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 			}
 
             function isEditable () {
-                return $scope.model.readOnly == false && $scope.model.editable == true;
+                return $scope.model.readOnly === false && $scope.model.editable === true;
             }
 			
 			function isTypeString() {
