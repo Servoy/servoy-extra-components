@@ -13,8 +13,8 @@
 	{
 		"menu"							: {"type" :"MenuItem[]", "default" : [], "pushToServer": "allow", "tags": { "scope" :"runtime" }},
 		
-		"selectedIndex"					: {"type" :"object", "tags": { "scope" :"private" }, "pushToServer" : "allow"},
-		"expandedIndex"					: {"type" :"object", "tags": { "scope" :"private" }, "pushToServer" : "allow"},
+		"selectedIndex"					: {"type" :"string", "tags": { "scope" :"private" }, "pushToServer" : "deep"},
+		"expandedIndex"					: {"type" :"string", "tags": { "scope" :"private" }, "pushToServer" : "deep"},
 		"tabSeq"						: { "type": "tabseq", "tags": { "scope": "design" } },
 		"containedForm"					: {"type" :"form"},
 		"relationName"					: "relation",
