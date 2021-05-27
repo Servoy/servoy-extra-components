@@ -289,6 +289,8 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 **************************************************************/
 				
 				/**
+				 * @deprecated use setSelectedMenuItem(id, false, false) instead.
+				 * 
 				 * Client Side API
 				 *
 				 * Select the menu item with the given id.
