@@ -1,0 +1,16 @@
+.svy-treeview table {
+    width: 100%;
+}
+
+.svy-treeview .treeLabel {
+    margin-left: 2px;
+}
+
+.svy-treeview .filteredNode {
+    font-weight: bold;
+}
+
+.svy-treeview .filterPartNode {
+    color: #c0c0c0;
+    font-weight: lighter;
+}

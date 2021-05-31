@@ -1,0 +1,23 @@
+<div
+     [id]="servoyApi.getMarkupId()" 
+     #element>
+     <tree-root #tree [nodes]="displayNodes" [options]="options" 
+        (toggleExpanded)="onNodeExpanded($event)" 
+        (initialized)="onTreeLoad($event)"
+        (loadNodeChildren)="onLoadNodeChildren($event)"
+        (updateData)="onUpdateTree($event)">
+        <ng-template #treeNodeTemplate let-node="node" let-index="index">
+            <div [title]="node.data.tooltip"> 
+                <input *ngIf="node.data.checkbox"
+                (change)="check(node, !node.data.checked)"
+                type="checkbox"
+                [indeterminate]="node.data.indeterminate"
+                [checked]="node.data.checked">
+                <img [src]="node.data.image" alt="Node image"  [ngStyle]="{'width': '15px', 'height': '15px', 'margin-left': '5px', 'margin-bottom': '5px'}">
+                {{node.data.name}}
+            </div>
+        </ng-template> 
+        </tree-root>
+</div>
+
+ 

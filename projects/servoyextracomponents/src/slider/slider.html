@@ -1,0 +1,14 @@
+<div 
+	#element
+	[id]="servoyApi.getMarkupId()"
+	class="svy-slider-container"  >
+	<ngx-slider class="svy-slider bts-extra-slider" 
+				[(value)]="dataProvider"
+				[(highValue)]="dataProviderHigh" 
+				[options]="options"
+				[manualRefresh]="manualRefresh"
+				(userChangeStart)="onUserChangeStart($event)"
+	            (userChangeEnd)="onUserChangeEnd($event)" 
+				>
+	</ngx-slider>
+</div>   	

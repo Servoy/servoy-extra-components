@@ -1,0 +1,556 @@
+/* Drilldown to second menu items */
+
+.svy-extra-sidenav {
+	width: 100%;
+}
+
+.svy-extra-sidenav.has-panel {
+	overflow-x: hidden;
+	white-space:nowrap;
+	position: relative;
+}
+
+.svy-sidenav-tablesspanel {
+	white-space:initial;
+	height: 100%;
+	display: block;
+	overflow: auto;
+}
+
+.svy-sidenav {
+	white-space:initial;
+	height: 100%;
+	width: 100%;
+	max-width: 100%;
+	position: relative;
+	background: white;
+	word-break: break-word;
+	border: 1px solid #e6e6e6;
+	z-index: 1000;
+    -webkit-transition: transform cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+	   -moz-transition: transform cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+	    -ms-transition: transform cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+	     -o-transition: transform cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+  	        transition: transform cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+}
+
+.svy-sidenav :focus {
+	outline: none;
+}
+
+/* Overflow auto in anchored forms */
+.svy-wrapper > * > .svy-extra-sidenav {
+/*     overflow-y: auto;
+    overflow-x: visible; */
+    width: 100%;
+    height: 100%;
+}
+
+.svy-wrapper > * > .svy-extra-sidenav > .svy-sidenav {
+	height: 100%;
+	overflow-y: auto;
+}
+
+/* Auto width while collapsing. Let the menu calculate necessary width (icon widths) for collapsed menu */
+.svy-sidenav.svy-slide-out {
+	width: auto;
+}
+
+/* default float to right */
+.svy-sidenav.svy-sidenav-right {
+	float: right;
+}
+
+/* default float to left */
+.svy-sidenav.svy-sidenav-left {
+	float: left;
+}
+
+.svy-sidenav-header,
+.svy-sidenav-content {
+	width: 100%;
+	position: relative;
+	overflow: hidden;
+	background: inherit;
+	color: inherit;
+	border-color: inherit;
+}
+
+/* Search field */
+.svy-searchbox {
+	display: none;
+}
+
+/* All Sub Menu */
+.svy-sidenav-menu {
+	display: none;
+	color : #444;
+}
+
+.svy-sidenav-menu.svy-sidenav-collapsed {
+	display: block;
+}
+/* Style list */
+.svy-sidenav ul {
+    margin-bottom: 0;
+}
+
+.svy-sidenav li {
+	list-style-type: none;
+	position: relative;
+}
+
+.svy-sidenav-main a {
+	color: #777;
+}
+
+.svy-sidenav-menu {
+	padding-left: 0px;
+}
+
+.svy-sidenav-menu ul {
+    padding-left: 20px;
+}
+
+/* Style nav items */
+.svy-sidenav-item {
+	display: block;
+	color: inherit;
+	padding: 8px 15px;
+	cursor: pointer;
+	margin-right: 20px;
+}
+
+.svy-sidenav-item:focus,
+.svy-sidenav-item:hover {
+	text-decoration: none;
+	color: inherit;
+}
+
+.sn-level-1 {
+	font-size: 16px;
+}
+
+/* Active main list item */
+.svy-navitem-selected {
+	color: #2e6da4;
+}
+
+.svy-navitem-selected.sn-level-1 {
+	border-left: 3px solid;
+}
+
+/* Collapse Icon */
+.svy-sidenav-collapse-icon {
+	padding: 8px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    line-height: inherit;
+}
+
+/* Divider */
+.svy-sidenav-divider {
+	border-top: 1px solid #e6e6e6;
+	margin-left: 15px;
+    margin-right: 20px;
+}
+
+/* Disabled */
+.svy-sidenav-disabled {
+	
+}
+
+.svy-sidenav-disabled .svy-sidenav-menu,
+.svy-navitem-disabled {
+	color: #c6c6c6;
+}
+
+.svy-sidenav-disabled .svy-sidenav-item,
+.svy-navitem-disabled .svy-sidenav-item {
+	cursor: default;
+}
+
+/*******************************************
+ * SLIDE MENU 
+ *
+ *******************************************/
+
+/* slide menu animate */
+.nav-slide-menu.svy-sidenav.svy-slide-out {
+	overflow: visible;
+	border-width: 0px; /* reset the border of svy-sidenav */
+	height: 0;
+	min-height: 0 !important; /* override inline min-height */
+}
+
+.nav-slide-menu.svy-sidenav.svy-slide-out:not(.svy-slide-out-add) {
+	width: 0 !important;
+}
+
+/** Responsive form */
+.nav-slide-menu.svy-slide-out.svy-slide-out-add,
+.nav-slide-menu.svy-slide-out.svy-slide-out-remove {
+	width: 150px;
+	height: 100%;
+	border-width: 1px;
+}
+
+.has-panel .nav-slide-menu.svy-slide-out.svy-slide-out-add,
+.has-panel .nav-slide-menu.svy-slide-out.svy-slide-out-remove {
+	position: absolute;
+}
+
+.has-panel .nav-slide-menu.svy-slide-out.svy-sidenav-right.svy-slide-out-add,
+.has-panel .nav-slide-menu.svy-slide-out.svy-sidenav-right.svy-slide-out-remove {
+	right: 0;
+	top: 0;
+	bottom: 0;
+}
+
+/** Absolute form */
+.svy-wrapper > * > .svy-extra-sidenav > .nav-slide-menu.svy-slide-out.svy-slide-out-add,
+.svy-wrapper > * > .svy-extra-sidenav > .nav-slide-menu.svy-slide-out.svy-slide-out-remove {
+	width: 100%;
+	height: 100%;
+	border-width: 1px;
+}
+
+.nav-slide-menu.svy-slide-out .svy-sidenav-header {
+	overflow: visible;
+}
+
+.nav-slide-menu.svy-slide-out .svy-sidenav-content {
+	display: none;
+}
+
+.svy-wrapper > * > .svy-extra-sidenav > .nav-slide-menu.svy-slide-out .svy-sidenav-content {
+	max-height: calc(100% - 30px);
+	overflow-y: auto;
+}
+
+.nav-slide-menu.svy-slide-out.svy-sidenav-left {
+	border-right-width: 0;
+	-webkit-transform: translate(-100%, 0);
+     -moz-transform: translate(-100%, 0);
+      -ms-transform: translate(-100%, 0);
+       -o-transform: translate(-100%, 0);
+          transform: translate(-100%, 0);
+}
+
+.nav-slide-menu.svy-slide-out.svy-sidenav-right {
+    float: right;
+    width: 0; /* Set with to 0 when collapsed to the right to avoid hor scrollbar */
+    border-left-width: 0;
+	-webkit-transform: translate(100%, 0);
+     -moz-transform: translate(100%, 0);
+      -ms-transform: translate(100%, 0);
+       -o-transform: translate(100%, 0);
+          transform: translate(100%, 0);
+}
+
+/* Set with to 0 when collapsed to the right to avoid hor scrollbar */
+.nav-slide-menu.svy-slide-out.svy-sidenav-right.svy-slide-out-add,
+.nav-slide-menu.svy-slide-out.svy-sidenav-right.svy-slide-out-remove {
+	width: 150px;
+}
+
+.svy-wrapper > * > .svy-extra-sidenav > .nav-slide-menu.svy-slide-out.svy-sidenav-right.svy-slide-out-add,
+.svy-wrapper > * > .svy-extra-sidenav > .nav-slide-menu.svy-slide-out.svy-sidenav-right.svy-slide-out-remove {
+	width: 100%;
+}
+
+.nav-slide-menu.svy-slide-out.svy-sidenav-left .svy-sidenav-content {
+	border: inherit;
+	border-width: 0 1px 0 0;
+}
+
+.nav-slide-menu.svy-slide-out.svy-sidenav-right .svy-sidenav-content {
+	border: inherit;
+	border-width: 0 0 0 1px;
+}
+
+.nav-slide-menu.svy-slide-out.svy-slide-out-add .svy-sidenav-content,
+.nav-slide-menu.svy-slide-out.svy-slide-out-remove .svy-sidenav-content {
+	display: block;
+}
+
+/* Nav header */
+.svy-sidenav-action-open {
+	float: left;
+	padding: 8px;
+	transition: inherit;
+}
+
+.svy-sidenav-left .svy-sidenav-action-open {
+	float: right;
+}
+
+.svy-sidenav-static .svy-sidenav-action-open {
+	display: none;
+}
+
+/* Animate nav header */
+.nav-slide-menu.svy-slide-out .svy-sidenav-action-open  {
+	background: inherit;
+	border: inherit;
+	border-style: solid;
+	border-width: 1px;
+}
+
+.nav-slide-menu.svy-slide-out-add .svy-sidenav-action-open  {
+	margin-top: -1px;
+}
+
+.nav-slide-menu.svy-slide-out.svy-sidenav-left .svy-sidenav-action-open {
+	border-left-width: 0;
+	-webkit-transform: translate(100%, 0);
+     -moz-transform: translate(100%, 0);
+      -ms-transform: translate(100%, 0);
+       -o-transform: translate(100%, 0);
+          transform: translate(100%, 0);
+}
+
+.nav-slide-menu.svy-slide-out.svy-sidenav-right .svy-sidenav-action-open {
+	border-right-width: 0;
+	-webkit-transform: translate(-100%, 0);
+     -moz-transform: translate(-100%, 0);
+      -ms-transform: translate(-100%, 0);
+       -o-transform: translate(-100%, 0);
+          transform: translate(-100%, 0);
+}
+
+
+/* Tabless container animation. Only if .has-panel*/
+.svy-sidenav-tablesspanel {
+	-webkit-transition: margin  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+	   -moz-transition: margin  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+  		-ms-transition: margin  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+	     -o-transition: margin  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+  	        transition: margin  cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;	
+}
+
+/* Set tablesspanel margin to 0 for the animation */
+.svy-extra-sidenav.has-panel.svy-slide-out:not(.svy-slide-out-add) > .svy-sidenav-tablesspanel  {
+	margin-left: 0px !important;
+	margin-right: 0px !important;
+}
+
+/* Absolute positioning of the menu so goes out from the float style */
+.svy-extra-sidenav.has-panel.svy-slide-out > .nav-slide-menu.svy-sidenav-left,
+.svy-extra-sidenav.has-panel.svy-slide-out-add > .nav-slide-menu.svy-sidenav-left,
+.svy-extra-sidenav.has-panel.svy-slide-out-remove > .nav-slide-menu.svy-sidenav-left,
+.svy-extra-sidenav.has-panel.svy-slide-out-remove-delay > .nav-slide-menu.svy-sidenav-left {
+	position: absolute;
+	top:0;
+	left: 0;
+}
+
+
+.svy-extra-sidenav.has-panel.svy-slide-out > .nav-slide-menu.svy-sidenav-right,
+.svy-extra-sidenav.has-panel.svy-slide-out-add > .nav-slide-menu.svy-sidenav-right,
+.svy-extra-sidenav.has-panel.svy-slide-out-remove > .nav-slide-menu.svy-sidenav-right,
+.svy-extra-sidenav.has-panel.svy-slide-out-remove-delay > .nav-slide-menu.svy-sidenav-right {
+	position: absolute;
+	top:0;
+	right: 0;
+}
+
+.svy-wrapper > * > .svy-extra-sidenav.has-panel.svy-slide-out > .nav-slide-menu,
+.svy-wrapper > * > .svy-extra-sidenav.has-panel.svy-slide-out-add > .nav-slide-menu,
+.svy-wrapper > * > .svy-extra-sidenav.has-panel.svy-slide-out-remove > .nav-slide-menu,
+.svy-wrapper > * > .svy-extra-sidenav.has-panel.svy-slide-out-remove-delay > .nav-slide-menu {
+	bottom: 0;
+}
+
+.svy-sidenav-tablesspanel.ng-leave {
+	display: none;
+}
+
+/* Animate collapsible menu items */
+.svy-sidenav-menu.ng-enter, 
+.svy-sidenav-menu.ng-leave {
+	-webkit-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.35s;
+	   -moz-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.35s;
+	    -ms-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.35s;
+	     -o-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.35s;
+  	        transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.35s;
+}
+
+.svy-sidenav-menu.ng-enter,
+.svy-sidenav-menu.ng-leave.ng-leave-active {
+  	max-height: 0px;
+  	overflow: hidden;
+}
+
+.svy-sidenav-menu.ng-leave,
+.svy-sidenav-menu.ng-enter.ng-enter-active {
+ 	max-height: 200px;
+ 	overflow: hidden;
+}
+
+
+/* Side Toggle */
+.svy-wrapper > * > .svy-extra-sidenav > .svy-sidenav.nav-side-toggle {
+	overflow: initial;
+}
+
+.svy-wrapper > * > .svy-extra-sidenav > .svy-sidenav.nav-side-toggle .svy-sidenav-content {
+	overflow-y: auto; 
+	max-height: 100%;
+}
+
+.nav-hide-toggle .svy-sidenav-action-open {
+	display: none !important;
+}
+
+.nav-side-toggle .svy-sidenav-header {
+	overflow: visible;
+}
+
+.nav-side-toggle .svy-sidenav-action-open {
+	position: absolute;
+	top: 0;
+	background: inherit;
+	border: inherit;
+	border-style: solid;
+	border-width: 1px;
+	margin-top: -1px;
+}
+
+.nav-side-toggle.svy-sidenav-left .svy-sidenav-action-open {
+	border-left-width: 0;
+	right: 0;
+	-webkit-transform: translate(100%, 0);
+     -moz-transform: translate(100%, 0);
+      -ms-transform: translate(100%, 0);
+       -o-transform: translate(100%, 0);
+          transform: translate(100%, 0);
+}
+
+.nav-side-toggle.svy-sidenav-right .svy-sidenav-action-open {
+	border-right-width: 0;
+	left: 0;
+	-webkit-transform: translate(-100%, 0);
+     -moz-transform: translate(-100%, 0);
+      -ms-transform: translate(-100%, 0);
+       -o-transform: translate(-100%, 0);
+          transform: translate(-100%, 0);
+}
+
+/*******************************************************
+* COLLAPSE MENU
+*******************************************************/
+
+/* Collapse Menu Animation */
+
+
+/* .nav-collapse-menu.svy-slide-out:hover,
+.svy-wrapper > * > .nav-collapse-menu.svy-slide-out:hover {
+	width: 100%;
+} */
+
+/* enable transition while animating */
+.nav-collapse-menu.svy-slide-out,
+.nav-collapse-menu.svy-slide-out-add,
+.nav-collapse-menu.svy-slide-out-remove,
+.nav-collapse-menu.svy-hover-animate,
+.nav-collapse-menu.svy-hover-remove,
+.nav-collapse-menu.svy-slide-out:hover {
+	-webkit-transition: width cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+	   -moz-transition: width cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+   		-ms-transition: width cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+	     -o-transition: width cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+  	        transition: width cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.45s;
+}
+
+
+/* remove float and give full width when hovering */
+.nav-collapse-menu.svy-sidenav.svy-slide-out.svy-hover {
+	width: 100%;
+} 
+
+.svy-wrapper > * > .svy-extra-sidenav > .nav-collapse-menu.svy-slide-out.svy-hover {
+	width: 100%;
+}
+
+.nav-collapse-menu.svy-slide-out:not(.svy-hover) {
+    width: 50px !important; /* use important to override inline width */
+}
+
+/* end width when closing */
+.nav-collapse-menu.svy-slide-out.svy-slide-out-add,
+.nav-collapse-menu.svy-slide-out.svy-hover-remove {
+	width: 50px !important;
+}
+
+/* start width when opening (hover) */
+.nav-collapse-menu.svy-slide-out.svy-hover-add  {
+	width: 50px !important;
+}
+
+/* start width when opening (open) */
+.nav-collapse-menu.svy-slide-out.svy-slide-out-remove {
+	width: 50px;
+}
+
+
+/* Style the items */
+/* Remove margin when collapsed */
+.nav-collapse-menu.svy-slide-out:not(.svy-hover) .svy-sidenav-item {
+	margin: 0;
+}
+
+/** prevent collapsing while animating */
+/* .nav-collapse-menu.svy-slide-out:not(.svy-hover) .svy-sidenav-item, */
+.nav-collapse-menu.svy-slide-out-add .svy-sidenav-item,
+.nav-collapse-menu.svy-slide-out-remove .svy-sidenav-item,
+.nav-collapse-menu.svy-slide-out.svy-hover-animate .svy-sidenav-item,
+.nav-collapse-menu.svy-slide-out.svy-slide-out-add.svy-hover .svy-sidenav-item,
+.nav-collapse-menu.svy-slide-out.svy-slide-out-remove.svy-hover .svy-sidenav-item,
+.nav-collapse-menu.svy-slide-out.svy-hover-add.svy-hover .svy-sidenav-item,
+.nav-collapse-menu.svy-slide-out.svy-hover-remove.svy-hover .svy-sidenav-item {
+    white-space: nowrap;
+    text-overflow: hidden;
+    overflow: hidden;
+}
+
+/** hide the text when collapsed and while closing */
+.nav-collapse-menu.svy-slide-out .svy-sidenav-item-text,
+.nav-collapse-menu.svy-slide-out.svy-hover-animate.svy-hover-remove .svy-sidenav-item-text,
+.nav-collapse-menu.svy-slide-out.svy-slide-out-remove.svy-hover .svy-sidenav-item-text {
+	display: none;
+}
+
+/** hide the sub-menu when collapsed and while animating open/close */
+.nav-collapse-menu.svy-slide-out .svy-sidenav-collapse-icon,
+.nav-collapse-menu.svy-slide-out-add .svy-sidenav-collapse-icon,
+.nav-collapse-menu.svy-slide-out-remove .svy-sidenav-collapse-icon,
+.nav-collapse-menu.svy-slide-out.svy-slide-out-remove.svy-hover .svy-sidenav-collapse-icon,
+.nav-collapse-menu.svy-slide-out.svy-hover-animate.svy-hover-remove .svy-sidenav-collapse-icon {
+	display: none;
+}
+
+/** hide the sub-menu when collapsed and while closing */
+.nav-collapse-menu.svy-slide-out .svy-sidenav-menu.sn-level-2,
+.nav-collapse-menu.svy-slide-out.svy-slide-out-remove .svy-sidenav-menu.sn-level-2,
+.nav-collapse-menu.svy-slide-out.svy-slide-out-remove.svy-hover .svy-sidenav-menu.sn-level-2,
+.nav-collapse-menu.svy-slide-out.svy-hover-animate.svy-hover-remove .svy-sidenav-menu.sn-level-2 {
+	display: none;
+}
+
+/** display the text while opening and animating */
+.nav-collapse-menu.svy-slide-out.svy-hover .svy-sidenav-item-text,
+.nav-collapse-menu.svy-slide-out.svy-hover-animate .svy-sidenav-item-text {
+	display: inline;
+}
+
+/** display the collapse icon while hovering and fully open */
+.nav-collapse-menu.svy-slide-out.svy-hover:not(.svy-hover-animate) .svy-sidenav-collapse-icon {
+	display: inline;
+}
+
+/** display the submenu while hovering or opening the menu */
+.nav-collapse-menu.svy-slide-out.svy-hover .svy-sidenav-menu.sn-level-2 {
+	display: block;
+}

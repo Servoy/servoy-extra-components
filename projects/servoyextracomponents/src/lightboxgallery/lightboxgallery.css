@@ -1,0 +1,97 @@
+.svyextra-lightboxgallery {
+	 width:100%;
+	 height:100%;
+	 overflow:auto
+}
+
+.svyextra-lightboxgallery-image-container {
+    display: inline-block;
+    position: relative;
+}
+
+.svyextra-lightboxgallery-image-container:hover .svyextra-lightboxgallery-image-delete {
+    visibility: visible;
+}
+
+.svyextra-lightboxgallery-image-cell {
+    display: inline-block;
+    margin: 0 0.5rem 1rem 0.5rem;
+    text-align: center;
+}
+
+.svyextra-lightboxgallery-thumbnail:hover {
+    background-color: #4ae;
+    transition: none;
+}
+
+.svyextra-lightboxgallery-image-caption {
+    font-size: 1.4rem;
+    text-align: center;
+    height: 20px;
+    overflow: hidden;
+    margin: 5px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    line-height: 27px;
+}
+
+.svyextra-lightboxgallery-image-delete {
+    visibility: hidden;
+    position: absolute;
+    background: #ffffff;
+    opacity: 0.8;
+    top: 7%;
+    right: 7%;
+    width: 35px;
+    height: 35px;
+    z-index: 1;
+    border-radius: 100px;
+    cursor: pointer;
+}
+
+.svyextra-lightboxgallery-image-delete > i {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    line-height: 35px;
+    text-align: center;
+}
+
+.svyextra-lightboxgallery-thumbnail {
+	display: inline-block;
+    padding: 2px;
+    background-color: #fff;
+    line-height: 0;
+    border-radius: 4px;
+    transition: background-color 0.5s ease-out;
+    color: #4ae;
+    text-decoration: none;
+    outline: 0;
+    border: 0;
+}
+
+.svyextra-lightboxgallery img {
+    max-width: 100%;
+}
+
+.svy-wrapper > * > .svyextra-lightboxgallery img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.svy-wrapper > * > .svyextra-lightboxgallery,
+.svy-wrapper > * > .svyextra-lightboxgallery > .svyextra-lightboxgallery-image-set {
+    height: 100%;
+}
+
+.svy-wrapper > * > .svyextra-lightboxgallery > .svyextra-lightboxgallery-image-set {
+    overflow: auto;
+}
+
+/* Forces all images to container height */
+.svy-wrapper > * > .svyextra-lightboxgallery > .svyextra-lightboxgallery-image-contain > .svyextra-lightboxgallery-image-cell,
+.svy-wrapper > * > .svyextra-lightboxgallery > .svyextra-lightboxgallery-image-contain > .svyextra-lightboxgallery-image-cell > a {
+    height: 100%; 
+}

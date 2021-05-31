@@ -1,0 +1,133 @@
+/*
+The div structure of a svy-collapse component is as follows
+
+svy-collapse
+   svy-collapse-collapsible (div containing the single collapsible)
+      svy-collapse-header headerStyleClass (div containing the header, contains class "collapse" when collapsed)
+         svy-collapse-header-container
+            svy-collapse-header-content (div holding the content)
+               headerHtml
+            svy-collapse-header-icon (span holding the icon)
+         svy-collapse-collapsible-container (div containing the collapsible)
+            svy-collapse-card-body bodyStyleClass (div containing the single card)
+               svy-collapse-card-body-container (div containing the form / div containing the cardHtml / div containg the collapsibleHtml)
+*/
+
+/* outer container of all collapsibles */
+.svy-collapse {
+	
+}
+
+/* wraps one collapsible */
+.svy-collapse-collapsible {
+	background-color: #ffffff;
+	color: #000000;
+}
+
+/* adds spacing between single collapsibles */
+.svy-collapse-collapsible:not(:last-child) {
+	margin-bottom: 15px;
+}
+
+/* the header of a single collapsible */
+.svy-collapse-header {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	word-wrap: break-word;
+	background-clip: border-box;
+    margin-bottom: 0;
+	padding-bottom: 0px;
+    padding: 1.25rem 1.25rem 0 1.25rem; 
+	border-width: 1px 1px 1px 1px;
+	border-style: solid;
+	border-color: #ddd;
+	border-radius: 4px 4px 0px 0px;
+    background-color: #f5f5f5;
+	cursor: pointer;
+}
+
+/* adds rounded borders at the bottom when collapsed */
+.svy-collapse-header.collapsed {
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	border-bottom-width: 1px;
+}
+
+/* Override this class when you want to show a divider that does not span the full width of the header 
+	change "border-bottom" to whatever border you want and "width" to whatever width you want the border to span
+*/
+.svy-collapse-header:after {
+    content: ""; /* This is necessary for the pseudo element to work. */ 
+    display: block; /* This will put the pseudo element on its own line. */
+    margin: 0 auto; /* This will center the border. */
+    width: 80%; /* Change this to whatever width you want. */
+    padding-top: 1.25rem; /* This creates some space between the element and the border. */
+    border-bottom: 0px solid black; /* This creates the border. Replace black with whatever color you want. */
+}
+
+/* clears the custom divider line when collapsed */
+.svy-collapse-header.collapsed:after {
+    content: ""; /* This is necessary for the pseudo element to work. */ 
+    display: block; /* This will put the pseudo element on its own line. */
+    margin: 0 auto; /* This will center the border. */
+    padding-top: 1.25rem; /* This creates some space between the element and the border. */
+    border-bottom: 0px solid black; /* This creates the border. Replace black with whatever color you want. */
+}
+
+/* wraps the header content and collapse icon of a single collapsible */
+.svy-collapse-header-container {
+	
+}
+
+/* holds the header content */
+.svy-collapse-header-content {
+	float: left;
+	height: 100%;
+	position: relative;
+	overflow: hidden;
+	font-size: 1.3em;
+	font-weight: bold;
+}
+
+/* holds the header icon */
+.svy-collapse-header-icon {}
+
+.svy-collapse-header-icon-left {
+    float: left;
+    padding-right: 5px;
+}
+
+.svy-collapse-header-icon-right {
+    float: right;
+}
+
+/* holds a single card container */
+.svy-collapse-card-body {
+    flex: 1 1 auto;
+    padding: 1.25rem;
+    box-sizing: border-box;
+    background-clip: border-box;
+	background-color: #f5f5f5;
+	border-color: #ddd;
+	border-width: 0px 1px 1px 1px;
+	border-style: solid;
+	position: relative;
+}
+
+/* adds rounded bottom borders for the last card */ 
+.svy-collapse-card-body:last-child {
+    border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+}
+
+/* can be used to draw a bottom border only for the last child */ 
+.svy-collapse-card-body:last-child {
+ 	border-bottom-width: 1px;
+}
+
+/* wraps the content of the card */
+.svy-collapse-card-body-container {
+	
+}

@@ -1,0 +1,10 @@
+<div [id]="servoyApi.getMarkupId()" #element class="svy-treeview">
+    <db-angular-tree-grid #angularGrid *ngIf="isTreeReady"
+        (cellclick)="onclick($event)"
+        (rowselect)="onselect($event)"
+        (expand)="onexpand($event)"
+        (collapse)="oncollapse($event)"
+        [data]="data"
+        [configs]="configs">
+    </db-angular-tree-grid>
+</div>

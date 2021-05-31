@@ -1,0 +1,104 @@
+<div #element class="svy-extra-sidenav">
+    <div class="svy-sidenav"
+        [dir] = "scrollbarPosition == 'rtl' ? 'rtl' : null" 
+        [ngClass]="{'svy-sidenav-right': slidePosition == 'right', 'svy-sidenav-static': slidePosition == 'static' , 'svy-sidenav-left': slidePosition == 'left', 
+        'nav-slide-menu': slideAnimation == 'slide-menu', 'nav-collapse-menu': slideAnimation == 'collapse-menu' || slideAnimation == 'collapse-menu-nohover',
+        'nav-side-toggle': togglePosition == 'side-toggle', 'nav-fixed-toggle': togglePosition == 'fixed-toggle' , 'nav-hide-toggle': togglePosition == 'hide-toggle' }">
+        <div class="svy-sidenav-header">
+            <i (click)="slideMenu($event)" class="svy-sidenav-action-open"></i>
+        </div>
+        <nav [id]="servoyApi.getMarkupId()" class="svy-sidenav-content">        
+            <!-- The main menu -->
+            <ul class="svy-sidenav-menu sn-level-1 svy-sidenav-collapsed" dir="ltr">
+                <!-- Main list -->
+                <li *ngFor="let item of menu;let $index=index"
+                    class="svy-sidenav-dropdown sn-level-1"
+                    [ngClass]="{'svy-navitem-selected': item.id != null && selectedIndex[1] == item.id, 'svy-navitem-disabled': item.enabled === false }"
+                    >
+
+                    <!-- Main Menu Items -->
+                    <a *ngIf="!item.isDivider" class="svy-sidenav-item sn-level-1" [ngClass]="item.styleClass" (click)="selectItem(1, $index, item, $event)">
+                        <i class="svy-sidenav-item-icon" [ngClass]="item.iconStyleClass"></i>
+                        <span class="svy-sidenav-item-text">{{item.text}}</span>
+                        <i class="svy-sidenav-collapse-icon sn-level-1 pull-right"
+                           [ngClass]="item.menuItems ? (expandedIndex[1] == item.id ? iconCollapseStyleClass : iconExpandStyleClass) : 'hidden'" 
+                            (click)="toggleExpandedItem(1, $index, item, $event)"
+                            ></i>
+                    </a>
+            
+                    <!-- Second List -->
+                    <ul class="svy-sidenav-menu sn-level-2"
+                        [ngClass]="{'svy-sidenav-collapsed': expandedIndex[1] == item.id}" 
+                        *ngIf="expandedIndex[1] == item.id"
+                        >
+                        <li *ngFor="let item2 of item.menuItems"
+                            class="svy-sidenav-dropdown sn-level-2"
+                            [ngClass]="{'svy-navitem-selected': item2.id != null && selectedIndex[2] == item2.id, 'svy-navitem-disabled': (item.enabled === false || item2.enabled == false) }" 
+                            >
+                            <!-- Second Menu Items -->
+                            <a *ngIf="!item2.isDivider" class="svy-sidenav-item sn-level-2" [ngClass]="item2.styleClass" (click)="selectItem(2, $index, item2, $event)">
+                                <i class="svy-sidenav-item-icon" [ngClass]="item2.iconStyleClass"></i>
+                                <span class="svy-sidenav-item-text">{{item2.text}}</span>
+                                <i class="svy-sidenav-collapse-icon sn-level-2 pull-right" 
+                                    [ngClass]="item2.menuItems ? (expandedIndex[2] == item2.id ? iconCollapseStyleClass : iconExpandStyleClass) : 'hidden'"
+                                    (click)="toggleExpandedItem(2, $index, item2, $event)"
+                                    ></i>
+                            </a>
+
+                            <!-- Third List -->
+                            <ul class="svy-sidenav-menu sn-level-3" [ngClass]="{'svy-sidenav-collapsed': expandedIndex[2] == item2.id}" 
+                                *ngIf="expandedIndex[2] == item2.id"
+                                >
+                                <li *ngFor="let item3 of item2.menuItems"
+                                    class="svy-sidenav-dropdown sn-level-3" 
+                                    [ngClass]="{'svy-navitem-selected': item3.id != null && selectedIndex[3] == item3.id, 'svy-navitem-disabled': (item.enabled === false || item2.enabled == false || item3.enabled == false) }" 
+                                    >
+                                    <!-- Third Menu Items -->
+                                    <a *ngIf="!item3.isDivider" class="svy-sidenav-item sn-level-3" [ngClass]="item3.styleClass" (click)="selectItem(3, $index, item3, $event)">
+                                        <i class="svy-sidenav-item-icon" [ngClass]="item3.iconStyleClass"></i>
+                                        <span class="svy-sidenav-item-text">{{item3.text}}</span>
+                                        <i class="svy-sidenav-collapse-icon sn-level-3 pull-right" 
+                                            [ngClass]="item3.menuItems ? (expandedIndex[3] == item3.id ? iconCollapseStyleClass : iconExpandStyleClass) : 'hidden'"
+                                            (click)="toggleExpandedItem(3, $index, item3, $event)"
+                                            ></i>
+                                    </a>
+        
+                                    <!-- Fourth List -->
+                                    <ul class="svy-sidenav-menu sn-level-4" [ngClass]="{'svy-sidenav-collapsed': expandedIndex[3] == item3.id}" 
+                                        *ngIf="expandedIndex[3] == item3.id"
+                                        >
+                                        <li *ngFor="let item4 of item3.menuItems"
+                                            class="svy-sidenav-dropdown sn-level-4" 
+                                            [ngClass]="{'svy-navitem-selected': item4.id != null && selectedIndex[4] == item4.id, 'svy-navitem-disabled': (item.enabled === false || item2.enabled == false || item3.enabled == false || item4.enabled == false) }"
+                                            >
+                                            <!-- Second Menu Items -->
+                                            <a *ngIf="!item4.isDivider" class="svy-sidenav-item sn-level-4" [ngClass]="item4.styleClass" (click)="selectItem(4, $index, item4, $event)">
+                                                <i class="svy-sidenav-item-icon" ng-class="item4.iconStyleClass"></i>
+                                                <span class="svy-sidenav-item-text">{{item4.text}}</span>
+                                            </a>
+                                            <div *ngIf="item4.isDivider" class="svy-sidenav-divider sn-level-4" [ngClass]="item4.styleClass"> 
+                                            </div>  
+                                        </li>
+                                    </ul><!-- #fourth list -->
+                                    <div *ngIf="item3.isDivider" class="svy-sidenav-divider sn-level-3" [ngClass]="item3.styleClass"></div>                                   
+                                </li>
+                            </ul><!-- #third list -->
+                            <div *ngIf="item2.isDivider" class="svy-sidenav-divider sn-level-2" [ngClass]="item2.styleClass"></div> 
+                            
+                        </li>
+                    </ul><!-- #sub list -->
+                    <div *ngIf="item.isDivider" class="svy-sidenav-divider sn-level-1" [ngClass]="item.styleClass"></div> 
+                    
+                </li>   
+            </ul><!-- #main list -->
+        </nav> 
+    </div>
+    <div class="svy-sidenav-tablesspanel"
+         *ngIf="containedForm != null"
+         [ngStyle]="getContainerStyle()"
+         [ngClass]="{'svy-sidenav-right': slidePosition == 'right', 'svy-sidenav-static': slidePosition == 'static' , 'svy-sidenav-left': slidePosition == 'left' }"
+         [sabloTabseq]="tabSeq"
+         [sabloTabseqConfig]="{container: true, reservedGap: 50}">
+            <ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{name:getForm()}"></ng-template>
+    </div>
+</div>

@@ -1,0 +1,35 @@
+{
+  "name": "@servoy/servoyextracomponents",
+  "version": "4.0.0",
+  "peerDependencies": {
+    "@angular/animations": ">=12",
+    "@angular/cdk": ">=12",
+    "@angular/common": ">=12",
+    "@angular/core": ">=12",
+    "@angular/forms": ">=12",
+    "bootstrap": "5.0.1",
+    "luxon": ">=1",
+    "lodash-es": "4.17.21"
+  },
+  "dependencies": {
+    "@ng-bootstrap/ng-bootstrap": "^9.1.1",
+    "@biacsics/ng-canvas-gauges": "6.0.7",
+    "ngx-lightbox": "2.3.0",
+    "ng2-file-upload": "1.4.0",
+    "uppy-angular": "0.1.4",
+    "@circlon/angular-tree-component": "11.0.4",
+    "angular-tree-grid": "3.0.0",
+    "@angular-slider/ngx-slider": "2.0.3",
+    "angular-resizable-element": "3.3.5",
+    "ng-select2-component": "7.3.1",
+    "@tinymce/tinymce-angular": "4.2.3",
+    "tinymce": "5.8.1",
+    "tinymce-i18n": "20.12.25",
+    "tslib": "*"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Servoy/servoy-extra-components"
+  }
+}

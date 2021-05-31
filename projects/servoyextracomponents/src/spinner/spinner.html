@@ -1,0 +1,19 @@
+<div class='svy-extra-spinner' [svyTooltip]="toolTipText" #element>
+  <div class="input-append">
+    <input type="text"
+           class="spinner-input form-control svy-padding-xs"
+           [(ngModel)]="selection"
+           readonly
+           [id]="servoyApi.getMarkupId()"
+           [sabloTabseq]="tabSeq"
+            #child>
+    <div class="spinner-buttons">
+      <button tabindex='-1' [disabled]="isDisabled()" class="btn btn-default spinner-button-up" type="button">
+        <i class="fa fa-angle-up"></i>
+      </button>
+      <button tabindex='-1' [disabled]="isDisabled()" class="btn btn-default spinner-button-down" type="button">
+        <i class="fa fa-angle-down"></i>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,11 @@
+<div #element class='svy-extra-splitpane' style="width: 100%; height: 100%"
+	[id]="servoyApi.getMarkupId()" [sabloTabseq]="tabSeq" [sabloTabseqConfig]="{container: true, reservedGap: 50}">
+	<bg-splitter [orientation]="splitType == 1 ? 'vertical' : 'horizontal'" (onDividerChange)="onChange($event)" [divLocation]="divLocation" [divSize]="divSize">
+		<bg-pane [minSize]="pane1MinSize" [sabloTabseq]="1" [sabloTabseqConfig]="{container: true}">
+			<ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{name:getLeftTab()}"></ng-template>
+		</bg-pane>
+		<bg-pane [minSize]="pane2MinSize" [sabloTabseq]="2" [sabloTabseqConfig]="{container: true}">
+			<ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{name:getRightTab()}"></ng-template>
+		</bg-pane>
+	</bg-splitter>
+</div>

@@ -1,0 +1,16 @@
+<div #element [sabloTabseq]="tabSeq" (focus)="requestFocus(mustExecuteOnFocus)" class="svy-select2-autotokenizer"> 
+    <select2  
+        [multiple]="true"
+        [data]="data"
+        [id]="servoyApi.getMarkupId()"
+        [svyTooltip]="toolTipText"
+        [value]="filteredDataProviderId"
+        (update)="updateValue($event)"
+        [minCountForSearch]="0"
+		[placeholder]="placeholderText"
+		[listPosition]="listPosition"
+        [disabled]="!isEnabled()"
+        [readonly]="!isEditable()"
+        #select2>
+    </select2>
+</div> 

@@ -1,0 +1,41 @@
+<div #element class="tablewrapper">
+	<table [id]="'table_'+servoyApi.getMarkupId()" class='svy-table' [ngClass]="styleClass" [sabloTabseq]="tabSeq"
+		(keydown)="keypressed($event)">
+		<thead ng-style="getTHeadStyle()">
+			<tr>
+				<th *ngFor="let column of columns; let i = index;" [ngStyle]="getColumnStyle(i)"
+					[ngClass]="getSortStyleClass(i)" mwlResizable [enableGhostResize]="enableColumnResize"
+					[resizeEdges]="{ bottom: false, right: enableColumnResize && i < columns.length-1, top: false, left: enableColumnResize && i > 0 }"
+					(resizing)="onResizeEnd($event,i)">
+					<div [innerHtml]='column.headerText' class="table-servoyextra-header-label"></div>
+					<span [ngClass]="getSortClass(i)" style="display: table-cell;vertical-align:middle;"></span>
+				</th>
+			</tr>
+		</thead>
+		<tbody *ngIf="dataStream | async; let items">
+			<cdk-virtual-scroll-viewport style="overflow-x:hidden;" (scrolledIndexChange)="onScroll()">
+				<tr [svyTableRow]="r + foundset.viewPort.startIndex" cdk-row *cdkVirtualFor="let row of items; let r = index;"
+					(click)="selectRow(r + foundset.viewPort.startIndex, $event)" [ngClass]="getRowClass(r + foundset.viewPort.startIndex)">
+					<td cdk-cell *ngFor="let column of columns; let i = index;" [className]="'c' + i"
+					    [ngClass]="getColumnClass(column, r + foundset.viewPort.startIndex)"
+						(click)="cellClick(r + foundset.viewPort.startIndex, i, foundset.viewPort.rows[r], $event, column.id)"
+						(dblclick)="onCellDoubleClick && !onCellClick && onCellDoubleClick(r+ foundset.viewPort.startIndex, i, foundset.viewPort.rows[r], $event, column.id)"
+						(contextmenu)="onCellRightClick && onCellRightClick(r + foundset.viewPort.startIndex + 1, i, foundset.viewPort.rows[r], $event, column.id)"
+						mwlResizable [enableGhostResize]="enableColumnResize" [ghostElementPositioning]="'absolute'" 
+						[resizeEdges]="{ bottom: false, right: enableColumnResize && i < columns.length-1, top: false, left: enableColumnResize && i > 0 }"
+						(resizing)="onResizeEnd($event,i)">
+						<div [innerHtml]="column.dataprovider ? (getDisplayValue(column, foundset.viewPort.rows.indexOf(row))|formatFilter: column.format| htmlFilter | trustAsHtml:isTrustedHTML(column)) : ''" *ngIf="(column.showAs === 'html' || column.showAs === 'trusted_html')"></div>
+						<div [textContent]="column.dataprovider ? (getDisplayValue(column, foundset.viewPort.rows.indexOf(row))|formatFilter: column.format| htmlFilter | trustAsHtml:isTrustedHTML(column)) : ''" *ngIf="column.showAs == 'text'" ></div>
+					</td>
+				</tr>
+			</cdk-virtual-scroll-viewport>
+		</tbody>
+		<tfoot>
+			<ngb-pagination *ngIf="showPagination()"
+				[ngClass]="{'svy-pagination': true, 'svy-nomargin': servoyApi.isInAbsoluteLayout()} " [page]="currentPage"
+				[pageSize]="pageSize" [collectionSize]="foundset.hasMoreRows ? foundset.serverSize + 1 : foundset.serverSize" (pageChange)="modifyPage($event)" [maxSize]="1"
+				[ellipses]="false">
+			</ngb-pagination>
+		</tfoot>
+	</table>
+</div>

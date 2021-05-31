@@ -1,0 +1,110 @@
+<div #element
+	class="svy-collapse {{ styleClass }}" 
+	[id]="servoyApi.getMarkupId()"  
+	[sabloTabseq]='tabSeq' 
+    [sabloTabseqConfig]="{container: true, reservedGap: 100}">
+	<!-- //collapsibles -->
+		<div 
+			class="svy-collapse-collapsible {{collapsible.styleClass ? collapsible.styleClass : ''}}" 
+			id="{{servoyApi.getMarkupId()}}-{{idx}}"
+			*ngFor="let collapsible of collapsibles; let idx = index"
+			[sabloTabseq]="idx+1" [sabloTabseqConfig]="{container: true}"
+			>
+		
+		<!-- //header -->
+		<div 
+			class="svy-collapse-header {{collapsible.isCollapsed ? 'collapsed' : ''}} {{collapsible.headerStyleClass}}" 
+			id="{{servoyApi.getMarkupId()}}-{{idx}}-header" 
+			(click)="onClick($event)"
+			attr.data-target="#{{servoyApi.getMarkupId()}}-{{idx}}-collapsible"
+			attr.aria-controls="{{servoyApi.getMarkupId()}}-{{idx}}-collapsible" 
+			role="button" >
+			<div class="svy-collapse-header-container">
+                <span *ngIf="collapsible.isCollapsed && collapsible.iconLocation == 'LEFT'" class="svy-collapse-header-icon svy-collapse-header-icon-left {{collapsible.collapsedIconName}}" aria-hidden="true"></span>
+				<span *ngIf="!collapsible.isCollapsed && collapsible.iconLocation == 'LEFT'" class="svy-collapse-header-icon svy-collapse-header-icon-left {{collapsible.expandedIconName}}" aria-hidden="true"></span>
+				<div 
+					[innerHTML]="collapsible.headerHtml | htmlFilter | trustAsHtml:isTrustedHTML()"
+					class="svy-collapse-header-content" >
+				</div>
+				<span *ngIf="collapsible.isCollapsed && collapsible.iconLocation == 'RIGHT'" class="svy-collapse-header-icon svy-collapse-header-icon-right {{collapsible.collapsedIconName}}" aria-hidden="true"></span>
+				<span *ngIf="!collapsible.isCollapsed && collapsible.iconLocation == 'RIGHT'" class="svy-collapse-header-icon svy-collapse-header-icon-right {{collapsible.expandedIconName}}" aria-hidden="true"></span>
+			</div>
+		</div>			
+		<!-- .//header -->
+
+		<!-- //collapsibles -->
+		
+		<!-- //form collapsible.isCollapsed == true mean hide form-->
+		<div 
+			*ngIf="collapsible.form && !collapsible.isCollapsed" 
+			id="{{servoyApi.getMarkupId()}}-{{idx}}-collapsible" 
+			class="svy-collapse-collapsible-container collapse {{collapsible.isCollapsed ? '' : 'in'}}" 
+			[ngbCollapse]="collapsible.isCollapsed">
+		    <div 
+				class="svy-collapse-card-body {{collapsible.bodyStyleClass}}" 
+				id="{{servoyApi.getMarkupId()}}-{{idx}}-collapsible-body" >
+				<div 
+					class="svy-collapse-card-body-container" 
+					[ngStyle]="getFormStyle(collapsible.form)" >
+					<ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{name:getFormIfVisible(collapsible)}"></ng-template>
+				</div>
+		    </div>
+		</div>
+		<!-- .//form -->
+
+		<!-- //cards -->
+		<div 
+			*ngIf="collapsible.cards && collapsible.cards.length > 0"
+			id="{{servoyApi.getMarkupId()}}-{{idx}}-collapsible" 
+			class="svy-collapse-collapsible-container collapse {{collapsible.isCollapsed ? '' : 'in'}}" 
+			[ngbCollapse]="collapsible.isCollapsed" >	
+		    <div 
+				*ngFor="let card of collapsible.cards; let myIdx = index"
+				class="svy-collapse-card-body {{collapsible.bodyStyleClass}}"
+				id="{{servoyApi.getMarkupId()}}-{{idx}}-collapsible-body-{{myIdx}}" >
+				<div 
+					*ngIf="!card.form" 
+					[innerHTML]="card.contentHtml | htmlFilter | trustAsHtml:isTrustedHTML()" 
+					[ngClass]="card.styleClass" 
+					(click)="onCardClick($event, myIdx, idx)" 
+					class="svy-collapse-card-body-container" 
+					id="{{servoyApi.getMarkupId()}}-{{idx}}-collapsible-card-container-{{myIdx}}" >
+				</div>
+				<div 
+					*ngIf="card.form" 
+					[ngClass]="card.styleClass" 
+					[ngStyle]="getFormStyle(card.form)"
+					class="svy-collapse-card-body-container"
+					[sabloTabseq]='myIdx+1' sablo-tabseq-config="{container: true}" 
+					id="{{servoyApi.getMarkupId()}}-{{idx}}-collapsible-card-container-{{myIdx}}" >
+					<ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{name:getCardFormIfVisible(collapsible, card)}"></ng-template>
+				</div>
+		    </div>		
+		</div>
+		<!-- .//cards -->
+
+		<!-- //collapsibleHtml -->
+		<div 
+			*ngIf="collapsible.collapsibleHtml && !collapsible.isCollapsed"
+			id="{{servoyApi.getMarkupId()}}-{{idx}}-collapsible"
+			class="svy-collapse-collapsible-container collapse {{collapsible.isCollapsed ? '' : 'in'}}" 
+			[ngbCollapse]="collapsible.isCollapsed" >		
+		    <div 
+				class="svy-collapse-card-body {{collapsible.bodyStyleClass}}"
+				id="{{servoyApi.getMarkupId()}}-{{idx}}-collapsible-body" 
+				(click)="onCardClick($event, 0, idx)" >
+				<div 
+					[innerHTML]="collapsible.collapsibleHtml | htmlFilter | trustAsHtml:isTrustedHTML()" 
+					class="svy-collapse-card-body-container" 
+					id="{{servoyApi.getMarkupId()}}-{{idx}}--collapsible-card-container">
+				</div>
+		    </div>
+		</div>
+		<!-- .//collapsibleHtml -->
+
+		<!-- .//collapsibles -->
+	</div>
+</div>
+
+	  
+	 

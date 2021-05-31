@@ -1,0 +1,85 @@
+.table-servoyextra-selected {
+	background-color: #CCCCFF;
+}
+
+.table-servoyextra-header-label {
+	display: table-cell;
+	vertical-align:middle;
+}
+
+.table-servoyextra-sort-show-up, .table-servoyextra-sort-show-down{
+	padding: 10px;
+}
+
+.table-servoyextra-sort-down {
+	background-image: url("caret-down.png");
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+.table-servoyextra-sort-up {
+	background-image: url("caret-up.png");
+	background-repeat: no-repeat;
+    background-position: right;
+}
+
+.table-servoyextra-sort-hide {
+	display: none;
+}
+
+.tablewrapper {
+	overflow: hidden;
+	width: 100%;
+}
+
+.tablewrapper table {
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	outline: none;
+	margin-bottom: 0px;
+}
+
+.tablewrapper thead {
+	overflow: hidden;
+	/*position: absolute;*/
+	top: 0px;
+	left: 0px;
+}
+
+
+.tablewrapper thead tr {
+	display: inherit;
+	white-space: nowrap;
+}
+
+.tablewrapper thead th {
+	white-space: normal;
+	vertical-align: middle;
+}
+
+.tablewrapper tbody {
+	position: absolute;
+	top: 40px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+}
+
+.tablewrapper tbody td div {
+	-webkit-user-select: none; /* Chrome all / Safari all */
+	-moz-user-select: none; /* Firefox all */
+	-ms-user-select: none; /* IE 10+ */
+	/* No support for these yet, use at own risk */
+	-o-user-select: none;
+	user-select: none;
+}
+
+.tablewrapper ul {
+	position: absolute;
+	bottom: 0px;
+}
+
+data-servoyextra-table {
+	display: block;
+}

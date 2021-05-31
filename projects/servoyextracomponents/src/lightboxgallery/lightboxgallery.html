@@ -1,0 +1,28 @@
+<div class="svyextra-lightboxgallery" *ngIf="galleryVisible" #element>
+	<div class="svyextra-lightboxgallery-image-set"
+		[ngClass]=" maxImageHeight ? '' : 'svyextra-lightboxgallery-image-contain'">
+		<div *ngFor="let image of images; let i=index"
+			class="svyextra-lightboxgallery-image-cell">
+			<div class="svyextra-lightboxgallery-image-container">
+				<img [src]="image.thumb" (click)="open(i)"
+					class="svyextra-lightboxgallery-thumbnail">
+				<div *ngIf="this.onHoverButtonClicked && enabled"
+					class="svyextra-lightboxgallery-image-delete"
+					(click)="onHoverButtonClicked($event, image.imageId)">
+					<i class="{{hoverButtonIcon}}"></i>
+				</div>
+			</div>
+			<div *ngIf="showCaptionInGallery"
+				class="svyextra-lightboxgallery-image-caption">{{image.caption ? image.caption : "&nbsp;"}}
+			</div>
+		</div>
+	</div>
+</div>
+<div *ngIf="!galleryVisible && buttonText" #element>
+	<button
+		class="btn svyextra-lightboxgallery-button {{buttonStyleClass}}"
+		(click)="open(0)"
+		[disabled]="!this.images || this.images.length === 0">
+		{{buttonText}}
+	</button>
+</div>
