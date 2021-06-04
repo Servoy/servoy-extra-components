@@ -6,6 +6,7 @@
     "start": "ng serve",
     "build": "ng build --configuration production",
     "build_debug": "ng build --watch",
+    "build_debug_nowatch": "ng build --watch=false",
     "make_release": "node scripts/build.js",
     "test": "ng test --watch --browsers Chrome",
     "test_edge": "ng test --watch --browsers Edge",

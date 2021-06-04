@@ -7,7 +7,7 @@
     "@angular/common": ">=12",
     "@angular/core": ">=12",
     "@angular/forms": ">=12",
-    "bootstrap": ">=5.",
+    "bootstrap": ">=5",
     "lodash-es": ">=4"
   },
   "dependencies": {
