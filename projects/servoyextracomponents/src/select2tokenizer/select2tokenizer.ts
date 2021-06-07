@@ -128,8 +128,9 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
         }
         if ( changes['dataProviderID'] ) {
             this.setData();
-            this.filteredDataProviderId = ( typeof this.dataProviderID === 'string' ) ? this.dataProviderID.split( '\n' ) : [this.dataProviderID];
             let hashMap = {};
+            this.filteredDataProviderId = this.dataProviderID ? (( typeof this.dataProviderID === 'string' ) ? this.dataProviderID.split( '\n' ) : [this.dataProviderID]) : [];
+            
             if( this.filteredDataProviderId &&  this.filteredDataProviderId.length){
                 let realValue:any;
                 for (let  i = 0; this.filteredDataProviderId && i < this.filteredDataProviderId.length;  i++) {
