@@ -119,6 +119,7 @@
 	padding: 8px 15px;
 	cursor: pointer;
 	margin-right: 20px;
+	text-decoration: none;
 }
 
 .svy-sidenav-item:focus,
