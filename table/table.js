@@ -262,8 +262,8 @@ return {
 			var options = {
 				root: $element.get(0).parentNode,
 			};
-			new IntersectionObserver((entries, observer) => {
-			  entries.forEach(entry => {
+			new IntersectionObserver(function(entries, observer) {
+			  entries.forEach( function(entry) {
 				if(entry.isIntersecting) {
 					if ($scope.componentWidth === undefined) {
 						// first time show, call generateTemplate so the columns width are calculated
