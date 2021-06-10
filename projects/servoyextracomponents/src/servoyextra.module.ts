@@ -33,7 +33,8 @@ import { ServoyExtraTreeview } from './treeview/treeview';
 import { AngularTreeGridModule } from 'angular-tree-grid';
 import { ServoyExtraTreeviewCellRenderer } from './treeview/cellrenderer';
 import { ServoyExtraGauge } from './gauge/gauge';
-import { GaugesModule } from '@biacsics/ng-canvas-gauges';
+import { LinearGauge } from './gauge/lib/linear-gauge';
+import { RadialGauge } from './gauge/lib/radial-gauge';
 
 
 
@@ -59,7 +60,9 @@ import { GaugesModule } from '@biacsics/ng-canvas-gauges';
         ServoyExtraTreeviewCellRenderer,
         ServoyExtraGauge,
 		BGSplitter,
-    	BGPane
+    	BGPane,
+        LinearGauge,
+        RadialGauge
     ],
     imports: [
         ServoyPublicModule,
@@ -75,8 +78,7 @@ import { GaugesModule } from '@biacsics/ng-canvas-gauges';
         LightboxModule,
         TreeModule,
         EditorModule,
-        AngularTreeGridModule,
-        GaugesModule
+        AngularTreeGridModule
     ],
     providers: [AsyncPipe,
             { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }

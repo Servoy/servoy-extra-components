@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "@ng-bootstrap/ng-bootstrap": "^9.1.1",
-    "@biacsics/ng-canvas-gauges": "^6.0.7",
+    "@servoy/canvas-gauges": "^2.1.8",
+    "rx-dom-html": "^7.0.3",
     "ngx-lightbox": "^2.3.0",
     "ng2-file-upload": "^1.4.0",
     "uppy-angular": "^0.1.4",
