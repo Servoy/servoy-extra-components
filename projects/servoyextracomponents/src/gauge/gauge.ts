@@ -31,13 +31,9 @@ export class ServoyExtraGauge extends ServoyBaseComponent<HTMLDivElement> {
 
     @Input() canvasGaugeOptions;
 
-    resizeObserver;
+    resizeObserver: ResizeObserver;
 
     canvasGauge;
-
-    constructor(renderer: Renderer2, cdRef: ChangeDetectorRef) {
-        super(renderer, cdRef);
-    }
 
     svyOnInit() {
         super.svyOnInit();
@@ -52,7 +48,6 @@ export class ServoyExtraGauge extends ServoyBaseComponent<HTMLDivElement> {
     svyOnChanges(changes: SimpleChanges) {
         if (changes) {
             for (const property of Object.keys(changes)) {
-                //const change = changes[property];
                 switch (property) {
                     case 'gaugeType':
                         this.refreshGauge();
