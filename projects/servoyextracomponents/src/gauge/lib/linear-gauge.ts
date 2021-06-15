@@ -46,5 +46,6 @@ export class LinearGauge extends BaseGauge<CanvasGauges.LinearGauge, CanvasGauge
 
     ngOnInit(): void {
         this.gauge = new CanvasGauges.LinearGauge(this.options).draw();
+        this.onGaugeReady.emit(this.gauge);
     }
 }

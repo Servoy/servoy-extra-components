@@ -84,7 +84,13 @@ angular.module('servoyextraGauge', ['servoy']).directive('servoyextraGauge', fun
 				}
 
 				$(window).on('resize', windowResizeHandler);
-				$scope.$on("dialogResize", windowResizeHandler);
+				var dialogResizeListener = $scope.$on("dialogResize", windowResizeHandler);
+				var destroyListenerUnreg = $scope.$on('$destroy', function() {
+					$(window).off('resize', windowResizeHandler);
+					dialogResizeListener();
+					destroyListenerUnreg();
+				});
+
 
 			},
 			link: function($scope, $element, $attrs) {

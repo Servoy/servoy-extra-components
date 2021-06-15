@@ -44,5 +44,6 @@ export class RadialGauge extends BaseGauge<CanvasGauges.RadialGauge, CanvasGauge
 
     ngOnInit() {
         this.gauge = new CanvasGauges.RadialGauge(this.options).draw();
+        this.onGaugeReady.emit(this.gauge);
     }
 }

@@ -1,22 +1,115 @@
-import { ChangeDetectorRef, Component, Input, Renderer2 } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Input, Output, Renderer2, SimpleChanges, ViewChild } from '@angular/core';
 import { ServoyBaseComponent } from '@servoy/public';
+import { BaseGauge } from './lib/base-gauge';
+import { RadialGauge } from './lib/radial-gauge';
 
 @Component({
     selector: 'servoyextra-gauge',
     templateUrl: './gauge.html'
 })
 export class ServoyExtraGauge extends ServoyBaseComponent<HTMLDivElement> {
-    @Input() myOptionsProperty;
-    @Input() myValueProperty;
+    @Input() gaugeType: string;
+    @Input() minValue = 0;
+    @Input() maxValue = 100;
+    @Input() value: number;
+    @Input() units: string;
+
+    @Input() animationOptions;
+    @Input() highlights;
+    @Input() ticks;
+
+    @Input() colorOptions;
+    @Input() valueBoxOptions;
+    @Input() needleOptions;
+    @Input() borderOptions;
+    @Input() fontOptions;
+
+    @Input() radialGaugeOptions;
+    @Input() linearGaugeOptions;
+
+    @Input() title;
+
+    @Input() canvasGaugeOptions;
+
+    resizeObserver;
+
+    canvasGauge;
 
     constructor(renderer: Renderer2, cdRef: ChangeDetectorRef) {
         super(renderer, cdRef);
-        this.myOptionsProperty = {
-            width: 150,
-            height: 400,
-            minValue: 0,
-            maxValue: 100
+    }
+
+    svyOnInit() {
+        super.svyOnInit();
+        this.resizeObserver = new ResizeObserver(() => {
+            this.canvasGauge.update({ height: this.elementRef.nativeElement.clientHeight });
+            this.canvasGauge.update({ width: this.elementRef.nativeElement.clientWidth });
+            this.canvasGauge.draw();
+          });
+          this.resizeObserver.observe(this.elementRef.nativeElement);
+    }
+
+    svyOnChanges(changes: SimpleChanges) {
+        if (changes) {
+            for (const property of Object.keys(changes)) {
+                //const change = changes[property];
+                switch (property) {
+                    case 'gaugeType':
+                        this.refreshGauge();
+                        break;
+                }
+            }
+        }
+    }
+
+    ngOnDestroy() {
+        this.resizeObserver.unobserve(this.elementRef.nativeElement);
+    }
+
+    onGaugeReady(gaugeCanvas) {
+        this.canvasGauge = gaugeCanvas;
+    }
+
+    refreshGauge() {
+        this.canvasGaugeOptions = {
+            minValue: this.minValue,
+            maxValue: this.maxValue,
+            width: this.elementRef.nativeElement.clientWidth,
+            height: this.elementRef.nativeElement.clientHeight,
+            value: this.value
         };
-        this.myValueProperty = 10;
+
+        if(this.units) this.canvasGaugeOptions['units'] = this.units;
+        const titleText = this.getTitleText();
+        if(titleText) this.canvasGaugeOptions['title'] = titleText;
+        if(this.animationOptions) Object.assign(this.canvasGaugeOptions, this.animationOptions);
+        if(this.highlights) {
+            this.ticks = this.ticks || {};
+            this.ticks.highlights = this.highlights;
+        }
+        if(this.ticks) {
+            Object.assign(this.canvasGaugeOptions, this.ticks);
+        }
+        if(this.colorOptions) Object.assign(this.canvasGaugeOptions, this.colorOptions);
+        if(this.valueBoxOptions) Object.assign(this.canvasGaugeOptions, this.valueBoxOptions);
+        if(this.needleOptions) Object.assign(this.canvasGaugeOptions, this.needleOptions);
+        if(this.borderOptions) Object.assign(this.canvasGaugeOptions, this.borderOptions);
+        if(this.fontOptions) Object.assign(this.canvasGaugeOptions, this.fontOptions);
+
+        if (this.gaugeType == "radial") {
+            if(this.radialGaugeOptions) Object.assign(this.canvasGaugeOptions, this.radialGaugeOptions);
+        } else if (this.gaugeType == "linear") {
+            if(this.linearGaugeOptions) Object.assign(this.canvasGaugeOptions, this.linearGaugeOptions);
+        }        
+    }
+
+    getTitleText(): string {
+        let result = null;
+					
+        if(this.title) {
+            result = ((this.title.dataProviderID == null) ? this.title.text : this.title.dataProviderID );
+        }
+        
+        return result;
     }
 }

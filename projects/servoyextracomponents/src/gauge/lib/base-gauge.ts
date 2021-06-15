@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-import { ViewChild, Input, NgZone, ElementRef, OnInit, AfterViewInit, Directive } from '@angular/core';
+import { ViewChild, Input, NgZone, ElementRef, OnInit, AfterViewInit, Directive, Output, EventEmitter } from '@angular/core';
 import * as CanvasGauges from '@servoy/canvas-gauges';
 import * as Rx from 'rx-dom-html';
 
@@ -59,6 +59,7 @@ export abstract class BaseGauge<T extends CanvasGauges.BaseGauge, T2 extends Can
      */
     protected gauge: T;
 
+    @Output() onGaugeReady = new EventEmitter<T>();
 
     /**
      * Flag indicating that OnViewInit life-cycle has completed
@@ -186,7 +187,7 @@ export abstract class BaseGauge<T extends CanvasGauges.BaseGauge, T2 extends Can
         if (!newOptions) { return; }
 
         // tslint:disable-next-line:forin
-        for (const prop in Object.keys(newOptions)) {
+        for (const prop of Object.keys(newOptions)) {
             const val = newOptions[prop].toString();
 
             if (prop === 'value') {
