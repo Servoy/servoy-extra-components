@@ -11,18 +11,18 @@
     "lodash-es": ">=4"
   },
   "dependencies": {
-    "@ng-bootstrap/ng-bootstrap": "^9.1.1",
+    "@ng-bootstrap/ng-bootstrap": "^9.1.2",
     "@servoy/canvas-gauges": "^2.1.8",
     "rx-dom-html": "^7.0.3",
     "ngx-lightbox": "^2.3.0",
     "ng2-file-upload": "^1.4.0",
     "uppy-angular": "^0.1.4",
     "@circlon/angular-tree-component": "^11.0.4",
-    "angular-tree-grid": "^3.0.0",
+    "angular-tree-grid": "^3.0.1",
     "@angular-slider/ngx-slider": "^2.0.3",
-    "angular-resizable-element": "^3.3.5",
+    "angular-resizable-element": "^3.4.0",
     "ng-select2-component": "^7.3.1",
-    "@tinymce/tinymce-angular": "^4.2.3",
+    "@tinymce/tinymce-angular": "^4.2.4",
     "tinymce": "^5.8.1",
     "tinymce-i18n": "^20.12.25",
     "tslib": "*"
