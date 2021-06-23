@@ -20,6 +20,9 @@ export class TableRow {
     }
 }
 
+const instanceOfValuelist = (obj: any): obj is IValuelist=>
+    obj != null && (obj).filterList instanceof Function;
+
 @Component({
     selector: 'servoyextra-table',
     templateUrl: './table.html',
@@ -754,7 +757,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
     getDisplayValue(column: Column, row: number) {
         const val = column.dataprovider ? column.dataprovider[row] : null;
-        const valuelist = column.valuelist && column.valuelist['state'] &&  column.valuelist['state']['recordLinked'] !== undefined ?  column.valuelist[row] as unknown as {realValue:any, displayValue:any}[] : column.valuelist;
+        const valuelist: IValuelist = instanceOfValuelist(column.valuelist) ? column.valuelist : column.valuelist[row] as IValuelist;
         if (valuelist) {
             for (let i = 0; i < valuelist.length; i++) {
                 if (val === valuelist[i].realValue) {
@@ -963,7 +966,7 @@ export class Column extends BaseCustomObject {
     styleClassDataprovider: LinkedDataproviders;
     dataprovider: LinkedDataproviders;
     autoResize: boolean;
-    valuelist: IValuelist;
+    valuelist: IValuelist| Array<IValuelist>;
     width: string; 
     initialWidth: string; 
     format: Format;
