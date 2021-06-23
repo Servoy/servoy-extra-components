@@ -753,11 +753,12 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     }
 
     getDisplayValue(column: Column, row: number) {
-        const val = column.dataprovider[row];
-        if (column.valuelist) {
-            for (let i = 0; i < column.valuelist.length; i++) {
-                if (val === column.valuelist[i].realValue) {
-                    return column.valuelist[i].displayValue;
+        const val = column.dataprovider ? column.dataprovider[row] : null;
+        const valuelist = column.valuelist && column.valuelist['state'] &&  column.valuelist['state']['recordLinked'] !== undefined ?  column.valuelist[row] as unknown as {realValue:any, displayValue:any}[] : column.valuelist;
+        if (valuelist) {
+            for (let i = 0; i < valuelist.length; i++) {
+                if (val === valuelist[i].realValue) {
+                    return valuelist[i].displayValue;
                 }
             }
         }
