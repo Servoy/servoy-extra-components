@@ -43,6 +43,9 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 				switch(property) {
 					case "enabled":
 						tokenizer.prop("disabled", !isEnabled());
+						$timeout(function() {
+							$element.trigger("enableTabseq" );
+						});
 						break;
 					case "readOnly":
 						tokenizer.prop("disabled", !isEnabled());
@@ -115,7 +118,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 			for (var key in $scope.model) {
 				// skip valuelist, we only need to track its changes after initialization, firing changes for it now
 				// will cause the dataprovider to be set twice
-				if(key == "valuelistID") continue; 
+				if(key == "valuelistID" || key =="enabled") continue; 
 				modelChangFunction(key,$scope.model[key]);
 			}
 							
@@ -302,7 +305,9 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 					observer = new MutationObserver(function(mutations) {
 						mutations.forEach(function(mutation) {
 					    if (mutation.addedNodes.length && mutation.addedNodes[0].classList.contains('select2-search')) {
-					    	$element.trigger("enableTabseq" );
+					    	$timeout(function() {
+								$element.trigger("enableTabseq" );
+							});
 					    }
 					  });    
 					});
