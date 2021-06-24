@@ -152,13 +152,20 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 				if (!$scope.model.allowNewEntries) {
 					options.language = {
 			            noResults: function() {
-			            	return $scope.model.noMatchesFoundText ? $scope.model.noMatchesFoundText : "No match";
+			            	return $scope.model.noMatchesFoundText ? $scope.model.noMatchesFoundText : "No matches found";
 			            }
 			        }
 				} else {
 					options.tags = true;
 				}
 				
+                if(!options.language) {
+                    options.language = {};
+                }
+                options.language.searching = function() {
+                    return $scope.model.searchingText ? $scope.model.searchingText : "Searching…";
+                }
+                
 				// query the valuelist for unlimited valuelists
 				options.ajax = { 
 					transport : queryValuelist,

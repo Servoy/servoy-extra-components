@@ -44,6 +44,7 @@
         "clearSearchTextOnSelect": {"type": "boolean", "default": false, "tags": {"scope" : "design"}}, 
         "containSearchText" : {"type": "boolean", "default": false, "tags": {"scope" : "design"}},
         "noMatchesFoundText": {"type": "tagstring", "default": "No matches found", "tags": {"scope" : "design"}},
+        "searchingText": {"type": "tagstring", "default": "Searching…", "tags": {"scope" : "design"}},
         "tabSeq" : {"type" :"tabseq", "tags": { "scope" :"design" }}, 
         "placeholderText" : {"type": "tagstring", "default" : "Select...", "tags": {"scope" : "design"}}, 
         "toolTipText" : {"type" : "tagstring"}, 
