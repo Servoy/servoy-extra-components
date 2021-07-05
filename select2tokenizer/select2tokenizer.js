@@ -32,10 +32,11 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 			var wrapper = $element.find('.svy-select2-autotokenizer');
 			var tokenizer = $element.find('.svy-select2');
 			
-			initTokanizer();
+            if ($scope.model.visible)
+			 initTokenizer();
 			
 			var className = null;
-		
+		    var initialVisible = $scope.model.visible;
 			// promise for valuelist get display value requests
 			var valuelistGetDisplayValuePromise = null;
 
@@ -55,6 +56,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
                             $element.css("display","none");
                         } else {
                             $element.css("display","");
+                            if (!initialVisible) initTokenizer();
                         }
                         break;
 					case "valuelistID":
@@ -122,7 +124,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 				modelChangFunction(key,$scope.model[key]);
 			}
 							
-			function initTokanizer() {
+			function initTokenizer() {
 				
 				var options = { 
 					containerCssClass: "svy-select2-autotokenizer-container",
