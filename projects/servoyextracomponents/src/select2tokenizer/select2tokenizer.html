@@ -14,7 +14,8 @@
         [noResultMessage]="noMatchesFoundText"
         [limitSelection]="maximumSelectionSize"
         (removeOption)="removedOption($event)"
-        (close)="listClosed($event)" 
+        (close)="listClosed($event)"
+        (open)="listOpened($event)" 
         #select2>
     </select2>
 </div> 

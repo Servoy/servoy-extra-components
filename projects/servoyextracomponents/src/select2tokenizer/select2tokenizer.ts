@@ -30,6 +30,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     @Input() closeOnSelect: boolean;
     @Input() clearSearchTextOnSelect: boolean;
     @Input() selectOnClose: boolean;
+    @Input() allowNewEntries: boolean;
 
     @ViewChild(Select2) select2: Select2;
 
@@ -37,6 +38,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     filteredDataProviderId: Array<any>;
     listPosition: 'above' | 'below' = "below";
     mustExecuteOnFocus = true;
+    newEntriesInit = false;
 
     constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, @Inject(DOCUMENT) private doc: Document) {
         super(renderer, cdRef);
@@ -209,6 +211,39 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                         label: realValue
                     });
                 }
+            }
+        }
+    }
+
+    listOpened(event: Select2) {
+        if (this.allowNewEntries && !this.newEntriesInit) {
+            this.newEntriesInit = true;
+            let inputTextfield = this.getNativeChild().querySelector('input');
+            if (inputTextfield) {
+                let prevValue: string;
+                inputTextfield.addEventListener('keyup', () => {
+                    let newValue = inputTextfield.value;
+                    if (prevValue != newValue) {
+                        const option: Select2Option = {
+                            value: newValue,
+                            label: newValue
+                        };
+                        if (prevValue) {
+                            if (newValue != '' && !this.data.some(item => item.value == newValue)){
+                              this.data[0] = option;  
+                            }
+                            else
+                            {
+                                this.data.shift();
+                            }
+                        }
+                        else
+                        {
+                            this.data.unshift(option);
+                        }
+                        prevValue = newValue;
+                    }
+                });
             }
         }
     }
