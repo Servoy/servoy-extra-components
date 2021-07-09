@@ -757,6 +757,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
     getDisplayValue(column: Column, row: number) {
         const val = column.dataprovider ? column.dataprovider[row] : null;
+        if (column.valuelist === undefined) return val;
         const valuelist: IValuelist = instanceOfValuelist(column.valuelist) ? column.valuelist : column.valuelist[row] as IValuelist;
         if (valuelist) {
             for (let i = 0; i < valuelist.length; i++) {
