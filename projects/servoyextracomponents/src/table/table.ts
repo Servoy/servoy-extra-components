@@ -96,6 +96,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     averageRowHeight = 25;
     averagePageSize = 20;
     renderedRowsLength: number;
+    paginationDisabled = false;
 
     private log: LoggerService;
     private removeListenerFunction: () => void;
@@ -618,6 +619,13 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     }
 
     modifyPage(page: number) {
+    	this.paginationDisabled = true;
+    	const innerThis: ServoyExtraTable = this;
+    	const timeout = setTimeout( () => { 
+    	    window.clearTimeout(timeout);
+    		innerThis.paginationDisabled = false;
+    		innerThis.cdRef.detectChanges();
+    	}, 300);
         this.currentPage = page;
         this.changedPage = true;
         const startIndex = this.pageSize * (this.currentPage - 1);

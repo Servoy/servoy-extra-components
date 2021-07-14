@@ -31,7 +31,7 @@
 			</cdk-virtual-scroll-viewport>
 		</tbody>
 		<tfoot>
-			<ngb-pagination *ngIf="showPagination()"
+			<ngb-pagination *ngIf="showPagination()" [disabled]="paginationDisabled" 
 				[ngClass]="{'svy-pagination': true, 'svy-nomargin': servoyApi.isInAbsoluteLayout()} " [page]="currentPage"
 				[pageSize]="pageSize" [collectionSize]="foundset.hasMoreRows ? foundset.serverSize + 1 : foundset.serverSize" (pageChange)="modifyPage($event)" [maxSize]="1"
 				[ellipses]="false">
