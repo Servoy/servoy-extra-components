@@ -19,9 +19,9 @@ export class TableRow {
     constructor(public elRef: ElementRef) {
     }
 }
-
 const instanceOfValuelist = (obj: any): obj is IValuelist=>
     obj != null && (obj).filterList instanceof Function;
+
 
 @Component({
     selector: 'servoyextra-table',
@@ -55,7 +55,8 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     @Input() responsiveHeight: number;
     @Input() responsiveDynamicHeight: boolean;
     @Input() lastSelectionFirstElement: number;
-    @Input() keyCodeSettings: KeycodeSettings;
+	@Input() keyCodeSettings: KeycodeSettings;
+    @Input() performanceSettings: { minBatchSizeForRenderingMoreRows: number; minBatchSizeForLoadingMoreRows: number; maxLoadedRows: number };
 
     @Input() onViewPortChanged: (start: number, end: number) => void;
     @Input() onCellClick: (rowIdx: number, colIdx: number, record?: ViewPortRow, e?: MouseEvent, columnId?: string) => void;
@@ -100,7 +101,9 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
     private log: LoggerService;
     private removeListenerFunction: () => void;
-
+    loading: Promise<void>;
+    batchSizeForLoadingMoreRows: number;
+    isScrollingDown: boolean;
 
     constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, logFactory: LoggerFactory,
                     @Inject(VIRTUAL_SCROLL_STRATEGY) private scrollStrategy: CustomVirtualScrollStrategy,
@@ -111,8 +114,15 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
     svyOnInit() {
         super.svyOnInit();
+        if (!this.performanceSettings) {
+            this.performanceSettings = {
+                minBatchSizeForRenderingMoreRows: 10,
+                minBatchSizeForLoadingMoreRows: 20,
+                maxLoadedRows: 1000
+            };
+        }
         this.rendered = true;
-        let minBuff = this.pageSize ? (this.pageSize + 1) * this.getNumberFromPxString(this.minRowHeight) : 200;
+        let minBuff = this.performanceSettings.minBatchSizeForRenderingMoreRows * this.averageRowHeight;
         let maxBuff = minBuff * 2;
         this.scrollStrategy.updateItemAndBufferSize(this.averageRowHeight,minBuff, maxBuff );
         this.computeTableWidth();
@@ -131,12 +141,22 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         this.viewPort.scrolledIndexChange.pipe(
             auditTime(300),
             tap(() => {
+                const first = this.getFirstVisibleIndex();
+                this.isScrollingDown = this.idx < first;
+                this.log.spam(this.log.buildMessage(() => 'svy extra table * SCROLLING '+(this.isScrollingDown ? 'down ':'up ')+'to index '+this.idx));
                 this.idx = this.getFirstVisibleIndex();
                 this.loadMoreRecords(this.idx);
+                //TODO this.unloadRecordsIfNecessary();
                 this.setCurrentPageIfNeeded();
             })
         ).subscribe();
         this.renderedRows.changes.subscribe(() => {
+           if (this.renderedRows.first && this.renderedRows.last) {
+                this.log.spam(this.log.buildMessage(() => 'svy extra table * RENDERED RANGE ('+this.renderedRows.first.svyTableRow+', '+this.renderedRows.last.svyTableRow+')'));
+           }
+           else {
+            this.log.spam('svy extra table * RENDERED RANGE is invalid');
+           }
            const newAvg = this.renderedRows.length > 0 ? this.renderedRows.reduce((a, b) => a + b.elRef.nativeElement.getBoundingClientRect().height, 0) / this.renderedRows.length : 0;
            if (newAvg !== this.averageRowHeight || this.renderedRowsLength !== this.renderedRows.length) {
                 this.averageRowHeight = newAvg;
@@ -144,7 +164,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                 if (this.responsiveDynamicHeight) this.computeTableHeight();
            }
             this.renderedRowsLength = this.renderedRows.length;
-            minBuff = this.pageSize ? (this.pageSize + 1) * this.averageRowHeight : 200;
+            minBuff = this.performanceSettings.minBatchSizeForRenderingMoreRows * this.averageRowHeight;
             maxBuff = minBuff * 2;
             this.scrollStrategy.updateItemAndBufferSize(this.averageRowHeight,minBuff, maxBuff );
         });
@@ -153,15 +173,24 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
             this.dataStream.next(this.foundset.viewPort.rows);
             this.scrollToSelection();
         }, 50);
+    
+	    // the number of extra rows to be loaded (before/after) if the rendered rows get too close to the loaded rows bounds when scrolling
+		// when you change this initial value please update the .spec as well - config option "initialPreferredViewPortSize" on the foundset property should match getInitialPreferredLoadedSize
+		// this should be higher then batchSizeForRenderingMoreRows because when we load more rows we should load enough to at least be able to render one more batch of rendered rows; so when that one (batchSizeForRenderingMoreRows) is calculated adjust this one as well
+        this.batchSizeForLoadingMoreRows = Math.max(this.performanceSettings.minBatchSizeForRenderingMoreRows, this.performanceSettings.minBatchSizeForLoadingMoreRows);
     }
 
     loadMoreRecords(currIndex: number, scroll?: boolean) {
         if ((this.foundset.viewPort.startIndex !== 0 && currIndex < this.averagePageSize) ||
             currIndex + this.averagePageSize >= this.foundset.viewPort.rows.length) {
-            this.foundset.loadExtraRecordsAsync(currIndex + this.averagePageSize >= this.foundset.viewPort.rows.length ? this.pageSize : (-1) * this.pageSize, false).then(() => {
-                this.recordsLoaded();
-                if (scroll) this.scrollToSelection();
-            });
+                const load = currIndex + this.batchSizeForLoadingMoreRows >= this.foundset.viewPort.rows.length ? this.batchSizeForLoadingMoreRows : (-1) * this.batchSizeForLoadingMoreRows;
+                this.log.spam(this.log.buildMessage(() => 'svy extra table * LOADING FS RECORDS '+load));
+                this.loading = this.foundset.loadExtraRecordsAsync(load, false).then(() => {
+                    this.foundsetRecordsChanged();
+                    if (scroll) this.scrollToSelection();
+                }).finally(() => {
+                    this.loading = null;
+                });
         }
     }
 
@@ -619,7 +648,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     }
 
     modifyPage(page: number) {
-    	this.paginationDisabled = true;
+        	this.paginationDisabled = true;
     	const innerThis: ServoyExtraTable = this;
     	const timeout = setTimeout( () => { 
     	    window.clearTimeout(timeout);
@@ -755,7 +784,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
             }
         }
     }
-
+    
     isTrustedHTML(column: Column): boolean {
         if (this.servoyApi.trustAsHtml() || column.showAs === 'trusted_html') {
             return true;
@@ -935,8 +964,16 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         }
     }
 
-    private recordsLoaded() {
-        this.dataStream.next([...this.foundset.viewPort.rows]);
+    private foundsetRecordsChanged(unloaded?: boolean) {
+        this.log.spam(this.log.buildMessage(() => 'svy extra table * RECORDS '+(unloaded? 'UNLOADED' : 'LOADED')+', start index '+this.foundset.viewPort.startIndex+', end index '+(this.foundset.viewPort.startIndex+this.foundset.viewPort.size)));
+        let arr = [...this.foundset.viewPort.rows];
+        if (this.foundset.viewPort.startIndex !== 0 || this.foundset.serverSize !== this.foundset.viewPort.rows.length) {
+        	arr = new Array(this.foundset.serverSize).fill('');
+        	for (let i = 0; i < this.foundset.viewPort.rows.length; i++) {
+        		arr[i+this.foundset.viewPort.startIndex] = this.foundset.viewPort.rows[i];
+        	}
+        }
+        this.dataStream.next(arr); //was [...this.foundset.viewPort.rows]);
     }
     private callFocusLost(e: any) {
         if (!this.skipOnce) {
@@ -964,6 +1001,26 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                 this.log.error(reason);
             });
     }
+    private unloadRecordsIfNecessary() {
+       if (this.foundset.viewPort.size <= this.performanceSettings.maxLoadedRows) return;
+        const rec = this.foundset.viewPort.size - this.performanceSettings.maxLoadedRows - 1;
+        if (rec <= 0) return;
+        this.log.spam(this.log.buildMessage(() => 'svy extra table * UNLOADING '+ rec +' RECORDS '+(this.isScrollingDown ? 'from the beginning ':'at the end ')));
+        // if scrolling down, load less records in the beginning; otherwise load less records at the end
+        const promise = this.foundset.loadLessRecordsAsync(this.isScrollingDown ? rec : -rec, false);
+        if (this.loading) {
+            this.loading.then(()=>{
+                promise.then(() => {
+                    this.foundsetRecordsChanged(true);
+                });
+            })
+        }
+        else {
+            promise.then(() => {
+                this.foundsetRecordsChanged(true);
+            });
+        }
+    }
 }
 
 export class Column extends BaseCustomObject {
@@ -978,7 +1035,7 @@ export class Column extends BaseCustomObject {
     valuelist: IValuelist| Array<IValuelist>;
     width: string; 
     initialWidth: string; 
-    format: Format;
+    format: Format; 
 }
 
 export class KeycodeSettings extends BaseCustomObject {
