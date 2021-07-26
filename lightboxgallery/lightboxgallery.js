@@ -1,10 +1,11 @@
-angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraLightboxgallery', ['$timeout', '$window', function($timeout, $window) {
+angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraLightboxgallery', ['$timeout', '$window', '$foundsetTypeConstants', function($timeout, $window, $foundsetTypeConstants) {
 		return {
 			restrict: 'E',
 			scope: {
 				model: '=svyModel',
 				api: "=svyApi",
-				handlers: "=svyHandlers"
+				handlers: "=svyHandlers",
+				svyServoyapi: "="
 			},
 			link: function($scope, $element, $attrs) {
 				$scope.images = [];
@@ -13,7 +14,7 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 				function createImagesFromFs() {
 					var images = [];
 					for (var i = 0; i < $scope.model.imagesFoundset.viewPort.rows.length; i++) {
-						/** @type {{image: {url: String}, thumbnail: {url: String}, caption: String}} */
+						/** @type {{image: {url: String}, thumbnail: {url: String}, caption: String, imageId: String}} */
 						var row = $scope.model.imagesFoundset.viewPort.rows[i];
 						var image = {
 							url: row.image && row.image.url ? row.image.url : null,
@@ -42,18 +43,33 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 								'showImageNumberLabel': $scope.model.showImageNumberLabel
 							})
 							$window.lightbox.init();
-						}, 0);
+						}, 50);
 				}
+				
+				$scope.$watch('model.imagesFoundset', function(oldValue, newValue) {
+					if ($scope.svyServoyapi.isInDesigner() || !newValue) return;
 
-				createImagesFromFs();
+					// load data
+					createImagesFromFs();
 
-				//add a listener to get notified of changes of dataproviders or added and deleted records
-				$scope.model.imagesFoundset.addChangeListener(function(changes) {
-					if (!changes.viewportRowsUpdated && changes.viewPortSizeChanged) {
+					// addFoundsetListener
+					$scope.model.imagesFoundset.addChangeListener(foundsetListener);
+				});
+				
+				var foundsetListener = function(changes) {
+					// check to see what actually changed and update what is needed in browser
+					if (changes[$foundsetTypeConstants.NOTIFY_VIEW_PORT_ROWS_COMPLETELY_CHANGED]) {
 						createImagesFromFs();
-					} else if (changes.viewportRowsUpdated && changes.viewportRowsUpdated.updates && changes.viewportRowsUpdated.updates.length > 0) {
+					} else if (changes[$foundsetTypeConstants.NOTIFY_VIEW_PORT_ROW_UPDATES_RECEIVED]) {
 						createImagesFromFs();
+					}					
+				};
+				
+				var destroyListenerUnreg = $scope.$on("$destroy", function() {
+					if ($scope.model.imagesFoundset) {
+						$scope.model.imagesFoundset.removeChangeListener(foundsetListener);
 					}
+					destroyListenerUnreg();
 				});
 
 				$scope.getStyle = function() {
@@ -88,9 +104,11 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 				}				
 
 				$scope.api.showLightbox = function() {
-					var firstImg = angular.element($element[0].querySelector('a'));
-					if (firstImg) {
-						$window.lightbox.start(firstImg);
+					if ($scope.images && $scope.images.length > 0) {
+						var firstImg = angular.element($element[0].querySelector('a'));
+						if (firstImg) {
+							$window.lightbox.start(firstImg);
+						}
 					}
 				}
 				
