@@ -111,6 +111,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     private currentIdForFoundset: Array<string> = [];
     private currentColumnLength: number;
     private resizeTimeout: any;
+    private templateTimeout: any;
 
     private layoutStyle: { height?: string; maxHeight?: string; position?: string } = {};
     private tableStyle: { width?: string } = {};
@@ -120,7 +121,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         @Inject(DOCUMENT) private doc: Document, private formatter: FormattingService) {
         super(renderer, cdRef);
         this.log = logFactory.getLogger('Table');
-        this.log.logLevel = this.log.logLevel = LogLevel.DEBUG;
+//        this.log.logLevel = this.log.logLevel = LogLevel.DEBUG;
     }
 
     @HostListener('window:resize', ['$event'])
@@ -180,7 +181,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                     if (entry.isIntersecting) {
                         if (this.componentWidth === undefined) {
                             // first time show, call generateTemplate so the columns width are calculated
-                            this.generateTemplate(true);
+                            this.scheduelGenerateTemplate();
                         }
                         //                    else {
                         //                        // just force the element's :visible watch
@@ -246,7 +247,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                                             this.updateTableColumnStyleClass(i, this.getCellStyle(i));
                                         }
                                     }
-                                    if (differentColumns) this.generateTemplate(true);
+                                    if (differentColumns) this.scheduelGenerateTemplate();
                                     if (dataproviderChanged) this.updateRenderedRows(null);
 
                                 }, 0);
@@ -815,7 +816,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
             this.selectedIndexesChanged(selectedIdxs, oldSelectedIdxs, !foundsetChanges.userSetSelection);
         }
 
-        if (shouldGenerateWholeTemplate) this.generateTemplate(true);
+        if (shouldGenerateWholeTemplate) this.scheduelGenerateTemplate();
         else {
             if (foundsetChanges.viewportRowsUpdated) {
                 this.adjustLoadedRowsIfNeeded();
@@ -1159,8 +1160,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
             let trElement = children.item(j + topEmptySpaceRowCount);
 
             const bottomSpaceRowReached = (this.bottomSpaceDiv && (!trElement || trElement === this.bottomSpaceDiv.parentElement.parentElement));
-            const trChildren = trElement.children;
-            if (bottomSpaceRowReached || trChildren.length === 0) {
+            if (bottomSpaceRowReached || !trElement) {
                 // if we reached the end (bottomSpaceDiv if available or really there are no more <tr>s
                 // then create the newly rendered row(s) as needed and append or insert them before bottom space div row)
                 trElement = this.createTableRow(columns, rowIdxInFoundsetViewport);
@@ -1170,6 +1170,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
                 childrenListChanged = true;
             } else {
+                const trChildren = trElement.children;
                 for (let c = columns.length; --c >= 0;) {
                     const column = columns[c];
                     const td = trChildren.item(c);
@@ -1234,6 +1235,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                     - children.item(firstRemovedChildIndex).clientTop;
 
                 this.addBottomSpacingDivIfNotPresent();
+                bottomEmptySpaceRowCount = 1;
                 // eslint-disable-next-line max-len
                 this.log.debug(this.log.buildMessage(() => 'svy extra table * updateRenderedRows will temporarily expand bottom spacing div with removed height so that scroll height doesn\'t shrink to produce unwanted UX... +'
                     + heightThatWillBeRemoved));
@@ -1348,6 +1350,10 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         }
     }
 
+    private scheduelGenerateTemplate() {
+        if (this.templateTimeout) clearTimeout(this.templateTimeout);
+        this.templateTimeout = setTimeout(() => this.generateTemplate(true), 10);
+    }
 
     private generateTemplate(full?: boolean) {
         this.log.debug('svy extra table * generateTemplate called');
@@ -1875,7 +1881,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
             this.bottomSpaceDiv = this.doc.createElement('div');
             bottomTD.appendChild(this.bottomSpaceDiv);
             bottomTR.appendChild(bottomTD);
-            this.tbody.nativeElement.append(bottomTR);
+            this.tbody.nativeElement.appendChild(bottomTR);
 
             spacingRowsAddedOrRemoved = true;
 
