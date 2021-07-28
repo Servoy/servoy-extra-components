@@ -1,0 +1,94 @@
+{
+  "root": true,
+  "ignorePatterns": [],
+  "plugins": [
+    "only-warn"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "*.ts"
+      ],
+      "parserOptions": {
+        "project": [
+          "tsconfig.json"
+        ],
+        "createDefaultProgram": true
+      },
+      "extends": [
+        "plugin:@angular-eslint/ng-cli-compat",
+        "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
+        "plugin:@angular-eslint/template/process-inline-templates"
+      ],
+      "rules": {
+        "@typescript-eslint/naming-convention": [
+          "error",
+          {
+            "selector": "property",
+            "modifiers": [
+              "readonly",
+              "static"
+            ],
+            "format": [
+              "UPPER_CASE"
+            ]
+          }
+        ],
+        "@angular-eslint/component-class-suffix": "off",
+        "@angular-eslint/component-selector": [
+          "error",
+          {
+            "type": "element",
+            "prefix": [
+              "servoyextra"
+            ],
+            "style": "kebab-case"
+          }
+        ],
+        "@angular-eslint/directive-selector": [
+          "error",
+          {
+            "type": "attribute",
+            "prefix": [
+              "servoyextra"
+            ],
+            "style": "camelCase"
+          }
+        ],
+        "@angular-eslint/use-lifecycle-interface": "off",
+        "@typescript-eslint/consistent-type-definitions": "error",
+        "@typescript-eslint/dot-notation": "off",
+        "@typescript-eslint/explicit-member-accessibility": [
+          "off",
+          {
+            "accessibility": "explicit"
+          }
+        ],
+        "brace-style": [
+          "error",
+          "1tbs"
+        ],
+        "curly": "off",
+        "id-blacklist": "off",
+        "id-match": "off",
+        "max-len": [
+          "error",
+          {
+            "code": 200
+          }
+        ],
+        "no-underscore-dangle": "off",
+        "valid-typeof": "error"
+      }
+    },
+    {
+      "files": [
+        "*.html"
+      ],
+      "extends": [
+        "plugin:@angular-eslint/template/recommended"
+      ],
+      "rules": {}
+    }
+  ]
+}
