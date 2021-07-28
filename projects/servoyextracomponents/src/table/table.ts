@@ -1709,6 +1709,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
             if (this.enableColumnResize) {
                 this.addColResizable(true);
             }
+            this.cdRef.detectChanges();
         }, 0);
 
         // do it in the next digest cycle, so the headers already have the style with the width applied (by the apply above)
