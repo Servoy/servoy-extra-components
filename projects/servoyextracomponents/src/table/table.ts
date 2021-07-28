@@ -320,11 +320,9 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                 this.callFocusLost(e);
             });
         }
-        if (this.onCellClick) {
-            this.renderer.listen(this.getNativeElement(), 'click', e => {
-                this.tableClicked(e, 1);
-            });
-        }
+        this.renderer.listen(this.getNativeElement(), 'click', e => {
+            this.tableClicked(e, 1);
+        });
         if (this.onCellRightClick) {
             this.renderer.listen(this.getNativeElement(), 'contextmenu', e => {
                 this.tableClicked(e, 2);
