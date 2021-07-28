@@ -90,7 +90,7 @@ export class BGSplitter implements AfterContentInit , OnChanges {
             if ( height - pos < this.panes.last.minSize ) return;
             this.renderer.setStyle( this.handler, 'top', pos + 'px' );
             this.renderer.setStyle( this.panes.first.element.nativeElement, 'height', pos + 'px' );
-            this.renderer.setStyle( this.panes.last.element.nativeElement, 'top', ( pos + this.handler.clientHeigth ) + 'px' );
+            this.renderer.setStyle( this.panes.last.element.nativeElement, 'top', pos + 'px' );
 
         } else {
 
