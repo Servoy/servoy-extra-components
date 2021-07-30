@@ -13,6 +13,7 @@
         [readonly]="!isEditable()"
         [noResultMessage]="noMatchesFoundText"
         [limitSelection]="maximumSelectionSize"
+        [overlay]="true"
         (removeOption)="removedOption($event)"
         (close)="listClosed($event)"
         (open)="listOpened($event)" 
