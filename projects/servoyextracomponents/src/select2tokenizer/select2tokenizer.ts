@@ -32,6 +32,8 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     @Input() selectOnClose: boolean;
     @Input() allowNewEntries: boolean;
 
+    tabIndex: number;
+
     @ViewChild(Select2) select2: Select2;
 
     data: Select2Option[] = [];
@@ -246,5 +248,9 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                 });
             }
         }
+    }
+
+    setTabIndex(tabIndex: number) {
+        this.tabIndex = tabIndex;
     }
 }

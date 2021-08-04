@@ -1,4 +1,4 @@
-<div #element [sabloTabseq]="tabSeq" (focus)="requestFocus(mustExecuteOnFocus)" class="svy-select2-autotokenizer"> 
+<div #element (focus)="requestFocus(mustExecuteOnFocus)" class="svy-select2-autotokenizer"> 
     <select2  
         [multiple]="true"
         [data]="data"
@@ -14,6 +14,9 @@
         [noResultMessage]="noMatchesFoundText"
         [limitSelection]="maximumSelectionSize"
         [overlay]="true"
+        [sabloTabseq]="tabSeq"
+        [sabloTabseqConfig]="{container: false, tabSeqSetter: this}"
+        [tabIndex]="tabIndex"
         (removeOption)="removedOption($event)"
         (close)="listClosed($event)"
         (open)="listOpened($event)" 
