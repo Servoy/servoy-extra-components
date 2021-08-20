@@ -14,7 +14,6 @@
       "lodash-es": "lodash_es",
       "@circlon/angular-tree-component" : "circlon.angular-tree-component",
       "ng2-file-upload" : "ng2.file-upload",
-      "@biacsics/ng-canvas-gauges" : "biacsics.ng-canvas-gauges",
       "tinymce" : "tinymce",
       "@tinymce/tinymce-angular" : "tinymce.tinymce-angular",
       "ngx-lightbox" : "ngx-lightbox",
@@ -22,7 +21,9 @@
       "ng-select2-component" : "ng-select2-component",
       "@angular-slider/ngx-slider" : "angular-slider.ngx-slider",
       "angular-resizable-element" : "angular-resizable-element",
-      "angular-tree-grid" : "angular-tree-grid"
+      "angular-tree-grid" : "angular-tree-grid",
+       "@servoy/canvas-gauges" :"CanvasGauges",
+       "rx-dom-html": "Rx"
     }
   },
   "allowedNonPeerDependencies": ["@biacsics/ng-canvas-gauges", "@ng-bootstrap/ng-bootstrap", "ngx-lightbox", "ng2-file-upload", "uppy-angular", "@circlon/angular-tree-component", "angular-tree-grid", "@angular-slider/ngx-slider", "angular-resizable-element", "ng-select2-component", "@tinymce/tinymce-angular", "tinymce", "tinymce-i18n", "@servoy/canvas-gauges", "rx-dom-html"]
