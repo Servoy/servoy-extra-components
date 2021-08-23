@@ -13,22 +13,24 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 				//create images on %scope.images
 				function createImagesFromFs() {
 					var images = [];
-					for (var i = 0; i < $scope.model.imagesFoundset.viewPort.rows.length; i++) {
-						/** @type {{image: {url: String}, thumbnail: {url: String}, caption: String, imageId: String}} */
-						var row = $scope.model.imagesFoundset.viewPort.rows[i];
-						var image = {
-							url: row.image && row.image.url ? row.image.url : null,
-							thumbUrl: row.thumbnail && row.thumbnail.url ? row.thumbnail.url : null,
-							caption: row.caption ? row.caption : null,
-							imageId: row.imageId
-						}	
-						
-						//check if using url strings instead of media/blob
-						image.url = typeof row.image == 'string' ? row.image : image.url;
-						image.thumbUrl = typeof row.thumbnail == 'string' ? row.thumbnail : image.thumbUrl;
-						
-						if (!image.url) continue;
-						images.push(image);
+					if ($scope.model.imagesFoundset) {
+    					for (var i = 0; i < $scope.model.imagesFoundset.viewPort.rows.length; i++) {
+    						/** @type {{image: {url: String}, thumbnail: {url: String}, caption: String, imageId: String}} */
+    						var row = $scope.model.imagesFoundset.viewPort.rows[i];
+    						var image = {
+    							url: row.image && row.image.url ? row.image.url : null,
+    							thumbUrl: row.thumbnail && row.thumbnail.url ? row.thumbnail.url : null,
+    							caption: row.caption ? row.caption : null,
+    							imageId: row.imageId
+    						}	
+    						
+    						//check if using url strings instead of media/blob
+    						image.url = typeof row.image == 'string' ? row.image : image.url;
+    						image.thumbUrl = typeof row.thumbnail == 'string' ? row.thumbnail : image.thumbUrl;
+    						
+    						if (!image.url) continue;
+    						images.push(image);
+    					}
 					}
 					$scope.images = images;
 					$timeout(function() {
@@ -47,20 +49,20 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 				}
 				
 				$scope.$watch('model.imagesFoundset', function(oldValue, newValue) {
-					if ($scope.svyServoyapi.isInDesigner() || !newValue) return;
+					if ($scope.svyServoyapi.isInDesigner()) return;
 
 					// load data
 					createImagesFromFs();
 
 					// addFoundsetListener
-					$scope.model.imagesFoundset.addChangeListener(foundsetListener);
+					if (newValue) newValue.addChangeListener(foundsetListener);
 				});
 				
 				var foundsetListener = function(changes) {
 					// check to see what actually changed and update what is needed in browser
-					if (changes[$foundsetTypeConstants.NOTIFY_VIEW_PORT_ROWS_COMPLETELY_CHANGED]) {
-						createImagesFromFs();
-					} else if (changes[$foundsetTypeConstants.NOTIFY_VIEW_PORT_ROW_UPDATES_RECEIVED]) {
+					if (changes[$foundsetTypeConstants.NOTIFY_VIEW_PORT_ROWS_COMPLETELY_CHANGED]
+					       || changes[$foundsetTypeConstants.NOTIFY_VIEW_PORT_ROW_UPDATES_RECEIVED]
+					       || changes[$foundsetTypeConstants.NOTIFY_FULL_VALUE_CHANGED]) {
 						createImagesFromFs();
 					}					
 				};
