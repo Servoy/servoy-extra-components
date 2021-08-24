@@ -27,4 +27,4 @@ zip.addLocalFolder("./treeview/", "/treeview/");
 zip.addLocalFolder("./youtubevideoembedder/", "/youtubevideoembedder/");
 zip.addLocalFolder("./lib/", "/lib/");
 
-zip.writeZip("servoyextracomponents.zip");
+zip.writeZip("servoyextra.zip");
