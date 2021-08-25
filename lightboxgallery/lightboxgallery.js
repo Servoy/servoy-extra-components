@@ -48,9 +48,11 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 						}, 50);
 				}
 				
-				$scope.$watch('model.imagesFoundset', function(oldValue, newValue) {
+				$scope.$watch('model.imagesFoundset', function(newValue, oldValue) {
 					if ($scope.svyServoyapi.isInDesigner()) return;
 
+					if (oldValue) oldValue.removeChangeListener(foundsetListener);
+					
 					// load data
 					createImagesFromFs();
 
