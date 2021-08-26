@@ -67,7 +67,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 
     svyOnChanges(changes: SimpleChanges) {
         super.svyOnChanges(changes);
-        if (changes != null) {
+        if (this.collapsibles) {
             for (const collapsible of this.collapsibles) {
                 if (collapsible.form) {
                     this.getFormState(collapsible.form, collapsible);

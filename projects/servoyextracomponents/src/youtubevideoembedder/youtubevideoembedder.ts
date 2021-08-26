@@ -56,6 +56,7 @@ export class ServoyExtraYoutubeVideoEmbedder extends ServoyBaseComponent<HTMLIFr
 
     private updateYoutubeURL() {
         let urlWithParams = this.dataProviderID || this.embeddedVideoURL;
+        if (!urlWithParams) return;
         let params = "";
 
         // in these if's we rely on YouTube defaults as well; we only set them when non-default

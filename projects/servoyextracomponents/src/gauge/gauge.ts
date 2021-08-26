@@ -71,7 +71,7 @@ export class ServoyExtraGauge extends ServoyBaseComponent<HTMLDivElement> {
             maxValue: this.maxValue,
             width: this.elementRef.nativeElement.clientWidth,
             height: this.elementRef.nativeElement.clientHeight,
-            value: this.value
+            value: (this.value == null || this.value == undefined) ? 0 : this.value
         };
 
         if(this.units) this.canvasGaugeOptions['units'] = this.units;

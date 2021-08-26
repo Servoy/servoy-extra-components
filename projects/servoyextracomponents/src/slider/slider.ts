@@ -74,7 +74,7 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
 	ngOnInit() {
 		super.ngOnInit();
 		// these options must be initialized otherwise dataprovider is not displayed in ui
-		this.setNewOptions('ceil', this.ceil);
+		this.setNewOptions('ceil', this.ceil ? this.ceil : 100);
 		this.setNewOptions('floor', this.floor);
 	}
 
@@ -90,7 +90,7 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
 						this.setNewOptions('floor', change.currentValue);
 						break;
 					case 'ceil':
-						this.setNewOptions('ceil', change.currentValue);
+						this.setNewOptions('ceil', change.currentValue ? change.currentValue : 100);
 						break;
 					case 'step':
 						this.setNewOptions('step', change.currentValue);

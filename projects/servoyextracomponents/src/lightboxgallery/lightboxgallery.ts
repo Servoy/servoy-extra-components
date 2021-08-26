@@ -82,21 +82,24 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 
     private createImages = () => {
         this.images = [];
-        for (const row of this.imagesFoundset.viewPort.rows) {
-            const image = {
-                src: row.image && row.image.url ? row.image.url : null,
-                caption: row.caption ? row.caption : null,
-                thumb: row.thumbnail && row.thumbnail.url ? row.thumbnail.url : null,
-                imageId: row.imageId
-            };
+        if (this.imagesFoundset) {
+            for (const row of this.imagesFoundset.viewPort.rows) {
+                const image = {
+                    src: row.image && row.image.url ? row.image.url : null,
+                    caption: row.caption ? row.caption : null,
+                    thumb: row.thumbnail && row.thumbnail.url ? row.thumbnail.url : null,
+                    imageId: row.imageId
+                };
 
-            //check if using url strings instead of media/blob
-            image.src = typeof row.image == 'string' ? row.image : image.src;
-            image.thumb = typeof row.thumbnail == 'string' ? row.thumbnail : image.thumb;
+                //check if using url strings instead of media/blob
+                image.src = typeof row.image == 'string' ? row.image : image.src;
+                image.thumb = typeof row.thumbnail == 'string' ? row.thumbnail : image.thumb;
 
-            if (!image.src) continue;
-            this.images.push(image);
+                if (!image.src) continue;
+                this.images.push(image);
+            }
         }
+
     };
 }
 
