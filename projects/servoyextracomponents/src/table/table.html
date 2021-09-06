@@ -9,6 +9,7 @@
             <tr><th   *ngFor="let column of columns; let i = index;"  [ngStyle]="getColumnStyle(i)"
                         [ngClass]="getSortStyleClass(i)"
                         mwlResizable 
+						mwlResizeHandle 
                         [enableGhostResize]="enableColumnResize"
                         [resizeEdges]="{ bottom: false, right: enableColumnResize && i < columns.length-1, top: false, left: enableColumnResize && i > 0 }"
                         (click)="headerClicked($event, i)"
