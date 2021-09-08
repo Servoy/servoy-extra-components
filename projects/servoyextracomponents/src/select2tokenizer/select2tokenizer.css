@@ -1,0 +1,93 @@
+.svy-select2-autotokenizer {
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+    border-color: #aaa;
+}
+
+.svy-select2-autotokenizer > select2 {
+    width: 100%;
+}
+
+:host >>> .select2-container {
+    width: 100% !important;
+    height: 100%;
+    background-color: inherit;
+    border-color: inherit;
+    border-radius: inherit;
+}
+
+:host >>> .selection {
+    height: 100%;
+    border-color: inherit;
+    background-color: inherit;
+}
+
+:host >>> .select2-selection {
+    height: 100% !important;
+    overflow-y: auto;
+    border-color: inherit;
+    min-height: 100% !important;
+}
+
+/* Applicable Style Classes */
+
+/* Large select2-lg */
+.svy-select2-autotokenizer.select2-lg,
+.svy-wrapper > * > .svy-select2-autotokenizer.select2-lg .select2-selection > ul {
+    font-size: 18px;
+}
+
+.svy-wrapper > * > .svy-select2-autotokenizer.select2-lg .select2-selection {
+    font-size: 0; /* reset the empty space after ul */
+}
+
+.svy-select2-autotokenizer-dropdown.select2-lg {
+    font-size: 18px;
+}
+
+/* Medium select2-md */
+.svy-select2-autotokenizer.select2-md,
+.svy-wrapper > * > .svy-select2-autotokenizer.select2-md .select2-selection > ul {
+    font-size: 16px;
+}
+
+.svy-wrapper > * > .svy-select2-autotokenizer.select2-md .select2-selection {
+    font-size: 0; /* reset the empty space after ul */
+}
+
+.svy-select2-autotokenizer-dropdown.select2-md {
+    font-size: 16px;
+}
+
+/* Small select2-sm */
+.svy-select2-autotokenizer.select2-sm,
+.svy-wrapper > * > .svy-select2-autotokenizer.select2-sm .select2-selection > ul {
+    font-size: 14px;
+}
+
+.svy-wrapper > * > .svy-select2-autotokenizer.select2-sm .select2-selection {
+    font-size: 0; /* reset the empty space after ul */
+}
+
+.svy-select2-autotokenizer-dropdown.select2-sm {
+    font-size: 14px;
+}
+
+/* eXtra Small - select2-xs*/
+.svy-select2-autotokenizer.select2-xs,
+.svy-wrapper > * > .svy-select2-autotokenizer.select2-xs .select2-selection > ul {
+    font-size: 12px;
+}
+
+.svy-wrapper > * > .svy-select2-autotokenizer.select2-xs .select2-selection {
+    font-size: 0; /* reset the empty space after ul */
+}
+
+.select2-dropdown.select2-xs {
+    font-size: 12px;
+}
+
+body .select2-dropdown {
+  z-index: 9999; /* The z-index Select2 applies to the select2-drop */
+}

@@ -6,6 +6,7 @@ import { DOCUMENT } from '@angular/common';
 @Component({
     selector: 'servoyextra-select2tokenizer',
     templateUrl: './select2tokenizer.html',
+    styleUrls: ['./select2tokenizer.css'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElement> {
@@ -31,6 +32,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     @Input() clearSearchTextOnSelect: boolean;
     @Input() selectOnClose: boolean;
     @Input() allowNewEntries: boolean;
+    @Input() size: { width: number; height: number };
 
     tabIndex: number;
 
@@ -162,6 +164,9 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                     this.selectRealValue(realValue);
                 }
             }
+        }
+        if (changes['size']) {
+            this.renderer.setProperty(this.elementRef.nativeElement, 'height', this.size.height);
         }
         super.svyOnChanges(changes);
     }
