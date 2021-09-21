@@ -4,7 +4,8 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
     selector: 'servoyextra-youtubevideoembedder',
-    templateUrl: './youtubevideoembedder.html'
+    templateUrl: './youtubevideoembedder.html',
+    styleUrls: ['./youtubevideoembedder.css'],
 })
 export class ServoyExtraYoutubeVideoEmbedder extends ServoyBaseComponent<HTMLIFrameElement> {
 

@@ -1,5 +1,6 @@
 <iframe 
         #element
+        *ngIf="!servoyApi.isInDesigner()"
         [width]="videoWidth" 
         [height]="videoHeight"
         [ngClass]="styleClass"
@@ -8,3 +9,6 @@
         [src]="fullYoutubeURL"
         allowfullscreen
 ></iframe>
+<div  #element *ngIf="servoyApi.isInDesigner()" class="youtubevideoembedder-designer-container" [style.width.px]="videoWidth" [style.height.px]="videoHeight">
+    <i class="fab fa-youtube fa-10x youtubevideoembedder-designer-icon"></i>
+</div>
