@@ -143,31 +143,26 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
         }
     }
 
-    svyOnChanges(changes: SimpleChanges) {
-        if (changes['valuelistID']) {
+    svyOnChanges( changes: SimpleChanges ) {
+        if ( changes['valuelistID'] ) {
             this.setData();
         }
-        if (changes['dataProviderID']) {
+        if ( changes['dataProviderID'] ) {
             this.setData();
-            let hashMap = {};
-            this.filteredDataProviderId = this.dataProviderID ? ((typeof this.dataProviderID === 'string') ? this.dataProviderID.split('\n') : [this.dataProviderID]) : [];
+            this.filteredDataProviderId = this.dataProviderID ? ( ( typeof this.dataProviderID === 'string' ) ? this.dataProviderID.split( '\n' ) : [this.dataProviderID] ) : [];
 
-            if (this.filteredDataProviderId && this.filteredDataProviderId.length) {
+            if ( this.filteredDataProviderId && this.filteredDataProviderId.length ) {
                 let realValue: any;
-                for (let i = 0; this.filteredDataProviderId && i < this.filteredDataProviderId.length; i++) {
+                for ( let i = 0; this.filteredDataProviderId && i < this.filteredDataProviderId.length; i++ ) {
                     realValue = this.filteredDataProviderId[i];
-                    hashMap[realValue] = realValue;
-                }
-                // select each value
-                for (realValue in hashMap) {
-                    this.selectRealValue(realValue);
+                    this.selectRealValue( realValue );
                 }
             }
         }
-        if (changes['size']) {
-            this.renderer.setProperty(this.elementRef.nativeElement, 'height', this.size.height);
+        if ( changes['size'] ) {
+            this.renderer.setProperty( this.elementRef.nativeElement, 'height', this.size.height );
         }
-        super.svyOnChanges(changes);
+        super.svyOnChanges( changes );
     }
 
     selectRealValue(realValue: any) {
