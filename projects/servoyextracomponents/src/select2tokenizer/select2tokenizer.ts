@@ -57,7 +57,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 
     svyOnInit() {
         super.svyOnInit();
-        this.setData();
+        //this.setData(); it is already done in svyOnChanges
         this.attachFocusListeners(this.getNativeElement());
         const position = this.getNativeElement().getBoundingClientRect();
         let availableHeight = this.doc.defaultView.innerHeight - position.top - position.height;
@@ -69,7 +69,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 
     attachFocusListeners(nativeElement: HTMLDivElement) {
         if (this.onFocusGainedMethodID) {
-            this.renderer.listen(this.getNativeElement(), 'focusin', (e) => {
+            this.renderer.listen(nativeElement, 'focusin', (e) => {
                 if (this.mustExecuteOnFocus === true) {
                     this.onFocusGainedMethodID(e);
                 }
@@ -78,7 +78,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
         }
 
         if (this.onFocusLostMethodID) {
-            this.renderer.listen(this.getNativeElement(), 'focusout', (e) => {
+            this.renderer.listen(nativeElement, 'focusout', (e) => {
                 this.onFocusLostMethodID(e);
             });
         }
@@ -114,7 +114,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
         }
     }
 
-    onDataChangeCallback(event, returnval) {
+    onDataChangeCallback(event: any, returnval: any) {
         const stringValue = (typeof returnval === 'string' || returnval instanceof String);
         if (returnval === false || stringValue) {
             //this.renderer.removeClass( this.select2, 'ng-valid' );
@@ -125,10 +125,38 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
         }
     }
 
+    /**
+     * Compares 2 arrays
+     * @param arr1
+     * @param arr2
+     */
+    private compareArrays( arr1: any, arr2: any ) {
+        if(!Array.isArray(arr1) || !Array.isArray(arr2)) return false;
+        if ( arr1.length !== arr2.length ) return false;
+        for ( var i = 0, len = arr1.length; i < len; i++ ) {
+            if ( arr1[i] + '' !== arr2[i] + '') {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     updateValue(event: Select2UpdateEvent<any>) {
-        if (this.filteredDataProviderId !== event.value) {
-            this.filteredDataProviderId = event.value;
-            this.dataProviderID = event.value.join('\n');
+        if (!this.compareArrays(this.filteredDataProviderId, event.value)) {
+            if(event.value.length > 0){
+                if(event.value.length > 1 && (typeof this.dataProviderID === "string")){
+                    this.filteredDataProviderId = event.value;
+                    this.dataProviderID = event.value.join('\n');
+                }
+                else if(event.value.length === 1 || (typeof this.dataProviderID === "number") || (typeof this.dataProviderID === "boolean")){
+                    this.filteredDataProviderId[0] = event.value[event.value.length - 1];
+                    this.dataProviderID = this.filteredDataProviderId[0];
+                } else {
+                    console.log("Warning dataProviderID typeof " + typeof this.dataProviderID  + " not allowed")
+                }
+            } else {
+                this.dataProviderID = undefined;
+            }
             this.dataProviderIDChange.emit(this.dataProviderID);
             if (this.closeOnSelect && event.component.isOpen) {
                 event.component.toggleOpenAndClose();
@@ -197,7 +225,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
             if (highlightItem) {
                 let displayValue = highlightItem.textContent;
                 let found = false;
-                let realValue;
+                let realValue:any;
                 for (let i = 0; i < this.valuelistID.length; i++) {
                     if (this.valuelistID[i].displayValue === displayValue) {
                         // set value
