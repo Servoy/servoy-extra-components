@@ -15,6 +15,8 @@
     "@servoy/canvas-gauges": ">=2",
     "rx-dom-html": ">=7",
     "ngx-lightbox": ">=2",
+    "ngx-filesaver": ">=12",
+     "file-saver": ">=2",
     "ng2-file-upload": ">=1",
     "uppy-angular": ">=0.1.4",
     "@circlon/angular-tree-component": ">=11",

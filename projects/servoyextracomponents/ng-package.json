@@ -26,5 +26,15 @@
        "rx-dom-html": "Rx"
     }
   },
-  "allowedNonPeerDependencies": ["@biacsics/ng-canvas-gauges", "@ng-bootstrap/ng-bootstrap", "ngx-lightbox", "ng2-file-upload", "uppy-angular", "@circlon/angular-tree-component", "angular-tree-grid", "@angular-slider/ngx-slider", "angular-resizable-element", "ng-select2-component", "@tinymce/tinymce-angular", "tinymce", "tinymce-i18n", "@servoy/canvas-gauges", "rx-dom-html","@angular/cdk"]
+  "allowedNonPeerDependencies": 
+    ["@biacsics/ng-canvas-gauges", 
+    "@ng-bootstrap/ng-bootstrap", 
+    "ngx-lightbox", "ngx-filesaver","file-saver",
+    "ng2-file-upload", 
+    "uppy-angular", 
+    "@circlon/angular-tree-component", 
+    "angular-tree-grid", 
+    "@angular-slider/ngx-slider", 
+    "angular-resizable-element", "ng-select2-component", "@tinymce/tinymce-angular", 
+    "tinymce", "tinymce-i18n", "@servoy/canvas-gauges", "rx-dom-html","@angular/cdk"]
 }
