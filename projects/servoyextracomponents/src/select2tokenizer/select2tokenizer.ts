@@ -67,20 +67,34 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
         }
     }
 
-    attachFocusListeners(nativeElement: HTMLDivElement) {
-        if (this.onFocusGainedMethodID) {
-            this.renderer.listen(nativeElement, 'focusin', (e) => {
-                if (this.mustExecuteOnFocus === true) {
-                    this.onFocusGainedMethodID(e);
+    attachFocusListeners( nativeElement: HTMLDivElement ) {
+        if ( this.onFocusGainedMethodID ) {
+            this.select2.focus.subscribe(() => {
+                if ( this.mustExecuteOnFocus === true ) {
+                    this.onFocusGainedMethodID( new CustomEvent( 'focus' ) );
                 }
                 this.mustExecuteOnFocus = true;
-            });
+            } );
+            /* used for triggering a focus gained when the component is not editable
+             * fix for SVYX-210 */
+            this.renderer.listen( nativeElement, 'focusin', ( e ) => {
+                if ( !this.isEditable() ) {
+                    this.onFocusGainedMethodID( e );
+                }
+            } );
         }
+        if ( this.onFocusLostMethodID ) {
+            this.select2.blur.subscribe(() => {
+                this.onFocusLostMethodID( new CustomEvent( 'blur' ) );
+            } );
 
-        if (this.onFocusLostMethodID) {
-            this.renderer.listen(nativeElement, 'focusout', (e) => {
-                this.onFocusLostMethodID(e);
-            });
+            /* used for triggering a focus lost when the component is not editable
+             * fix for SVYX-210 */
+            this.renderer.listen( nativeElement, 'focusout', ( e ) => {
+                if ( !this.isEditable() ) {
+                    this.onFocusLostMethodID( e );
+                }
+            } );
         }
     }
 
