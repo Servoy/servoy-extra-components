@@ -96,7 +96,7 @@
     "handlers": {
         "onFileUploaded": {
         	"parameters": [
-            	{"name": "jsUpload", "type": "object"}
+            	{"name": "jsUpload", "type": "JSUpload"}
         ]},
         "onFileAdded": {
         	"parameters": [
