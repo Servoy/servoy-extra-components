@@ -19,7 +19,8 @@
     "lib": [
       "es2018",
       "dom",
-      "dom.Iterable"
+      "dom.Iterable",
+      "ES2020.Promise"
     ]
   },
   "angularCompilerOptions": {

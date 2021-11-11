@@ -23,7 +23,6 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { BGPane } from './splitpane/bg_splitter/bg_pane.component';
 import { BGSplitter } from './splitpane/bg_splitter/bg_splitter.component';
 import { Select2Module } from 'ng-select2-component';
-import { UppyAngularModule } from 'uppy-angular';
 import { LightboxModule } from 'ngx-lightbox';
 import { ServoyExtraCollapse } from './collapse/collapse';
 import { Binding, Callback, FoundsetInfo, LevelVisibilityType, RelationInfo, ServoyExtraDbtreeview } from './dbtreeview/dbtreeview';
@@ -35,7 +34,7 @@ import { ServoyExtraTreeviewCellRenderer } from './treeview/cellrenderer';
 import { ServoyExtraGauge } from './gauge/gauge';
 import { LinearGauge } from './gauge/lib/linear-gauge';
 import { RadialGauge } from './gauge/lib/radial-gauge';
-
+import { UppyAngularDashboardModule } from '@uppy/angular'
 
 
 @NgModule({
@@ -74,11 +73,11 @@ import { RadialGauge } from './gauge/lib/radial-gauge';
         FileUploadModule,
         NgxSliderModule,
 		Select2Module,
-        UppyAngularModule,
         LightboxModule,
         TreeModule,
         EditorModule,
-        AngularTreeGridModule
+        AngularTreeGridModule,
+        UppyAngularDashboardModule
     ],
     providers: [AsyncPipe,
             { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }
