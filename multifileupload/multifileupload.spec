@@ -13,6 +13,11 @@
         { "name": "uppy.min.js", "version": "1.4.0", "url": "servoyextra/multifileupload/lib/svyextra-multifileupload-bundle.js", "mimetype": "text/javascript" },
         { "name": "multifileupload.css", "version": "1.0", "url": "servoyextra/multifileupload/multifileupload.css", "mimetype": "text/css" }
     ],
+    "ng2Config": {
+        "dependencies": {
+            "csslibrary": ["~@uppy/core/dist/style.css","~@uppy/dashboard/dist/style.css","~@uppy/webcam/dist/style.css", "~@uppy/screen-capture/dist/style.css"]
+        }
+    },
     "keywords": ["multiple"],
     "model": {
         "autoProceed": 					{ "type": "boolean", "default": false, "tags": { "doc": "By default the component will wait for an upload button to be pressed in the UI, or the upload() method to be called, before starting an upload. Setting this to autoProceed: true will start uploading automatically after the first file is selected."} },
@@ -25,11 +30,12 @@
         "note": 						{ "type": "tagstring" },
         "closeAfterFinish": 			{ "type": "boolean", "default": false, "tags": { "doc": "Whether to automatically close the modal when all current uploads are complete."} },
         "sources": 						{ "type": "string[]", "elementConfig": { "values": [{"Webcam": "Webcam"}], "default": "Webcam" }, "tags": { "doc": "Allows to add additional sources of files (other than the user's file system)" } },
-        "metaFields": 					{ "type": "metaField[]", "tags": { "doc": "An array of UI field objects that will be shown when a user clicks the “edit” button on that file" } },
+        "metaFields": 					{ "type": "metaField[]", "tags": { "doc": "An array of UI field objects that will be shown when a user clicks the 'edit' button on that file" } },
         "language": 					{ "type": "string", "default": null, "values": ["English", "Spanish", "German", "French", "Dutch", "Italian", "Chinese", "Czech", "Danish", "Finnish", "Greek", "Hungarian", "Japanese", "Persian", "Russian", "Swedish", "Turkish"], "tags": { "doc": "One of the language packs shipped. If you need to provide your own translations, use the localeStrings property."} },
         "localeStrings":				{ "type": "map", "tags": { "doc": "Any number of key/value pairs to translate single strings in the component, overriding the ones provided by the language pack selected." } }, 
         "size": 						{ "type": "dimension", "default": { "width": 290, "height": 450 } },
-        "options": 						{ "type": "map" }
+        "options": 						{ "type": "map" },
+        "tusOptions":                      { "type": "map", "tags": { "scope" : "design" , "doc":"Look at the Uppy TUS options what you can set here like chunkSize: nrOfBytes"}  }
     },
     "api": {
         "reset": {
