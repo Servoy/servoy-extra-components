@@ -6,11 +6,12 @@
     "icon": "servoyextra/multifileupload/multifileupload.png",
     "definition": "servoyextra/multifileupload/multifileupload.js",
     "libraries": [
-        { "name": "style.min.css", "version": "1.3.0", "url": "servoyextra/multifileupload/lib/style.min.css", "mimetype": "text/css" },
-        { "name": "dashboard-style.min.css", "version": "1.3.0", "url": "servoyextra/multifileupload/lib/dashboard/dashboard-style.min.css", "mimetype": "text/css" },
-        { "name": "drag-drop-style.min.css", "version": "1.3.0", "url": "servoyextra/multifileupload/lib/drag-drop/drag-drop-style.min.css", "mimetype": "text/css" },
-        { "name": "webcam-style.min.css", "version": "1.3.0", "url": "servoyextra/multifileupload/lib/webcam/webcam-style.min.css", "mimetype": "text/css" },
-        { "name": "uppy.min.js", "version": "1.4.0", "url": "servoyextra/multifileupload/lib/svyextra-multifileupload-bundle.js", "mimetype": "text/javascript" },
+        { "name": "style.min.css", "version": "2.1.2", "url": "servoyextra/multifileupload/lib/style.min.css", "mimetype": "text/css" },
+        { "name": "dashboard-style.min.css", "version": "2.1.1", "url": "servoyextra/multifileupload/lib/dashboard/style.min.css", "mimetype": "text/css" },
+        { "name": "drag-drop-style.min.css", "version": "2.0.4", "url": "servoyextra/multifileupload/lib/drag-drop/style.min.css", "mimetype": "text/css" },
+        { "name": "webcam-style.min.css", "version": "2.0.4", "url": "servoyextra/multifileupload/lib/webcam/style.min.css", "mimetype": "text/css" },
+        { "name": "screen-capture-style.min.css", "version": "2.0.4", "url": "servoyextra/multifileupload/lib/screen-capture/style.min.css", "mimetype": "text/css" },
+        { "name": "uppy.min.js", "version": "2.1.2", "url": "servoyextra/multifileupload/lib/svyextra-multifileupload-bundle.js", "mimetype": "text/javascript" },
         { "name": "multifileupload.css", "version": "1.0", "url": "servoyextra/multifileupload/multifileupload.css", "mimetype": "text/css" }
     ],
     "ng2Config": {
@@ -29,7 +30,7 @@
         "inline": 						{ "type": "boolean", "default": true, "tags": { "doc": "When false, the component does not show on the form, but in a modal that is shown when openModal() is called" } },
         "note": 						{ "type": "tagstring" },
         "closeAfterFinish": 			{ "type": "boolean", "default": false, "tags": { "doc": "Whether to automatically close the modal when all current uploads are complete."} },
-        "sources": 						{ "type": "string[]", "elementConfig": { "values": [{"Webcam": "Webcam"}], "default": "Webcam" }, "tags": { "doc": "Allows to add additional sources of files (other than the user's file system)" } },
+        "sources": 						{ "type": "string[]", "elementConfig": { "values": ["Webcam", "ScreenCapture"], "default": "Webcam" }, "tags": { "doc": "Allows to add additional sources of files (other than the user's file system)" } },
         "metaFields": 					{ "type": "metaField[]", "tags": { "doc": "An array of UI field objects that will be shown when a user clicks the 'edit' button on that file" } },
         "language": 					{ "type": "string", "default": null, "values": ["English", "Spanish", "German", "French", "Dutch", "Italian", "Chinese", "Czech", "Danish", "Finnish", "Greek", "Hungarian", "Japanese", "Persian", "Russian", "Swedish", "Turkish"], "tags": { "doc": "One of the language packs shipped. If you need to provide your own translations, use the localeStrings property."} },
         "localeStrings":				{ "type": "map", "tags": { "doc": "Any number of key/value pairs to translate single strings in the component, overriding the ones provided by the language pack selected." } }, 
@@ -163,7 +164,7 @@
             "bytesUploaded": 		{"type": "int"},
             "percentage": 			{"type": "int"},
             "uploadComplete": 		{"type": "boolean"},
-            "uploadStarted": 		{"type": "date"}
+            "uploadStarted": 		{"type": "int"}
         }
     }
 }

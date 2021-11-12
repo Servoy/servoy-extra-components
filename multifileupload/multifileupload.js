@@ -16,7 +16,7 @@ angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
 				var uppy;
 				var uppyProperties;
 				var dashboardProperties;
-				var xhrProperties;
+				var tusProperties;
 				
 				var elementName = $attrs.name;
 				var usesCssPosition = $scope.$parent.formProperties.useCssPosition && $scope.$parent.formProperties.useCssPosition[elementName] ? true : false;
@@ -141,9 +141,9 @@ angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
 				function initUppy() {
 					setUppyOptions();
 					
-					uppy = Uppy.Core(uppyProperties);
+					uppy = new Uppy.Core(uppyProperties);
 					uppy.use(Uppy.Dashboard, dashboardProperties);
-					uppy.use(Uppy.XHRUpload, xhrProperties);
+					uppy.use(Uppy.Tus, tusProperties);
 						
 					if ($scope.model.sources) {
 						for (var s = 0; s < $scope.model.sources.length; s++) {
@@ -248,7 +248,7 @@ angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
 						}
 					}
 					
-					return "resources/upload/" + $sabloApplication.getClientnr() + "/" + formname + "/" + beanname + "/onFileUploaded";
+					return "tus/upload/" + $sabloApplication.getClientnr() + "/" + formname + "/" + beanname + "/onFileUploaded/";
 				}
 				
 				/**
@@ -273,20 +273,20 @@ angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
 						}
 					}
 					
-					if (!file.progress) {
-						result.progress = {
-							bytesTotal: file.size,
-							bytesUploaded: 0,
-							percentage: 0,
-							uploadComplete: false,
-							uploadStarted: null
-						}
-					} else {
-						result.progress = file.progress;
-						if (result.progress.uploadStarted) {
-							result.progress.uploadStarted = new Date(result.progress.uploadStarted);
-						}
-					}
+				   result.progress = {
+                        bytesTotal: file.size,
+                        bytesUploaded: 0,
+                        percentage: 0,
+                        uploadComplete: false,
+                        uploadStarted: null
+                    };
+                    if (file.progress) {
+                        result.progress.bytesTotal = file.progress.bytesTotal;
+                        result.progress.bytesUploaded = file.progress.bytesUploaded;
+                        result.progress.percentage = file.progress.percentage;
+                        result.progress.uploadComplete = file.progress.uploadComplete;
+                        result.progress.uploadStarted = file.progress.uploadStarted;
+                    }
 					
 					if (file.error) {
 						result.error = file.error;
@@ -296,8 +296,6 @@ angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
 				}
 				
 				function setUppyOptions() {
-					console.log('Setting options')
-					
 					var uppyLanguage = $scope.model.language;
 					var locale = $sabloApplication.getLocale();
 					
@@ -442,15 +440,10 @@ angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
 						onBeforeFileAdded: onBeforeFileAdded
 					}
 					
-					xhrProperties = {
+					tusProperties = {
 						endpoint: uploadURL,
-						formData: true,
-						getResponseData: function(responseText, response) {
-							return {
-								url: response.responseURL
-							}
-						}
 					}
+                    Object.assign(tusProperties, $scope.model.tusOptions)
 					
 					//meta fields
 					var meta = [];
@@ -459,12 +452,12 @@ angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
 							meta.push($scope.model.metaFields[m].id);
 						}
 					}
-					xhrProperties.metaFields = meta || [];
+					tusProperties.metaFields = meta || [];
 					
 					if (uppy) {
 						uppy.setOptions(uppyProperties);
 						uppy.getPlugin('Dashboard').setOptions(dashboardProperties);
-						uppy.getPlugin('XHRUpload').setOptions(xhrProperties);
+						uppy.getPlugin('Tus').setOptions(tusProperties);
 					}					
 				}
 
