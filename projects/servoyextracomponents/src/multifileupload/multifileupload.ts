@@ -146,6 +146,9 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
                 this.cdRef.detectChanges();
             });
        }
+       else {
+            this.showDashboard = true;
+        }
     }
 
     installWebcam = () => import(`@uppy/webcam`).then(module => {
