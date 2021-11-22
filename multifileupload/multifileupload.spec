@@ -14,11 +14,6 @@
         { "name": "uppy.min.js", "version": "2.1.2", "url": "servoyextra/multifileupload/lib/svyextra-multifileupload-bundle.js", "mimetype": "text/javascript" },
         { "name": "multifileupload.css", "version": "1.0", "url": "servoyextra/multifileupload/multifileupload.css", "mimetype": "text/css" }
     ],
-    "ng2Config": {
-        "dependencies": {
-            "csslibrary": ["~@uppy/core/dist/style.css","~@uppy/dashboard/dist/style.css","~@uppy/webcam/dist/style.css", "~@uppy/screen-capture/dist/style.css"]
-        }
-    },
     "keywords": ["multiple"],
     "model": {
         "autoProceed": 					{ "type": "boolean", "default": false, "tags": { "doc": "By default the component will wait for an upload button to be pressed in the UI, or the upload() method to be called, before starting an upload. Setting this to autoProceed: true will start uploading automatically after the first file is selected."} },

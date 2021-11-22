@@ -1,12 +1,14 @@
 @import "table/table.css";
 @import "sidenav/svy-sidenav.css";
-@import '~@circlon/angular-tree-component/src/lib/angular-tree-component.css';
+@import '@circlon/angular-tree-component/src/lib/angular-tree-component.css';
 @import "treeview/treeview.css";
 @import "select2tokenizer/select2tokenizer.css";
-@import "~ngx-lightbox/lightbox.css";
+@import "ngx-lightbox/lightbox.css";
 @import "@uppy/core/dist/style.css";
 @import "@uppy/dashboard/dist/style.css";
-@import "~@angular/cdk/overlay-prebuilt.css";
+@import "@uppy/screen-capture/dist/style.css";
+@import "@uppy/webcam/dist/style.css";
+@import "@angular/cdk/overlay-prebuilt.css";
 
 .svy-wrapper > * > .svy-slider-container {
     width: 100%;
