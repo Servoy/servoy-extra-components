@@ -1,20 +1,8 @@
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { Component, Input, ViewChild } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
-import { FoundsetLinkedConverter } from '../../ngclient/converters/foundsetLinked_converter';
-import { Foundset, FoundsetConverter } from '../../ngclient/converters/foundset_converter';
-import { ViewportService } from '../../ngclient/services/viewport.service';
-import { ServoyApi } from '../../ngclient/servoy_api';
-import { ConverterService, PropertyContext } from '../../sablo/converter.service';
-import { SabloDeferHelper } from '../../sablo/defer.service';
-import { Format, FormattingService, LoggerFactory, ServoyPublicModule } from '@servoy/public';
-import { SabloService } from '../../sablo/sablo.service';
-import { ServicesService } from '../../sablo/services.service';
-import { TestabilityService } from '../../sablo/testability.service';
-import { LoadingIndicatorService } from '../../sablo/util/loading-indicator/loading-indicator.service';
+import { Format, FormattingService, IFoundset, LoggerFactory, ServoyApi, ServoyPublicModule } from '@servoy/public';
 import { SpecTypesService, ViewPortRow, WindowRefService } from '@servoy/public';
-import { SessionStorageService } from '../../sablo/webstorage/sessionstorage.service';
-import { ServoyTestingModule } from '../../testing/servoytesting.module';
 import { ServoyExtraTable, TableRow } from './table';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ResizableModule } from 'angular-resizable-element';
@@ -70,7 +58,7 @@ describe('ServoyExtraTable', () => {
   const sort = jasmine.createSpy('sort').and.returnValue(Promise.resolve(true));
   const loadExtraRecordsAsync = jasmine.createSpy('loadExtraRecordsAsync').and.returnValue(Promise.resolve(true));
 
- const getFoundset  = (): Foundset => {
+ const getFoundset  = (): IFoundset => {
     const fs_json = {
       serverSize: 200,
       foundsetId: 1,

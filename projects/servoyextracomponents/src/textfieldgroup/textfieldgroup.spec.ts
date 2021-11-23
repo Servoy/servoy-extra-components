@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ServoyExtraTextfieldGroup  } from './textfieldgroup';
 import { FormattingService, ServoyApi, TooltipService } from '@servoy/public';
-import { SabloModule } from '../../sablo/sablo.module';
 import { FormsModule } from '@angular/forms';
 import { ServoyPublicTestingModule } from '@servoy/public';
 import { HttpClientModule } from '@angular/common/http';
@@ -16,7 +15,7 @@ describe('TextfieldgroupComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [ ServoyExtraTextfieldGroup ],
-      imports: [SabloModule, FormsModule, HttpClientModule, ServoyPublicTestingModule],
+      imports: [FormsModule, HttpClientModule, ServoyPublicTestingModule],
       providers: [FormattingService, TooltipService]
     })
     .compileComponents();
