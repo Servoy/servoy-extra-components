@@ -5,31 +5,7 @@
      "assets"
     ],
   "lib": {
-    "entryFile": "src/public-api.ts",
-    "umdId": "servoy.servoyextracomponents",
-    "umdModuleIds": {
-      "@servoy/public": "servoy.public",
-      "@angular/core": "angular.core",
-      "@ng-bootstrap/ng-bootstrap": "ng-bootstrap.ng-bootstrap",
-      "lodash-es": "lodash_es",
-      "@circlon/angular-tree-component" : "circlon.angular-tree-component",
-      "ng2-file-upload" : "ng2.file-upload",
-      "tinymce" : "tinymce",
-      "@tinymce/tinymce-angular" : "tinymce.tinymce-angular",
-      "@uppy/angular":"uppy.angular",
-      "@uppy/core":"uppy.core",
-      "@uppy/locales": "uppy.locales",
-      "@uppy/screen-capture": "uppy.screen-capture",
-      "@uppy/tus": "uppy.tus",
-      "@uppy/webcam": "uppy.webcam",
-      "ngx-lightbox" : "ngx-lightbox",
-      "ng-select2-component" : "ng-select2-component",
-      "@angular-slider/ngx-slider" : "angular-slider.ngx-slider",
-      "angular-resizable-element" : "angular-resizable-element",
-      "angular-tree-grid" : "angular-tree-grid",
-       "@servoy/canvas-gauges" :"CanvasGauges",
-       "rx-dom-html": "Rx"
-    }
+    "entryFile": "src/public-api.ts"
   },
   "allowedNonPeerDependencies": 
     ["@biacsics/ng-canvas-gauges", 

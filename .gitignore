@@ -1,4 +1,6 @@
+/.angular/cache
 /node_modules/
 /dist/
 /servoyextracomponents.zip
 /servoyextra.zip
+/.angular/
