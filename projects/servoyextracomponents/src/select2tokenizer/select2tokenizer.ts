@@ -84,8 +84,8 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
             } );
         }
         if ( this.onFocusLostMethodID ) {
-            this.select2.blur.subscribe(() => {
-                this.onFocusLostMethodID( new CustomEvent( 'blur' ) );
+            this.select2.close.subscribe(() => {
+                this.onFocusLostMethodID( new CustomEvent( 'close' ) );
             } );
 
             /* used for triggering a focus lost when the component is not editable
