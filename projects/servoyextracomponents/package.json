@@ -1,6 +1,6 @@
 {
   "name": "@servoy/servoyextracomponents",
-  "version": "4.2.3",
+  "version": "4.2.4",
   "peerDependencies": {
     "@angular/animations": "^13",
     "@angular/common": "^13",
