@@ -34,7 +34,7 @@ import { ServoyExtraTreeviewCellRenderer } from './treeview/cellrenderer';
 import { ServoyExtraGauge } from './gauge/gauge';
 import { LinearGauge } from './gauge/lib/linear-gauge';
 import { RadialGauge } from './gauge/lib/radial-gauge';
-import { UppyAngularDashboardModule } from '@uppy/angular'
+import { UppyAngularDashboardModule } from '@servoy/uppy'
 
 
 @NgModule({

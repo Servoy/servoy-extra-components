@@ -4,7 +4,7 @@ import { FileProgress, Restrictions, Uppy, UppyFile, UppyOptions } from '@uppy/c
 import Dashboard from '@uppy/dashboard';
 import Tus, { TusOptions } from '@uppy/tus';
 import type { DashboardOptions } from '@uppy/dashboard';
-import { DashboardComponent } from '@uppy/angular';
+import { DashboardComponent } from '@servoy/uppy';
 
 
 @Component({
