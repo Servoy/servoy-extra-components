@@ -445,15 +445,6 @@ angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
 					}
                     Object.assign(tusProperties, $scope.model.tusOptions)
 					
-					//meta fields
-					var meta = [];
-					if ($scope.model.metaFields) {
-						for (var m = 0; m < $scope.model.metaFields.length; m++) {
-							meta.push($scope.model.metaFields[m].id);
-						}
-					}
-					tusProperties.metaFields = meta || [];
-					
 					if (uppy) {
 						uppy.setOptions(uppyProperties);
 						uppy.getPlugin('Dashboard').setOptions(dashboardProperties);
