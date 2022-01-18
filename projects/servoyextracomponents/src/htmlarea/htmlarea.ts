@@ -50,7 +50,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
 
     focus() {
         if (this.onFocusGainedMethodID) {
-            if (this.mustExecuteOnFocus === true) {
+            if (this.mustExecuteOnFocus !== false) {
                 this.onFocusGainedMethodID(new CustomEvent('focus'));
             }
             this.mustExecuteOnFocus = true;

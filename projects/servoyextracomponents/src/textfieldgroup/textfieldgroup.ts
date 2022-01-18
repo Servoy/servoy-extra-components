@@ -120,7 +120,7 @@ export class ServoyExtraTextfieldGroup extends ServoyBaseComponent<HTMLDivElemen
     attachFocusListeners( nativeElement: any ) {
         if ( this.onFocusGainedMethodID )
             this.renderer.listen( nativeElement, 'focus', ( e ) => {
-                if ( this.mustExecuteOnFocus === true ) {
+                if ( this.mustExecuteOnFocus !== false ) {
                     this.onFocusGainedMethodID( e );
                 }
                 this.mustExecuteOnFocus = true;
