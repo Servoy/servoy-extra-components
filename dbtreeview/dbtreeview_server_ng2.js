@@ -39,20 +39,29 @@ $scope.updateFoundsetRow = function(isRoot, fsInfoID, index, checkboxValueDP, va
  * -1 in case the datasource is missing
  */
 function getDatasourceId(datasource) {
-	for(var i = 0; i < datasources.length; i++) {
-		if(datasources[i].name == datasource) {
-			return datasources[i].id;
-		} 
+	if(datasources.length) {
+		for(var i = 0; i < datasources.length; i++) {
+			if(datasources[i].name == datasource) {
+				return datasources[i].id;
+			} 
+		}
 	}
 	return -1;
 }
 
 $scope.api.getCheckBoxValues = function(datasource) {
-	return $scope.api.getCheckBoxValuesFromTree(getDatasourceId(datasource));
+	if($scope.model.isInitialized) {
+		return $scope.api.getCheckBoxValuesFromTree(getDatasourceId(datasource));
+	} else if (getDatasourceId(datasource) != -1){
+		return $scope.getBinding(datasource).initialCheckboxValues;
+	}
+	return [];
 }
 
 $scope.api.updateCheckBoxValues = function(datasource, pks, state) {
-	$scope.api.updateCheckBoxValuesForTree(getDatasourceId(datasource), pks, state);
+	if($scope.model.isInitialized) {
+		$scope.api.updateCheckBoxValuesForTree(getDatasourceId(datasource), pks, state);
+	}
 }
 
 /**

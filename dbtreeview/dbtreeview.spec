@@ -24,7 +24,8 @@
 		"autoRefresh": {"type":"boolean", "default":true, "tags": { "doc" :"If true, component listens to foundset changes and updates itself while visible."}},
 	    "selection" : {"type":"object[]", "tags": { "scope": "private" }},
 	    "levelVisibility" : {"type":"levelVisibilityType", "tags": { "scope": "private" }, "pushToServer": "shallow"},
-		"responsiveHeight": { "type": "int", "default": 0, "tags": { "doc" :"Height of the treeview, set only in responsive forms."} }
+		"responsiveHeight": { "type": "int", "default": 0, "tags": { "doc" :"Height of the treeview, set only in responsive forms."} },
+		"isInitialized": { "type": "boolean", "default":false, "tags": {"scope" : "private", "allowaccess": "enabled"}, "pushToServer": "allow"}
 	},
 	"handlers": {
 		      	"onReady": {
@@ -322,14 +323,14 @@
 				"parameters" : [{"name": "index", "type": "int"}]
 		},
 		"getCheckBoxValuesFromTree": {
-			"parameters": [{"name": "datasourceID", "type": "int"}],
+			"parameters": [{"name": "datasourceID", "type": "object"}],
 			"returns": "object[]"
 		},
 		"updateCheckBoxValuesForTree": {
 						"parameters":[
 							{                                                                 
 							"name":"datasource",
-							"type": "int"
+							"type": "object"
 		                	},
 							{                                                                 
 							"name":"pks",

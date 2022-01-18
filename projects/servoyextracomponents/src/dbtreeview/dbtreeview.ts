@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnDestroy, Renderer2, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, Output, Renderer2, SimpleChanges, ViewChild } from '@angular/core';
 import { LoggerService, LoggerFactory, ServoyBaseComponent, BaseCustomObject, ViewPortRow, FoundsetChangeEvent, IFoundset, ServoyPublicService, SessionStorageService } from '@servoy/public';
 import { IActionMapping, ITreeOptions, TreeComponent, TreeNode } from '@circlon/angular-tree-component';
 import { ITreeNode } from '@circlon/angular-tree-component/lib/defs/api';
@@ -32,6 +32,9 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     @Input() selection: Array<Selection>;
     @Input() visible: boolean;
     @Input() onReady: (e: Event, data?: any) => void;
+
+    @Input() isInitialized: boolean;
+    @Output() isInitializedChange = new EventEmitter();
 
     log: LoggerService;
     folderImgPath = '../../assets/images/folder.png';
@@ -197,6 +200,8 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     }
 
     onTreeLoad(event: any) {
+        this.isInitialized = true;
+        this.isInitializedChange.emit(this.isInitialized);
         this.expandNodes(this.displayNodes);
         if (this.onReady) {
             this.onReady(event);

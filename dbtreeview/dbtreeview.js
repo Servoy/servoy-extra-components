@@ -126,6 +126,8 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 			        bindContextMenu(data.node.span);
 			    },
 				init: function (event, data) {
+					$scope.model.isInitialized = true;
+					$scope.svyServoyapi.apply('isInitialized');
 					if ($scope.handlers.onReady) {
 						$scope.handlers.onReady(event);
 					}
@@ -633,18 +635,8 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
       	$scope.api.getSelectionPath = function() {
       		return $scope.model.selection;
       	}
-		
-      	/**
-		 * Update checkbox state for nodes
-		 *
-		 * @example
-		 * %%elementName%%.updateCheckBoxValues(databaseManager.getDataSource('example_data', 'categories'),["1", "3", "5"], true);
-		 *
-		 * @param datasource
-		 * @param pks array of pks to update state
-		 * @param state true for check / false for uncheck
-		 */	  
-		$scope.api.updateCheckBoxValues = function(datasource, pks, state) {
+	  
+		$scope.api.updateCheckBoxValuesForTree = function(datasource, pks, state) {
 			var updatedNodesPks = [];
 			if(theTree) {
 				theTree.findAll(function(node) {
@@ -683,16 +675,7 @@ angular.module('servoyextraDbtreeview', ['servoyApp','foundset_manager']).direct
 			}
 		}
 
-      	/**
-		 * Returns array of pk of nodes that are checked for the datasource
-		 *
-		 * @example
-		 * var arrayPkChecked = %%elementName%%.getCheckBoxValues(databaseManager.getDataSource('example_data', 'categories'));
-		 *
-		 * @param datasource
-		 * @return {Array} of pk of nodes that are checked
-		 */
-		$scope.api.getCheckBoxValues = function(datasource) {
+		$scope.api.getCheckBoxValuesFromTree = function(datasource) {
 			var checkBoxValues = [];
 			if(theTree) {
 				var selectedNodes = theTree.getSelectedNodes();

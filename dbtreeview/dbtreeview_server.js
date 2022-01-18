@@ -260,3 +260,37 @@ $scope.api.setInitialCheckBoxValues = function(datasource, initialCheckboxValues
 $scope.api.setHasCheckBoxValue = function(datasource, hasCheckboxValue) {
 	$scope.getBinding(datasource).hasCheckboxValue = hasCheckboxValue;
 }
+
+/**
+ * Returns array of pk of nodes that are checked for the datasource
+ *
+ * @example
+ * var arrayPkChecked = %%elementName%%.getCheckBoxValues(databaseManager.getDataSource('example_data', 'categories'));
+ *
+ * @param datasource
+ * @return {Array} of pk of nodes that are checked
+ */
+$scope.api.getCheckBoxValues = function(datasource) {
+	if($scope.model.isInitialized) {
+		return $scope.api.getCheckBoxValuesFromTree(datasource);
+	} else if (datasource){
+		return $scope.getBinding(datasource).initialCheckboxValues;
+	}
+	return [];
+}
+
+/**
+ * Update checkbox state for nodes
+ *
+ * @example
+ * %%elementName%%.updateCheckBoxValues(databaseManager.getDataSource('example_data', 'categories'),["1", "3", "5"], true);
+ *
+ * @param datasource
+ * @param pks array of pks to update state
+ * @param state true for check / false for uncheck
+ */	  
+$scope.api.updateCheckBoxValues = function(datasource, pks, state) {
+	if($scope.model.isInitialized) {
+		$scope.api.updateCheckBoxValuesForTree(datasource, pks, state);
+	}
+}
