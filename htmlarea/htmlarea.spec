@@ -6,6 +6,24 @@
 	"icon": "servoyextra/htmlarea/html_area.png",
 	"definition": "servoyextra/htmlarea/htmlarea.js",
 	"libraries": [{"name":"tinymce", "version":"5.7.0", "url":"servoyextra/htmlarea/lib/tinymce/tinymce.min.js", "mimetype":"text/javascript", "group":false},{"name":"ui-tinymce", "version":"1", "url":"servoyextra/htmlarea/lib/ui-tinymce.js", "mimetype":"text/javascript"}],
+	"ng2Config": {
+       "assets": [{
+                "glob" : "**/*",
+                "input" : "node_modules/tinymce",
+                "output": "/tinymce/"
+            },
+            {
+                "glob" : "**/*",
+                "input" : "node_modules/tinymce-i18n/langs",
+                "output": "/tinymce/langs"
+            },
+            {
+                "glob" : "**/*",
+                "input" : "node_modules/tinymce-i18n/langs5",
+                "output": "/tinymce/langs5"
+            }
+        ]
+    },
 	"model":
 	{
 	        "dataProviderID" : { "type":"dataprovider", "pushToServer": "allow", "tags": { "scope": "design" }, "ondatachange": { "onchange":"onDataChangeMethodID"}, "displayTagsPropertyName" : "displaysTags"}, 
