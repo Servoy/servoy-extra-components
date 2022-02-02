@@ -216,13 +216,27 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                 break;
             }
         }
-        if (!found) {
+        if ( !found ) {
+            let formattedValue = this.dataProviderID;
+            this.valuelistID.getDisplayValue( this.dataProviderID ).subscribe( val => {
+                if ( val ) {
+                    formattedValue = val;
+                    const option: Select2Option = {
+                        value: realValue,
+                        label: formattedValue
+                    };
+                    if ( !this.data.includes( option ) ) {
+                        this.data.push( option );
+                    }
+                    this.cdRef.detectChanges();
+                }
+            } );
             const option: Select2Option = {
                 value: realValue,
-                label: realValue
+                label: formattedValue
             };
-            if (!this.data.includes(option)) {
-                this.data.push(option);
+            if ( !this.data.includes( option ) ) {
+                this.data.push( option );
             }
         }
     }
