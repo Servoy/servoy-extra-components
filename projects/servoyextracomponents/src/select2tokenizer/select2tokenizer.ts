@@ -169,7 +169,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                     console.log("Warning dataProviderID typeof " + typeof this.dataProviderID  + " not allowed")
                 }
             } else {
-                this.dataProviderID = undefined;
+                this.dataProviderID = null;
             }
             this.dataProviderIDChange.emit(this.dataProviderID);
             if (this.closeOnSelect && event.component.isOpen) {
@@ -217,8 +217,8 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
             }
         }
         if ( !found ) {
-            let formattedValue = this.dataProviderID;
-            this.valuelistID.getDisplayValue( this.dataProviderID ).subscribe( val => {
+            let formattedValue = realValue;
+            this.valuelistID.getDisplayValue( formattedValue ).subscribe( val => {
                 if ( val ) {
                     formattedValue = val;
                     const option: Select2Option = {
