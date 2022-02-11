@@ -14,7 +14,7 @@
     "ng2-file-upload", 
     "@circlon/angular-tree-component", 
     "angular-tree-grid", 
-    "@servoy/uppy",
+    "@uppy/angular",
     "@uppy/drag-drop",
     "@uppy/progress-bar",
     "@uppy/dashboard",

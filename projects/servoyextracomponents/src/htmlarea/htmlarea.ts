@@ -1,6 +1,6 @@
 import { Component, SimpleChanges, Input, Renderer2, EventEmitter, Output, ChangeDetectorRef, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { ServoyBaseComponent, PropertyUtils, ServoyPublicService } from '@servoy/public';
-import tinymce from 'tinymce';
+import tinymce, { RawEditorSettings } from 'tinymce';
 
 @Component( {
     selector: 'servoyextra-htmlarea',
@@ -32,13 +32,13 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
     mustExecuteOnFocus = true;
 
     tinyValue: any;
-    tinyConfig = {
+    tinyConfig: RawEditorSettings = {
         base_url: '/tinymce',
         suffix: '.min',
         height: '100%',
         menubar: false,
         statusbar: false,
-        readonly: 0,
+        readonly: false,
         plugins: 'tabfocus',
         tabfocus_elements: ':prev,:next',
         toolbar: 'fontselect fontsizeselect | bold italic underline | superscript subscript | undo redo |alignleft aligncenter alignright alignjustify | styleselect | outdent indent bullist numlist'
