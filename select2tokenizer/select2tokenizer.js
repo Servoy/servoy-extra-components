@@ -447,7 +447,8 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 
                 // add option into the select2
                 delete hashMap[realValue];
-                tokenizer.append('<option id=' + optionId +' value="' + realValue + '" selected>' + data +'</option>');
+                tokenizer.append('<option id=' + optionId +' value="' + realValue + '" selected data-select2-tag="true">' + data +'</option>');
+				
                 
                 // trigger tokenizer change once all the displayValues have been retrieved
                 if (getObjectLength(hashMap) === 0) {
