@@ -1,6 +1,6 @@
 {
   "name": "@servoy/servoyextracomponents",
-  "version": "4.2.4",
+  "version": "2022.3.0",
   "peerDependencies": {
     "@angular/animations": "^13",
     "@angular/common": "^13",
@@ -11,14 +11,14 @@
   },
   "dependencies": {
      "@angular/cdk": "^13",
-    "@ng-bootstrap/ng-bootstrap": "^10",
+    "@ng-bootstrap/ng-bootstrap": "^11",
     "@servoy/canvas-gauges": "^2",
     "rx-dom-html": "^7",
     "ngx-lightbox": "^2",
-    "ngx-filesaver": "^12",
+    "ngx-filesaver": "^13",
      "file-saver": "^2",
     "ng2-file-upload": "^1",
-    "@servoy/uppy": "<1",
+    "@uppy/angular": "<1",
     "@uppy/core": "^2",
      "@uppy/dashboard": "^2",
     "@uppy/drag-drop": "^2",
@@ -30,9 +30,9 @@
     "@circlon/angular-tree-component": "^11",
     "angular-tree-grid": "^3",
     "@angular-slider/ngx-slider": "^2",
-    "angular-resizable-element": "^3",
+    "angular-resizable-element": "^5",
     "ng-select2-component": "^8",
-    "@tinymce/tinymce-angular": "^4",
+    "@tinymce/tinymce-angular": "^5",
     "tinymce": "^5",
     "tinymce-i18n": ">=20",
     "tslib": "*"
