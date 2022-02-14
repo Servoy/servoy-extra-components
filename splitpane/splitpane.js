@@ -229,11 +229,17 @@ angular.module('servoyextraSplitpane',['servoy']).directive('servoyextraSplitpan
 			}
 
 			$scope.$watch("model.panes[0].containsFormId", function(newValue, oldValue) {
+                if (oldValue){
+                    $scope.svyServoyapi.hideForm(oldValue);
+                }
 				if (newValue) {
 					$scope.svyServoyapi.formWillShow(newValue, $scope.model.panes[0].relationName, 0);
 				}
 			});
 			$scope.$watch("model.panes[1].containsFormId", function(newValue, oldValue) {
+                if (oldValue){
+                    $scope.svyServoyapi.hideForm(oldValue);
+                }
 				if (newValue) {
 					$scope.svyServoyapi.formWillShow(newValue, $scope.model.panes[1].relationName, 1);
 				}
