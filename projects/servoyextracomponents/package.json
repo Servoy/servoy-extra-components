@@ -11,7 +11,8 @@
   },
   "dependencies": {
      "@angular/cdk": "^13",
-    "@ng-bootstrap/ng-bootstrap": "^11",
+    "@ng-bootstrap/ng-bootstrap": "^12",
+    "@popperjs/core": "^2",
     "@servoy/canvas-gauges": "^2",
     "rx-dom-html": "^7",
     "ngx-lightbox": "^2",
@@ -28,7 +29,7 @@
     "@uppy/screen-capture": "^2",
     "@uppy/webcam": "^2",
     "@circlon/angular-tree-component": "^11",
-    "angular-tree-grid": "^3",
+    "angular-tree-grid": "^4",
     "@angular-slider/ngx-slider": "^2",
     "angular-resizable-element": "^5",
     "ng-select2-component": "^8",

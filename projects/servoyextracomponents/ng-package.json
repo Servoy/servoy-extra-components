@@ -10,6 +10,7 @@
   "allowedNonPeerDependencies": 
     ["@biacsics/ng-canvas-gauges", 
     "@ng-bootstrap/ng-bootstrap", 
+    "@popperjs/core",
     "ngx-lightbox", "ngx-filesaver","file-saver",
     "ng2-file-upload", 
     "@circlon/angular-tree-component", 
