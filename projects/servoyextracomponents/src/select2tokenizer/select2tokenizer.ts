@@ -217,15 +217,14 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
             }
         }
         if ( !found ) {
-            let formattedValue = realValue;
-            this.valuelistID.getDisplayValue( formattedValue ).subscribe( val => {
+            this.valuelistID.getDisplayValue( realValue ).subscribe( (val) => {
                 if ( val ) {
-                    formattedValue = val;
                     const option: Select2Option = {
                         value: realValue,
-                        label: formattedValue
+                        label: val
                     };
-                    if ( !this.data.includes( option ) ) {
+                    //can't use includes since we need to compare values and not references
+                    if (!this.includeOption(option)) {
                         this.data.push( option );
                     }
                     this.cdRef.detectChanges();
@@ -233,12 +232,20 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
             } );
             const option: Select2Option = {
                 value: realValue,
-                label: formattedValue
+                label: realValue
             };
-            if ( !this.data.includes( option ) ) {
+            //can't use includes since we need to compare values and not references
+            if (!this.includeOption(option)) {
                 this.data.push( option );
             }
         }
+    }
+
+    includeOption(option: Select2Option) {
+        return this.data.some(({value, label}) => {
+            return (value === option.value && 
+                label === option.label);
+        });
     }
 
     removedOption(event: Select2RemoveEvent<any>) {
