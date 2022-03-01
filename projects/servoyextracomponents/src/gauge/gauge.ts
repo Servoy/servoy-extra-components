@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, Input, Output, Renderer2, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Input, Output, Renderer2, SimpleChanges, ViewChild, HostListener } from '@angular/core';
 import { ServoyBaseComponent } from '@servoy/public';
 import { BaseGauge } from './lib/base-gauge';
 import { RadialGauge } from './lib/radial-gauge';
@@ -31,18 +31,21 @@ export class ServoyExtraGauge extends ServoyBaseComponent<HTMLDivElement> {
 
     @Input() canvasGaugeOptions;
 
-    resizeObserver: ResizeObserver;
-
     canvasGauge;
 
-    svyOnInit() {
-        super.svyOnInit();
-        this.resizeObserver = new ResizeObserver(() => {
+    @HostListener('window:resize', ['$event'])
+    onResize(event) {
+        // responsive form in designer keeps growing so this will become an infinite cycle
+        if (!this.servoyApi.isInDesigner()) {
             this.canvasGauge.update({ height: this.elementRef.nativeElement.clientHeight });
             this.canvasGauge.update({ width: this.elementRef.nativeElement.clientWidth });
             this.canvasGauge.draw();
-          });
-          this.resizeObserver.observe(this.elementRef.nativeElement);
+        }
+    }
+
+    svyOnInit() {
+        super.svyOnInit();
+        this.onResize(null);
     }
 
     svyOnChanges(changes: SimpleChanges) {
@@ -55,10 +58,6 @@ export class ServoyExtraGauge extends ServoyBaseComponent<HTMLDivElement> {
                 }
             }
         }
-    }
-
-    ngOnDestroy() {
-        this.resizeObserver.unobserve(this.elementRef.nativeElement);
     }
 
     onGaugeReady(gaugeCanvas) {
@@ -74,37 +73,37 @@ export class ServoyExtraGauge extends ServoyBaseComponent<HTMLDivElement> {
             value: (this.value == null || this.value == undefined) ? 0 : this.value
         };
 
-        if(this.units) this.canvasGaugeOptions['units'] = this.units;
+        if (this.units) this.canvasGaugeOptions['units'] = this.units;
         const titleText = this.getTitleText();
-        if(titleText) this.canvasGaugeOptions['title'] = titleText;
-        if(this.animationOptions) Object.assign(this.canvasGaugeOptions, this.animationOptions);
-        if(this.highlights) {
+        if (titleText) this.canvasGaugeOptions['title'] = titleText;
+        if (this.animationOptions) Object.assign(this.canvasGaugeOptions, this.animationOptions);
+        if (this.highlights) {
             this.ticks = this.ticks || {};
             this.ticks.highlights = this.highlights;
         }
-        if(this.ticks) {
+        if (this.ticks) {
             Object.assign(this.canvasGaugeOptions, this.ticks);
         }
-        if(this.colorOptions) Object.assign(this.canvasGaugeOptions, this.colorOptions);
-        if(this.valueBoxOptions) Object.assign(this.canvasGaugeOptions, this.valueBoxOptions);
-        if(this.needleOptions) Object.assign(this.canvasGaugeOptions, this.needleOptions);
-        if(this.borderOptions) Object.assign(this.canvasGaugeOptions, this.borderOptions);
-        if(this.fontOptions) Object.assign(this.canvasGaugeOptions, this.fontOptions);
+        if (this.colorOptions) Object.assign(this.canvasGaugeOptions, this.colorOptions);
+        if (this.valueBoxOptions) Object.assign(this.canvasGaugeOptions, this.valueBoxOptions);
+        if (this.needleOptions) Object.assign(this.canvasGaugeOptions, this.needleOptions);
+        if (this.borderOptions) Object.assign(this.canvasGaugeOptions, this.borderOptions);
+        if (this.fontOptions) Object.assign(this.canvasGaugeOptions, this.fontOptions);
 
         if (this.gaugeType == "radial") {
-            if(this.radialGaugeOptions) Object.assign(this.canvasGaugeOptions, this.radialGaugeOptions);
+            if (this.radialGaugeOptions) Object.assign(this.canvasGaugeOptions, this.radialGaugeOptions);
         } else if (this.gaugeType == "linear") {
-            if(this.linearGaugeOptions) Object.assign(this.canvasGaugeOptions, this.linearGaugeOptions);
-        }        
+            if (this.linearGaugeOptions) Object.assign(this.canvasGaugeOptions, this.linearGaugeOptions);
+        }
     }
 
     getTitleText(): string {
         let result = null;
-					
-        if(this.title) {
-            result = ((this.title.dataProviderID == null) ? this.title.text : this.title.dataProviderID );
+
+        if (this.title) {
+            result = ((this.title.dataProviderID == null) ? this.title.text : this.title.dataProviderID);
         }
-        
+
         return result;
     }
 }
