@@ -125,6 +125,12 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                 });
             }
             this.data = options;
+            if ( this.filteredDataProviderId && this.filteredDataProviderId.length ) {
+                for ( let i = 0; this.filteredDataProviderId && i < this.filteredDataProviderId.length; i++ ) {
+                    const realValue = this.filteredDataProviderId[i];
+                    this.checkDataList( realValue );
+                }
+            }
         }
     }
 
@@ -173,16 +179,8 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
             this.setData();
         }
         if ( changes['dataProviderID'] ) {
-            this.setData();
             this.filteredDataProviderId = this.dataProviderID ? ( ( typeof this.dataProviderID === 'string' ) ? this.dataProviderID.split( '\n' ) : [this.dataProviderID] ) : [];
-
-            if ( this.filteredDataProviderId && this.filteredDataProviderId.length ) {
-                let realValue: any;
-                for ( let i = 0; this.filteredDataProviderId && i < this.filteredDataProviderId.length; i++ ) {
-                    realValue = this.filteredDataProviderId[i];
-                    this.checkDataList( realValue );
-                }
-            }
+            this.setData();
         }
         if ( changes['size'] ) {
             this.renderer.setProperty( this.elementRef.nativeElement, 'height', this.size.height );
