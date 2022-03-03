@@ -10,11 +10,12 @@ import { DOCUMENT } from '@angular/common';
 })
 export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElement> {
 
+    @ViewChild(Select2) select2: Select2;
+
     @Input() onDataChangeMethodID: (e: Event, data?: any) => void;
     @Input() onFocusGainedMethodID: (e: Event, data?: any) => void;
     @Input() onFocusLostMethodID: (e: Event, data?: any) => void;
 
-    @Output() dataProviderIDChange = new EventEmitter();
     @Input() placeholderText: string;
     @Input() readOnly: boolean;
     @Input() valuelistID: IValuelist;
@@ -33,9 +34,9 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     @Input() allowNewEntries: boolean;
     @Input() size: { width: number; height: number };
 
-    tabIndex: number;
+    @Output() dataProviderIDChange = new EventEmitter();
 
-    @ViewChild(Select2) select2: Select2;
+    tabIndex: number;
 
     data: Select2Option[] = [];
     filteredDataProviderId: Array<any>;
@@ -43,6 +44,8 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     mustExecuteOnFocus = true;
     newEntriesInit = false;
 
+    private updateValueCallsToSkip = 0;
+    
     constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, @Inject(DOCUMENT) private doc: Document) {
         super(renderer, cdRef);
     }
@@ -146,6 +149,8 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     }
 
     updateValue(event: Select2UpdateEvent<any>) {
+        if (this.updateValueCallsToSkip > 0 && --this.updateValueCallsToSkip !== 0) return;
+
         if (!this.compareArrays(this.filteredDataProviderId, event.value)) {
             if(event.value.length > 0){
                 if(event.value.length > 1 && (typeof this.dataProviderID === 'string')){
@@ -180,6 +185,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
         }
         if ( changes['dataProviderID'] ) {
             this.filteredDataProviderId = this.dataProviderID ? ( ( typeof this.dataProviderID === 'string' ) ? this.dataProviderID.split( '\n' ) : [this.dataProviderID] ) : [];
+            this.updateValueCallsToSkip = this.filteredDataProviderId.length; 
             this.setData();
         }
         if ( changes['size'] ) {
