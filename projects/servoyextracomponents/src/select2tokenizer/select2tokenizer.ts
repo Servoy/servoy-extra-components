@@ -39,7 +39,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 
     data: Select2Option[] = [];
     filteredDataProviderId: Array<any>;
-    listPosition: 'above' | 'below' = "below";
+    listPosition: 'above' | 'below' = 'below';
     mustExecuteOnFocus = true;
     newEntriesInit = false;
 
@@ -60,8 +60,8 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
         //this.setData(); it is already done in svyOnChanges
         this.attachFocusListeners(this.getNativeElement());
         const position = this.getNativeElement().getBoundingClientRect();
-        let availableHeight = this.doc.defaultView.innerHeight - position.top - position.height;
-        let dropDownheight = this.valuelistID.length * 30;
+        const availableHeight = this.doc.defaultView.innerHeight - position.top - position.height;
+        const dropDownheight = this.valuelistID.length * 30;
         if (dropDownheight > availableHeight) {
             this.listPosition = 'above';
         }
@@ -139,34 +139,17 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
         }
     }
 
-    /**
-     * Compares 2 arrays
-     * @param arr1
-     * @param arr2
-     */
-    private compareArrays( arr1: any, arr2: any ) {
-        if(!Array.isArray(arr1) || !Array.isArray(arr2)) return false;
-        if ( arr1.length !== arr2.length ) return false;
-        for ( var i = 0, len = arr1.length; i < len; i++ ) {
-            if ( arr1[i] + '' !== arr2[i] + '') {
-                return false;
-            }
-        }
-        return true;
-    }
-    
     updateValue(event: Select2UpdateEvent<any>) {
         if (!this.compareArrays(this.filteredDataProviderId, event.value)) {
             if(event.value.length > 0){
-                if(event.value.length > 1 && (typeof this.dataProviderID === "string")){
+                if(event.value.length > 1 && (typeof this.dataProviderID === 'string')){
                     this.filteredDataProviderId = event.value;
                     this.dataProviderID = event.value.join('\n');
-                }
-                else if(event.value.length === 1 || (typeof this.dataProviderID === "number") || (typeof this.dataProviderID === "boolean")){
+                } else if(event.value.length === 1 || (typeof this.dataProviderID === 'number') || (typeof this.dataProviderID === 'boolean')){
                     this.filteredDataProviderId[0] = event.value[event.value.length - 1];
                     this.dataProviderID = this.filteredDataProviderId[0];
                 } else {
-                    console.log("Warning dataProviderID typeof " + typeof this.dataProviderID  + " not allowed")
+                    console.log('Warning dataProviderID typeof ' + typeof this.dataProviderID  + ' not allowed');
                 }
             } else {
                 this.dataProviderID = null;
@@ -176,10 +159,10 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                 event.component.toggleOpenAndClose();
             }
             if (this.clearSearchTextOnSelect && !this.closeOnSelect && event.component.isOpen) {
-                let searchText = this.getNativeChild().querySelector('input');
+                const searchText = this.getNativeChild().querySelector('input');
                 if (searchText) {
                     searchText.value = '';
-                    searchText.dispatchEvent(new KeyboardEvent('keyup'))
+                    searchText.dispatchEvent(new KeyboardEvent('keyup'));
                 }
             }
         }
@@ -197,7 +180,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                 let realValue: any;
                 for ( let i = 0; this.filteredDataProviderId && i < this.filteredDataProviderId.length; i++ ) {
                     realValue = this.filteredDataProviderId[i];
-                    this.selectRealValue( realValue );
+                    this.checkDataList( realValue );
                 }
             }
         }
@@ -207,45 +190,20 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
         super.svyOnChanges( changes );
     }
 
-    selectRealValue(realValue: any) {
-        let found = false;
-        for (let i = 0; i < this.valuelistID.length; i++) {
-            if (this.valuelistID[i].realValue === realValue) {
-                // set value
-                found = true;
-                break;
-            }
-        }
-        if ( !found ) {
+    checkDataList(realValue: any) {
+        if (!this.data.some(option => realValue === option.value)) {
+            const option: Select2Option = {
+                value: realValue,
+                label: realValue // should we do here just an empty string or really the realvalue..
+            };
+            this.data.push( option );
             this.valuelistID.getDisplayValue( realValue ).subscribe( (val) => {
                 if ( val ) {
-                    const option: Select2Option = {
-                        value: realValue,
-                        label: val
-                    };
-                    //can't use includes since we need to compare values and not references
-                    if (!this.includeOption(option)) {
-                        this.data.push( option );
-                    }
+                    option.label = val;
                     this.cdRef.detectChanges();
                 }
             } );
-            const option: Select2Option = {
-                value: realValue,
-                label: realValue
-            };
-            //can't use includes since we need to compare values and not references
-            if (!this.includeOption(option)) {
-                this.data.push( option );
-            }
         }
-    }
-
-    includeOption(option: Select2Option) {
-        return this.data.some(({value, label}) => {
-            return (value === option.value && 
-                label === option.label);
-        });
     }
 
     removedOption(event: Select2RemoveEvent<any>) {
@@ -256,11 +214,11 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 
     listClosed(event: Select2) {
         if (this.selectOnClose) {
-            let highlightItem = this.getNativeChild().querySelector('.select2-results__option--highlighted')
+            const highlightItem = this.getNativeChild().querySelector('.select2-results__option--highlighted');
             if (highlightItem) {
-                let displayValue = highlightItem.textContent;
+                const displayValue = highlightItem.textContent;
                 let found = false;
-                let realValue:any;
+                let realValue: any;
                 for (let i = 0; i < this.valuelistID.length; i++) {
                     if (this.valuelistID[i].displayValue === displayValue) {
                         // set value
@@ -282,11 +240,11 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     listOpened(event: Select2) {
         if (this.allowNewEntries && !this.newEntriesInit) {
             this.newEntriesInit = true;
-            let inputTextfield = this.getNativeChild().querySelector('input');
+            const inputTextfield = this.getNativeChild().querySelector('input');
             if (inputTextfield) {
                 let prevValue: string;
                 inputTextfield.addEventListener('keyup', () => {
-                    let newValue = inputTextfield.value;
+                    const newValue = inputTextfield.value;
                     if (prevValue != newValue) {
                         const option: Select2Option = {
                             value: newValue,
@@ -294,15 +252,11 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                         };
                         if (prevValue) {
                             if (newValue != '' && !this.data.some(item => item.value == newValue)){
-                              this.data[0] = option;  
-                            }
-                            else
-                            {
+                              this.data[0] = option;
+                            } else {
                                 this.data.shift();
                             }
-                        }
-                        else
-                        {
+                        } else {
                             this.data.unshift(option);
                         }
                         prevValue = newValue;
@@ -315,4 +269,22 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     setTabIndex(tabIndex: number) {
         this.tabIndex = tabIndex;
     }
+
+    /**
+     * Compares 2 arrays
+     *
+     * @param arr1
+     * @param arr2
+     */
+    private compareArrays( arr1: any, arr2: any ) {
+        if(!Array.isArray(arr1) || !Array.isArray(arr2)) return false;
+        if ( arr1.length !== arr2.length ) return false;
+        for ( let i = 0, len = arr1.length; i < len; i++ ) {
+            if ( arr1[i] + '' !== arr2[i] + '') {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
