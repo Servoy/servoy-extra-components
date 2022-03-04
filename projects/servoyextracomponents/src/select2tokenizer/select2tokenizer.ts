@@ -45,6 +45,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     newEntriesInit = false;
 
     private updateValueCallsToSkip = 0;
+    private currentSelectedValues = 0;
     
     constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, @Inject(DOCUMENT) private doc: Document) {
         super(renderer, cdRef);
@@ -150,6 +151,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 
     updateValue(event: Select2UpdateEvent<any>) {
         if (this.updateValueCallsToSkip > 0 && --this.updateValueCallsToSkip !== 0) return;
+        this.currentSelectedValues = event.options.length;
 
         if (!this.compareArrays(this.filteredDataProviderId, event.value)) {
             if(event.value.length > 0){
@@ -185,7 +187,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
         }
         if ( changes['dataProviderID'] ) {
             this.filteredDataProviderId = this.dataProviderID ? ( ( typeof this.dataProviderID === 'string' ) ? this.dataProviderID.split( '\n' ) : [this.dataProviderID] ) : [];
-            this.updateValueCallsToSkip = this.filteredDataProviderId.length; 
+            this.updateValueCallsToSkip = Math.max(this.filteredDataProviderId.length - this.currentSelectedValues, 0);
             this.setData();
         }
         if ( changes['size'] ) {
