@@ -1,13 +1,13 @@
 {
   "name": "servoyextracomponents",
-  "version": "2022.3.0",
+  "version": "2022.3.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build --configuration production",
     "build_debug": "ng build --watch",
     "build_debug_nowatch": "ng build --watch=false",
-    "make_release": "node scripts/build.js",
+    "make_release": "ng build --configuration production && node scripts/build.js",
     "test": "ng test --watch --browsers Chrome",
     "test_edge": "ng test --watch --browsers Edge",
     "test_edge_nowatch": "ng test --watch=false --browsers Edge",
