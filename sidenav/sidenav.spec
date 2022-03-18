@@ -252,7 +252,8 @@
       		"enabled"				: {"type" : "boolean", "default": true},
       		"data"					: {"type" : "object"},
       		"menuItems"				: {"type" : "MenuItem[]"},
-      		"isDivider"				: {"type" : "boolean", "default": false}
+      		"isDivider"				: {"type" : "boolean", "default": false},
+      		"tooltip"				: {"type" : "tagstring"}
     	}
 	}
 }
