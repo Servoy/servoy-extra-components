@@ -108,7 +108,9 @@ export class ServoyExtraTextfieldGroup extends ServoyBaseComponent<HTMLDivElemen
 
         this.attachFocusListeners(this.getFocusElement());
         if ( this.onActionMethodID ) {
-            this.renderer.listen( this.getNativeElement(), 'click', e => this.onActionMethodID( e ) );
+            this.renderer.listen( this.getFocusElement(), 'keydown', e => {
+                if (e.keyCode === 13) this.onActionMethodID( e );
+            });
         }
         if ( this.onRightClickMethodID ) {
             this.renderer.listen( this.getNativeElement(), 'contextmenu', e => {
