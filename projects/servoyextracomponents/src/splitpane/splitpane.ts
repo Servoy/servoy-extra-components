@@ -11,23 +11,28 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
 
     @Input() onChangeMethodID;
 
-    @Input() enabled;
-    @Input() readOnly;
-    @Input() styleClass;
-    @Input() splitType;
-    @Input() tabSeq;
+    @Input() enabled: boolean;
+    @Input() readOnly: boolean;
+    @Input() styleClass: string;
+    @Input() splitType: number;
+    @Input() tabSeq: number;
     @Input() panes: Array<Pane>;
 
-    @Input() divLocation;
+    @Input() divLocation: number;
     @Output() divLocationChange = new EventEmitter();
-    @Input() divSize;
-    @Input() pane1MinSize;
-    @Input() pane2MinSize;
-    @Input() resizeWeight;
+    @Input() divSize: number;
+    @Input() pane1MinSize: number;
+    @Input() pane2MinSize: number;
+    @Input() resizeWeight: number;
+    @Input() responsiveHeight: number;
 
+    @ContentChild( TemplateRef, {static: true} ) templateRef: TemplateRef<any>;
 
-    @ContentChild( TemplateRef, {static: true} )
-    templateRef: TemplateRef<any>;
+    containerStyle = {
+        width: '100%',
+        height: '100%'
+    };
+
 
     private leftTab: Pane;
     private rightTab: Pane;
@@ -37,10 +42,14 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     svyOnInit() {
-        if (this.resizeWeight == undefined) this.resizeWeight = 0;
-        if (this.pane1MinSize == undefined) this.pane1MinSize = 30;
-        if (this.pane2MinSize == undefined) this.pane2MinSize = 30;
-        if (this.divSize == undefined) this.divSize = 5;
+        if (this.resizeWeight === undefined) this.resizeWeight = 0;
+        if (this.pane1MinSize === undefined) this.pane1MinSize = 30;
+        if (this.pane2MinSize === undefined) this.pane2MinSize = 30;
+        if (this.divSize === undefined) this.divSize = 5;
+        if (!this.servoyApi.isInAbsoluteLayout()) {
+            this.containerStyle['min-height'] = this.responsiveHeight + 'px';
+            this.containerStyle['position'] = 'relative';
+        }
         super.svyOnInit();
     }
 
