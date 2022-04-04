@@ -782,4 +782,5 @@ class MenuItem {
     public data: any;
     public menuItems: Array<MenuItem>;
     public isDivider: boolean;
+    public tooltip: string;
 }
