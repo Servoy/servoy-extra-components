@@ -43,10 +43,13 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     filterMatchedNodes: any[];
     filterPartNodes: any[];
 
+    folderImgPath = '../../assets/images/folder.png';
+    fileImgPath = '../../assets/images/file.png';
+
+
     svyOnChanges(changes: SimpleChanges) {
       if (changes) {
           for (const property of Object.keys(changes)) {
-              const change = changes[property];
               switch (property) {
                   case 'jsDataSet':
                     if(this.jsDataSet) {
@@ -59,6 +62,18 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
       }
       super.svyOnChanges(changes);
     }
+
+    svyOnInit(): void {
+        if (this.servoyApi.isInDesigner() ) {
+            this.jsDataSet = [['id', 'pid', 'treeColumn', 'icon'],
+                                        [1, null, 'Main group', this.folderImgPath],
+                                        [2, null, 'Second group', this.folderImgPath],
+                                        [3, 2, 'Subgroup', this.folderImgPath],
+                                        [4, 3, 'Mark', this.fileImgPath],
+                                        [5, 1, 'George', this.fileImgPath]
+                                        ];
+        }
+   }
 
     updateTreeGridData() {
       this.configs.columns.length = 0;
@@ -77,7 +92,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
       // index for extra columns
       const columnsIdx = [];
       for (let c = 0; c < this.jsDataSet[0].length; c++) {
-        if (this.jsDataSet[0][c].indexOf('column') === 0) {
+        if (this.jsDataSet[0][c]?.indexOf instanceof Function && this.jsDataSet[0][c]?.indexOf('column') === 0) {
           columnsIdx.push(c);
         }
       }

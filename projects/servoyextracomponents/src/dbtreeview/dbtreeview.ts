@@ -601,8 +601,15 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     }
 
     private initTree(): void {
-        const children = [];
         this.displayNodes = [];
+        if (this.servoyApi.isInDesigner()) {
+            this.displayNodes.push({name: 'node1', image: this.fileImgPath},
+                                                      {name: 'node2', image: this.fileImgPath},
+                                                      {name: 'node3', image: this.fileImgPath});
+            return;
+        }
+
+        const children = [];
         if (this.foundsets) {
             this.foundsets.forEach((elem) => {
                 elem.foundset.viewPort.rows.forEach((row, index) => {

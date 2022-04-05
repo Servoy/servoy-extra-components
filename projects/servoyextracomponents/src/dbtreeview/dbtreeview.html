@@ -1,6 +1,4 @@
-<div
-     [id]="servoyApi.getMarkupId()" 
-     #element>
+<div [id]="servoyApi.getMarkupId()"  #element>
      <tree-root #tree [nodes]="displayNodes" [options]="options" 
         (toggleExpanded)="onNodeExpanded($event)" 
         (initialized)="onTreeLoad($event)"
@@ -18,6 +16,6 @@
             </div>
         </ng-template> 
         </tree-root>
-</div>
+</div >
 
  
