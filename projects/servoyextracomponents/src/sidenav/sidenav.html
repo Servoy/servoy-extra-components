@@ -13,12 +13,10 @@
                 <!-- Main list -->
                 <li *ngFor="let item of menu;let $index=index"
                     class="svy-sidenav-dropdown sn-level-1"
-                    [ngClass]="{'svy-navitem-selected': item.id != null && selectedIndex[1] == item.id, 'svy-navitem-disabled': item.enabled === false }"
-					[svyTooltip]="item.tooltip"
-                    >
+                    [ngClass]="{'svy-navitem-selected': item.id != null && selectedIndex[1] == item.id, 'svy-navitem-disabled': item.enabled === false }">
 
                     <!-- Main Menu Items -->
-                    <a *ngIf="!item.isDivider" class="svy-sidenav-item sn-level-1" [ngClass]="item.styleClass" (click)="selectItem(1, $index, item, $event)">
+                    <a *ngIf="!item.isDivider" class="svy-sidenav-item sn-level-1" [ngClass]="item.styleClass" (click)="selectItem(1, $index, item, $event)" [svyTooltip]="item.tooltip">
                         <i class="svy-sidenav-item-icon" [ngClass]="item.iconStyleClass"></i>
                         &nbsp;<span class="svy-sidenav-item-text">{{item.text}}</span>
                         <i class="svy-sidenav-collapse-icon sn-level-1 pull-right"
@@ -34,11 +32,9 @@
                         >
                         <li *ngFor="let item2 of item.menuItems"
                             class="svy-sidenav-dropdown sn-level-2"
-                            [ngClass]="{'svy-navitem-selected': item2.id != null && selectedIndex[2] == item2.id, 'svy-navitem-disabled': (item.enabled === false || item2.enabled == false) }" 
-							[svyTooltip]="item2.tooltip"
-                            >
+                            [ngClass]="{'svy-navitem-selected': item2.id != null && selectedIndex[2] == item2.id, 'svy-navitem-disabled': (item.enabled === false || item2.enabled == false) }">
                             <!-- Second Menu Items -->
-                            <a *ngIf="!item2.isDivider" class="svy-sidenav-item sn-level-2" [ngClass]="item2.styleClass" (click)="selectItem(2, $index, item2, $event)">
+                            <a *ngIf="!item2.isDivider" class="svy-sidenav-item sn-level-2" [ngClass]="item2.styleClass" (click)="selectItem(2, $index, item2, $event)" [svyTooltip]="item2.tooltip">
                                 <i class="svy-sidenav-item-icon" [ngClass]="item2.iconStyleClass"></i>
                                 &nbsp;<span class="svy-sidenav-item-text">{{item2.text}}</span>
                                 <i class="svy-sidenav-collapse-icon sn-level-2 pull-right" 
@@ -53,11 +49,9 @@
                                 >
                                 <li *ngFor="let item3 of item2.menuItems"
                                     class="svy-sidenav-dropdown sn-level-3" 
-                                    [ngClass]="{'svy-navitem-selected': item3.id != null && selectedIndex[3] == item3.id, 'svy-navitem-disabled': (item.enabled === false || item2.enabled == false || item3.enabled == false) }" 
-                                    [svyTooltip]="item3.tooltip"
-									>
+                                    [ngClass]="{'svy-navitem-selected': item3.id != null && selectedIndex[3] == item3.id, 'svy-navitem-disabled': (item.enabled === false || item2.enabled == false || item3.enabled == false) }">
                                     <!-- Third Menu Items -->
-                                    <a *ngIf="!item3.isDivider" class="svy-sidenav-item sn-level-3" [ngClass]="item3.styleClass" (click)="selectItem(3, $index, item3, $event)">
+                                    <a *ngIf="!item3.isDivider" class="svy-sidenav-item sn-level-3" [ngClass]="item3.styleClass" (click)="selectItem(3, $index, item3, $event)" [svyTooltip]="item3.tooltip">
                                         <i class="svy-sidenav-item-icon" [ngClass]="item3.iconStyleClass"></i>
                                         &nbsp;<span class="svy-sidenav-item-text">{{item3.text}}</span>
                                         <i class="svy-sidenav-collapse-icon sn-level-3 pull-right" 
@@ -72,11 +66,9 @@
                                         >
                                         <li *ngFor="let item4 of item3.menuItems"
                                             class="svy-sidenav-dropdown sn-level-4" 
-                                            [ngClass]="{'svy-navitem-selected': item4.id != null && selectedIndex[4] == item4.id, 'svy-navitem-disabled': (item.enabled === false || item2.enabled == false || item3.enabled == false || item4.enabled == false) }"
-                                            [svyTooltip]="item4.tooltip"
-											>
+                                            [ngClass]="{'svy-navitem-selected': item4.id != null && selectedIndex[4] == item4.id, 'svy-navitem-disabled': (item.enabled === false || item2.enabled == false || item3.enabled == false || item4.enabled == false) }">
                                             <!-- Second Menu Items -->
-                                            <a *ngIf="!item4.isDivider" class="svy-sidenav-item sn-level-4" [ngClass]="item4.styleClass" (click)="selectItem(4, $index, item4, $event)">
+                                            <a *ngIf="!item4.isDivider" class="svy-sidenav-item sn-level-4" [ngClass]="item4.styleClass" (click)="selectItem(4, $index, item4, $event)" [svyTooltip]="item4.tooltip">
                                                 <i class="svy-sidenav-item-icon" ng-class="item4.iconStyleClass"></i>
                                                 &nbsp;<span class="svy-sidenav-item-text">{{item4.text}}</span>
                                             </a>
