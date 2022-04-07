@@ -14,6 +14,7 @@ type Selection = number | string;
 @Component({
     selector: 'servoyextra-dbtreeview',
     templateUrl: './dbtreeview.html',
+    styleUrls: ['./dbtreeview.css'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
@@ -94,7 +95,9 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
 
         this.loadTreeFromSessionStorage();
 
-        if (!this.displayNodes || this.displayNodes.length === 0) { this.initTree() } 
+        if (!this.displayNodes || this.displayNodes.length === 0) {
+            this.initTree();
+        }
 
         if (this.foundsets) {
           this.foundsets.forEach(foundsetInfo => {
@@ -114,15 +117,10 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
                         }
                         break;
                     case 'foundsets': {
-                        if (change.currentValue && 
-                            (change.previousValue || !this.displayNodes || this.displayNodes.length === 0)) {
-                            if (change.currentValue.length > 0) {
-                                this.addNodesFromFoundset(change.currentValue[change.currentValue.length - 1]);
-                            } else {
-                                this.initTree();
-                            }
+                        if(change.currentValue && !change.firstChange) {
+                            this.initTree();
+                            this.addOrRemoveFoundsetListeners(change);
                         }
-                        this.addOrRemoveFoundsetListeners(change);
                         break;
                     }
                     case 'relatedFoundsets': {
@@ -134,7 +132,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
                         break;
                     }
                     case 'levelVisibility': {
-                        if (change.currentValue && this.tree) {
+                        if (change.currentValue && this.tree && this.tree.treeModel && this.tree.treeModel.virtualRoot) {
                             this.expandChildNodes(this.tree.treeModel.virtualRoot, change.currentValue.level, change.currentValue.value);
                         }
                         break;
@@ -698,7 +696,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
         }
     }
 
-    loadTreeFromSessionStorage() {
+    private loadTreeFromSessionStorage() {
         if (this.sessionStorage.has('dbtreeviewNodesCounter')) {
             const counter: number = this.sessionStorage.get('dbtreeviewNodesCounter');
             if (counter > 0) {
@@ -713,16 +711,16 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
             }
           }
     }
-    setNodeToParent(treeNodes : ChildNode[], node: ChildNode) {
-        for(let j = 0; j < treeNodes.length; j++) {
-            if (treeNodes[j].id === node.parentID) {
-                if (!treeNodes[j].children) {
-                    treeNodes[j]["children"] = [];
+    private setNodeToParent(treeNodes: ChildNode[], node: ChildNode) {
+        for(const treeNode of treeNodes) {
+            if (treeNode.id === node.parentID) {
+                if (!treeNode.children) {
+                    treeNode['children'] = [];
                 }
-                treeNodes[j].children.push(node);
+                treeNode.children.push(node);
                 break;
-            } else if (treeNodes[j].children && treeNodes[j].children.length > 0) {
-                this.setNodeToParent(treeNodes[j].children, node);
+            } else if (treeNode.children && treeNode.children.length > 0) {
+                this.setNodeToParent(treeNode.children, node);
             }
         }
     }
@@ -735,21 +733,20 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
         this.cdRef.detectChanges();
     }
 
-    storeNodesState(nodes: Array<ChildNode>) {
-        for(let i = 0; i < nodes.length; i++) {
-          this.sessionStorage.set('dbtreeview' + this.dbtreeviewNodesCounter, 
-              JSON.stringify(this.copyChildNode(nodes[i])));
-          this.dbtreeviewNodesCounter++;
-          if (nodes[i].children) {
-            this.storeNodesState(nodes[i].children);
-          }
+    private storeNodesState(nodes: Array<ChildNode>) {
+        for(const node of nodes) {
+            this.sessionStorage.set('dbtreeview' + this.dbtreeviewNodesCounter, JSON.stringify(this.copyChildNode(node)));
+            this.dbtreeviewNodesCounter++;
+            if (node.children) {
+                this.storeNodesState(node.children);
+            }
         }
       }
-  
-      copyChildNode(node: ChildNode) {
-          let copy: ChildNode = {} as ChildNode;
-          let keys = Object.keys(node);
-          for(let key of keys) {
+
+      private copyChildNode(node: ChildNode) {
+          const copy: ChildNode = {} as ChildNode;
+          const keys = Object.keys(node);
+          for(const key of keys) {
               if (key !== 'children' && key !== 'parent') {
                   copy[key] = node[key];
               }
