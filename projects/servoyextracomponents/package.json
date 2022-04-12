@@ -1,6 +1,6 @@
 {
   "name": "@servoy/servoyextracomponents",
-  "version": "2022.3.2",
+  "version": "2022.6.0",
   "peerDependencies": {
     "@angular/animations": "^13",
     "@angular/common": "^13",
@@ -33,8 +33,8 @@
     "@angular-slider/ngx-slider": "<3",
     "angular-resizable-element": "<6",
     "ng-select2-component": "<9",
-    "@tinymce/tinymce-angular": "<6",
-    "tinymce": "<6",
+    "@tinymce/tinymce-angular": "<7",
+    "tinymce": "<7",
     "tinymce-i18n": ">=22",
     "tslib": "*"
   },
