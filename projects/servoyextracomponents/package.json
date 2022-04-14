@@ -34,7 +34,7 @@
     "angular-resizable-element": "<6",
     "ng-select2-component": "<9",
     "@tinymce/tinymce-angular": "<7",
-    "tinymce": "<7",
+    "tinymce": "^6",
     "tinymce-i18n": ">=22",
     "tslib": "*"
   },
