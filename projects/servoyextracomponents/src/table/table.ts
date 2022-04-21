@@ -33,6 +33,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
     @ViewChild('tbody', { static: false }) tbody: ElementRef<HTMLTableSectionElement>;
     @ViewChild('pager', { static: false }) pager: ElementRef<HTMLUListElement>;
+    @ViewChild('table', { static: false}) tableRef: ElementRef<HTMLTableElement>;
 
     @Input() foundset: IFoundset;
     @Input() columns: Array<Column>;
@@ -130,7 +131,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         this.resizeTimeout = setTimeout(() => {
             if (this.tbody) {
                 if (this.columns) {
-                    const newComponentWidth = Math.floor(this.getNativeElement().parentElement.clientWidth);
+                    const newComponentWidth = Math.floor(this.getNativeElement().clientWidth);
                     const deltaWidth = newComponentWidth - this.getComponentWidth();
                     if (deltaWidth !== 0) {
                         this.componentWidth = newComponentWidth;
@@ -174,7 +175,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
         if ('IntersectionObserver' in window) {
             const options = {
-                root: this.getNativeElement().parentNode,
+                root: this.getNativeElement() as Node,
             } as IntersectionObserver;
             new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
@@ -189,7 +190,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                         //                    }
                     }
                 });
-            }, options).observe(this.getNativeElement());
+            }, options).observe(this.tableRef.nativeElement);
         }
 
         this.setColumnsToInitalWidthAndInitAutoColumns();
@@ -311,27 +312,27 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
     attachHandlers() {
         if (this.onFocusGainedMethodID) {
-            this.renderer.listen(this.getNativeElement(), 'focus', e => {
+            this.renderer.listen(this.tableRef.nativeElement, 'focus', e => {
                 this.callFocusGained(e);
             });
         }
 
         if (this.onFocusLostMethodID) {
-            this.renderer.listen(this.getNativeElement(), 'blur', e => {
+            this.renderer.listen(this.tableRef.nativeElement, 'blur', e => {
                 this.callFocusLost(e);
             });
         }
-        this.renderer.listen(this.getNativeElement(), 'click', e => {
+        this.renderer.listen(this.tableRef.nativeElement, 'click', e => {
             this.tableClicked(e, 1);
         });
         if (this.onCellRightClick) {
-            this.renderer.listen(this.getNativeElement(), 'contextmenu', e => {
+            this.renderer.listen(this.tableRef.nativeElement, 'contextmenu', e => {
                 this.tableClicked(e, 2);
             });
         }
 
         if (this.onCellDoubleClick) {
-            this.renderer.listen(this.getNativeElement(), 'dblclick', e => {
+            this.renderer.listen(this.tableRef.nativeElement, 'dblclick', e => {
                 this.tableClicked(e, 3);
             });
         }
@@ -344,7 +345,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     }
 
     onResizeColumn(event: ResizeEvent, columnIndex: number): void {
-        const headers = this.getNativeElement().getElementsByTagName('th');
+        const headers = this.tableRef.nativeElement.getElementsByTagName('th');
         const newWidth = Math.floor(event.rectangle.width) + 'px';
         this.renderer.setStyle(headers[columnIndex], 'width', newWidth);
         this.renderer.setStyle(headers[columnIndex], 'min-width', newWidth);
@@ -735,7 +736,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
     // api
     public requestFocus(mustExecuteOnFocusGainedMethod: boolean) {
-        const tbl = this.getNativeElement();
+        const tbl = this.tableRef.nativeElement;
         this.skipOnce = mustExecuteOnFocusGainedMethod === false;
         tbl.focus();
     }
@@ -2526,7 +2527,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
     private getComponentWidth() {
         if (this.componentWidth === -1) {
-            this.componentWidth = Math.floor(this.getNativeElement().parentElement.clientWidth);
+            this.componentWidth = Math.floor(this.getNativeElement().clientWidth);
             this.updateTBodyStyle();
         }
         return this.componentWidth;
