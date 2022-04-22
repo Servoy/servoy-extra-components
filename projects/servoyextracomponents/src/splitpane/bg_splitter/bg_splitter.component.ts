@@ -112,7 +112,7 @@ export class BGSplitter implements AfterContentInit , OnChanges {
             const height = bounds.bottom - bounds.top;
             if ((wantedPosition < 0 || wantedPosition === undefined) && (event === undefined)) {
                 return height / 2;
-            } else if (event !== undefined) {
+            } else if (event) {
                 return event.clientY - bounds.top;
             }
             if (wantedPosition >= 0 && wantedPosition <= 1) {
@@ -122,7 +122,7 @@ export class BGSplitter implements AfterContentInit , OnChanges {
             const width = bounds.right - bounds.left;
             if ((wantedPosition < 0 || wantedPosition === undefined) && (event === undefined)) {
                 return width / 2;
-            } else if (event !== undefined) {
+            } else if (event) {
                 return event.clientX - bounds.left;
             }
             if (wantedPosition >= 0 && wantedPosition <= 1) {
