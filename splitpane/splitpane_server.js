@@ -97,6 +97,7 @@
 			 * @return {Boolean} value indicating if pane was successfully added
 			 */
 			$scope.api.setLeftForm = function(form, relation) {
+                if (!$scope.model.panes) $scope.model.panes = [];
 				$scope.model.panes[0] = {
 					containsFormId : form,
 					relationName : relation
@@ -113,6 +114,7 @@
 			 * @return {Boolean} value indicating if pane was successfully added
 			 */
 			$scope.api.setRightForm = function(form, relation) {
+                if (!$scope.model.panes) $scope.model.panes = [];
 				$scope.model.panes[1] = {
 					containsFormId : form,
 					relationName : relation
@@ -128,6 +130,7 @@
 			 * @return {FormScope} left form of the split pane
 			 */
 			$scope.api.getLeftForm = function() {
+                if (!$scope.model.panes || !$scope.model.panes[0]) return null;
 				return $scope.model.panes[0].containsFormId;
 			}
 			
@@ -137,6 +140,7 @@
 			 * @return {FormScope} right form of the split pane
 			 */
 			$scope.api.getRightForm = function() {
+                if (!$scope.model.panes || !$scope.model.panes[0]) return null;
 				return $scope.model.panes[1].containsFormId;
 			}
 			
