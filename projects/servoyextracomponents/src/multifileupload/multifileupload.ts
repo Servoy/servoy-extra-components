@@ -201,7 +201,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
             proudlyDisplayPoweredByUppy: false,
             disableStatusBar: this.disableStatusBar,
             inline: this.inline,
-            closeAfterFinish: this.closeAfterFinish,
+            closeAfterFinish: this.closeAfterFinish && !this.inline,
             metaFields: this.metaFields,
             plugins: [],
             locale
