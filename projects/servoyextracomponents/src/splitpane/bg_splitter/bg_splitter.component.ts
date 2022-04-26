@@ -110,9 +110,10 @@ export class BGSplitter implements AfterContentInit , OnChanges {
     private getPosition(bounds: any, event?: any, wantedPosition?: number) {
         if ( this.orientation === 'vertical' ) {
             const height = bounds.bottom - bounds.top;
-            if ((wantedPosition < 0 || wantedPosition === undefined) && (event === undefined)) {
+            // test for == null can't be === because must match on null or undefined
+            if ((wantedPosition < 0 || wantedPosition == null) && (event == null)) {
                 return height / 2;
-            } else if (event !== undefined) {
+            } else if (event != null) {
                 return event.clientY - bounds.top;
             }
             if (wantedPosition >= 0 && wantedPosition <= 1) {
@@ -120,9 +121,10 @@ export class BGSplitter implements AfterContentInit , OnChanges {
             }
         } else {//horizontal
             const width = bounds.right - bounds.left;
-            if ((wantedPosition < 0 || wantedPosition === undefined) && (event === undefined)) {
+            // test for == null can't be === because must match on null or undefined
+            if ((wantedPosition < 0 || wantedPosition == null) && (event == null)) {
                 return width / 2;
-            } else if (event !== undefined) {
+            } else if (event != null) {
                 return event.clientX - bounds.left;
             }
             if (wantedPosition >= 0 && wantedPosition <= 1) {
