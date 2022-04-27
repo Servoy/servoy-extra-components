@@ -13,7 +13,7 @@
 	"keywords": [],
 	"model":
 	{
-		"collapsibles"			: { "type": "collapsible[]", "droppable": true, "pushToServer": "shallow" },
+		"collapsibles"			: { "type": "collapsible[]", "droppable": true, "pushToServer": "shallow", "tags": {"wizard": "autoshow"} },
 		"accordionMode"			: { "type": "boolean", "default": "true" },
 		"expandedIndices"		: { "type": "int[]", "tags": { "scope": "design" } },
 		"styleClass"			: { "type": "styleclass" },
@@ -150,8 +150,8 @@
 			"headerStyleClass" 				: { "type": "styleclass", "default": "" },
 			"bodyStyleClass"				: { "type": "styleclass" },
 			"collapsibleHtml" 				: { "type": "tagstring", "default": "" },
-            "form" 							: { "type": "form", "default": "" },
-            "relationName"                  : "relation",
+            "form" 							: { "type": "form", "default": "", "tags": {"wizard": "1", "wizardRelated": "relationName"}},
+            "relationName"                  : { "type":"relation", "tags": {"wizard": "2"}},
 			"cards"							: { "type": "card[]" },
 			"styleClass"					: { "type": "styleclass", "default": "" },
 			"collapsedIconName"				: { "type": "string", "default": "fa fa-2x fa-angle-down" },

@@ -20,7 +20,7 @@
 	        "styleClass" : { "type" :"styleclass", "tags": { "scope" :"design" }, "values" :[]}, 
 	        "splitType" : {"type" :"int", "tags": { "scope" :"design" }, "default":0, "values" :[{"HORIZONTAL":0}, {"VERTICAL":1}]}, 
 	        "tabSeq" : {"type" :"tabseq", "tags": { "scope" :"design" }}, 
-	        "panes" : {"type":"pane[]", "pushToServer": "allow", "droppable":true},
+	        "panes" : {"type":"pane[]", "pushToServer": "allow", "droppable":true, "tags": {"wizard": "autoshow"}},
 	        "visible" : "visible",
 			"responsiveHeight": { "type": "int", "default": 300, "tags": { "doc" :"Minimum height of the splitpane, set only in responsive forms."} }
 	},
@@ -141,8 +141,8 @@
 	},
 "types": {
   "pane": {
-  		"containsFormId": "form",
-  		"relationName": "relation"
+  		"containsFormId": {"type":"form", "tags": {"wizard": "1", "wizardRelated": "relationName"}},
+  		"relationName":  {"type":"relation", "tags": {"wizard": "2"}}
   	}
 }
 	 
