@@ -9,7 +9,7 @@
 	"libraries": [{ "name": "servoyextra-table-css", "version": "1.0", "url": "servoyextra/table/table.css", "mimetype": "text/css" }, { "name": "colResizable", "version": "1.7", "url": "servoyextra/table/js/colResizable-1.7.js", "mimetype": "text/javascript" }],
 	"keywords": ["row", "column"],
 	"model": {
-		"columns": { "type": "column[]", "droppable": true, "pushToServer": "shallow", "elementConfig": { "pushToServer": "shallow" }, "tags": { "allowaccess": "visible" } },
+		"columns": { "type": "column[]", "droppable": true, "pushToServer": "shallow", "elementConfig": { "pushToServer": "shallow" }, "tags": { "wizard": "autoshow","allowaccess": "visible" } },
 		"currentPage": { "type": "int", "default": 1, "tags": { "scope": "runtime" }, "pushToServer": "shallow" },
 		"foundset": { "type": "foundset", "default" : {"foundsetSelector":""}, "pushToServer": "allow", "initialPreferredViewPortSize": 130, "sendSelectionViewportInitially": true },
 		"pageSize": { "type": "int", "default": 20, "tags": { "doc" :"Number of rows per page, 0 means infinite scrolling mode." } },
@@ -35,18 +35,18 @@
 	},
 	"types": {
 		"column": {
-			"dataprovider": { "type": "dataprovider", "forFoundset": "foundset", "resolveValuelist" : true, "tags": { "useAsCaptionInDeveloper" : true, "captionPriority" : 2 }},
+			"dataprovider": { "type": "dataprovider", "forFoundset": "foundset", "resolveValuelist" : true, "tags": { "wizard": "1", "useAsCaptionInDeveloper" : true, "captionPriority" : 2 }},
 			"format": { "for": ["valuelist", "dataprovider"], "type": "format" },
 			"headerStyleClass": { "type": "styleclass" },
-			"headerText": { "type": "tagstring", "tags": { "useAsCaptionInDeveloper" : true, "captionPriority" : 1, "showInOutlineView": true }},
-			"styleClass": { "type": "styleclass" },
-			"styleClassDataprovider": { "type": "dataprovider", "forFoundset": "foundset" },
+			"headerText": { "type": "tagstring", "tags": {"wizard": "i18n", "useAsCaptionInDeveloper" : true, "captionPriority" : 1, "showInOutlineView": true }},
+			"styleClass": { "type": "styleclass","tags": {"wizard": [{"name": "Pencil icon", "cls": "fa fa-pencil"}, {"name": "Trash icon", "cls": "fa fa-trash"}, {"name": "Eye icon", "cls": "fa fa-eye"}, {"name": "Gear icon", "cls": "fa fa-gear"}] } },
+			"styleClassDataprovider": { "type": "dataprovider", "forFoundset": "foundset",  "tags": {"wizard": "2"} },
 			"valuelist": { "type": "valuelist", "for": "dataprovider", "forFoundset": "foundset" },
 			"width": { "type": "string", "default": "auto"},
 			"initialWidth": { "type": "string", "tags": { "scope": "runtime" } },
 			"autoResize": { "type": "boolean", "default": false },
 			"showAs": { "type": "string", "default": "text", "values": ["text", "html", "sanitizedHtml"] },
-			"id" : {"type": "string", "tags": {"doc": "Used to identify the column in cell event handlers, because column index can change if columns are added/removed at runtime."}}
+			"id" : {"type": "string", "tags": {"wizard": {"prefill" : "dataprovider"}, "doc": "Used to identify the column in cell event handlers, because column index can change if columns are added/removed at runtime."}}
 		},
 		"settings": {
 			"minBatchSizeForRenderingMoreRows" : { "type": "int", "default": 10 }, 
