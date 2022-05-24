@@ -58,7 +58,7 @@ export class ServoyExtraImageLabel extends ServoyBaseComponent<HTMLImageElement>
     }
 
     private updateImageURL( media: any ) {
-        if ( media ) this.imageURL = media;
+        this.imageURL = media;
     }
 
     protected attachHandlers() {
