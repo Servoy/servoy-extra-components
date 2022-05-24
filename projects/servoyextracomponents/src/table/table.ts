@@ -1221,7 +1221,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
             childrenListChanged = false;
             children = this.tbody.nativeElement.children;
         }
-        if (children.length - topEmptySpaceRowCount - bottomEmptySpaceRowCount > this.renderedSize) {
+        if (children.length > 0 && children.length - topEmptySpaceRowCount - bottomEmptySpaceRowCount > this.renderedSize) {
             // START HACK (this is currently only useful for dodging an unwanted jump in Chrome)
             // before really removing rows from the DOM, if there are spacing divs (so not all rows in the list were rendered) increase one of the spacing
             // divs in order to not shrink the scrollbar (this produces annoying scroll experience - if this update happens during a user drag of the scroll
