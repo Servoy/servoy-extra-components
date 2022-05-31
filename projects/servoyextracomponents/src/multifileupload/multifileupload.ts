@@ -123,7 +123,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
         this.uppy.on('error', (error) => {
             this.log.error(error);
         });
-        const tusOptions: TusOptions = Object.assign({}, this.tusOptions?this.tusOptions:{});
+        const tusOptions: TusOptions = Object.assign({} as TusOptions, this.tusOptions?this.tusOptions:{});
         tusOptions.endpoint = this.servoyService.generateUploadUrl(this.servoyApi.getFormName(), this.name, 'onFileUploaded', true);
         if (!tusOptions.retryDelays) tusOptions.retryDelays =[0, 1000, 3000, 5000];
         this.uppy.use(Tus, tusOptions);
