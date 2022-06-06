@@ -575,10 +575,9 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 			
 			$scope.api.requestFocus = function(mustExecuteOnFocusGainedMethod) {
 				var input = $element.find('input');
-					input[0].focus();
-					executeOnFocusGained = mustExecuteOnFocusGainedMethod !== false;
-					tokenizer.trigger("select2:opening");
-					// TODO open the dropdown
+				input[0].focus();
+				executeOnFocusGained = mustExecuteOnFocusGainedMethod !== false;
+				tokenizer.select2('open');
 			}
 			
 			
