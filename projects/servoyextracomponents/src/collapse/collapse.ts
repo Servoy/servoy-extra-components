@@ -226,6 +226,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
                 if (i !== index && !otherCollapse.isCollapsed) {
                     otherCollapse.isCollapsed = true;
                     this.collapse(i, true);  //$NON-NLS-1$
+                    this.onCollapsibleHidden(null, otherCollapse, i);
                     if (otherCollapse.form) {
                         //a form needs to be hidden
                         this.servoyApi.hideForm(otherCollapse.form, otherCollapse.relationName);
