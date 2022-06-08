@@ -86,6 +86,7 @@ angular.module('servoyextraCollapse', ['servoy']) //$NON-NLS-1$ //$NON-NLS-2$
 							if (i != index && !otherCollapse.isCollapsed) {
 								otherCollapse.isCollapsed = true;
 								collapse(i, 'hide');  //$NON-NLS-1$
+								$scope.handlers.onCollapsibleHidden(null, otherCollapse, i);
 								if (otherCollapse.form) {
                                     //a form needs to be hidden
                                     $scope.svyServoyapi.hideForm(otherCollapse.form, otherCollapse.relationName);
