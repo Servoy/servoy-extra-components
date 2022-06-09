@@ -140,7 +140,11 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
                     }
                 });
         } else {
-            this.setCollapsedState(collapsibleIndex, !previousState);
+            const [closedCollapsebile, closedIndex] = this.setCollapsedState(collapsibleIndex, !previousState);
+            if (closedCollapsebile !== null && closedIndex !== null) { 
+				// this block only executes when there was a close due to accordion mode.
+				this.onCollapsibleHidden(e, closedCollapsebile, closedIndex);
+			}
             if (previousState === true && this.onCollapsibleShown) {
                 this.onCollapsibleShown(e, collapsible, collapsibleIndex);
             } else if (previousState !== true && this.onCollapsibleHidden) {
@@ -217,7 +221,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
      */
     private setCollapsedState(index: number, state: boolean) {
         const collapsibleToChange = this.getCollapsible(index);
-
+		var accordionClosedCollapsible = [null, null];
         if (this.accordionMode && state === false) {
             //collapsible is being expanded and we are in accordionMode
             for (let i = 0; i < this.collapsibles.length; i++) {
@@ -226,7 +230,6 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
                 if (i !== index && !otherCollapse.isCollapsed) {
                     otherCollapse.isCollapsed = true;
                     this.collapse(i, true);  //$NON-NLS-1$
-                    this.onCollapsibleHidden(null, otherCollapse, i);
                     if (otherCollapse.form) {
                         //a form needs to be hidden
                         this.servoyApi.hideForm(otherCollapse.form, otherCollapse.relationName);
@@ -236,6 +239,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
                         this.toggleCardVisibility(otherCollapse.cards, true);
                         this.notifyChange(index);
                     }
+                    accordionClosedCollapsible = [otherCollapse, i];
                 }
             }
         }
@@ -265,6 +269,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
             this.collapsibles[index].isCollapsed = state;
             this.notifyChange(index);
         }
+        return accordionClosedCollapsible;
     }
 
     /**
