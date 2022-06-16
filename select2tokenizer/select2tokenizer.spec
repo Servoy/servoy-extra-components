@@ -35,6 +35,7 @@
 	"model":
 	{
 		"dataProviderID": { "type":"dataprovider", "pushToServer": "allow","tags": { "scope" :"design" }, "ondatachange": { "onchange":"onDataChangeMethodID" , "callback":"onDataChangeCallback"}},
+		"format" : {"for":["dataProviderID"] , "type" :"format", "tags": { "scope" :"private" }}, 
 		"valuelistID": { "type" : "valuelist", "tags": { "scope" :"design", "logWhenOverMax" : false }, "default":"autoVL" , "max" : 100}, 
 		"visible" : {"type":"visible", "default":true},
         "allowNewEntries": {"type": "boolean", "default": false, "tags": {"scope" : "design"}}, 

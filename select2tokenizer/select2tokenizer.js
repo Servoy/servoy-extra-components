@@ -511,11 +511,11 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
             }
 			
 			function isTypeString() {
-				return  !$scope.model.dataProviderID || $scope.model.dataProviderID.constructor.name === "String" || typeof($scope.model.dataProviderID) === "string";
+				return  $scope.model.format. type === "STRING";
 			} 
 			
 			function isTypeNan() {
-				return  $scope.model.dataProviderID.constructor.name === "Number" || typeof($scope.model.dataProviderID) === "number";
+				return  $scope.model.format. type === "INTEGER";
 			}
 			
 			function isTypeBoolean() {
@@ -541,12 +541,22 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 							dpValue = dpValue.join("\n");
 						} else if ( data.length ==1 || isTypeNan() || isTypeBoolean() ) {
 							dpValue = data[data.length - 1].id;
+							tokenizer.off("change");
+							selectOption([dpValue]);
+						    tokenizer.on("change", function(e) {
+                                onChange(e);
+                            });
 						} else {
 							$log.warn("Warning dataProviderID typeof " + $scope.model.dataProviderID.constructor.name + " not allowed")
 						}
 
 					} else {
 						dpValue = null;
+						  tokenizer.off("change");
+                            selectOption([]);
+                            tokenizer.on("change", function(e) {
+                                onChange(e);
+                            });
 					}
 
 					// apply change to dataProviderID
