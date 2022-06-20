@@ -521,6 +521,38 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 			function isTypeBoolean() {
 				return  $scope.model.dataProviderID.constructor.name === "Boolean" || typeof($scope.model.dataProviderID) === "boolean";
 			}
+			
+			function selectOptions(values) {
+                        hashMapTimestamp = new Date().getTime();
+                        hashMap = {};
+                        if ($log.debugEnabled) $log.debug("selec2-autoTokenizer: change dataprovideID to " + value + ' ID:  ' + $scope.model.datProviderID);
+                        if (tokenizer) {
+                            tokenizer.off("change");
+                            if (values && values.length) {
+                                // remove all the options
+                                tokenizer.empty();
+                                
+                                // init the hash first
+                                var realValue;
+                                for (var  i = 0; values && i < values.length;  i++) {
+                                    realValue = values[i];
+                                    hashMap[realValue] = realValue;
+                                }
+                                
+                                // select each value
+                                for (realValue in hashMap) {
+                                    selectRealValue(realValue, values, hashMapTimestamp);
+                                }
+                            } else {
+                                // remove all values
+                                tokenizer.empty();
+                                tokenizer.val(null);
+                            }
+                            tokenizer.on("change", function(e) {
+                            onChange(e);
+                        });
+                    }
+            }
 
 			function onChange(e) {
 				if ($log.debugEnabled) $log.debug('selec2-autoTokenizer: onChange called ' + ' ID: ' + $scope.model.svyMarkupId)
@@ -541,22 +573,14 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 							dpValue = dpValue.join("\n");
 						} else if ( data.length ==1 || isTypeNan() || isTypeBoolean() ) {
 							dpValue = data[data.length - 1].id;
-							tokenizer.off("change");
-							selectOption([dpValue]);
-						    tokenizer.on("change", function(e) {
-                                onChange(e);
-                            });
+							 selectOptions([dpValue]);
 						} else {
 							$log.warn("Warning dataProviderID typeof " + $scope.model.dataProviderID.constructor.name + " not allowed")
 						}
 
 					} else {
 						dpValue = null;
-						  tokenizer.off("change");
-                            selectOption([]);
-                            tokenizer.on("change", function(e) {
-                                onChange(e);
-                            });
+						 selectOptions([]);
 					}
 
 					// apply change to dataProviderID
