@@ -511,7 +511,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
             }
 			
 			function isTypeString() {
-				return  $scope.model.format. type === "STRING";
+				return  $scope.model.format. type === "TEXT";
 			} 
 			
 			function isTypeNan() {
@@ -570,6 +570,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 							for (var i = 0; i < data.length; i++) {
 								dpValue.push(data[i].id);
 							}
+							selectOptions(dpValue);
 							dpValue = dpValue.join("\n");
 						} else if ( data.length ==1 || isTypeNan() || isTypeBoolean() ) {
 							dpValue = data[data.length - 1].id;

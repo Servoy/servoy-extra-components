@@ -1,6 +1,6 @@
 import { Component, Renderer2, SimpleChanges, ChangeDetectorRef, ViewChild, Input, Output, EventEmitter, HostListener, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { Select2Option, Select2UpdateEvent, Select2, Select2RemoveEvent } from 'ng-select2-component';
-import { ServoyBaseComponent, IValuelist } from '@servoy/public';
+import { ServoyBaseComponent, IValuelist, Format } from '@servoy/public';
 import { DOCUMENT } from '@angular/common';
 
 @Component({
@@ -33,6 +33,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     @Input() selectOnClose: boolean;
     @Input() allowNewEntries: boolean;
     @Input() size: { width: number; height: number };
+    @Input() format: Format;
 
     @Output() dataProviderIDChange = new EventEmitter();
 
@@ -155,10 +156,10 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 
         if (!this.compareArrays(this.filteredDataProviderId, event.value)) {
             if(event.value.length > 0){
-                if(event.value.length > 1 && (typeof this.dataProviderID === 'string')){
+                if(event.value.length > 1 && this.isTypeString()){
                     this.filteredDataProviderId = event.value;
                     this.dataProviderID = event.value.join('\n');
-                } else if(event.value.length === 1 || (typeof this.dataProviderID === 'number') || (typeof this.dataProviderID === 'boolean')){
+                } else if(event.value.length === 1 || this.isTypeNumber() || this.isTypeBoolean()){
                     this.filteredDataProviderId[0] = event.value[event.value.length - 1];
                     this.dataProviderID = this.filteredDataProviderId[0];
                 } else {
@@ -186,7 +187,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
             this.setData();
         }
         if ( changes['dataProviderID'] ) {
-            this.filteredDataProviderId = this.dataProviderID ? ( ( typeof this.dataProviderID === 'string' ) ? this.dataProviderID.split( '\n' ) : [this.dataProviderID] ) : [];
+            this.filteredDataProviderId = this.dataProviderID ? ( this.isTypeString() ? this.dataProviderID.split( '\n' ) : [this.dataProviderID] ) : [];
             this.updateValueCallsToSkip = Math.max(this.filteredDataProviderId.length - this.currentSelectedValues, 0);
             this.setData();
         }
@@ -293,4 +294,15 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
         return true;
     }
 
+    private isTypeString() {
+                return  this.format. type === "TEXT";
+    } 
+
+    private isTypeNumber() {
+                return  this.format. type === "INTEGER";
+    }
+
+    private isTypeBoolean() {
+                return  typeof this.dataProviderID === 'boolean';
+    }
 }
