@@ -58,7 +58,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     blur() {
-        this.dataProviderID = '<html><body>' + this.tinyValue + '</body></html>'
+        this.dataProviderID = '<html><body>' + this.tinyValue + '</body></html>';
         this.pushUpdate();
         if (this.onFocusLostMethodID) this.onFocusLostMethodID(new CustomEvent('blur'));
     }
@@ -68,26 +68,23 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     ngOnInit(){
-        super.ngOnInit(); 
-        
+        super.ngOnInit();
+
         this.tinyConfig['language'] = this.servoyPublicService.getLocale();
 
         // app level configuration
-        let defaultConfiguration = this.servoyPublicService.getUIProperty("config");
+        let defaultConfiguration = this.servoyPublicService.getUIProperty('config');
         if (defaultConfiguration) {
-            try {
-                defaultConfiguration = JSON.parse(defaultConfiguration);
+            if (typeof defaultConfiguration === 'string') {
+                try {
+                    defaultConfiguration = JSON.parse(defaultConfiguration);
+                } catch (e) {
+                    console.error(e);
+                }
             }
-            catch (e) {
-                console.error(e)
-            }
-            for (var key in defaultConfiguration) {
+            for (const key in defaultConfiguration) {
                 if (defaultConfiguration.hasOwnProperty(key)) {
-                    var value = defaultConfiguration[key]
-                    if (key === "plugins") {
-                        value += " tabindex";
-                    }
-                    this.tinyConfig[key] = value;
+                    this.tinyConfig[key] = defaultConfiguration[key];
                 }
             }
         }
@@ -95,24 +92,21 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
         // element level configuration
         let configuration = this.servoyApi.getClientProperty('config');
         if (configuration) {
-            try {
-                configuration = JSON.parse(configuration);
-            }
-            catch (e) {
-                console.error(e)
-            }
-            for (var key in configuration) {
-                if (configuration.hasOwnProperty(key)) {
-                    var value = configuration[key];
-                    if (key === "plugins") {
-                        value += " tabindex";
-                    }
-                    this.tinyConfig[key] = value;
+            if (typeof configuration === 'string') {
+                try {
+                    configuration = JSON.parse(configuration);
+                } catch (e) {
+                    console.error(e);
                 }
             }
-        }   
+            for (const key in configuration) {
+                if (configuration.hasOwnProperty(key)) {
+                    this.tinyConfig[key] = configuration[key];
+                }
+            }
+        }
     }
-    
+
     svyOnInit() {
         super.svyOnInit();
         this.tinyValue = this.dataProviderID;
@@ -138,15 +132,14 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
                     case 'editable':
                     case 'readOnly':
                     case 'enabled':
-                        let editable = this.editable && !this.readOnly && this.enabled;
+                        const editable = this.editable && !this.readOnly && this.enabled;
                         if (tinymce.activeEditor) {
                             if (editable) {
                                 if (!change.firstChange) {
-                                    tinymce.activeEditor.mode.set("design");
+                                    tinymce.activeEditor.mode.set('design');
                                 }
-                            }
-                            else {
-                                tinymce.activeEditor.mode.set("readonly");
+                            } else {
+                                tinymce.activeEditor.mode.set('readonly');
                             }
 
                         }
@@ -158,7 +151,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
                         if(!this.servoyApi.isInAbsoluteLayout()) {
                             this.getNativeElement().style.minHeight = this.responsiveHeight +'px';
                          }
-                    break;    
+                    break;
                 }
             }
         }
@@ -175,7 +168,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     public selectAll() {
-        let ed = this.getEditor();
+        const ed = this.getEditor();
         ed.selection.select(ed.getBody(), true);
     }
 
@@ -197,15 +190,15 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
 
     public replaceSelectedText(text: string) {
         this.getEditor().selection.setContent(text);
-        var edContent = this.getEditor().getContent();
-        this.dataProviderID = '<html><body>' + edContent + '</body></html>'
+        const edContent = this.getEditor().getContent();
+        this.dataProviderID = '<html><body>' + edContent + '</body></html>';
         this.pushUpdate();
     }
 
     public setScroll(x: number, y: number) {
         this.getEditor().getWin().scrollTo(x, y);
     }
-    
+
     pushUpdate() {
         this.dataProviderIDChange.emit(this.dataProviderID);
     }
