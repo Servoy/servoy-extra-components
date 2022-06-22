@@ -84,9 +84,9 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
 
     @HostListener('window:beforeunload', ['$event'])
     onBeforeUnloadHander() {
-      this.clearSessionStorage();
-      this.storeNodesState(this.displayNodes);
-      this.sessionStorage.set('dbtreeviewNodesCounter', this.dbtreeviewNodesCounter);
+        this.clearSessionStorage();
+        this.storeNodesState(this.displayNodes);
+        this.sessionStorage.set('dbtreeviewNodesCounter', this.dbtreeviewNodesCounter);
     }
 
     svyOnInit() {
@@ -100,9 +100,9 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
         }
 
         if (this.foundsets) {
-          this.foundsets.forEach(foundsetInfo => {
-            this.addFoundsetListener(foundsetInfo.foundset);
-          });
+            this.foundsets.forEach(foundsetInfo => {
+                this.addFoundsetListener(foundsetInfo.foundset);
+            });
         }
     }
 
@@ -117,7 +117,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
                         }
                         break;
                     case 'foundsets': {
-                        if(change.currentValue && !change.firstChange) {
+                        if (change.currentValue && !change.firstChange) {
                             this.initTree();
                             this.addOrRemoveFoundsetListeners(change);
                         }
@@ -537,7 +537,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
 
         if (binding.callbackinfo || binding.methodToCallOnCheckBoxChange || binding.methodToCallOnDoubleClick || binding.methodToCallOnRightClick) {
             if (binding.callbackinfo) {
-                child.callbackinfo= binding.callbackinfo.f;
+                child.callbackinfo = binding.callbackinfo.f;
                 child.callbackinfoParamValue = row[binding.callbackinfo.param];
             }
             if (binding.methodToCallOnCheckBoxChange) {
@@ -601,15 +601,19 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     private initTree(): void {
         this.displayNodes = [];
         if (this.servoyApi.isInDesigner()) {
-            this.displayNodes.push({name: 'node1', image: this.fileImgPath},
-                                                      {name: 'node2', image: this.fileImgPath},
-                                                      {name: 'node3', image: this.fileImgPath});
+            this.displayNodes.push({ name: 'node1', image: this.fileImgPath },
+                { name: 'node2', image: this.fileImgPath },
+                { name: 'node3', image: this.fileImgPath });
             return;
         }
 
         const children = [];
         if (this.foundsets) {
-            this.foundsets.forEach((elem) => {
+            this.foundsets.forEach(async (elem) => {
+                if (elem.foundset.serverSize > elem.foundset.viewPort.size) {
+                    // load all records
+                    await elem.foundset.loadRecordsAsync(0, 5000);
+                }
                 elem.foundset.viewPort.rows.forEach((row, index) => {
                     const child = this.buildChild(row, elem, index, 1, null);
                     children.push(child);
@@ -620,7 +624,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
         }
     }
 
-    private addOrRemoveFoundsetListeners(change: {currentValue: Array<FoundsetInfo>; previousValue: Array<FoundsetInfo>}) {
+    private addOrRemoveFoundsetListeners(change: { currentValue: Array<FoundsetInfo>; previousValue: Array<FoundsetInfo> }) {
         if (change.currentValue) {
             change.currentValue.forEach(fsInfoCV => {
                 if (change.previousValue && change.previousValue.length > 0) {
@@ -700,19 +704,19 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
         if (this.sessionStorage.has('dbtreeviewNodesCounter')) {
             const counter: number = this.sessionStorage.get('dbtreeviewNodesCounter');
             if (counter > 0) {
-              for(let i = 0; i < counter; i++) {
-                const node: ChildNode = JSON.parse(this.sessionStorage.get('dbtreeview' + i));
-                if (node.parentID) {
-                    this.setNodeToParent(this.displayNodes, node);
-                } else {
-                    this.displayNodes.push(node);
+                for (let i = 0; i < counter; i++) {
+                    const node: ChildNode = JSON.parse(this.sessionStorage.get('dbtreeview' + i));
+                    if (node.parentID) {
+                        this.setNodeToParent(this.displayNodes, node);
+                    } else {
+                        this.displayNodes.push(node);
+                    }
                 }
-              }
             }
-          }
+        }
     }
     private setNodeToParent(treeNodes: ChildNode[], node: ChildNode) {
-        for(const treeNode of treeNodes) {
+        for (const treeNode of treeNodes) {
             if (treeNode.id === node.parentID) {
                 if (!treeNode.children) {
                     treeNode['children'] = [];
@@ -734,25 +738,25 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     }
 
     private storeNodesState(nodes: Array<ChildNode>) {
-        for(const node of nodes) {
+        for (const node of nodes) {
             this.sessionStorage.set('dbtreeview' + this.dbtreeviewNodesCounter, JSON.stringify(this.copyChildNode(node)));
             this.dbtreeviewNodesCounter++;
             if (node.children) {
                 this.storeNodesState(node.children);
             }
         }
-      }
+    }
 
-      private copyChildNode(node: ChildNode) {
-          const copy: ChildNode = {} as ChildNode;
-          const keys = Object.keys(node);
-          for(const key of keys) {
-              if (key !== 'children' && key !== 'parent') {
-                  copy[key] = node[key];
-              }
-          }
-          return copy;
-      }
+    private copyChildNode(node: ChildNode) {
+        const copy: ChildNode = {} as ChildNode;
+        const keys = Object.keys(node);
+        for (const key of keys) {
+            if (key !== 'children' && key !== 'parent') {
+                copy[key] = node[key];
+            }
+        }
+        return copy;
+    }
 }
 
 export class FoundsetInfo extends BaseCustomObject {
