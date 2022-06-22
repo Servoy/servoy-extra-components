@@ -187,11 +187,11 @@ angular.module('servoyextraSplitpane',['servoy']).directive('servoyextraSplitpan
 				}
 			});
 
-			if ($scope.model.panes && $scope.model.panes[0] && $scope.model.panes[0].containsFormId) {
-				$scope.svyServoyapi.formWillShow($scope.model.panes[0].containsFormId, $scope.model.panes[0].relationName,0);
+			if ($scope.model.pane1 && $scope.model.pane1.containsFormId) {
+				$scope.svyServoyapi.formWillShow($scope.model.pane1.containsFormId, $scope.model.pane1.relationName,0);
 			};
-			if ($scope.model.panes && $scope.model.panes[1] && $scope.model.panes[1].containsFormId) {
-				$scope.svyServoyapi.formWillShow($scope.model.panes[1].containsFormId, $scope.model.panes[1].relationName,1);
+			if ($scope.model.pane2 && $scope.model.pane2.containsFormId) {
+				$scope.svyServoyapi.formWillShow($scope.model.pane2.containsFormId, $scope.model.pane2.relationName,1);
 			};
 			//called by bg-splitter when the user changes the divider location with the mouse
 			$scope.onChange = function() {
@@ -228,20 +228,20 @@ angular.module('servoyextraSplitpane',['servoy']).directive('servoyextraSplitpan
 				return dividerLocation ? parseInt(dividerLocation.substring(0, dividerLocation.length - 2)) : 0;
 			}
 
-			$scope.$watch("model.panes[0].containsFormId", function(newValue, oldValue) {
+			$scope.$watch("model.pane1.containsFormId", function(newValue, oldValue) {
                 if (oldValue){
                     $scope.svyServoyapi.hideForm(oldValue);
                 }
 				if (newValue) {
-					$scope.svyServoyapi.formWillShow(newValue, $scope.model.panes[0].relationName, 0);
+					$scope.svyServoyapi.formWillShow(newValue, $scope.model.pane1.relationName, 0);
 				}
 			});
-			$scope.$watch("model.panes[1].containsFormId", function(newValue, oldValue) {
+			$scope.$watch("model.pane2.containsFormId", function(newValue, oldValue) {
                 if (oldValue){
                     $scope.svyServoyapi.hideForm(oldValue);
                 }
 				if (newValue) {
-					$scope.svyServoyapi.formWillShow(newValue, $scope.model.panes[1].relationName, 1);
+					$scope.svyServoyapi.formWillShow(newValue, $scope.model.pane2.relationName, 1);
 				}
 			});
 
@@ -250,20 +250,20 @@ angular.module('servoyextraSplitpane',['servoy']).directive('servoyextraSplitpan
     	  		{
     	  			if (newValue)
     	  			{
-    	  				if ($scope.model.panes && $scope.model.panes[0] && $scope.model.panes[0].containsFormId) {
-    	  					$scope.svyServoyapi.formWillShow($scope.model.panes[0].containsFormId, $scope.model.panes[0].relationName,0);
+    	  				if ($scope.model.pane1 && $scope.model.pane1.containsFormId) {
+    	  					$scope.svyServoyapi.formWillShow($scope.model.pane1.containsFormId, $scope.model.pane1.relationName,0);
     	  				}
-    	  				if ($scope.model.panes && $scope.model.panes[1] && $scope.model.panes[1].containsFormId) {
-    	  					$scope.svyServoyapi.formWillShow($scope.model.panes[1].containsFormId, $scope.model.panes[1].relationName,1);
+    	  				if ($scope.model.pane2 && $scope.model.pane2.containsFormId) {
+    	  					$scope.svyServoyapi.formWillShow($scope.model.pane2.containsFormId, $scope.model.pane2.relationName,1);
     	  				}
     	  			}
     	  			else
     	  			{
-    	  				if ($scope.model.panes && $scope.model.panes[0] && $scope.model.panes[0].containsFormId) {
-    	  					$scope.svyServoyapi.hideForm($scope.model.panes[0].containsFormId);
+    	  				if ($scope.model.pane1 && $scope.model.pane1.containsFormId) {
+    	  					$scope.svyServoyapi.hideForm($scope.model.pane1.containsFormId);
     	  				}
-    	  				if ($scope.model.panes && $scope.model.panes[1] && $scope.model.panes[1].containsFormId) {
-    	  					$scope.svyServoyapi.hideForm($scope.model.panes[1].containsFormId);
+    	  				if ($scope.model.pane2 && $scope.model.pane2.containsFormId) {
+    	  					$scope.svyServoyapi.hideForm($scope.model.pane2.containsFormId);
     	  				}
     	  			}	
   			}	

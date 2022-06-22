@@ -17,6 +17,8 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
     @Input() splitType: number;
     @Input() tabSeq: number;
     @Input() panes: Array<Pane>;
+    @Input() pane1: Pane;
+    @Input() pane2: Pane;
 
     @Input() divLocation: number;
     @Output() divLocationChange = new EventEmitter();
@@ -54,6 +56,11 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     svyOnChanges(changes: SimpleChanges) {
+		if(changes['pane1'] || changes['pane2']) {
+			this.leftTab = this.tabSwitch(this.leftTab, this.pane1?this.pane1:null);
+            this.rightTab = this.tabSwitch(this.rightTab, this.pane2?this.pane2:null);
+		}
+        else 
         if(changes['panes']) {
             this.leftTab = this.tabSwitch(this.leftTab, this.panes?this.panes[0]:null);
             this.rightTab = this.tabSwitch(this.rightTab, this.panes?this.panes[1]:null);
