@@ -11,7 +11,7 @@
 	"keywords": ["left", "right", "navigation"],
 	"model":
 	{
-		"menu"							: {"type" :"MenuItem[]", "default" : [], "pushToServer": "allow", "tags": { "scope" :"runtime" }},
+		"menu"							: {"type" :"MenuItem[]", "default" : [], "pushToServer": "allow"},
 		
 		"selectedIndex"					: {"type" :"string", "tags": { "scope" :"private" }, "pushToServer" : "deep"},
 		"expandedIndex"					: {"type" :"string", "tags": { "scope" :"private" }, "pushToServer" : "deep"},
