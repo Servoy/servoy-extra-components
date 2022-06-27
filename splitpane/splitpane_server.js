@@ -97,7 +97,7 @@
 			 * @return {Boolean} value indicating if pane was successfully added
 			 */
 			$scope.api.setLeftForm = function(form, relation) {
-                $scope.model.panes = [];
+                $scope.onShow();
 				$scope.model.pane1 = {
 					containsFormId : form,
 					relationName : relation
@@ -114,7 +114,7 @@
 			 * @return {Boolean} value indicating if pane was successfully added
 			 */
 			$scope.api.setRightForm = function(form, relation) {
-                $scope.model.panes = [];
+               $scope.onShow();
 				$scope.model.pane2 = {
 					containsFormId : form,
 					relationName : relation
@@ -130,9 +130,8 @@
 			 * @return {FormScope} left form of the split pane
 			 */
 			$scope.api.getLeftForm = function() {
-                if ((!$scope.model.panes || !$scope.model.panes[0]) && !$scope.model.pane1) return null;
-				if ($scope.model.panes && $scope.model.panes[0] && !$scope.model.pane1) $scope.model.pane1 = $scope.model.panes[0];
-  				
+                $scope.onShow();
+                if (!$scope.model.pane1) return null;
                 return $scope.model.pane1.containsFormId;
 			}
 			
@@ -142,9 +141,8 @@
 			 * @return {FormScope} right form of the split pane
 			 */
 			$scope.api.getRightForm = function() {
-				if ((!$scope.model.panes || !$scope.model.panes[1]) && !$scope.model.pane2) return null;
-				if ($scope.model.panes && $scope.model.panes[1] && !$scope.model.pane2) $scope.model.pane2 = $scope.model.panes[1];
-  				
+                $scope.onShow();
+				if (!$scope.model.pane2) return null;
                 return $scope.model.pane2.containsFormId;
 			}
 			
@@ -154,19 +152,14 @@
  			 *	This is needed for backward compatibility with the deprecated property panes[]
  			 */
 			$scope.onShow = function() {
-				if ($scope.model.pane1 || $scope.model.pane2) {
-					$scope.model.panes = [];
-				} else 
-				if ($scope.model.panes) {
-					if ($scope.model.panes[0]) {
-						$scope.model.pane1 = $scope.model.panes[0];
-						$scope.model.panes[0] = null;
-					}
-					if ($scope.model.panes[1]) {
-						$scope.model.pane2 = $scope.model.panes[1];
-						$scope.model.panes[1] = null;
-					}
-					$scope.model.panes = [];
-				};
+                if ($scope.model.panes) {
+    				if (!$scope.model.pane1 && $scope.model.panes[0]) {
+    					$scope.model.pane1 = $scope.model.panes[0];
+    				}
+    				if (!$scope.model.pane2 && $scope.model.panes[1]) {
+    					$scope.model.pane2 = $scope.model.panes[1];
+    				}
+    				$scope.model.panes = null;
+				}
 			}
 			

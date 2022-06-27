@@ -229,6 +229,7 @@ angular.module('servoyextraSplitpane',['servoy']).directive('servoyextraSplitpan
 			}
 
 			$scope.$watch("model.pane1.containsFormId", function(newValue, oldValue) {
+                if (oldValue === newValue) return;
                 if (oldValue){
                     $scope.svyServoyapi.hideForm(oldValue);
                 }
@@ -237,6 +238,7 @@ angular.module('servoyextraSplitpane',['servoy']).directive('servoyextraSplitpan
 				}
 			});
 			$scope.$watch("model.pane2.containsFormId", function(newValue, oldValue) {
+                if (oldValue === newValue) return;
                 if (oldValue){
                     $scope.svyServoyapi.hideForm(oldValue);
                 }
