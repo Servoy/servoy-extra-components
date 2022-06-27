@@ -130,7 +130,7 @@ const finishInit = () => {
     TestBed.configureTestingModule({
       declarations: [TestWrapperComponent, ServoyExtraTable, TableRow],
       imports: [ServoyTestingModule, ScrollingModule, NgbModule, ResizableModule, ServoyPublicModule],
-      providers: [FoundsetLinkedConverter, FoundsetConverter, ConverterService, TestabilityService, SpecTypesService, LoggerFactory,
+      providers: [FoundsetLinkedConverter, FoundsetConverter, ConverterService, SpecTypesService, LoggerFactory,
         WindowRefService, ServicesService, SessionStorageService, ViewportService, LoadingIndicatorService]
     });
 
