@@ -196,7 +196,7 @@ angular.module('servoyextraCollapse', ['servoy']) //$NON-NLS-1$ //$NON-NLS-2$
 						
 					} else {
 						var accordionClosedCollapsible = setCollapsedState(collapsibleIndex, !previousState);
-						if (accordionClosedCollapsible !== null) {
+						if (accordionClosedCollapsible !== null && $scope.handlers.onCollapsibleHidden) {
 							$scope.handlers.onCollapsibleHidden(e, accordionClosedCollapsible.collapsible, accordionClosedCollapsible.index);
 						}
 						if (previousState === true && $scope.handlers.onCollapsibleShown) {
