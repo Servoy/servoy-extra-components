@@ -9,7 +9,8 @@ angular.module('servoyextraHtmlarea',['servoy','ui.tinymce']).directive('servoye
 		},
 		controller: function($scope, $element, $attrs) {
 			var lastServerValueAsSeenByTinyMCEContent;
-
+            var element = $element.children().first();
+            
 			$scope.findMode = false;
 			$scope.tinyValue = !$scope.svyServoyapi.isInDesigner() && $scope.model.dataProviderID ? $scope.model.dataProviderID : '' ;
 			$scope.init = false;
@@ -98,7 +99,17 @@ angular.module('servoyextraHtmlarea',['servoy','ui.tinymce']).directive('servoye
 								 $scope.handlers.onFocusLostMethodID(createEvent(e));
 							 }
 					     });
-						 
+						ed.on('keyup',function(e) {
+                             // needed for keylistener plugin
+                             // create a real event object
+                             var jqueryevent = $.Event('keyup');
+                             jqueryevent.keyCode= e.keyCode;
+                             jqueryevent.altKey = e.altKey;
+                             jqueryevent.ctrlKey = e.ctrlKey;
+                             jqueryevent.shiftKey = e.shiftKey;
+                             jqueryevent.originalEvent = {};
+                             element.trigger(jqueryevent);
+                         });
 						 var createEvent = function(e)
 						 {
 							 var ev = new MouseEvent(e.type);
@@ -294,7 +305,6 @@ angular.module('servoyextraHtmlarea',['servoy','ui.tinymce']).directive('servoye
                 }
 			}
 			
-			var element = $element.children().first();
 			var className = null;
 			Object.defineProperty($scope.model, 	$sabloConstants.modelChangeNotifier, {
 				configurable : true,

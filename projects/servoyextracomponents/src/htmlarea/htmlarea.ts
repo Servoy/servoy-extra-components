@@ -66,7 +66,11 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
     click() {
         if (this.onActionMethodID) this.onActionMethodID(new CustomEvent('click'));
     }
-
+    
+    keyUp(event){
+        this.getNativeElement().dispatchEvent(new KeyboardEvent('keyup', event.event ));
+    }
+    
     ngOnInit(){
         super.ngOnInit();
 

@@ -8,6 +8,7 @@
    (onFocus)="focus()"
    (onBlur)="blur()"
    (onClick)="click()"
+   (onKeyUp)="keyUp($event)"
    [(ngModel)]="tinyValue"
    [id]="servoyApi.getMarkupId()+'_editor'"
    style="height: 100%"
