@@ -185,7 +185,10 @@ angular.module('servoyextraCollapse', ['servoy']) //$NON-NLS-1$ //$NON-NLS-2$
 								if (result !== false) {
 									var collapsibleElement = getCollapsibleElement(collapsibleIndex);
 									collapsibleElement.collapse('toggle');
-									setCollapsedState(collapsibleIndex, !previousState);
+									var accordionClosedCollapsible = setCollapsedState(collapsibleIndex, !previousState);
+									if (accordionClosedCollapsible !== null && $scope.handlers.onCollapsibleHidden) {
+										$scope.handlers.onCollapsibleHidden(e, accordionClosedCollapsible.collapsible, accordionClosedCollapsible.index);
+									}
 									if (previousState === true && $scope.handlers.onCollapsibleShown) {
 										$scope.handlers.onCollapsibleShown(e, collapsible, collapsibleIndex);
 									} else if (previousState !== true && $scope.handlers.onCollapsibleHidden) {
