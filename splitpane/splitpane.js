@@ -69,7 +69,7 @@ angular.module('servoyextraSplitpane',['servoy']).directive('servoyextraSplitpan
 			$scope.processDivLocation = function() {
 				if(!splitPane1 || !splitPane2) return;
 				var jqueryDivEl = getHandlerElement();
-				if (jqueryDivEl.length == 0) {
+				if (jqueryDivEl.length == 0 || ($scope.model.splitType == 0 && getWidth() == 0) || ($scope.model.splitType == 1 && getHeight() == 0)) {
 					$timeout($scope.processDivLocation,10);
 					return;
 				}
