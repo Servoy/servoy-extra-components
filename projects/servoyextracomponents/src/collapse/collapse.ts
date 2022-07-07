@@ -128,10 +128,14 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
                 .then((result) => {
                     if (result !== false) {
                         const collapsibleElement = this.getCollapsible(collapsibleIndex);
-                        this.setCollapsedState(collapsibleIndex, !previousState);
                         if (!collapsibleElement.form && !collapsibleElement.cards) {
                             this.cdRef.detectChanges();
                         }
+                        const [closedCollapsebile, closedIndex] = this.setCollapsedState(collapsibleIndex, !previousState);
+            			if (closedCollapsebile !== null && closedIndex !== null && this.onCollapsibleHidden) { 
+							// this block only executes when there was a close due to accordion mode.
+							this.onCollapsibleHidden(e, closedCollapsebile, closedIndex);
+						}
                         if (previousState === true && this.onCollapsibleShown) {
                             this.onCollapsibleShown(e, collapsible, collapsibleIndex);
                         } else if (previousState !== true && this.onCollapsibleHidden) {
