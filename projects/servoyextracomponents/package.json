@@ -29,7 +29,7 @@
     "@uppy/screen-capture": "<3",
     "@uppy/webcam": "<3",
     "@circlon/angular-tree-component": "<12",
-    "angular-tree-grid": "<5",
+    "angular-tree-grid": "4.0.5",
     "@angular-slider/ngx-slider": "<3",
     "angular-resizable-element": "<6",
     "ng-select2-component": "<10",
