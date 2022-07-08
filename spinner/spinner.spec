@@ -21,7 +21,7 @@
 	        "tabSeq" : {"type" :"tabseq", "tags": { "scope" :"design" }}, 
 	        "text" : { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags" }, 
 	        "toolTipText" : { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags" },
-	        "valuelistID" : { "type" : "valuelist", "tags": { "scope" :"design" }, "for": "dataProviderID"}, 
+	        "valuelistID" : { "type" : "valuelist",  "for": "dataProviderID"}, 
 	        "visible" : "visible",
 			"responsiveHeight": { "type": "int", "default": 30 , "tags": { "doc" :"Minimum height of the spinner, set only in responsive forms."}}
 	},
