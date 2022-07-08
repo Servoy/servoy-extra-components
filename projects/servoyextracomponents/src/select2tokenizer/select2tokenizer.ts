@@ -47,7 +47,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 
     private updateValueCallsToSkip = 0;
     private currentSelectedValues = 0;
-    
+
     constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, @Inject(DOCUMENT) private doc: Document) {
         super(renderer, cdRef);
     }
@@ -72,34 +72,34 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
         }
     }
 
-    attachFocusListeners( nativeElement: HTMLDivElement ) {
-        if ( this.onFocusGainedMethodID ) {
+    attachFocusListeners(nativeElement: HTMLDivElement) {
+        if (this.onFocusGainedMethodID) {
             this.select2.focus.subscribe(() => {
-                if ( this.mustExecuteOnFocus !== false ) {
-                    this.onFocusGainedMethodID( new CustomEvent( 'focus' ) );
+                if (this.mustExecuteOnFocus !== false) {
+                    this.onFocusGainedMethodID(new CustomEvent('focus'));
                 }
                 this.mustExecuteOnFocus = true;
-            } );
+            });
             /* used for triggering a focus gained when the component is not editable
              * fix for SVYX-210 */
-            this.renderer.listen( nativeElement, 'focusin', ( e ) => {
-                if ( !this.isEditable() ) {
-                    this.onFocusGainedMethodID( e );
+            this.renderer.listen(nativeElement, 'focusin', (e) => {
+                if (!this.isEditable()) {
+                    this.onFocusGainedMethodID(e);
                 }
-            } );
+            });
         }
-        if ( this.onFocusLostMethodID ) {
+        if (this.onFocusLostMethodID) {
             this.select2.close.subscribe(() => {
-                this.onFocusLostMethodID( new CustomEvent( 'close' ) );
-            } );
+                this.onFocusLostMethodID(new CustomEvent('close'));
+            });
 
             /* used for triggering a focus lost when the component is not editable
              * fix for SVYX-210 */
-            this.renderer.listen( nativeElement, 'focusout', ( e ) => {
-                if ( !this.isEditable() ) {
-                    this.onFocusLostMethodID( e );
+            this.renderer.listen(nativeElement, 'focusout', (e) => {
+                if (!this.isEditable()) {
+                    this.onFocusLostMethodID(e);
                 }
-            } );
+            });
         }
     }
 
@@ -130,10 +130,10 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                 });
             }
             this.data = options;
-            if ( this.filteredDataProviderId && this.filteredDataProviderId.length ) {
-                for ( let i = 0; this.filteredDataProviderId && i < this.filteredDataProviderId.length; i++ ) {
+            if (this.filteredDataProviderId && this.filteredDataProviderId.length) {
+                for (let i = 0; this.filteredDataProviderId && i < this.filteredDataProviderId.length; i++) {
                     const realValue = this.filteredDataProviderId[i];
-                    this.checkDataList( realValue );
+                    this.checkDataList(realValue);
                 }
             }
         }
@@ -155,15 +155,15 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
         this.currentSelectedValues = event.options.length;
 
         if (!this.compareArrays(this.filteredDataProviderId, event.value)) {
-            if(event.value.length > 0){
-                if(event.value.length > 1 && this.isTypeString()){
+            if (event.value.length > 0) {
+                if (event.value.length > 1 && this.isTypeString()) {
                     this.filteredDataProviderId = event.value;
                     this.dataProviderID = event.value.join('\n');
-                } else if(event.value.length === 1 || this.isTypeNumber() || this.isTypeBoolean()){
+                } else if (event.value.length === 1 || this.isTypeNumber() || this.isTypeBoolean()) {
                     this.filteredDataProviderId[0] = event.value[event.value.length - 1];
                     this.dataProviderID = this.filteredDataProviderId[0];
                 } else {
-                    console.log('Warning dataProviderID typeof ' + typeof this.dataProviderID  + ' not allowed');
+                    console.log('Warning dataProviderID typeof ' + typeof this.dataProviderID + ' not allowed');
                 }
             } else {
                 this.dataProviderID = null;
@@ -182,19 +182,19 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
         }
     }
 
-    svyOnChanges( changes: SimpleChanges ) {
-        if ( changes['valuelistID'] ) {
+    svyOnChanges(changes: SimpleChanges) {
+        if (changes['valuelistID']) {
             this.setData();
         }
-        if ( changes['dataProviderID'] ) {
-            this.filteredDataProviderId = this.dataProviderID ? ( this.isTypeString() ? this.dataProviderID.split( '\n' ) : [this.dataProviderID] ) : [];
+        if (changes['dataProviderID']) {
+            this.filteredDataProviderId = this.dataProviderID ? (this.isTypeString() ? this.dataProviderID.split('\n') : [this.dataProviderID]) : [];
             this.updateValueCallsToSkip = Math.max(this.filteredDataProviderId.length - this.currentSelectedValues, 0);
             this.setData();
         }
-        if ( changes['size'] ) {
-            this.renderer.setProperty( this.elementRef.nativeElement, 'height', this.size.height );
+        if (changes['size']) {
+            this.renderer.setProperty(this.elementRef.nativeElement, 'height', this.size.height);
         }
-        super.svyOnChanges( changes );
+        super.svyOnChanges(changes);
     }
 
     checkDataList(realValue: any) {
@@ -203,13 +203,13 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                 value: realValue,
                 label: realValue // should we do here just an empty string or really the realvalue..
             };
-            this.data.push( option );
-            this.valuelistID.getDisplayValue( realValue ).subscribe( (val) => {
-                if ( val ) {
+            this.data.push(option);
+            this.valuelistID.getDisplayValue(realValue).subscribe((val) => {
+                if (val) {
                     option.label = val;
                     this.cdRef.detectChanges();
                 }
-            } );
+            });
         }
     }
 
@@ -247,29 +247,31 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     listOpened(event: Select2) {
         if (this.allowNewEntries && !this.newEntriesInit) {
             this.newEntriesInit = true;
-            const inputTextfield = this.getNativeChild().querySelector('input');
-            if (inputTextfield) {
-                let prevValue: string;
-                inputTextfield.addEventListener('keyup', () => {
-                    const newValue = inputTextfield.value;
-                    if (prevValue != newValue) {
-                        const option: Select2Option = {
-                            value: newValue,
-                            label: newValue
-                        };
-                        if (prevValue) {
-                            if (newValue != '' && !this.data.some(item => item.value == newValue)){
-                              this.data[0] = option;
+            setTimeout(() => {
+                const inputTextfield = this.doc.querySelector('.select2-search__field') as HTMLInputElement;
+                if (inputTextfield) {
+                    let prevValue: string;
+                    inputTextfield.addEventListener('keyup', () => {
+                        const newValue = inputTextfield.value;
+                        if (prevValue != newValue) {
+                            const option: Select2Option = {
+                                value: newValue,
+                                label: newValue
+                            };
+                            if (prevValue) {
+                                if (newValue != '' && !this.data.some(item => item.value == newValue)) {
+                                    this.data[0] = option;
+                                } else {
+                                    this.data.shift();
+                                }
                             } else {
-                                this.data.shift();
+                                this.data.unshift(option);
                             }
-                        } else {
-                            this.data.unshift(option);
+                            prevValue = newValue;
                         }
-                        prevValue = newValue;
-                    }
-                });
-            }
+                    });
+                }
+            }, 300);
         }
     }
 
@@ -283,11 +285,11 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
      * @param arr1
      * @param arr2
      */
-    private compareArrays( arr1: any, arr2: any ) {
-        if(!Array.isArray(arr1) || !Array.isArray(arr2)) return false;
-        if ( arr1.length !== arr2.length ) return false;
-        for ( let i = 0, len = arr1.length; i < len; i++ ) {
-            if ( arr1[i] + '' !== arr2[i] + '') {
+    private compareArrays(arr1: any, arr2: any) {
+        if (!Array.isArray(arr1) || !Array.isArray(arr2)) return false;
+        if (arr1.length !== arr2.length) return false;
+        for (let i = 0, len = arr1.length; i < len; i++) {
+            if (arr1[i] + '' !== arr2[i] + '') {
                 return false;
             }
         }
@@ -295,14 +297,14 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     }
 
     private isTypeString() {
-                return  this.format. type === "TEXT";
-    } 
+        return this.format.type === "TEXT";
+    }
 
     private isTypeNumber() {
-                return  this.format. type === "INTEGER";
+        return this.format.type === "INTEGER";
     }
 
     private isTypeBoolean() {
-                return  typeof this.dataProviderID === 'boolean';
+        return typeof this.dataProviderID === 'boolean';
     }
 }
