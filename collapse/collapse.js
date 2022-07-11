@@ -159,7 +159,38 @@ angular.module('servoyextraCollapse', ['servoy']) //$NON-NLS-1$ //$NON-NLS-2$
 					return $('#' + $scope.model.svyMarkupId + '-' + index + '-collapsible'); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				}
 
-				var lastClick = null;
+				function openOrCloseCollapsiblesAfterClick(e, collapsibleIndex, collapsible, previousState) {
+					var accordionClosedCollapsible = setCollapsedState(collapsibleIndex, !previousState);
+					if (accordionClosedCollapsible !== null && $scope.handlers.onCollapsibleHidden) {
+						$scope.handlers.onCollapsibleHidden(e, accordionClosedCollapsible.collapsible, accordionClosedCollapsible.index);
+					}
+					if (previousState === true && $scope.handlers.onCollapsibleShown) {
+						$scope.handlers.onCollapsibleShown(e, collapsible, collapsibleIndex);
+					} else if (previousState !== true && $scope.handlers.onCollapsibleHidden) {
+						$scope.handlers.onCollapsibleHidden(e, collapsible, collapsibleIndex);
+					}
+				}
+
+				function handleHeaderClickEvent(e, handlerFunction) {
+					var collapsibleIndex = $(e.target).closest('.svy-collapse-collapsible').attr('id').split('-')[1] //$NON-NLS-1$ //$NON-NLS-2$
+					var collapsible = $scope.model.collapsibles[collapsibleIndex];
+					var previousState = collapsible.isCollapsed;
+
+					if (handlerFunction) {
+						var dataTarget = $(e.target).closest('[data-target]');
+						handlerFunction(e, collapsible, collapsibleIndex, dataTarget ? dataTarget.attr('data-target') : null)
+							.then(function(result) {
+								if (result !== false) {
+									var collapsibleElement = getCollapsibleElement(collapsibleIndex);
+									collapsibleElement.collapse('toggle');
+									openOrCloseCollapsiblesAfterClick(e, collapsibleIndex, collapsible, previousState);
+								}
+							});
+					} else {
+						openOrCloseCollapsiblesAfterClick(e, collapsibleIndex, collapsible, previousState);
+					}
+				}
+
 				/**
 				 * onClick handler setting the collapsible state and possibly calling handlers
 				 */
@@ -179,46 +210,12 @@ angular.module('servoyextraCollapse', ['servoy']) //$NON-NLS-1$ //$NON-NLS-2$
 							$scope.clicked = false;
 							return;
 						}
-						
 
-						var collapsibleIndex = $(e.target).closest('.svy-collapse-collapsible').attr('id').split('-')[1] //$NON-NLS-1$ //$NON-NLS-2$
-						var collapsible = $scope.model.collapsibles[collapsibleIndex];
-						var previousState = collapsible.isCollapsed;
-
-						if ($scope.handlers.onHeaderClicked) {
-							var dataTarget = $(e.target).closest('[data-target]');
-							$scope.handlers.onHeaderClicked(e, collapsible, collapsibleIndex, dataTarget ? dataTarget.attr('data-target') : null)
-								.then(function(result) {
-									if (result !== false) {
-										var collapsibleElement = getCollapsibleElement(collapsibleIndex);
-										collapsibleElement.collapse('toggle');
-										var accordionClosedCollapsible = setCollapsedState(collapsibleIndex, !previousState);
-										if (accordionClosedCollapsible !== null && $scope.handlers.onCollapsibleHidden) {
-											$scope.handlers.onCollapsibleHidden(e, accordionClosedCollapsible.collapsible, accordionClosedCollapsible.index);
-										}
-										if (previousState === true && $scope.handlers.onCollapsibleShown) {
-											$scope.handlers.onCollapsibleShown(e, collapsible, collapsibleIndex);
-										} else if (previousState !== true && $scope.handlers.onCollapsibleHidden) {
-											$scope.handlers.onCollapsibleHidden(e, collapsible, collapsibleIndex);
-										}
-									}
-								});
-						} else {
-							var accordionClosedCollapsible = setCollapsedState(collapsibleIndex, !previousState);
-							if (accordionClosedCollapsible !== null && $scope.handlers.onCollapsibleHidden) {
-								$scope.handlers.onCollapsibleHidden(e, accordionClosedCollapsible.collapsible, accordionClosedCollapsible.index);
-							}
-							if (previousState === true && $scope.handlers.onCollapsibleShown) {
-								$scope.handlers.onCollapsibleShown(e, collapsible, collapsibleIndex);
-							} else if (previousState !== true && $scope.handlers.onCollapsibleHidden) {
-								$scope.handlers.onCollapsibleHidden(e, collapsible, collapsibleIndex);
-							}
-						}
+						handleHeaderClickEvent(e, $scope.handlers.onHeaderClicked);
 
 						$scope.cancelClick = false;
 						$scope.clicked = false;
 					}, 300);
-
 				}
 
 				$scope.onDoubleClick = function(e) {
@@ -226,40 +223,7 @@ angular.module('servoyextraCollapse', ['servoy']) //$NON-NLS-1$ //$NON-NLS-2$
 						e.stopPropagation();
 						e.preventDefault();
 						
-						var collapsibleIndex = $(e.target).closest('.svy-collapse-collapsible').attr('id').split('-')[1] //$NON-NLS-1$ //$NON-NLS-2$
-						var collapsible = $scope.model.collapsibles[collapsibleIndex];
-						var previousState = collapsible.isCollapsed;
-
-						if ($scope.handlers.onHeaderDoubleClicked) {
-							
-							var dataTarget = $(e.target).closest('[data-target]');
-							$scope.handlers.onHeaderDoubleClicked(e, collapsible, collapsibleIndex, dataTarget ? dataTarget.attr('data-target') : null)
-								.then(function(result) {
-									if (result !== false) {
-										var collapsibleElement = getCollapsibleElement(collapsibleIndex);
-										collapsibleElement.collapse('toggle');
-										var accordionClosedCollapsible = setCollapsedState(collapsibleIndex, !previousState);
-										if (accordionClosedCollapsible !== null && $scope.handlers.onCollapsibleHidden) {
-											$scope.handlers.onCollapsibleHidden(e, accordionClosedCollapsible.collapsible, accordionClosedCollapsible.index);
-										}
-										if (previousState === true && $scope.handlers.onCollapsibleShown) {
-											$scope.handlers.onCollapsibleShown(e, collapsible, collapsibleIndex);
-										} else if (previousState !== true && $scope.handlers.onCollapsibleHidden) {
-											$scope.handlers.onCollapsibleHidden(e, collapsible, collapsibleIndex);
-										}
-									}
-								});
-						} else {
-							var accordionClosedCollapsible = setCollapsedState(collapsibleIndex, !previousState);
-							if (accordionClosedCollapsible !== null && $scope.handlers.onCollapsibleHidden) {
-								$scope.handlers.onCollapsibleHidden(e, accordionClosedCollapsible.collapsible, accordionClosedCollapsible.index);
-							}
-							if (previousState === true && $scope.handlers.onCollapsibleShown) {
-								$scope.handlers.onCollapsibleShown(e, collapsible, collapsibleIndex);
-							} else if (previousState !== true && $scope.handlers.onCollapsibleHidden) {
-								$scope.handlers.onCollapsibleHidden(e, collapsible, collapsibleIndex);
-							}
-						}
+						handleHeaderClickEvent(e, $scope.handlers.onHeaderDoubleClicked);
 					})
 				}
 
