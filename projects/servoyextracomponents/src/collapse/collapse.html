@@ -16,6 +16,7 @@
 			class="svy-collapse-header {{collapsible.isCollapsed ? 'collapsed' : ''}} {{collapsible.headerStyleClass}}" 
 			id="{{servoyApi.getMarkupId()}}-{{idx}}-header" 
 			(click)="onClick($event)"
+			(dblclick)="onDoubleClick($event)"
 			attr.data-target="#{{servoyApi.getMarkupId()}}-{{idx}}-collapsible"
 			attr.aria-controls="{{servoyApi.getMarkupId()}}-{{idx}}-collapsible" 
 			role="button" >

@@ -18,6 +18,7 @@
 			class="svy-collapse-header {{collapsible.isCollapsed ? 'collapsed' : ''}} {{collapsible.headerStyleClass}}" 
 			id="{{::model.svyMarkupId}}-{{$index}}-header" 
 			ng-click="onClick($event)"
+			ng-dblclick="onDoubleClick($event)"
 			data-toggle="collapse" 
 			data-target="#{{::model.svyMarkupId}}-{{$index}}-collapsible" 
 			aria-expanded="{{!collapsible.isCollapsed}}" 
