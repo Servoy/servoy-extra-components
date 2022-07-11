@@ -117,45 +117,8 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 			if (!this.preventSingleClick) {
 				e.stopPropagation();
 				e.preventDefault();
-				const collapsibleIndex = parseInt((e.target as Element).closest('.svy-collapse-collapsible').getAttribute('id').split('-')[1], 10);
-				const collapsible = this.collapsibles[collapsibleIndex];
-				const previousState = collapsible.isCollapsed;
 
-				if (this.onHeaderClicked) {
-
-					const dataTarget = this.getCollapsibleElement(collapsibleIndex, 'header');
-					this.onHeaderClicked(e, collapsible, collapsibleIndex, dataTarget ? dataTarget.getAttribute('data-target') : null)
-						.then((result) => {
-							if (result !== false) {
-								const collapsibleElement = this.getCollapsible(collapsibleIndex);
-								this.setCollapsedState(collapsibleIndex, !previousState);
-								if (!collapsibleElement.form && !collapsibleElement.cards) {
-									this.cdRef.detectChanges();
-								}
-								const [closedCollapsebile, closedIndex] = this.setCollapsedState(collapsibleIndex, !previousState);
-            					if (closedCollapsebile !== null && closedIndex !== null && this.onCollapsibleHidden) { 
-									// this block only executes when there was a close due to accordion mode.
-									this.onCollapsibleHidden(e, closedCollapsebile, closedIndex);
-								}
-								if (previousState === true && this.onCollapsibleShown) {
-									this.onCollapsibleShown(e, collapsible, collapsibleIndex);
-								} else if (previousState !== true && this.onCollapsibleHidden) {
-									this.onCollapsibleHidden(e, collapsible, collapsibleIndex);
-								}
-							}
-						});
-				} else {
-					const [closedCollapsebile, closedIndex] = this.setCollapsedState(collapsibleIndex, !previousState);
-					if (closedCollapsebile !== null && closedIndex !== null && this.onCollapsibleHidden) {
-						// this block only executes when there was a close due to accordion mode.
-						this.onCollapsibleHidden(e, closedCollapsebile, closedIndex);
-					}
-					if (previousState === true && this.onCollapsibleShown) {
-						this.onCollapsibleShown(e, collapsible, collapsibleIndex);
-					} else if (previousState !== true && this.onCollapsibleHidden) {
-						this.onCollapsibleHidden(e, collapsible, collapsibleIndex);
-					}
-				}
+				this.handleHeaderClickEvent(e, this.onHeaderClicked);
 			}
 		}, 300);
 	}
@@ -166,14 +129,19 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 
 		this.preventSingleClick = true;
 		clearTimeout(this.timer);
+
+		this.handleHeaderClickEvent(e, this.onHeaderDoubleClicked);
+	}
+	
+	handleHeaderClickEvent(e: Event, handlerFunction: (e: Event, collapsible: Collapsible, collapsibleIndex: number, dataTarget: string) => Promise<boolean>) {
 		const collapsibleIndex = parseInt((e.target as Element).closest('.svy-collapse-collapsible').getAttribute('id').split('-')[1], 10);
 		const collapsible = this.collapsibles[collapsibleIndex];
 		const previousState = collapsible.isCollapsed;
 
-		if (this.onHeaderDoubleClicked) {
+		if (handlerFunction) {
 
 			const dataTarget = this.getCollapsibleElement(collapsibleIndex, 'header');
-			this.onHeaderDoubleClicked(e, collapsible, collapsibleIndex, dataTarget ? dataTarget.getAttribute('data-target') : null)
+			handlerFunction(e, collapsible, collapsibleIndex, dataTarget ? dataTarget.getAttribute('data-target') : null)
 				.then((result) => {
 					if (result !== false) {
 						const collapsibleElement = this.getCollapsible(collapsibleIndex);
@@ -181,30 +149,25 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 						if (!collapsibleElement.form && !collapsibleElement.cards) {
 							this.cdRef.detectChanges();
 						}
-						const [closedCollapsebile, closedIndex] = this.setCollapsedState(collapsibleIndex, !previousState);
-						if (closedCollapsebile !== null && closedIndex !== null && this.onCollapsibleHidden) {
-							// this block only executes when there was a close due to accordion mode.
-							this.onCollapsibleHidden(e, closedCollapsebile, closedIndex);
-						}
-						if (previousState === true && this.onCollapsibleShown) {
-							this.onCollapsibleShown(e, collapsible, collapsibleIndex);
-						} else if (previousState !== true && this.onCollapsibleHidden) {
-							this.onCollapsibleHidden(e, collapsible, collapsibleIndex);
-						}
+						this.closeOrOpenCollapsiblesAfterClick(e, collapsibleIndex, collapsible, previousState);
 					}
 				});
 		} else {
-			const [closedCollapsebile, closedIndex] = this.setCollapsedState(collapsibleIndex, !previousState);
-			if (closedCollapsebile !== null && closedIndex !== null && this.onCollapsibleHidden) {
+			this.closeOrOpenCollapsiblesAfterClick(e, collapsibleIndex, collapsible, previousState);
+		}
+	}
+	
+	closeOrOpenCollapsiblesAfterClick(e: Event, collapsibleIndex: number, collapsible: Collapsible, previousState: boolean) {
+		const [closedCollapsible, closedIndex] = this.setCollapsedState(collapsibleIndex, !previousState);
+			if (closedCollapsible !== null && closedIndex !== null && this.onCollapsibleHidden) {
 				// this block only executes when there was a close due to accordion mode.
-				this.onCollapsibleHidden(e, closedCollapsebile, closedIndex);
+				this.onCollapsibleHidden(e, closedCollapsible, closedIndex);
 			}
 			if (previousState === true && this.onCollapsibleShown) {
 				this.onCollapsibleShown(e, collapsible, collapsibleIndex);
 			} else if (previousState !== true && this.onCollapsibleHidden) {
 				this.onCollapsibleHidden(e, collapsible, collapsibleIndex);
 			}
-		}
 	}
 
 	onCardClick(e: Event, cardIndex: number, collapsibleIndex: number) {
