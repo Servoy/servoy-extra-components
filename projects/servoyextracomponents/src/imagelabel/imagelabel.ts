@@ -16,8 +16,10 @@ export class ServoyExtraImageLabel extends ServoyBaseComponent<HTMLImageElement>
     @Input() tabSeq: number;
     @Input() media: any;
 
-    imageURL = 'bootstrapcomponents/imagemedia/images/empty.gif';
+    imageURL = 'servoyextra/imagelabel/empty.gif';
 
+    designerURL = 'servoyextra/imagelabel/label.png';
+    
     constructor( renderer: Renderer2, cdRef: ChangeDetectorRef) {
         super( renderer, cdRef );
     }
@@ -25,6 +27,9 @@ export class ServoyExtraImageLabel extends ServoyBaseComponent<HTMLImageElement>
     svyOnInit() {
         super.svyOnInit();
         this.attachHandlers();
+        if (this.servoyApi.isInDesigner()){
+            this.imageURL = this.designerURL;
+        }
     }
 
     svyOnChanges( changes: SimpleChanges ) {
@@ -58,7 +63,9 @@ export class ServoyExtraImageLabel extends ServoyBaseComponent<HTMLImageElement>
     }
 
     private updateImageURL( media: any ) {
-        this.imageURL = media;
+        if (!this.servoyApi.isInDesigner()){
+            this.imageURL = media;
+        }
     }
 
     protected attachHandlers() {
