@@ -1,20 +1,20 @@
 import { Component, SimpleChanges, Input, Renderer2, EventEmitter, Output, ChangeDetectorRef, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { ServoyBaseComponent, PropertyUtils, ServoyPublicService } from '@servoy/public';
-import tinymce, { RawEditorSettings } from 'tinymce';
+import tinymce, { RawEditorOptions, Editor } from 'tinymce';
 
-@Component( {
+@Component({
     selector: 'servoyextra-htmlarea',
     templateUrl: './htmlarea.html',
     changeDetection: ChangeDetectionStrategy.OnPush
-} )
+})
 export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
 
 
-    @Input() onActionMethodID: ( e: Event ) => void;
-    @Input() onRightClickMethodID: ( e: Event ) => void;
-    @Input() onDataChangeMethodID: ( e: Event ) => void;
-    @Input() onFocusGainedMethodID: ( e: Event ) => void;
-    @Input() onFocusLostMethodID: ( e: Event ) => void;
+    @Input() onActionMethodID: (e: Event) => void;
+    @Input() onRightClickMethodID: (e: Event) => void;
+    @Input() onDataChangeMethodID: (e: Event) => void;
+    @Input() onFocusGainedMethodID: (e: Event) => void;
+    @Input() onFocusLostMethodID: (e: Event) => void;
 
     @Output() dataProviderIDChange = new EventEmitter();
     @Input() dataProviderID: any;
@@ -43,6 +43,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
         tabfocus_elements: ':prev,:next',
         toolbar: 'fontselect fontsizeselect | bold italic underline | superscript subscript | undo redo |alignleft aligncenter alignright alignjustify | styleselect | outdent indent bullist numlist'
     };
+    editor: Editor;
 
     constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, protected servoyPublicService: ServoyPublicService) {
         super(renderer, cdRef);
@@ -138,15 +139,14 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
                     case 'editable':
                     case 'readOnly':
                     case 'enabled':
-                        let editable = this.editable && !this.readOnly && this.enabled;
-                        if (tinymce.activeEditor) {
+                        const editable = this.editable && !this.readOnly && this.enabled;
+                        if (this.getEditor()) {
                             if (editable) {
                                 if (!change.firstChange) {
-                                    tinymce.activeEditor.mode.set("design");
+                                    this.getEditor().mode.set('design');
                                 }
-                            }
-                            else {
-                                tinymce.activeEditor.mode.set("readonly");
+                            } else {
+                                this.getEditor().mode.set('readonly');
                             }
 
                         }
@@ -158,7 +158,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
                         if(!this.servoyApi.isInAbsoluteLayout()) {
                             this.getNativeElement().style.minHeight = this.responsiveHeight +'px';
                          }
-                    break;    
+                        break;
                 }
             }
         }
@@ -166,7 +166,11 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     getEditor() {
-        return tinymce.get(this.servoyApi.getMarkupId() + '_editor');
+        return this.editor;
+    }
+
+    public onInit({ event, editor }: any) {
+       this.editor = editor;
     }
 
     requestFocus(mustExecuteOnFocusGainedMethod: boolean) {
