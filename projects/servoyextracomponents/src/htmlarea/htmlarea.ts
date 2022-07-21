@@ -39,8 +39,6 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
         menubar: false,
         statusbar: false,
         readonly: false,
-        plugins: 'tabfocus',
-        tabfocus_elements: ':prev,:next',
         toolbar: 'fontselect fontsizeselect | bold italic underline | superscript subscript | undo redo |alignleft aligncenter alignright alignjustify | styleselect | outdent indent bullist numlist'
     };
     editor: Editor;
