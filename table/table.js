@@ -449,6 +449,9 @@ return {
 		}
 
 		function onTableRendered(isNewTBody) {
+			var tbl = document.getElementById('table_'+$scope.model.svyMarkupId);
+			if($scope.model.enableMobileView)
+			tbl.classList.add("mobileview");
 			updateSelection($scope.model.foundset.selectedRowIndexes, null);
 			scrollToSelectionIfNeeded();
 			adjustLoadedRowsIfNeeded();
@@ -2383,6 +2386,9 @@ return {
 			for (var c = 0; c < columns.length; c++) {
 				var column = columns[c];
 				var td = document.createElement("TD");
+				if ($scope.model.enableMobileView) {
+					td.dataset.title = column.headerText;
+				}
 				$(td).data('row_column', { idxInFs: getFoundsetIndexFromViewportIndex(idxInLoaded), column: c, id: column.id });
 				var tdClass = 'c' + c;
 				if (column.styleClass) {

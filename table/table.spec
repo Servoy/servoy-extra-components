@@ -6,7 +6,8 @@
 	"icon": "servoyextra/table/table.png",
 	"definition": "servoyextra/table/table.js",
 	"serverscript": "servoyextra/table/table_server.js",
-	"libraries": [{ "name": "servoyextra-table-css", "version": "1.0", "url": "servoyextra/table/table.css", "mimetype": "text/css" }, { "name": "colResizable", "version": "1.7", "url": "servoyextra/table/js/colResizable-1.7.js", "mimetype": "text/javascript" }],
+	"libraries": [{ "name": "servoyextra-table-css", "version": "1.0", "url": "servoyextra/table/table.css", "mimetype": "text/css" }, { "name": "colResizable", "version": "1.7", "url": "servoyextra/table/js/colResizable-1.7.js", "mimetype": "text/javascript" },
+	{ "name": "servoyextra-table-mobileview-css", "version": "1.0", "url": "servoyextra/table/mobileview.css", "mimetype": "text/css" }],
 	"keywords": ["row", "column"],
 	"model": {
 		"columns": { "type": "column[]", "droppable": true, "pushToServer": "shallow", "elementConfig": { "pushToServer": "shallow" }, "tags": { "wizard": "autoshow","allowaccess": "visible" } },
@@ -31,7 +32,8 @@
 		"lastSelectionFirstElement": { "type": "int", "default": -1, "tags": { "scope": "private", "allowaccess": "visible" }, "pushToServer": "shallow" },
 		"performanceSettings" : { "type": "settings", "tags": { "scope": "design","doc" :"Settings for incremental scrolling, see github wiki for more details." } },
 		"keyCodeSettings" : { "type": "keyCodeSettings", "tags": { "scope": "design", "doc" :"Enable/Disable key bindings." } },
-		"horizontalScrollbar" : {"type": "string", "values": [{"DEFAULT": null}, {"NEVER":"NEVER"}], "tags": {"doc": "By default horizontal scrollbar is shown as needed. Setting to NEVER will always hide it."}}
+		"horizontalScrollbar" : {"type": "string", "values": [{"DEFAULT": null}, {"NEVER":"NEVER"}], "tags": {"doc": "By default horizontal scrollbar is shown as needed. Setting to NEVER will always hide it."}},
+		"enableMobileView" : {"type" : "boolean"}
 	},
 	"types": {
 		"column": {
