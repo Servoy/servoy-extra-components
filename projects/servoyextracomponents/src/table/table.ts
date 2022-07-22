@@ -55,6 +55,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     @Input() responsiveDynamicHeight: boolean;
     @Input() lastSelectionFirstElement: number;
     @Input() keyCodeSettings: KeycodeSettings;
+    @Input() enableMobileView: boolean;
     @Input() performanceSettings: {
         minBatchSizeForRenderingMoreRows: number; minBatchSizeForLoadingMoreRows: number; maxLoadedRows: number;
         maxRenderedRows: number; fastScrollRenderThresholdFactor: number; fastScrollLoadThresholdFactor: number;
@@ -1624,6 +1625,9 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         for (let c = 0; c < columns.length; c++) {
             const column = columns[c];
             const td = document.createElement('TD');
+            if (this.enableMobileView) {
+                td.dataset.title = column.headerText;
+            }
             td['row_column'] = { idxInFs: this.getFoundsetIndexFromViewportIndex(idxInLoaded), column: c, id: column.id };
             let tdClass = 'c' + c;
             if (column.styleClass) {
@@ -1654,6 +1658,9 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     }
 
     private onTableRendered(isNewTBody: boolean) {
+        var tbl = document.getElementById('table_'+this.servoyApi.getMarkupId());
+        if(this.enableMobileView)
+        tbl.classList.add("mobileview");
         this.updateSelection(this.foundset.selectedRowIndexes, null);
         this.scrollToSelectionIfNeeded();
         this.adjustLoadedRowsIfNeeded();

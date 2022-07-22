@@ -1,0 +1,86 @@
+/* This query will take effect for any screen smaller than 760px and also iPads specifically. */
+@media only screen and (max-width: 1000px) {
+		
+	/* Force table to not be like tables anymore */
+	.tablewrapper .mobileview table, 
+	.tablewrapper .mobileview thead, 
+	.tablewrapper .mobileview tbody, 
+	.tablewrapper .mobileview th, 
+	.tablewrapper .mobileview td, 
+	.tablewrapper .mobileview tr {
+		display: block;
+	}
+	
+	.tablewrapper .mobileview.table > thead > tr > th,
+	.tablewrapper .mobileview.table > tbody > tr > th,
+	.tablewrapper .mobileview.table > tfoot > tr > th,
+	.tablewrapper .mobileview.table > thead > tr > td,
+	.tablewrapper .mobileview.table > tbody > tr > td,
+	.tablewrapper .mobileview.table > tfoot > tr > td {
+		border: none;
+	}
+	
+	/* Hide table headers (but not display: none;, for accessibility) */
+	.tablewrapper .mobileview thead tr {
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+	
+	/* Separation between rows */
+	.tablewrapper .mobileview tr {
+		padding: 5px;
+		border-bottom: 1px solid #CCC;
+	}
+
+	.tablewrapper .mobileview .table-stripped tr:nth-child(odd) {
+		background: #EEE;
+	}
+
+	/* Behave like a "row" */
+	.tablewrapper .mobileview td {
+		position: relative;
+		padding: 0 0 0 26%;
+		white-space: nowrap;
+		text-overflow:ellipsis;
+		overflow: hidden;
+		width: 100% !important;
+		max-width: 100% !important;
+	}
+
+	/* Behave like a "table header" */
+	.tablewrapper .mobileview td:before {
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 0;
+		left: 0px;
+		width: 30%;
+		white-space: nowrap;
+		text-overflow:ellipsis;
+		overflow: hidden;
+		/* Label the data, important that the data-title attribute is set to the <td> tag */
+		content: attr(data-title); 
+	}
+	
+	.tablewrapper .mobileview.large-header td:before {
+		width: 50%;
+	}
+	
+	.tablewrapper .mobileview td > div {
+		left: 30%;
+		width: 70%;
+		white-space: nowrap;
+		text-overflow:ellipsis;
+		overflow: hidden;
+	}
+
+	.tablewrapper .mobileview.large-header td > div  {
+		left: 50%;
+		width: 50%;
+	}
+	
+	/* Hide column in mobile view */
+	.tablewrapper .mobileview td.mobileview-hidden {
+		display: none!important;
+	}
+}
