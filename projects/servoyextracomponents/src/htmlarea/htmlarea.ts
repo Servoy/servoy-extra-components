@@ -1,6 +1,7 @@
 import { Component, SimpleChanges, Input, Renderer2, EventEmitter, Output, ChangeDetectorRef, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { ServoyBaseComponent, PropertyUtils, ServoyPublicService } from '@servoy/public';
 import tinymce, { RawEditorOptions, Editor } from 'tinymce';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
     selector: 'servoyextra-htmlarea',
@@ -33,7 +34,6 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
 
     tinyValue: any;
     tinyConfig: RawEditorOptions = {
-        base_url: '/tinymce',
         suffix: '.min',
         height: '100%',
         menubar: false,
@@ -43,7 +43,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
     };
     editor: Editor;
 
-    constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, protected servoyPublicService: ServoyPublicService) {
+    constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, protected servoyPublicService: ServoyPublicService, @Inject(DOCUMENT) private document: Document) {
         super(renderer, cdRef);
     }
 
@@ -74,6 +74,8 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
         super.ngOnInit();
 
         this.tinyConfig['language'] = this.servoyPublicService.getLocale();
+
+        this.tinyConfig['base_url'] = this.document.head.getElementsByTagName('base')[0].href + 'tinymce';
 
         // app level configuration
         let defaultConfiguration = this.servoyPublicService.getUIProperty('config');
