@@ -17,22 +17,20 @@ angular.module('servoyextraHtmlarea',['servoy','ui.tinymce']).directive('servoye
 			$scope.tinyConfig ={
 					/*overwrite ui-tinymce setup routine()*/
 					setup: function(ed){
-						
-						editor = ed
-						editor.settings.height = "100%";
-						$scope.editor = editor;
-						editor.on('init', function() {
+						$scope.editor = ed;
+						ed.settings.height = "100%";
+						ed.on('init', function() {
                             if(!$scope.svyServoyapi.isInAbsoluteLayout()) {
-                                editor.getContainer().style.minHeight = $scope.model.responsiveHeight + "px";
+                                ed.getContainer().style.minHeight = $scope.model.responsiveHeight + "px";
                             }
 							$scope.init = true;
 							if($scope.model.editable){
-								editor.setMode('design');
-								editor.settings.readonly = 0;				
+								ed.setMode('design');
+								ed.settings.readonly = 0;				
 							}
 							else{
-								editor.setMode('readonly');
-								editor.settings.readonly = 1;
+								ed.setMode('readonly');
+								ed.settings.readonly = 1;
 							}							
 							ed.getBody().setAttribute('contenteditable', $scope.model.editable);
 							
@@ -47,7 +45,7 @@ angular.module('servoyextraHtmlarea',['servoy','ui.tinymce']).directive('servoye
 						$scope.$watch('model.editable',function (newVal,oldVal){
 							if (!$scope.init) return;
 							if(oldVal != newVal){
-								newVal ? editor.setMode('design') : editor.setMode('readonly')
+								newVal ? ed.setMode('design') : ed.setMode('readonly')
 								ed.getBody().setAttribute('contenteditable', newVal);
 							}    			   		
 						})

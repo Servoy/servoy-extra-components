@@ -8,8 +8,8 @@
    (onFocus)="focus()"
    (onBlur)="blur()"
    (onClick)="click()"
+   (onInit)="onInit($event)"
    [(ngModel)]="tinyValue"
-   [id]="servoyApi.getMarkupId()+'_editor'"
    style="height: 100%"
    [sabloTabseq]="tabSeq"
     ></editor>
