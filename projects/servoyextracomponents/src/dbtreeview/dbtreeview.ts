@@ -32,6 +32,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     @Input() responsiveHeight: number;
     @Input() selection: Array<Selection>;
     @Input() visible: boolean;
+    @Input() showLoadingIndicator: boolean;
     @Input() onReady: (e: Event, data?: any) => void;
 
     @Input() isInitialized: boolean;

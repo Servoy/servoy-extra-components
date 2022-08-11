@@ -14,7 +14,10 @@
                 <img [src]="node.data.image" alt="Node image"  [ngStyle]="{'width': '15px', 'height': '15px', 'margin-left': '5px', 'margin-bottom': '5px'}">
                 {{node.data.name}}
             </div>
-        </ng-template> 
+        </ng-template>
+		<ng-template #loadingTemplate>
+    		<div *ngIf="showLoadingIndicator">loading...</div>
+  		</ng-template>
         </tree-root>
 </div >
 

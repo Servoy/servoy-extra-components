@@ -25,7 +25,8 @@
 	    "selection" : {"type":"object[]", "tags": { "scope": "private" }},
 	    "levelVisibility" : {"type":"levelVisibilityType", "tags": { "scope": "private" }, "pushToServer": "shallow"},
 		"responsiveHeight": { "type": "int", "default": 0, "tags": { "doc" :"Height of the treeview, set only in responsive forms."} },
-		"isInitialized": { "type": "boolean", "default":false, "tags": {"scope" : "private", "allowaccess": "enabled"}, "pushToServer": "allow"}
+		"isInitialized": { "type": "boolean", "default":false, "tags": {"scope" : "private", "allowaccess": "enabled"}, "pushToServer": "allow"},
+		"showLoadingIndicator": {"type": "boolean", "default": true}
 	},
 	"handlers": {
 		      	"onReady": {
