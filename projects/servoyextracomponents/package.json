@@ -36,6 +36,7 @@
     "@tinymce/tinymce-angular": "<8",
     "tinymce": "^6",
     "tinymce-i18n": ">=22",
+    "rxjs": "^7",
     "tslib": "*"
   },
   "license": "MIT",
