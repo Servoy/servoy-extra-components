@@ -19,7 +19,7 @@
     "ngx-filesaver": "<14",
      "file-saver": "<3",
     "ng2-file-upload": "<2",
-    "@uppy/angular": "<1",
+    "@uppy/angular": "<0.4",
     "@uppy/core": "<3",
      "@uppy/dashboard": "<3",
     "@uppy/drag-drop": "<3",
