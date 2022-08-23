@@ -43,7 +43,6 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     filteredDataProviderId: Array<any>;
     listPosition: 'above' | 'below' = 'below';
     mustExecuteOnFocus = true;
-    newEntriesInit = false;
 
     private updateValueCallsToSkip = 0;
     private currentSelectedValues = 0;
@@ -245,31 +244,34 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     }
 
     listOpened(event: Select2) {
-        if (this.allowNewEntries && !this.newEntriesInit) {
-            this.newEntriesInit = true;
+        if (this.allowNewEntries) {
             setTimeout(() => {
                 const inputTextfield = this.doc.querySelector('.select2-search__field') as HTMLInputElement;
                 if (inputTextfield) {
-                    let prevValue: string;
-                    inputTextfield.addEventListener('keyup', () => {
-                        const newValue = inputTextfield.value;
-                        if (prevValue != newValue) {
-                            const option: Select2Option = {
-                                value: newValue,
-                                label: newValue
-                            };
-                            if (prevValue) {
-                                if (newValue != '' && !this.data.some(item => item.value == newValue)) {
-                                    this.data[0] = option;
+                    const init = inputTextfield.getAttribute('svy-typing-init');
+                    if (!init){
+                        inputTextfield.setAttribute('svy-typing-init', 'true');
+                        let prevValue: string;
+                        inputTextfield.addEventListener('keyup', () => {
+                            const newValue = inputTextfield.value;
+                            if (prevValue != newValue) {
+                                const option: Select2Option = {
+                                    value: newValue,
+                                    label: newValue
+                                };
+                                if (prevValue) {
+                                    if (newValue != '' && !this.data.some(item => item.value == newValue)) {
+                                        this.data[0] = option;
+                                    } else {
+                                        this.data.shift();
+                                    }
                                 } else {
-                                    this.data.shift();
+                                    this.data.unshift(option);
                                 }
-                            } else {
-                                this.data.unshift(option);
+                                prevValue = newValue;
                             }
-                            prevValue = newValue;
-                        }
-                    });
+                        });
+                    }
                 }
             }, 300);
         }
