@@ -227,7 +227,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     }
 
     reset(): void {
-        this.uppy.reset();
+        this.uppy.cancelAll();
     }
 
     upload(): void {

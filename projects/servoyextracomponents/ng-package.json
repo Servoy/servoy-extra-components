@@ -23,6 +23,8 @@
     "@uppy/locales",
     "@uppy/screen-capture",
     "@uppy/tus",
+    "@uppy/status-bar",
+    "@uppy/utils",
     "@uppy/webcam",
     "@angular-slider/ngx-slider", 
     "angular-resizable-element", "ng-select2-component", "@tinymce/tinymce-angular", 
