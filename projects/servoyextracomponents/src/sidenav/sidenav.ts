@@ -762,7 +762,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 
             // start hover remove animation
             this.renderer.addClass(sidenav, 'svy-hover-animate');
-            this.renderer.addClass(sidenav, 'svy-hover-remove ');
+            this.renderer.addClass(sidenav, 'svy-hover-remove');
             this.renderer.removeClass(sidenav, 'svy-hover');
 
             // complete hover animation
