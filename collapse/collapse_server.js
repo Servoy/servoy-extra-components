@@ -226,7 +226,7 @@ $scope.api.removeAllCollapsibles = function () {
  
     for (var c = 0; c < $scope.model.collapsibles.length; c++) {
     	if ($scope.model.collapsibles[c].form && !servoyApi.hideForm($scope.model.collapsibles[c].form)) {
-    		for (var i = 0; i < c - 1; i++) {
+    		for (var i = 0; i < c; i++) {
     			$scope.api.hide(i);
     		}
     		return false;
