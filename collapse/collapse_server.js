@@ -186,7 +186,7 @@ $scope.api.removeCollapsibleById = function(collapsibleId) {
             if ($scope.model.collapsibles[c].form && !servoyApi.hideForm($scope.model.collapsibles[c].form)) {
             	return false;
             } 
-            $scope.model.collapsibles = $scope.model.collapsibles.splice(c, 1);
+            $scope.model.collapsibles.splice(c, 1);
             break;
         }
     }
@@ -211,7 +211,7 @@ $scope.api.removeCollapsibleAt = function (collapsibleIndex) {
     	return false;
     }
     
-    $scope.model.collapsibles = $scope.model.collapsibles.splice(collapsibleIndex, 1);
+    $scope.model.collapsibles.splice(collapsibleIndex, 1);
     
     return true;
 }
@@ -226,6 +226,9 @@ $scope.api.removeAllCollapsibles = function () {
  
     for (var c = 0; c < $scope.model.collapsibles.length; c++) {
     	if ($scope.model.collapsibles[c].form && !servoyApi.hideForm($scope.model.collapsibles[c].form)) {
+    		for (var i = 0; i < c - 1; i++) {
+    			$scope.api.hide(i);
+    		}
     		return false;
     	}
     }
