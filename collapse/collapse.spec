@@ -65,6 +65,21 @@
 				{ "name": "collapsibleId", "type": "string" }
 			] 
 		},
+		"removeCollapsibleById": {
+			"returns" 	: "boolean",
+			"parameters": [ 
+				{ "name": "collapsibleId", "type": "string" }
+			] 
+		},
+		"removeCollapsibleAt"	: { 
+			"returns" 	: "boolean",
+			"parameters": [ 
+				{ "name": "index", "type": "int" }
+			] 
+		},
+		"removeAllCollapsibles": {
+			"returns" 	: "boolean"
+		},
 		"isCollapsed"	: { 
 			"parameters": [ 
 				{ "name": "index", "type": "int", "optional": true }

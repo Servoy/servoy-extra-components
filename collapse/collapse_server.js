@@ -66,6 +66,7 @@ $scope.api.addCollapsible = function(collapsible, index) {
  * @param {Array<svy-collapse.collapsible>} collapsibles
  */
 $scope.api.setCollapsibles = function(collapsibles) {
+	$scope.api.removeAllCollapsibles();
 	$scope.model.collapsibles = collapsibles;
 }
 
@@ -167,4 +168,61 @@ $scope.api.getCollapsibleById = function(collapsibleId) {
 	}
 	
 	return null;
+}
+
+/**
+ * Hide the collapsible with the given ID
+ * @param {String} collapsibleId
+ * 
+ * @return
+ */
+$scope.api.removeCollapsibleById = function(collapsibleId) {
+	if (!collapsibleId) return false;
+    for (var c = 0; c < $scope.model.collapsibles.length; c++) {
+        if ($scope.model.collapsibles[c].collapsibleId == collapsibleId) {
+            servoyApi.hideForm($scope.model.collapsibles[c].form);
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * Remove the collapsible with the given index (0 based)
+ * @param {Number} [collapsibleIndex] if not given, the first collapsible is used
+ * 
+ * @return
+ */
+$scope.api.removeCollapsibleAt = function (collapsibleIndex) {
+    if (!(collapsibleIndex >= 0)) {
+        collapsibleIndex = 0;
+    }
+    if (!$scope.model.collapsibles || $scope.model.collapsibles.length === 0 || !$scope.model.collapsibles[collapsibleIndex]) {
+        return false;
+    }
+
+    servoyApi.hideForm($scope.model.collapsibles[collapsibleIndex]);
+    return true;
+    
+}
+
+/**
+ * Hide all collapsibles
+ * 
+ * @return
+ */
+$scope.api.removeAllCollapsibles = function () {
+    if (!$scope.model.collapsibles) return true;
+ 
+    var count = 0;
+    for (var c = 0; c < $scope.model.collapsibles.length; c++) {
+        servoyApi.hideForm($scope.model.collapsibles[c].form);
+        count++;
+    }
+
+    if (count == $scope.model.collapsibles.length) { 
+        return true;
+    }
+
+    return false;
 }
