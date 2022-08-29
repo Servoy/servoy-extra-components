@@ -179,9 +179,10 @@ $scope.api.getCollapsibleById = function(collapsibleId) {
 $scope.api.removeCollapsibleById = function(collapsibleId) {
 	if (!collapsibleId) return false;
     for (var c = 0; c < $scope.model.collapsibles.length; c++) {
-        if ($scope.model.collapsibles[c].collapsibleId == collapsibleId) {
-            servoyApi.hideForm($scope.model.collapsibles[c].form);
-            return true;
+        if ($scope.model.collapsibles[c].collapsibleId && $scope.model.collapsibles[c].collapsibleId == collapsibleId) {
+            if ($scope.model.collapsibles[c].form && servoyApi.hideForm($scope.model.collapsibles[c].form)) {
+            	return true;
+            } 
         }
     }
     return false;
@@ -201,9 +202,11 @@ $scope.api.removeCollapsibleAt = function (collapsibleIndex) {
         return false;
     }
 
-    servoyApi.hideForm($scope.model.collapsibles[collapsibleIndex]);
-    return true;
+    if ($scope.model.collapsibles[collapsibleIndex].form && servoyApi.hideForm($scope.model.collapsibles[collapsibleIndex].form)) {
+    	return true;
+    } 
     
+    return false;
 }
 
 /**
@@ -214,15 +217,12 @@ $scope.api.removeCollapsibleAt = function (collapsibleIndex) {
 $scope.api.removeAllCollapsibles = function () {
     if (!$scope.model.collapsibles) return true;
  
-    var count = 0;
     for (var c = 0; c < $scope.model.collapsibles.length; c++) {
-        servoyApi.hideForm($scope.model.collapsibles[c].form);
-        count++;
+    	if ($scope.model.collapsibles[c].form && !servoyApi.hideForm($scope.model.collapsibles[c].form)) {
+    		return false;
+    	}
+
     }
 
-    if (count == $scope.model.collapsibles.length) { 
-        return true;
-    }
-
-    return false;
+    return true;
 }
