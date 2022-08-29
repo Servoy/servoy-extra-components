@@ -66,7 +66,10 @@ $scope.api.addCollapsible = function(collapsible, index) {
  * @param {Array<svy-collapse.collapsible>} collapsibles
  */
 $scope.api.setCollapsibles = function(collapsibles) {
-	$scope.api.removeAllCollapsibles();
+	if ($scope.model.collapsibles !== collapsibles) {
+		$scope.api.removeAllCollapsibles();
+	}
+	
 	$scope.model.collapsibles = collapsibles;
 }
 
@@ -180,12 +183,14 @@ $scope.api.removeCollapsibleById = function(collapsibleId) {
 	if (!collapsibleId) return false;
     for (var c = 0; c < $scope.model.collapsibles.length; c++) {
         if ($scope.model.collapsibles[c].collapsibleId && $scope.model.collapsibles[c].collapsibleId == collapsibleId) {
-            if ($scope.model.collapsibles[c].form && servoyApi.hideForm($scope.model.collapsibles[c].form)) {
-            	return true;
+            if ($scope.model.collapsibles[c].form && !servoyApi.hideForm($scope.model.collapsibles[c].form)) {
+            	return false;
             } 
+            $scope.model.collapsibles = $scope.model.collapsibles.splice(c, 1);
+            break;
         }
     }
-    return false;
+    return true;
 }
 
 /**
@@ -202,11 +207,13 @@ $scope.api.removeCollapsibleAt = function (collapsibleIndex) {
         return false;
     }
 
-    if ($scope.model.collapsibles[collapsibleIndex].form && servoyApi.hideForm($scope.model.collapsibles[collapsibleIndex].form)) {
-    	return true;
-    } 
+    if ($scope.model.collapsibles[collapsibleIndex].form && !servoyApi.hideForm($scope.model.collapsibles[collapsibleIndex].form)) {
+    	return false;
+    }
     
-    return false;
+    $scope.model.collapsibles = $scope.model.collapsibles.splice(collapsibleIndex, 1);
+    
+    return true;
 }
 
 /**
@@ -221,8 +228,9 @@ $scope.api.removeAllCollapsibles = function () {
     	if ($scope.model.collapsibles[c].form && !servoyApi.hideForm($scope.model.collapsibles[c].form)) {
     		return false;
     	}
-
     }
-
+    
+    $scope.model.collapsibles = undefined;
+    
     return true;
 }
