@@ -175,9 +175,9 @@ $scope.api.getCollapsibleById = function(collapsibleId) {
 
 /**
  * Removes the collapsible with the given ID. If the collapsible was showing a form, it will hide that form as well.
- * @param {String} collapsibleId
+ * @param {String} collapsibleId the id of the collapsible to remove.
  * 
- * @return true if the collapsible with the given id was removed; false if collapsibleId is not given, not found or if the form shown by this collapsible denied hide.
+ * @return {Boolean} true if the collapsible with the given id was removed; false if collapsibleId is not given, not found or if the form shown by this collapsible denied hide.
  */
 $scope.api.removeCollapsibleById = function(collapsibleId) {
 	if (!collapsibleId) return false;
@@ -194,10 +194,10 @@ $scope.api.removeCollapsibleById = function(collapsibleId) {
 }
 
 /**
- * Remove the collapsible with the given index (0 based). If the collapsible was showing a form, it will hide that form as well.
- * @param {Number} [collapsibleIndex] if not given, the first collapsible is used
+ * Remove the collapsible with the given index (the index is 0 based) or the first collapsible if no collapsibleIndex is given. If the collapsible was showing a form, it will hide that form as well.
+ * @param {Number} [collapsibleIndex] the index of the collapsible to remove; if not given, the first collapsible is used
  * 
- * @return true if the collapsible at the give index (or 0 if not given) was removed; false if collapsibleIndex is out of bounds or if the form shown by this collapsible denied hide.
+ * @return {Boolean} true if the collapsible at the give index (or 0 if not given) was removed; false if collapsibleIndex is out of bounds or if the form shown by this collapsible denied hide.
  */
 $scope.api.removeCollapsibleAt = function (collapsibleIndex) {
     if (!(collapsibleIndex >= 0)) {
@@ -218,11 +218,10 @@ $scope.api.removeCollapsibleAt = function (collapsibleIndex) {
 
 /**
  * Removes all collapsibles. It will also hide the forms that are showing on any of the collpsibles.
- 
- * If one of the collapsibles has a form showing that denies hide, the removeAllCollapsibles operation will stop. In this case, all collapsibles
- * that had forms and could be hidden so far will still be in the collapsible array but they will be 'collapsed'.
+ *
+ * If one of the collapsibles has a form showing that denies hide, the removeAllCollapsibles operation will stop and return false. In this case, all collapsibles that had forms and were hidden so far will still be in the collapsible array but they will be 'collapsed'.
  * 
- * @return true if all collapsibles were removed successfully; false if one of the collapsibles had a form which denied hide.
+ * @return {Boolean} true if all collapsibles were removed successfully; false if one of the collapsibles had a form which denied hide.
  */
 $scope.api.removeAllCollapsibles = function () {
     if (!$scope.model.collapsibles) return true;
