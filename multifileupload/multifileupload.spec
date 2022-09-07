@@ -134,7 +134,7 @@
     },
     "types": {
         "uploadRestriction": {
-            "maxFileSize": 			{"type": "int", "default": null},
+            "maxFileSize": 			{"type": "long", "default": null},
             "maxNumberOfFiles": 	{"type": "int", "default": null},
             "minNumberOfFiles": 	{"type": "int", "default": null},
             "allowedFileTypes": 	{"type": "string[]"}
