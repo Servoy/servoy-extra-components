@@ -367,7 +367,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                     if (child.previousElementSibling) child = child.previousElementSibling;
                     const row_column = child.children.item(0)['row_column'];
                     if (row_column) {
-                        fs.selectedRowIndexes = [row_column.idxInFs];
+                        this.foundset.requestSelectionUpdate([row_column.idxInFs]);
                         selectionChanged = (selection !== row_column.idxInFs);
                     }
                     this.log.debug('svy extra table * keyPressed; scroll on PG UP');
@@ -381,7 +381,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                     if (child.nextElementSibling) child = child.nextElementSibling;
                     const row_column = child.children.item(0)['row_column'];
                     if (row_column) {
-                        fs.selectedRowIndexes = [row_column.idxInFs];
+                        this.foundset.requestSelectionUpdate([row_column.idxInFs]);
                         selectionChanged = (selection !== row_column.idxInFs);
                     }
                     this.log.debug('svy extra table * keyPressed; scroll on PG DOWN');
@@ -390,7 +390,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
             } else if (event.keyCode === 38) { // ARROW UP KEY
                 if (this.keyCodeSettings && !this.keyCodeSettings.arrowUp) return;
                 if (selection > 0) {
-                    fs.selectedRowIndexes = [selection - 1];
+                    this.foundset.requestSelectionUpdate([selection - 1]);
                     if ((fs.viewPort.startIndex) <= selection - 1) {
                         this.toBottom = false;
                     } else this.modifyPage(-1);
@@ -400,7 +400,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
             } else if (event.keyCode === 40) { // ARROW DOWN KEY
                 if (this.keyCodeSettings && !this.keyCodeSettings.arrowDown) return;
                 if (selection < fs.serverSize - 1) {
-                    fs.selectedRowIndexes = [selection + 1];
+                    this.foundset.requestSelectionUpdate([selection + 1]);
                     if ((fs.viewPort.startIndex + fs.viewPort.size) > selection + 1) {
                         this.toBottom = true;
                     } else this.modifyPage(1);
