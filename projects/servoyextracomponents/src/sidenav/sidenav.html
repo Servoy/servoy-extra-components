@@ -10,6 +10,14 @@
         <nav [id]="servoyApi.getMarkupId()" class="svy-sidenav-content">        
             <!-- The main menu -->
             <ul class="svy-sidenav-menu sn-level-1 svy-sidenav-collapsed" dir="ltr">
+				<li *ngIf="headerForm != null && open">
+					 <div class="svy-container"
+				         [ngStyle]="getFormStyle(headerForm)"
+				         [sabloTabseq]="tabSeq"
+				         [sabloTabseqConfig]="{container: true, reservedGap: 50}">
+				            <ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{name:getHeaderForm()}"></ng-template>
+				    </div>
+				</li>
                 <!-- Main list -->
                 <li *ngFor="let item of menu;let $index=index"
                     class="svy-sidenav-dropdown sn-level-1"
@@ -86,6 +94,14 @@
                     <div *ngIf="item.isDivider" class="svy-sidenav-divider sn-level-1" [ngClass]="item.styleClass"></div> 
                     
                 </li>   
+                <li *ngIf="footerForm != null && open">
+                    <div class="svy-container"
+                        [ngStyle]="getFormStyle(footerForm)"
+                        [sabloTabseq]="tabSeq"
+                        [sabloTabseqConfig]="{container: true, reservedGap: 50}">
+                           <ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{name:getFooterForm()}"></ng-template>
+                   </div>
+               </li>
             </ul><!-- #main list -->
         </nav> 
     </div>

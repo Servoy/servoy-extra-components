@@ -28,12 +28,19 @@
 	<div class="svy-sidenav">
 		<div class="svy-sidenav-header">
 			<!--<input ng-model="searchText" class="svy-searchbox"></input>-->
-			<i ng-click="slideMenu($event)" class="svy-sidenav-action-open"></i>
+			<i ng-click="slideMenu($event)" class="svy-sidenav-action-open"></i>	
 		</div>
-		<nav id={{::model.svyMarkupId}} class="svy-sidenav-content">		
+		<nav id={{::model.svyMarkupId}} class="svy-sidenav-content">	
+			
 			<!-- The main menu -->
 			<ul class="svy-sidenav-menu sn-level-1 svy-sidenav-collapsed" dir="ltr">
-
+				<li ng-if="model.headerForm && model.open">
+					<div ng-class="svy-container" 
+						ng-include="getFormUrl(model.headerForm)" 
+						ng-style="getFormStyle(model.headerForm)" 
+						sablo-tabseq="model.tabSeq" sablo-tabseq-config="{container: true, reservedGap: 50}">
+					</div>
+				</li>
 				<!-- Main list -->
 				<li ng-repeat="item in model.menu | filter:{text: searchText}"
  					class="svy-sidenav-dropdown sn-level-1"
@@ -104,6 +111,13 @@
 					<div ng-if="item.isDivider" class="svy-sidenav-divider sn-level-1" ng-class="item.styleClass"/>	
 					
 				</li>	
+				<li ng-if="model.footerForm && model.open">
+					<div ng-class="svy-container" 
+						ng-include="getFormUrl(model.footerForm)" 
+						ng-style="getFormStyle(model.footerForm)" 
+						sablo-tabseq="model.tabSeq" sablo-tabseq-config="{container: true, reservedGap: 50}">
+					</div>
+				</li>
 			</ul><!-- #main list -->
 		</nav> 
 	</div>

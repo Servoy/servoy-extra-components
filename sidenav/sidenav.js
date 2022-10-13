@@ -1264,6 +1264,33 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					return "";
 				}
 
+				$scope.getFormUrl = function(formName) {
+					return $scope.svyServoyapi.getFormUrl(formName)
+				}
+				
+				$scope.getFormStyle = function(formName) {
+	                var style = {position:"relative"}
+					var height = 0;
+					if ($scope.model.height)
+					{
+						height = $scope.model.height
+					}
+					else 
+					{
+						// for absolute form default height is design height, for responsive form default height is 0
+						var formState = $sabloApplication.getFormStateEvenIfNotYetResolved(formName);
+						if (formState && formState.absoluteLayout)
+						{
+							height = formState.properties.designSize.height; 
+						}	  
+					}
+	                if (height > 0)
+	                {
+	                    style.minHeight = height+"px";
+	                }	  
+					return style;
+				}
+
 				setRealContainedForm($scope.model.containedForm, $scope.model.relationName);
 
 				$scope.$watch("model.containedForm", function(newValue,oldValue) {

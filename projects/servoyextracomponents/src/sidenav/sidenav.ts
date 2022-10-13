@@ -15,6 +15,8 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
     @Input() sidenavWidth: number;
     @Input() responsiveHeight: number;
     @Input() containedForm: string;
+    @Input() headerForm: string;
+    @Input() footerForm: string;
     @Input() relationName: string;
     @Input() iconOpenStyleClass: string;
     @Input() iconCloseStyleClass: string;
@@ -138,6 +140,14 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
     getForm() {
         return this.realContainedForm;
     }
+    
+    getHeaderForm() {
+        return this.headerForm;
+    }
+
+    getFooterForm() {
+        return this.footerForm;
+    }
 
     getResponsiveHeight() {
         let height = 0;
@@ -154,6 +164,22 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         }
         return height;
     }
+    
+    getFormStyle(formName) {
+		let style = {}
+		let height = 0;
+		
+		// for absolute form default height is design height, for responsive form default height is 0
+        const formCache = this.servoyPublic.getFormCacheByName(formName);
+        if (formCache && formCache.absolute) {
+            height = formCache.size.height;
+        }  
+	    if (height > 0)
+	    {
+	        style['minHeight'] = height+'px';
+	    }	  
+		return style;
+	}
 
     getSidenavWidth() {
         if (this.sidenavWidth) {

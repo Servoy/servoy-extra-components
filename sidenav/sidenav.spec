@@ -17,6 +17,8 @@
 		"expandedIndex"					: {"type" :"string", "tags": { "scope" :"private" }, "pushToServer" : "deep"},
 		"tabSeq"						: { "type": "tabseq", "tags": { "scope": "design" } },
 		"containedForm"					: {"type" :"form"},
+		"headerForm"					: {"type" :"form"},
+		"footerForm"					: {"type" :"form"},
 		"relationName"					: "relation",
 		"sidenavWidth"					: {"type" :"int", "default":"300", "tags": { "doc" :"Width of the container"}},
 		"responsiveHeight" 				: {"type" :"int", "default":0, "tags": { "doc" :"Height of the container, set only in responsive forms."}},
