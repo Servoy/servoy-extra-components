@@ -227,7 +227,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     }
 
     reset(): void {
-        this.uppy.cancelAll();
+        this.uppy.cancelAll({reason : 'unmount'});
     }
 
     upload(): void {
@@ -239,7 +239,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     }
 
     cancelAll(): void {
-        this.uppy.cancelAll();
+        this.uppy.cancelAll({reason : 'unmount'});
     }
 
     retryUpload(fileID: string): void {
@@ -255,7 +255,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     }
 
     initialize(): void {
-        this.uppy.close();
+        this.uppy.close({reason : 'unmount'});
         this.uppy = new Uppy();
         this.initUppy();
         this.loadUppyLocale();
