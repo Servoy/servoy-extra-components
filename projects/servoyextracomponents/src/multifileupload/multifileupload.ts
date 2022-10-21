@@ -4,6 +4,7 @@ import { FileProgress, Restrictions, Uppy, UppyFile, UppyOptions } from '@uppy/c
 import Dashboard from '@uppy/dashboard';
 import Tus, { TusOptions } from '@uppy/tus';
 import type { DashboardOptions } from '@uppy/dashboard';
+import type { WebcamOptions } from '@uppy/webcam';
 import { DashboardComponent } from '@uppy/angular';
 
 
@@ -29,6 +30,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     @Input() sources: string[];
     @Input() options: any;
     @Input() tusOptions: TusOptions;
+    @Input() webcamOptions: WebcamOptions;
     @Input() localeStrings: any;
 
     @Input() onFileUploaded: (file: any) => void;
@@ -152,7 +154,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     }
 
     installWebcam = () => import(`@uppy/webcam`).then(module => {
-            this.uppy.use(module.default);
+            this.uppy.use(module.default, this.webcamOptions);
             this.properties.plugins.push('Webcam');
         }, (err) => {
             this.log.error(err);

@@ -31,7 +31,8 @@
         "localeStrings":				{ "type": "map", "tags": { "doc": "Any number of key/value pairs to translate single strings in the component, overriding the ones provided by the language pack selected." } }, 
         "size": 						{ "type": "dimension", "default": { "width": 290, "height": 450 } },
         "options": 						{ "type": "map" },
-        "tusOptions":                      { "type": "map", "tags": { "scope" : "design" , "doc":"Look at the Uppy TUS options what you can set here like chunkSize: nrOfBytes"}  }
+        "tusOptions":                   { "type": "map", "tags": { "scope" : "design" , "doc":"Look at the Uppy TUS options what you can set here like chunkSize: nrOfBytes"}  },
+        "webcamOptions":                { "type": "json", "default" : { "target" : "Dashboard", "showVideoSourceDropdown": true } ,"tags": { "scope" : "design" , "doc":"Look at the Uppy webcam plugin options what you can set here like showVideoSourceDropdown"}  }
     },
     "api": {
         "reset": {
