@@ -39,6 +39,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
         menubar: false,
         statusbar: false,
         readonly: false,
+        promotion: false,
         toolbar: 'fontselect fontsizeselect | bold italic underline | superscript subscript | undo redo |alignleft aligncenter alignright alignjustify | styleselect | outdent indent bullist numlist'
     };
     editor: Editor;
@@ -72,8 +73,11 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
 
     ngOnInit() {
         super.ngOnInit();
-
-        this.tinyConfig['language'] = this.servoyPublicService.getLocale();
+        
+        if (this.servoyPublicService.getLocaleObject())
+        {
+             this.tinyConfig['language'] = this.servoyPublicService.getLocaleObject().language;
+        }
 
         this.tinyConfig['base_url'] = this.document.head.getElementsByTagName('base')[0].href + 'tinymce';
 
