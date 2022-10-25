@@ -256,6 +256,7 @@ angular.module('servoyextraHtmlarea',['servoy','ui.tinymce']).directive('servoye
 					lastServerValueAsSeenByTinyMCEContent = edContent;
 					$scope.svyServoyapi.apply('dataProviderID');
 				}
+				return $scope.model.dataProviderID;
 			}
 			/**
 			 * Selects all the contents of the Html Area.

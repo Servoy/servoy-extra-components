@@ -118,7 +118,8 @@
  								"name":"s",
 								"type":"string"
 			                	}             
-							 ]
+							 ],
+				"returns": "string"			 
 	
 	        },
 	        "requestFocus": {

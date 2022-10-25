@@ -31,7 +31,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
     @Input() scrollbars: any;
 
     mustExecuteOnFocus = true;
-
+    lastServerValueAsSeenByTinyMCEContent: string;
     tinyValue: any;
     tinyConfig: RawEditorOptions = {
         suffix: '.min',
@@ -58,8 +58,10 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     blur() {
-        this.dataProviderID = '<html><body>' + this.tinyValue + '</body></html>';
-        this.pushUpdate();
+        if (this.lastServerValueAsSeenByTinyMCEContent != this.tinyValue) {
+            this.dataProviderID = '<html><body>' + this.tinyValue + '</body></html>';
+            this.pushUpdate();
+        }
         if (this.onFocusLostMethodID) this.onFocusLostMethodID(new CustomEvent('blur'));
     }
 
@@ -151,6 +153,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
                         break;
                     case 'dataProviderID':
                         this.tinyValue = this.dataProviderID;
+                        this.lastServerValueAsSeenByTinyMCEContent = this.tinyValue;
                         break;
                     case 'responsiveHeight':
                         if (!this.servoyApi.isInAbsoluteLayout()) {
@@ -169,6 +172,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
 
     public onInit({ event, editor }: any) {
         this.editor = editor;
+        this.lastServerValueAsSeenByTinyMCEContent = editor.getContent();
         const editable = this.editable && !this.readOnly && this.enabled;
         if (!editable) editor.mode.set('readonly')
     }
@@ -199,11 +203,14 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
         return this.getEditor().getWin().scrollY;
     }
 
-    public replaceSelectedText(text: string) {
+    public replaceSelectedText(text: string) : string{
         this.getEditor().selection.setContent(text);
         const edContent = this.getEditor().getContent();
-        this.dataProviderID = '<html><body>' + edContent + '</body></html>';
-        this.pushUpdate();
+        if (this.lastServerValueAsSeenByTinyMCEContent != edContent) {
+            this.dataProviderID = '<html><body>' + edContent + '</body></html>';
+            this.pushUpdate();
+        }
+        return this.dataProviderID;
     }
 
     public setScroll(x: number, y: number) {
