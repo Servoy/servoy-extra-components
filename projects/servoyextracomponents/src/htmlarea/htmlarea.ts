@@ -73,10 +73,9 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
 
     ngOnInit() {
         super.ngOnInit();
-        
-        if (this.servoyPublicService.getLocaleObject())
-        {
-             this.tinyConfig['language'] = this.servoyPublicService.getLocaleObject().language;
+
+        if (this.servoyPublicService.getLocaleObject()) {
+            this.tinyConfig['language'] = this.servoyPublicService.getLocaleObject().language;
         }
 
         this.tinyConfig['base_url'] = this.document.head.getElementsByTagName('base')[0].href + 'tinymce';
@@ -142,15 +141,12 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
                     case 'readOnly':
                     case 'enabled':
                         const editable = this.editable && !this.readOnly && this.enabled;
-                        if (this.getEditor()) {
+                        if (this.getEditor() && !change.firstChange) {
                             if (editable) {
-                                if (!change.firstChange) {
-                                    this.getEditor().mode.set('design');
-                                }
+                                this.getEditor().mode.set('design');
                             } else {
                                 this.getEditor().mode.set('readonly');
                             }
-
                         }
                         break;
                     case 'dataProviderID':
@@ -172,7 +168,9 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     public onInit({ event, editor }: any) {
-       this.editor = editor;
+        this.editor = editor;
+        const editable = this.editable && !this.readOnly && this.enabled;
+        if (!editable) editor.mode.set('readonly')
     }
 
     requestFocus(mustExecuteOnFocusGainedMethod: boolean) {
