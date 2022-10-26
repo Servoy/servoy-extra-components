@@ -35,7 +35,7 @@ import { ServoyExtraGauge } from './gauge/gauge';
 import { LinearGauge } from './gauge/lib/linear-gauge';
 import { RadialGauge } from './gauge/lib/radial-gauge';
 import { UppyAngularDashboardModule } from '@uppy/angular';
-
+import {FileTypesUtilsService} from './fileupload/lib/filetypes';
 
 @NgModule({
     declarations: [
@@ -80,7 +80,8 @@ import { UppyAngularDashboardModule } from '@uppy/angular';
         UppyAngularDashboardModule
     ],
     providers: [AsyncPipe,
-            { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }
+            { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+            FileTypesUtilsService
     ],
     exports: [ServoyExtraTable,
               TableRow,

@@ -1,25 +1,26 @@
 import { Component, SimpleChanges, Input, Renderer2, EventEmitter, Output, ChangeDetectorRef, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { ServoyBaseComponent, ServoyPublicService } from '@servoy/public';
-import { FileUploader } from 'ng2-file-upload';
+import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { DOCUMENT } from '@angular/common';
 import { LoggerFactory, LoggerService } from '@servoy/public';
+import {FileTypesUtilsService} from './lib/filetypes';
 
-@Component( {
+@Component({
     selector: 'servoyextra-fileupload',
     templateUrl: './fileupload.html',
     styleUrls: ['./fileupload.css'],
     changeDetection: ChangeDetectionStrategy.OnPush
-} )
+})
 export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
 
-    @Input() onDataChangeMethodID: ( e: Event ) => void;
-    @Input() onFileUploadedMethodID: (  ) => void;
-    @Input() onFileTransferFinishedMethodID: ( e: Event ) => void;
+    @Input() onDataChangeMethodID: (e: Event) => void;
+    @Input() onFileUploadedMethodID: () => void;
+    @Input() onFileTransferFinishedMethodID: (e: Event) => void;
 
     @Output() dataProviderIDChange = new EventEmitter();
     @Input() dataProviderID: any;
     @Input() displaysTags: boolean;
-    @Input() accept: any;
+    @Input() accept: string;
     @Input() enabled: boolean;
     @Input() location: any;
     @Input() name: string;
@@ -41,71 +42,92 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
     @Input() toolTipText: string;
 
     uploader: FileUploader;
-    hasBaseDropZoneOver= false;
+    hasBaseDropZoneOver = false;
+    customText: string;
 
     private ready = true;
     private log: LoggerService;
 
-    constructor( renderer: Renderer2, cdRef: ChangeDetectorRef, private servoyService: ServoyPublicService, @Inject(DOCUMENT) private doc: Document , logFactory: LoggerFactory) {
+    constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, private servoyService: ServoyPublicService, @Inject(DOCUMENT) private doc: Document, 
+        logFactory: LoggerFactory,private fileutilsService: FileTypesUtilsService) {
         super(renderer, cdRef);
         this.log = logFactory.getLogger('FileUpload');
     }
 
-    public fileOverBase( e: any ): void {
+    public fileOverBase(e: any): void {
         this.hasBaseDropZoneOver = e;
     }
 
     public fileInputClick(): void {
-        const element: HTMLElement = this.doc.getElementById( 'fileInputLabel' ) as HTMLElement;
+        const element: HTMLElement = this.doc.getElementById('fileInputLabel') as HTMLElement;
         element.click();
     }
 
     initializeComponent() {
         super.initializeComponent();
-        if (this.multiFileUpload && ! this.onFileUploadedMethodID) {
+        if (this.multiFileUpload && !this.onFileUploadedMethodID) {
             this.log.warn('Multifile upload without onFileUploaded Method isn\'t supported. To upload multi file start using onFileUploaded Method');
         }
-        const url = this.onFileUploadedMethodID ? this.servoyService.generateUploadUrl( this.servoyApi.getFormName(), this.name, 'onFileUploadedMethodID' ):
-                            this.servoyService.generateUploadUrl( this.servoyApi.getFormName(), this.name, 'dataProviderID' );
-        if (!this.multiFileUpload) this.uploader = new FileUploader( {
-            url,
-            filters: [{name:'multi', fn: (): boolean => {
-                const retValue = this.ready;
-                this.ready = false;
-                return retValue;
-            }}]
-        });
-        else this.uploader = new FileUploader( {
-            url,
-        });
+        const url = this.onFileUploadedMethodID ? this.servoyService.generateUploadUrl(this.servoyApi.getFormName(), this.name, 'onFileUploadedMethodID') :
+            this.servoyService.generateUploadUrl(this.servoyApi.getFormName(), this.name, 'dataProviderID');
+        const options: FileUploaderOptions = { url }
+        if (this.accept) {
+            options.allowedMimeType = this.accept.split(',').map(value => {
+                if (value.indexOf("/") > -1) {
+                    return value;
+                }
+                else{
+                    return this.fileutilsService.mimeFor(value);
+                }
+            });
+        }
+        if (!this.multiFileUpload) {
+            options.filters = [{
+                    name: 'multi', fn: (): boolean => {
+                        const retValue = this.ready;
+                        this.ready = false;
+                        return retValue;
+                    }
+                }];
+            this.uploader = new FileUploader(options);
+        }
+        else this.uploader = new FileUploader(options);
         this.uploader.onProgressItem = () => {
             this.cdRef.detectChanges();
         };
         if (!this.multiFileUpload || this.onFileTransferFinishedMethodID) {
-            this.uploader.onCompleteAll =this.onComplete;
+            this.uploader.onCompleteAll = this.onComplete;
         }
+        this.uploader.onWhenAddingFileFailed = this.onWhenAddingFileFailed;
+        this.customText = this.uploadText;
     }
 
     onComplete = () => {
         this.ready = true;
-        this.onFileTransferFinishedMethodID(new CustomEvent('onFileTransferFinishedMethodID'));
+        if (this.onFileTransferFinishedMethodID) this.onFileTransferFinishedMethodID(new CustomEvent('onFileTransferFinishedMethodID'));
+        this.customText = this.uploadSuccessText;
+        this.cdRef.detectChanges();
     };
 
-    svyOnChanges( changes: SimpleChanges ) {
-        if ( changes ) {
-            for ( const property of Object.keys( changes ) ) {
+    onWhenAddingFileFailed = () => {
+        this.customText = this.uploadNotSupportedFileText;
+    };
+
+    svyOnChanges(changes: SimpleChanges) {
+        if (changes) {
+            for (const property of Object.keys(changes)) {
                 const change = changes[property];
-                switch ( property ) {
+                switch (property) {
                     case 'enabled':
-                        if ( change.currentValue )
-                            this.renderer.removeAttribute( this.getFocusElement(), 'disabled' );
+                        if (change.currentValue)
+                            this.renderer.removeAttribute(this.getFocusElement(), 'disabled');
                         else
-                            this.renderer.setAttribute( this.getFocusElement(), 'disabled', 'disabled' );
+                            this.renderer.setAttribute(this.getFocusElement(), 'disabled', 'disabled');
                         break;
                 }
             }
         }
-        super.svyOnChanges( changes );
+        super.svyOnChanges(changes);
     }
 
     getFocusElement(): any {
