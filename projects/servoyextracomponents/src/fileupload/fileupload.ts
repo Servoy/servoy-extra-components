@@ -71,7 +71,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
         const url = this.onFileUploadedMethodID ? this.servoyService.generateUploadUrl(this.servoyApi.getFormName(), this.name, 'onFileUploadedMethodID') :
             this.servoyService.generateUploadUrl(this.servoyApi.getFormName(), this.name, 'dataProviderID');
         const options: FileUploaderOptions = { url }
-        if (this.accept) {
+        if (this.accept && '*/*' != this.accept) {
             options.allowedMimeType = this.accept.split(',').map(value => {
                 if (value.indexOf("/") > -1) {
                     return value;
