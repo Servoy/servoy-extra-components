@@ -501,7 +501,7 @@ function getDatasourceID (name) {
 function updateFoundsetRowMethod(foundsets, fsInfoID, index, checkboxValueDP, value) {
 	for(var i = 0; i < foundsets.length; i++) {
 		if (foundsets[i].foundsetInfoID == fsInfoID) {
-			foundsets[i].foundset.getRecord(index)[checkboxValueDP] = value;
+			foundsets[i].foundset.foundset.getRecord(index)[checkboxValueDP] = value;
 			break;
 		}
 	}

@@ -241,7 +241,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
                 v = v ? 'true' : 'false';
             }
             await this.servoyApi.callServerSideApi('updateFoundsetRow',
-                [node.isRoot, node.data.id.substring(0, node.data.id.lastIndexOf('_')), node.data.index, node.data.checkboxvaluedataprovider, v]);
+                [node.isRoot, node.data.id.substring(0, node.data.id.lastIndexOf('_')), node.data.index + 1, node.data.checkboxvaluedataprovider, v]);
         }
 
         if (node.data && node.data.methodToCallOnCheckBoxChange) {
