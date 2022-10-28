@@ -191,6 +191,10 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
             if (event.node.data.checked) {
                 child.data.checked = true;
             }
+            if (this.expandedNodes && !child.isExpanded && this.expandedNodes[child.level-1] && child.level < this.expandedNodes.length && this.getPKFromNodeID(child.id.toString()) === this.expandedNodes[child.level-1].toString()) {
+                // expand node if is within the expandedNodes path. It allows to expand nodes async on multiple levels
+                child.expand();
+            }
         });
     }
 
@@ -314,10 +318,29 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
             if (pk && pk.length) {
                 if (state) {
                     this.expandedNodes = pk.slice(0, pk.length);
+                } else if (this.expandedNodes && pk && this.expandedNodes.length && this.expandedNodes.length === pk.length) {
+                    // clear expandedNodes if state is false and pks === expandedNodes
+                    if (this.expandedNodes.every( (val, idx) => val === pk[idx] )) {
+                        this.expandedNodes = [];
+                    }
                 }
                 const node = this.tree ? this.findNode(this.tree.treeModel.virtualRoot, pk, 0) : null;
                 if (node) {
-                    this.tree.treeModel.setExpandedNode(node, state);
+                    if (state) {
+                       node.ensureVisible();
+                    } else {
+                        if (node.parent) {
+                            node.parent.collapse();
+                        }
+                        this.tree.treeModel.setExpandedNode(node, state);
+                    }
+                } else if (state) {
+                    // if i can't find the exact node for pk path. Find the closest ancestor and expand it
+                    // subsequent child nodes will be expanded upon onLoadNodeChildren
+                    const ancestor = this.findClosestAncestor(this.tree.treeModel.virtualRoot, pk, 0);
+                    if (ancestor) {
+                        ancestor.expand();
+                    }
                 }
             }
         }
@@ -374,6 +397,29 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
                     if (this.getPKFromNodeID(child.id) === pkarray[level].toString()) {
                         if (level + 1 < pkarray.length) {
                             return this.findNode(child, pkarray, level + 1);
+                        } else {
+                            return child;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    findClosestAncestor(node: TreeNode, pkarray: Array<any>, level: number) {
+        if (pkarray && pkarray.length > 0) {
+            const nodeChildren = node.children;
+            if (nodeChildren) {
+                for (const child of nodeChildren) {
+                    if (this.getPKFromNodeID(child.id) === pkarray[level].toString()) {
+                        if (level + 1 < pkarray.length) {
+                            const leaf = this.findClosestAncestor(child, pkarray, level + 1);
+                            if (leaf) {
+                                return leaf;
+                            } else {
+                                return child;
+                            }
                         } else {
                             return child;
                         }
