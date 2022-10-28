@@ -41,7 +41,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 
     data: Select2Option[] = [];
     filteredDataProviderId: Array<any>;
-    listPosition: 'above' | 'below' = 'below';
+    listPosition: 'above' | 'below' | 'auto' = 'auto';
     mustExecuteOnFocus = true;
 
     private updateValueCallsToSkip = 0;
@@ -63,12 +63,6 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
         super.svyOnInit();
         //this.setData(); it is already done in svyOnChanges
         this.attachFocusListeners(this.getNativeElement());
-        const position = this.getNativeElement().getBoundingClientRect();
-        const availableHeight = this.doc.defaultView.innerHeight - position.top - position.height;
-        const dropDownheight = this.valuelistID.length * 30;
-        if (dropDownheight > availableHeight) {
-            this.listPosition = 'above';
-        }
     }
 
     attachFocusListeners(nativeElement: HTMLDivElement) {
