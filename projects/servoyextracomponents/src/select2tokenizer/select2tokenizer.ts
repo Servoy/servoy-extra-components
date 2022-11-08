@@ -238,7 +238,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     }
 
     listOpened(event: Select2) {
-        if (this.allowNewEntries) {
+        if (this.allowNewEntries || this.hasKeyListenerAttribute()) {
             setTimeout(() => {
                 const inputTextfield = this.doc.querySelector('.select2-search__field') as HTMLInputElement;
                 if (inputTextfield) {
@@ -246,30 +246,49 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                     if (!init){
                         inputTextfield.setAttribute('svy-typing-init', 'true');
                         let prevValue: string;
-                        inputTextfield.addEventListener('keyup', () => {
-                            const newValue = inputTextfield.value;
-                            if (prevValue != newValue) {
-                                const option: Select2Option = {
-                                    value: newValue,
-                                    label: newValue
-                                };
-                                if (prevValue) {
-                                    if (newValue != '' && !this.data.some(item => item.value == newValue)) {
-                                        this.data[0] = option;
-                                    } else {
-                                        this.data.shift();
-                                    }
-                                } else {
-                                    this.data.unshift(option);
+                        inputTextfield.addEventListener('keyup', (ev: KeyboardEvent) => {
+							if (this.allowNewEntries) {
+								const newValue = inputTextfield.value;
+                            	if (prevValue != newValue) {
+                                	const option: Select2Option = {
+                                    	value: newValue,
+                                    	label: newValue
+                                	};
+                                	if (prevValue) {
+                                    	if (newValue != '' && !this.data.some(item => item.value == newValue)) {
+                                        	this.data[0] = option;
+                                    	} else {
+                                        	this.data.shift();
+                                    	}
+                                	} else {
+                                    	this.data.unshift(option);
+                                	}
+                                	prevValue = newValue;
                                 }
-                                prevValue = newValue;
-                            }
+							}
+							const keyupEvent = new CustomEvent('keyup', {
+								bubbles: true,
+								detail: {
+									key: () => ev.key,
+									target: () => ev.target,
+									keyCode: () => ev.keyCode,
+									altKey: () => ev.altKey,
+									ctrlKey: () => ev.ctrlKey,
+									shiftKey: () => ev.shiftKey,
+									capsLockEnabled: () => ev.getModifierState('CapsLock'),
+								}
+							});
+							this.getNativeChild().dispatchEvent(keyupEvent);
                         });
                     }
                 }
             }, 300);
         }
     }
+
+    hasKeyListenerAttribute() {
+		return Object.keys(this.servoyAttributes).includes('keylistener');
+	}
 
     setTabIndex(tabIndex: number) {
         this.tabIndex = tabIndex;
