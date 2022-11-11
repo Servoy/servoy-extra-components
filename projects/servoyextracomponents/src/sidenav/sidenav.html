@@ -77,7 +77,7 @@
                                             [ngClass]="{'svy-navitem-selected': item4.id != null && selectedIndex[4] == item4.id, 'svy-navitem-disabled': (item.enabled === false || item2.enabled == false || item3.enabled == false || item4.enabled == false) }">
                                             <!-- Second Menu Items -->
                                             <a *ngIf="!item4.isDivider" class="svy-sidenav-item sn-level-4" [ngClass]="item4.styleClass" (click)="selectItem(4, $index, item4, $event)" [svyTooltip]="item4.tooltip">
-                                                <i class="svy-sidenav-item-icon" ng-class="item4.iconStyleClass"></i>
+                                                <i class="svy-sidenav-item-icon" [ngClass]="item4.iconStyleClass"></i>
                                                 <span class="svy-sidenav-item-text"> {{item4.text}}</span>
                                             </a>
                                             <div *ngIf="item4.isDivider" class="svy-sidenav-divider sn-level-4" [ngClass]="item4.styleClass"> 
