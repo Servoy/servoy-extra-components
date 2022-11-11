@@ -20,7 +20,8 @@
       "es2018",
       "dom",
       "dom.Iterable",
-      "ES2020.Promise"
+      "ES2020.Promise",
+      "ES2022.Error"
     ]
   },
   "angularCompilerOptions": {
