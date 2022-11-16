@@ -17,11 +17,11 @@
     "target": "es2020",
     "module": "es2020",
     "lib": [
-      "es2018",
       "dom",
       "dom.Iterable",
-      "ES2020.Promise",
-      "ES2022.Error"
+      "es2020",
+      "es2021.Promise",
+      "es2022.Error"
     ]
   },
   "angularCompilerOptions": {
