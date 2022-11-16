@@ -22,6 +22,25 @@ $scope.api.addRoots = function(foundset) {
  * Loads the related foundsets (for a specified foundset) based on the given relations. 
  */
 $scope.loadRelatedFoundset = function(index) {
+    
+    // check if related foundset is changed
+    var relatedFoundset = $scope.model.relatedFoundsets[index];
+    var parentFoundset = $scope.model.foundsets.find(function (el) {
+            return relatedFoundset.foundsetInfoParentID == el.foundsetInfoID;
+        }
+    );
+    if (!parentFoundset){
+        parentFoundset = $scope.model.relatedFoundsets.find(function (el) {
+                return relatedFoundset.foundsetInfoParentID == el.foundsetInfoID;
+            }
+        );
+    }
+    
+    var newFoundset = parentFoundset.foundset.foundset.getRecord(relatedFoundset.indexOfTheParentRecord + 1)[relatedFoundset.foundset.foundset.getRelationName()]; 
+    if (relatedFoundset.foundset.foundset != newFoundset){
+        relatedFoundset.foundset.foundset = newFoundset;
+    }
+    //load next level in advance for relatedFoundset
 	loadNextLevelOfFoundsets($scope.model.relatedFoundsets[index].foundset.foundset, $scope.model.relatedFoundsets[index].foundsetInfoID);
 }
 
