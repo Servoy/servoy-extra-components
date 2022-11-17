@@ -49,23 +49,25 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
 
     actionMapping: IActionMapping = {
         mouse: {
-            click: (_tree, node) => {
+            click: (_tree, node, $event) => {
                 this.tree.treeModel.setActiveNode(node, true);
                 if (node.data && node.data.callbackinfo) {
                     const doubleClick = node.data.callbackinfo;
                     this.servoyPublicService.executeInlineScript(doubleClick.formname, doubleClick.script, [node.data.callbackinfoParamValue]);
                 }
             },
-            dblClick: (_tree, node) => {
+            dblClick: (_tree, node, $event) => {
                 if (node.data && node.data.methodToCallOnDoubleClick) {
                     const doubleClick = node.data.methodToCallOnDoubleClick;
                     this.servoyPublicService.executeInlineScript(doubleClick.formname, doubleClick.script, [node.data.methodToCallOnDoubleClickParamValue]);
                 }
             },
-            contextMenu: (_tree, node) => {
+            contextMenu: (_tree, node, $event) => {
+                $event.preventDefault();
                 if (node.data && node.data.methodToCallOnRightClick) {
-                    const doubleClick = node.data.methodToCallOnRightClick;
-                    this.servoyPublicService.executeInlineScript(doubleClick.formname, doubleClick.script, [node.data.methodToCallOnRightClickParamValue]);
+                    const rightClick = node.data.methodToCallOnRightClick;
+                    this.servoyPublicService.executeInlineScript(rightClick.formname, rightClick.script,
+                        [node.data.methodToCallOnRightClickParamValue,  this.servoyPublicService.createJSEvent($event, 'rightClick')]);
                 }
             }
         }
@@ -191,7 +193,8 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
             if (event.node.data.checked) {
                 child.data.checked = true;
             }
-            if (this.expandedNodes && !child.isExpanded && this.expandedNodes[child.level-1] && child.level < this.expandedNodes.length && this.getPKFromNodeID(child.id.toString()) === this.expandedNodes[child.level-1].toString()) {
+            if (this.expandedNodes && !child.isExpanded && this.expandedNodes[child.level-1] && child.level <= this.expandedNodes.length && 
+                this.getPKFromNodeID(child.id.toString()) === this.expandedNodes[child.level-1].toString()) {
                 // expand node if is within the expandedNodes path. It allows to expand nodes async on multiple levels
                 child.expand();
             }
@@ -328,6 +331,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
                 if (node) {
                     if (state) {
                        node.ensureVisible();
+                       node.setIsExpanded(true);
                     } else {
                         if (node.parent) {
                             node.parent.collapse();
