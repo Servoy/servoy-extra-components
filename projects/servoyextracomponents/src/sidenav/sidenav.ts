@@ -42,8 +42,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
     @Input() onMenuItemCollapsed: (id: string, event: MouseEvent) => Promise<boolean>;
     @Input() onOpenToggled: (event: MouseEvent) => void;
 
-    @ContentChild(TemplateRef, { static: true })
-    templateRef: TemplateRef<any>;
+    @ContentChild(TemplateRef, { static: true }) templateRef: TemplateRef<any>;
 
     @ViewChild('element', { static: true }) elementRef: ElementRef;
 
@@ -52,6 +51,8 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
     mouseLeaveTimeout: number;
 
     private realContainedForm: any;
+    private realHeaderForm: any;
+    private realFooterForm: any;
     private log: LoggerService;
 
     constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, private servoyPublic: ServoyPublicService, @Inject(DOCUMENT) private doc: Document, logFactory: LoggerFactory) {
@@ -108,6 +109,28 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
                             }).finally(() => this.cdRef.detectChanges());
                         }
                         break;
+                    case 'headerForm':
+                        if (change.previousValue) {
+                            this.servoyApi.hideForm(change.previousValue, null, null, this.headerForm, this.relationName).then(() => {
+                                this.realHeaderForm = this.headerForm;
+                            }).finally(() => this.cdRef.detectChanges());
+                        } else if (change.currentValue) {
+                            this.servoyApi.formWillShow(this.headerForm, this.relationName).then(() => {
+                                this.realHeaderForm = this.headerForm;
+                            }).finally(() => this.cdRef.detectChanges());
+                        }
+                        break;
+                    case 'footerForm':
+                        if (change.previousValue) {
+                            this.servoyApi.hideForm(change.previousValue, null, null, this.footerForm, this.relationName).then(() => {
+                                this.realFooterForm = this.footerForm;
+                            }).finally(() => this.cdRef.detectChanges());
+                        } else if (change.currentValue) {
+                            this.servoyApi.formWillShow(this.footerForm, this.relationName).then(() => {
+                                this.realFooterForm = this.footerForm;
+                            }).finally(() => this.cdRef.detectChanges());
+                        }
+                        break;
                     case 'sidenavWidth':
                     case 'responsiveHeight':
                         this.updateSidenavStyle();
@@ -137,16 +160,21 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         }
     }
 
+    isDesignTime() {
+        return this.servoyApi.isInDesigner();
+    }
+
     getForm() {
         return this.realContainedForm;
     }
     
     getHeaderForm() {
-        return this.headerForm;
+        return this.realHeaderForm;
+        
     }
 
     getFooterForm() {
-        return this.footerForm;
+        return this.realFooterForm;
     }
 
     getResponsiveHeight() {
@@ -164,13 +192,29 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         }
         return height;
     }
-    
-    getFormStyle(formName) {
+
+    getHeaderFormStyle() {
 		let style = {}
 		let height = 0;
 		
 		// for absolute form default height is design height, for responsive form default height is 0
-        const formCache = this.servoyPublic.getFormCacheByName(formName);
+        const formCache = this.servoyPublic.getFormCacheByName(this.headerForm);
+        if (formCache && formCache.absolute) {
+            height = formCache.size.height;
+        }  
+	    if (height > 0)
+	    {
+	        style['minHeight'] = height+'px';
+	    }	  
+		return style;
+	}
+    
+    getFooterFormStyle() {
+		let style = {}
+		let height = 0;
+		
+		// for absolute form default height is design height, for responsive form default height is 0
+        const formCache = this.servoyPublic.getFormCacheByName(this.footerForm);
         if (formCache && formCache.absolute) {
             height = formCache.size.height;
         }  

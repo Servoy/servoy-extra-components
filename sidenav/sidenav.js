@@ -884,7 +884,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 								className = value;
 								if (className) sidenav.addClass(className);
 								break;
-							case "containedForm":
+							case "containedForm", "headerForm", "footerForm":
 								if (value) {
 									svyextracontainer.addClass("has-panel");
 								} else {
@@ -1240,20 +1240,46 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					if ($scope.model.visible) {
 						if (formWillShowCalled != formname && formname) {
 							formWillShowCalled = formname;
-							if ($scope.model.waitForData) {
-								$q.when($scope.svyServoyapi.formWillShow(formname, relationname)).then(function() {
-									realContainedForm = formname;
-								});
-							} else {
-								$scope.svyServoyapi.formWillShow(formname, relationname);
-								realContainedForm = formname;
-							}
+							$scope.svyServoyapi.formWillShow(formname, relationname);
+							realContainedForm = formname;
 						}
 					} else {
 						// panel is not visible; don't ask server to show child form as that would generate an exception on server
 						realContainedForm = formWillShowCalled = undefined;
 					}
 				}
+
+				var realHeaderForm;
+				var headerFormWillShowCalled;
+				var realFooterForm;
+				var footerFormWillShowCalled;
+
+				function setRealHeaderForm(formname, relationname) {
+					if ($scope.model.open) {
+						if (headerFormWillShowCalled != formname && formname) {
+							headerFormWillShowCalled = formname;
+							$scope.svyServoyapi.formWillShow(formname, relationname);
+							realHeaderForm = formname;
+						}
+					} else {
+						// panel is not visible; don't ask server to show child form as that would generate an exception on server
+						realHeaderForm = headerFormWillShowCalled = undefined;
+					}
+				}
+
+				function setRealFooterForm(formname, relationname) {
+					if ($scope.model.open) {
+						if (footerFormWillShowCalled != formname && formname) {
+							footerFormWillShowCalled = formname;
+							$scope.svyServoyapi.formWillShow(formname, relationname);
+							realFooterForm = formname;
+						}
+					} else {
+						// panel is not visible; don't ask server to show child form as that would generate an exception on server
+						realFooterForm = footerFormWillShowCalled = undefined;
+					}
+				}
+
 
 				$scope.getActiveTabUrl = function() {
 					if (realContainedForm) {
@@ -1267,31 +1293,69 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				$scope.getFormUrl = function(formName) {
 					return $scope.svyServoyapi.getFormUrl(formName)
 				}
-				
-				$scope.getFormStyle = function(formName) {
-	                var style = {position:"relative"}
-					var height = 0;
-					if ($scope.model.height)
-					{
-						height = $scope.model.height
-					}
-					else 
-					{
-						// for absolute form default height is design height, for responsive form default height is 0
-						var formState = $sabloApplication.getFormStateEvenIfNotYetResolved(formName);
-						if (formState && formState.absoluteLayout)
-						{
-							height = formState.properties.designSize.height; 
-						}	  
-					}
-	                if (height > 0)
-	                {
-	                    style.minHeight = height+"px";
-	                }	  
-					return style;
-				}
 
 				setRealContainedForm($scope.model.containedForm, $scope.model.relationName);
+				setRealHeaderForm(realHeaderForm, $scope.model.headerForm, $scope.model.relationName);
+				setRealFooterForm(realFooterForm, $scope.model.footerForm, $scope.model.relationName);
+
+				$scope.$watch("model.headerForm", function(newValue,oldValue) {
+					if (newValue !== oldValue)
+					{
+						if (oldValue) {
+							headerFormWillShowCalled = newValue;
+							$scope.svyServoyapi.hideForm(oldValue,null,null,newValue,$scope.model.relationName,null).then(function(ok) {
+								realHeaderForm = $scope.model.headerForm;
+							})
+						}
+						else if (newValue) {
+							setRealHeaderForm(newValue, $scope.model.relationName);
+						}
+					}	
+				});
+
+				$scope.$watch("model.footerForm", function(newValue,oldValue) {
+					if (newValue !== oldValue)
+					{
+						if (oldValue) {
+							footerFormWillShowCalled = newValue;
+							$scope.svyServoyapi.hideForm(oldValue,null,null,newValue,$scope.model.relationName,null).then(function(ok) {
+								realFooterForm = $scope.model.footerForm;
+							})
+						}
+						else if (newValue) {
+							setRealFooterForm(newValue, $scope.model.relationName);
+						}
+					}	
+				});
+
+				$scope.$watch("model.open", function(newValue,oldValue) {
+					if (newValue !== oldValue) {
+						if ($scope.model.headerForm)
+						{
+							headerFormWillShowCalled = realHeaderForm = undefined;
+							if (newValue)
+							{
+								setRealHeaderForm($scope.model.headerForm, $scope.model.relationName);
+							}
+							else
+							{
+								$scope.svyServoyapi.hideForm($scope.model.headerForm);
+							}	
+						}
+						if ($scope.model.footerForm)
+						{
+							footerFormWillShowCalled = realFooterForm = undefined;
+							if (newValue)
+							{
+								setRealFooterForm($scope.model.footerForm, $scope.model.relationName);
+							}
+							else
+							{
+								$scope.svyServoyapi.hideForm($scope.model.footerForm);
+							}	
+						}	
+					}
+				});
 
 				$scope.$watch("model.containedForm", function(newValue,oldValue) {
 					if (newValue !== oldValue)
@@ -1323,6 +1387,26 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					}	
 				});
 
+				$scope.getFormStyle = function(formName) {
+	                var style = {position:"relative"}
+					var height = 0;
+					var width = 0;
+					// for absolute form default height is design height, for responsive form default height is 0
+					var formState = $sabloApplication.getFormStateEvenIfNotYetResolved(formName);
+					if (formState && formState.absoluteLayout)
+					{
+						height = formState.properties.designSize.height; 
+						width = formState.properties.designSize.width;
+					}	  
+	                if (height > 0) {
+	                    style.minHeight = height+"px";
+					}
+					if (width > 0) {
+						style.minWidth = width+"px";
+					}
+					return style;
+				}
+				
 				$scope.getContainerStyle = function() {
 					var height = getResponsiveHeight();
 					var width = getSidenavWidth();

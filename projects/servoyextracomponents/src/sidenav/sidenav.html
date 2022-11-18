@@ -11,12 +11,17 @@
             <!-- The main menu -->
             <ul class="svy-sidenav-menu sn-level-1 svy-sidenav-collapsed" dir="ltr">
 				<li *ngIf="headerForm != null && open">
-					 <div class="svy-container"
-				         [ngStyle]="getFormStyle(headerForm)"
-				         [sabloTabseq]="tabSeq"
-				         [sabloTabseqConfig]="{container: true, reservedGap: 50}">
-				            <ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{name:getHeaderForm()}"></ng-template>
-				    </div>
+                    <div class="svy-navitem-selected" *ngIf="isDesignTime(); else runtime">
+                        <span class="svy-sidenav-item sn-level-1 svy-sidenav-item-text">{{headerForm}}</span>
+                    </div>
+                    <ng-template #runtime>
+                        <div class="svy-container"
+                            [ngStyle]="getHeaderFormStyle()"
+                            [sabloTabseq]="tabSeq"
+                            [sabloTabseqConfig]="{container: true, reservedGap: 50}">
+                            <ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{name:getHeaderForm()}"></ng-template> 
+                        </div>
+                    </ng-template>	
 				</li>
                 <!-- Main list -->
                 <li *ngFor="let item of menu;let $index=index"
@@ -93,15 +98,20 @@
                     </ul><!-- #sub list -->
                     <div *ngIf="item.isDivider" class="svy-sidenav-divider sn-level-1" [ngClass]="item.styleClass"></div> 
                     
-                </li>   
+                </li>
                 <li *ngIf="footerForm != null && open">
-                    <div class="svy-container"
-                        [ngStyle]="getFormStyle(footerForm)"
-                        [sabloTabseq]="tabSeq"
-                        [sabloTabseqConfig]="{container: true, reservedGap: 50}">
-                           <ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{name:getFooterForm()}"></ng-template>
-                   </div>
-               </li>
+                    <div class="svy-navitem-selected" *ngIf="isDesignTime(); else runtime">
+                        <span class="svy-sidenav-item sn-level-1 svy-sidenav-item-text">{{footerForm}}</span>
+                    </div>
+                    <ng-template #runtime>
+                        <div class="svy-container"
+                            [ngStyle]="getFooterFormStyle()"
+                            [sabloTabseq]="tabSeq"
+                            [sabloTabseqConfig]="{container: true, reservedGap: 50}">
+                            <ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{name:getFooterForm()}"></ng-template> 
+                        </div>
+                    </ng-template>	
+				</li>
             </ul><!-- #main list -->
         </nav> 
     </div>
