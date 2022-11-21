@@ -39,8 +39,8 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     @Output() isInitializedChange = new EventEmitter();
 
     log: LoggerService;
-    folderImgPath = '../../assets/images/folder.png';
-    fileImgPath = '../../assets/images/file.png';
+    folderImgPath = './assets/images/folder.png';
+    fileImgPath = './assets/images/file.png';
     useCheckboxes = false;
     expandedNodes: any = [];
     displayNodes: Array<ChildNode> = [];

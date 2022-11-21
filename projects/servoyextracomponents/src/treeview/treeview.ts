@@ -43,8 +43,8 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     filterMatchedNodes: any[];
     filterPartNodes: any[];
 
-    folderImgPath = '../../assets/images/folder.png';
-    fileImgPath = '../../assets/images/file.png';
+    folderImgPath = './assets/images/folder.png';
+    fileImgPath = './assets/images/file.png';
 
 
     svyOnChanges(changes: SimpleChanges) {
