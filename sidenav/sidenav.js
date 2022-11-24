@@ -1234,28 +1234,27 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 * *************************************************************************************/
 
 				var realContainedForm;
-				var formWillShowCalled;
-
-				function setRealContainedForm (formname, relationname) {
-					if ($scope.model.visible) {
-						if (formWillShowCalled != formname && formname) {
-							formWillShowCalled = formname;
-							$scope.svyServoyapi.formWillShow(formname, relationname);
-							realContainedForm = formname;
-						}
-					} else {
-						// panel is not visible; don't ask server to show child form as that would generate an exception on server
-						realContainedForm = formWillShowCalled = undefined;
-					}
-				}
-
+				var containedformWillShowCalled;
 				var realHeaderForm;
 				var headerFormWillShowCalled;
 				var realFooterForm;
 				var footerFormWillShowCalled;
 
+				function setRealContainedForm (formname, relationname) {
+					if ($scope.model.visible && !$scope.model.open) {
+						if (containedformWillShowCalled != formname && formname) {
+							containedformWillShowCalled = formname;
+							$scope.svyServoyapi.formWillShow(formname, relationname);
+							realContainedForm = formname;
+						}
+					} else {
+						// panel is not visible; don't ask server to show child form as that would generate an exception on server
+						realContainedForm = containedformWillShowCalled = undefined;
+					}
+				}
+
 				function setRealHeaderForm(formname, relationname) {
-					if ($scope.model.open) {
+					if ($scope.model.visible && $scope.model.open) {
 						if (headerFormWillShowCalled != formname && formname) {
 							headerFormWillShowCalled = formname;
 							$scope.svyServoyapi.formWillShow(formname, relationname);
@@ -1268,7 +1267,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				}
 
 				function setRealFooterForm(formname, relationname) {
-					if ($scope.model.open) {
+					if ($scope.model.visible && $scope.model.open) {
 						if (footerFormWillShowCalled != formname && formname) {
 							footerFormWillShowCalled = formname;
 							$scope.svyServoyapi.formWillShow(formname, relationname);
@@ -1295,8 +1294,8 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				}
 
 				setRealContainedForm($scope.model.containedForm, $scope.model.relationName);
-				setRealHeaderForm(realHeaderForm, $scope.model.headerForm, $scope.model.relationName);
-				setRealFooterForm(realFooterForm, $scope.model.footerForm, $scope.model.relationName);
+				setRealHeaderForm($scope.model.headerForm, $scope.model.relationName);
+				setRealFooterForm($scope.model.footerForm, $scope.model.relationName);
 
 				$scope.$watch("model.headerForm", function(newValue,oldValue) {
 					if (newValue !== oldValue)
@@ -1328,6 +1327,21 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					}	
 				});
 
+				$scope.$watch("model.containedForm", function(newValue,oldValue) {
+					if (newValue !== oldValue)
+					{
+						if (oldValue) {
+							containedformWillShowCalled = newValue;
+							$scope.svyServoyapi.hideForm(oldValue,null,null,newValue,$scope.model.relationName,null).then(function(ok) {
+								realContainedForm = $scope.model.containedForm;
+							})
+						}
+						else if (newValue) {
+							setRealContainedForm(newValue, $scope.model.relationName);
+						}
+					}	
+				});
+
 				$scope.$watch("model.open", function(newValue,oldValue) {
 					if (newValue !== oldValue) {
 						if ($scope.model.headerForm)
@@ -1353,29 +1367,25 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 							{
 								$scope.svyServoyapi.hideForm($scope.model.footerForm);
 							}	
+						}
+						if ($scope.model.containedForm) {
+							containedformWillShowCalled = realContainedForm = undefined;
+							if (newValue)
+							{
+								$scope.svyServoyapi.hideForm($scope.model.containedForm);
+							}
+							else
+							{
+								setRealContainedForm($scope.model.containedForm, $scope.model.relationName);
+							}	
 						}	
 					}
-				});
-
-				$scope.$watch("model.containedForm", function(newValue,oldValue) {
-					if (newValue !== oldValue)
-					{
-						if (oldValue) {
-							formWillShowCalled = newValue;
-							$scope.svyServoyapi.hideForm(oldValue,null,null,newValue,$scope.model.relationName,null).then(function(ok) {
-								realContainedForm = $scope.model.containedForm;
-							})
-						}
-						else if (newValue) {
-							setRealContainedForm(newValue, $scope.model.relationName);
-						}
-					}	
 				});
 
 				$scope.$watch("model.visible", function(newValue,oldValue) {
 					if ($scope.model.containedForm && newValue !== oldValue)
 					{
-						formWillShowCalled = realContainedForm = undefined;
+						containedformWillShowCalled = realContainedForm = undefined;
 						if (newValue)
 						{
 							setRealContainedForm($scope.model.containedForm, $scope.model.relationName);

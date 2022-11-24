@@ -138,6 +138,40 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
                     case 'open':
                         this.animateMenuHover(this.open);
                         this.animateSlideMenu(this.open);
+
+                        if (this.open) {
+                            if (this.footerForm) {
+                                this.servoyApi.formWillShow(this.footerForm, this.relationName).then(() => {
+                                    this.realFooterForm = this.footerForm;
+                                }).finally(() => this.cdRef.detectChanges());
+                            }
+                            if (this.headerForm) {
+                                this.servoyApi.formWillShow(this.headerForm, this.relationName).then(() => {
+                                    this.realHeaderForm = this.headerForm;
+                                }).finally(() => this.cdRef.detectChanges());
+                            }
+                            if (this.containedForm) {
+                                this.servoyApi.hideForm(this.containedForm, null, null, null, this.relationName).then(() => {
+                                    this.realContainedForm = this.containedForm;
+                                }).finally(() => this.cdRef.detectChanges());
+                            }
+                        } else {
+                            if (this.footerForm) {
+                                this.servoyApi.hideForm(this.footerForm, null, null, null, this.relationName).then(() => {
+                                    this.realFooterForm = this.footerForm;
+                                }).finally(() => this.cdRef.detectChanges());
+                            }
+                            if (this.headerForm) {
+                                this.servoyApi.hideForm(this.headerForm, null, null, null, this.relationName).then(() => {
+                                    this.realHeaderForm = this.headerForm;
+                                }).finally(() => this.cdRef.detectChanges());
+                            }
+                            if (this.containedForm) {
+                                this.servoyApi.formWillShow(this.containedForm, this.relationName).then(() => {
+                                    this.realContainedForm = this.containedForm;
+                                }).finally(() => this.cdRef.detectChanges());
+                            }
+                        }
                         break;
                     case 'expandedIndex':
                         if(!change.currentValue) {
@@ -363,7 +397,6 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         if (this.onOpenToggled && wasOpen !== this.open) {
             this.onOpenToggled(event);
         }
-
     }
 
     selectItem(level: number, index: number, item: MenuItem, event?: MouseEvent, preventSelectHandler?: boolean, preventExpandHandler?: boolean) {

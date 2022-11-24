@@ -11,10 +11,10 @@
             <!-- The main menu -->
             <ul class="svy-sidenav-menu sn-level-1 svy-sidenav-collapsed" dir="ltr">
 				<li *ngIf="headerForm != null && open">
-                    <div class="svy-navitem-selected" *ngIf="isDesignTime(); else runtime">
+                    <div class="svy-navitem-selected" *ngIf="isDesignTime(); else headerRuntime">
                         <span class="svy-sidenav-item sn-level-1 svy-sidenav-item-text">{{headerForm}}</span>
                     </div>
-                    <ng-template #runtime>
+                    <ng-template #headerRuntime>
                         <div class="svy-container"
                             [ngStyle]="getHeaderFormStyle()"
                             [sabloTabseq]="tabSeq"
@@ -100,10 +100,10 @@
                     
                 </li>
                 <li *ngIf="footerForm != null && open">
-                    <div class="svy-navitem-selected" *ngIf="isDesignTime(); else runtime">
+                    <div class="svy-navitem-selected" *ngIf="isDesignTime(); else footerRuntime">
                         <span class="svy-sidenav-item sn-level-1 svy-sidenav-item-text">{{footerForm}}</span>
                     </div>
-                    <ng-template #runtime>
+                    <ng-template #footerRuntime>
                         <div class="svy-container"
                             [ngStyle]="getFooterFormStyle()"
                             [sabloTabseq]="tabSeq"
@@ -116,7 +116,7 @@
         </nav> 
     </div>
     <div class="svy-sidenav-tablesspanel"
-         *ngIf="containedForm != null"
+         *ngIf="containedForm != null && !open"
          [ngStyle]="getContainerStyle()"
          [ngClass]="{'svy-sidenav-right': slidePosition == 'right', 'svy-sidenav-static': slidePosition == 'static' , 'svy-sidenav-left': slidePosition == 'left' }"
          [sabloTabseq]="tabSeq"
