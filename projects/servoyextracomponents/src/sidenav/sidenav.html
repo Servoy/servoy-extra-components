@@ -115,12 +115,18 @@
             </ul><!-- #main list -->
         </nav> 
     </div>
-    <div class="svy-sidenav-tablesspanel"
-         *ngIf="containedForm != null && !open"
-         [ngStyle]="getContainerStyle()"
-         [ngClass]="{'svy-sidenav-right': slidePosition == 'right', 'svy-sidenav-static': slidePosition == 'static' , 'svy-sidenav-left': slidePosition == 'left' }"
-         [sabloTabseq]="tabSeq"
-         [sabloTabseqConfig]="{container: true, reservedGap: 50}">
-            <ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{name:getForm()}"></ng-template>
+
+    <div class="svy-navitem-selected" *ngIf="isDesignTime(); else containedFormRuntime">
+        <span class="svy-sidenav-item sn-level-1 svy-sidenav-item-text">{{containedForm}}</span>
     </div>
+    <ng-template #containedFormRuntime>
+        <div class="svy-sidenav-tablesspanel"
+            *ngIf="containedForm != null && !open"
+            [ngStyle]="getContainerStyle()"
+            [ngClass]="{'svy-sidenav-right': slidePosition == 'right', 'svy-sidenav-static': slidePosition == 'static' , 'svy-sidenav-left': slidePosition == 'left' }"
+            [sabloTabseq]="tabSeq"
+            [sabloTabseqConfig]="{container: true, reservedGap: 50}">
+            <ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{name:getForm()}"></ng-template>
+        </div>
+    </ng-template>	 
 </div>
