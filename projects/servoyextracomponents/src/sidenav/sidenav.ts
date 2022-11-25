@@ -150,11 +150,6 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
                                     this.realHeaderForm = this.headerForm;
                                 }).finally(() => this.cdRef.detectChanges());
                             }
-                            if (this.containedForm) {
-                                this.servoyApi.hideForm(this.containedForm, null, null, null, this.relationName).then(() => {
-                                    this.realContainedForm = this.containedForm;
-                                }).finally(() => this.cdRef.detectChanges());
-                            }
                         } else {
                             if (this.footerForm) {
                                 this.servoyApi.hideForm(this.footerForm, null, null, null, this.relationName).then(() => {
@@ -164,11 +159,6 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
                             if (this.headerForm) {
                                 this.servoyApi.hideForm(this.headerForm, null, null, null, this.relationName).then(() => {
                                     this.realHeaderForm = this.headerForm;
-                                }).finally(() => this.cdRef.detectChanges());
-                            }
-                            if (this.containedForm) {
-                                this.servoyApi.formWillShow(this.containedForm, this.relationName).then(() => {
-                                    this.realContainedForm = this.containedForm;
                                 }).finally(() => this.cdRef.detectChanges());
                             }
                         }

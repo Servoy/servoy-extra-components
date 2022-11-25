@@ -1241,7 +1241,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				var footerFormWillShowCalled;
 
 				function setRealContainedForm (formname, relationname) {
-					if ($scope.model.visible && !$scope.model.open) {
+					if ($scope.model.visible) {
 						if (containedformWillShowCalled != formname && formname) {
 							containedformWillShowCalled = formname;
 							$scope.svyServoyapi.formWillShow(formname, relationname);
@@ -1252,7 +1252,7 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 						realContainedForm = containedformWillShowCalled = undefined;
 					}
 				}
-
+				
 				function setRealHeaderForm(formname, relationname) {
 					if ($scope.model.visible && $scope.model.open) {
 						if (headerFormWillShowCalled != formname && formname) {
@@ -1368,17 +1368,6 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 								$scope.svyServoyapi.hideForm($scope.model.footerForm);
 							}	
 						}
-						if ($scope.model.containedForm) {
-							containedformWillShowCalled = realContainedForm = undefined;
-							if (newValue)
-							{
-								$scope.svyServoyapi.hideForm($scope.model.containedForm);
-							}
-							else
-							{
-								setRealContainedForm($scope.model.containedForm, $scope.model.relationName);
-							}	
-						}	
 					}
 				});
 
