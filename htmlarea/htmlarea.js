@@ -243,6 +243,7 @@ angular.module('servoyextraHtmlarea',['servoy','ui.tinymce']).directive('servoye
 			 * Replaces the selected text; if no text has been selected, the replaced value will be inserted at the last cursor position.
 			 * @example %%prefix%%%%elementName%%.replaceSelectedText('John');
 			 * @param s The replacement text.
+			 * @return The new content after replace.
 			 */
 			$scope.api.replaceSelectedText = function (s){
 				var selection = $scope.editor.selection;
