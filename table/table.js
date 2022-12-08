@@ -2464,7 +2464,9 @@ return {
                 // make sure no scrollbar is shown in this scenario
                 if(h < $scope.model.responsiveHeight) {
                     tBodyStyle['overflow-y'] = 'hidden';
-                } 
+                } else { // if there is more content, make sure scrollbar is visible again
+                    tBodyStyle['overflow-y'] = 'auto';
+                }
            }
                     
 			for (var p in tBodyStyle) {
