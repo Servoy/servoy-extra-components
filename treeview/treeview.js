@@ -78,7 +78,7 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 					}
 				},
 				select: function(event, data) {
-					if($scope.handlers.onNodeSelected) $scope.handlers.onNodeSelected(data.node.key);
+					if($scope.handlers.onNodeSelected && data.node.isSelected()) $scope.handlers.onNodeSelected(data.node.key);
 				},
 				expand: function(event, data) {
 					if($scope.handlers.onNodeExpanded) $scope.handlers.onNodeExpanded(data.node.key);
