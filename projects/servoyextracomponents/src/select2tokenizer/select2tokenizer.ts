@@ -268,15 +268,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 							}
 							const keyupEvent = new CustomEvent('keyup', {
 								bubbles: true,
-								detail: {
-									key: () => ev.key,
-									target: () => ev.target,
-									keyCode: () => ev.keyCode,
-									altKey: () => ev.altKey,
-									ctrlKey: () => ev.ctrlKey,
-									shiftKey: () => ev.shiftKey,
-									capsLockEnabled: () => ev.getModifierState('CapsLock'),
-								}
+								detail: ev
 							});
 							this.getNativeChild().dispatchEvent(keyupEvent);
                         });
