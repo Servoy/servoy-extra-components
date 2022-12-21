@@ -179,7 +179,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     }
 
     pushDashboardOptions() {
-        const locale = null;
+        const locale = { strings: {} };
         if (this.localeStrings) {
             for (const key of Object.keys(this.localeStrings)) {
                 const localeString = this.localeStrings[key];
