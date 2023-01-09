@@ -255,7 +255,9 @@
       		"data"					: {"type" : "object"},
       		"menuItems"				: {"type" : "MenuItem[]"},
       		"isDivider"				: {"type" : "boolean", "default": false},
-      		"tooltip"				: {"type" : "tagstring"}
+      		"tooltip"				: {"type" : "tagstring"},
+      		"badgeText"             : {"type" : "tagstring"},
+      		"badgeStyleClass"       : {"type" : "styleclass", "default": "badge text-bg-secondary"}
     	}
 	}
 }

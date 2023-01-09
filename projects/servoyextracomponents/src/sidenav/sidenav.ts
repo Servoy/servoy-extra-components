@@ -876,4 +876,6 @@ class MenuItem {
     public menuItems: Array<MenuItem>;
     public isDivider: boolean;
     public tooltip: string;
+    public badgeText: string;
+    public badgeStyleClass: string;
 }
