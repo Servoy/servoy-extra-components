@@ -885,19 +885,14 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 								if (className) sidenav.addClass(className);
 								break;
 							case "containedForm":
+							case "headerForm":
+							case "footerForm":
 								if (value) {
 									svyextracontainer.addClass("has-panel");
 								} else {
 									svyextracontainer.removeClass("has-panel");
 								}
 								break;
-							case "headerForm", "footerForm":
-								if (value) {
-									svyextracontainer.addClass("has-panel");
-								} else {
-									svyextracontainer.removeClass("has-panel");
-								}
-							    break;
 							case "sidenavWidth":
 							case "height":
 								updateSidenavStyle();
