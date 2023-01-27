@@ -58,6 +58,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     blur() {
+        //comment
         if (this.lastServerValueAsSeenByTinyMCEContent != this.tinyValue) {
             this.dataProviderID = '<html><body>' + this.tinyValue + '</body></html>';
             this.pushUpdate();
