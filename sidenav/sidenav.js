@@ -155,6 +155,9 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 						return false;
 					}
 
+					// checking if the item was selected twice in a row, return true or false
+					var isItemAlreadySelected = $scope.selectedIndex[level] == item.id && !$scope.selectedIndex[level + 1];
+					
 					if (preventSelectHandler != true && $scope.handlers.onMenuItemSelected) { // change selection only if onMenuItemSelected allows it
 						$scope.handlers.onMenuItemSelected(item.id, event).then(function(result) {
 								if (result !== false) {
@@ -174,7 +177,14 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 
 						// expand the item
 						if (item.menuItems) { // expand the node if not leaf
-							$scope.expandItem(level, index, item, event, preventExpandHandler); // TODO add collapsed argument
+							if (!isItemAlreadySelected) { // expand the node if not isItemAlreadySelected
+								$scope.expandItem(level, index, item, event, preventExpandHandler);
+							} else if (!$scope.api.isMenuItemExpanded(item.id)) { // expand the node if if the node is not expanded
+								$scope.expandItem(level, index, item, event, preventExpandHandler);
+							} else { // collapse the node
+								$scope.collapseItem(level, index, item, event, preventExpandHandler);
+							}
+
 						} else { // expand the parent node if is a leaf
 							var parentNode = getParentNode(item.id);
 							if (parentNode) {

@@ -401,13 +401,22 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         if (this.isDisabled(item.id)) {
             return false;
         }
+        
+        // checking if the item was selected twice in a row, return true or false
+		var isItemAlreadySelected = this.selectedIndex[level] == item.id && this.selectedIndex[level + 1];
 
         const confirmSelection = () => {
             this.setSelectedIndex(level, index, item);
 
             // expand the item
             if (item.menuItems) { // expand the node if not leaf
-                this.expandItem(level, index, item, event, preventExpandHandler); // TODO add collapsed argument
+                if (!isItemAlreadySelected) { // expand the node if not isItemAlreadySelected
+					this.expandItem(level, index, item, event, preventExpandHandler);
+				} else if (!this.isMenuItemExpanded(item.id)) { // expand the node if if the node is not expanded
+					this.expandItem(level, index, item, event, preventExpandHandler);
+				} else { // collapse the node
+					this.collapseItem(level, index, item, event, preventExpandHandler);
+				}
             } else { // expand the parent node if is a leaf
                 const parentNode = this.getParentNode(item.id);
                 if (parentNode) {
