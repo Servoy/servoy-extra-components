@@ -25,7 +25,7 @@ import { BGSplitter } from './splitpane/bg_splitter/bg_splitter.component';
 import { Select2Module } from 'ng-select2-component';
 import { LightboxModule } from 'ngx-lightbox';
 import { ServoyExtraCollapse } from './collapse/collapse';
-import { Binding, Callback, FoundsetInfo, LevelVisibilityType, RelationInfo, ServoyExtraDbtreeview } from './dbtreeview/dbtreeview';
+import { Binding, Callback, LevelVisibilityType, RelationInfo, ServoyExtraDbtreeview } from './dbtreeview/dbtreeview';
 import { TreeModule } from '@circlon/angular-tree-component';
 import { EditorModule , TINYMCE_SCRIPT_SRC} from '@tinymce/tinymce-angular';
 import { ServoyExtraTreeview } from './treeview/treeview';
@@ -110,7 +110,6 @@ export class ServoyExtraComponentsModule {
     constructor( specTypesService: SpecTypesService ) {
         specTypesService.registerType('servoyextra-table.column', Column);
         specTypesService.registerType('servoyextra-table.settings', KeycodeSettings);
-        specTypesService.registerType('servoyextra-dbtreeview.foundsetInfo', FoundsetInfo);
         specTypesService.registerType('servoyextra-dbtreeview.binding', Binding);
         specTypesService.registerType('servoyextra-dbtreeview.callback', Callback);
         specTypesService.registerType('servoyextra-dbtreeview.relationInfo', RelationInfo);

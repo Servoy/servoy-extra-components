@@ -2,11 +2,10 @@
      <tree-root #tree [nodes]="displayNodes" [options]="options" 
         (toggleExpanded)="onNodeExpanded($event)" 
         (initialized)="onTreeLoad($event)"
-        (loadNodeChildren)="onLoadNodeChildren($event)"
-        (updateData)="onUpdateTree($event)">
+        (loadNodeChildren)="onLoadNodeChildren($event)">
         <ng-template #treeNodeTemplate let-node="node" let-index="index">
             <div [title]="node.data.tooltip"> 
-                <input *ngIf="node.data.checkbox"
+                <input *ngIf="node.data.hascheckbox"
                 (change)="check(node, !node.data.checked)"
                 type="checkbox"
                 [indeterminate]="node.data.indeterminate"

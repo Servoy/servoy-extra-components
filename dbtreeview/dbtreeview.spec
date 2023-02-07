@@ -15,8 +15,7 @@
 	"keywords": ["database"],
 	"model":
 	{
-		"foundsets" : {"type": "foundsetInfo[]", "elementConfig" : { "dynamicDataproviders": true }, "tags": { "scope": "private" }},
-	    "relatedFoundsets": { "type": "foundsetInfo[]", "elementConfig" : { "dynamicDataproviders": true }, "default": [], "tags": { "scope": "private" }},
+		"foundsettree" : {"type": "foundsettree", "default" : [], "tags": { "scope": "private" }, "pushToServer": "allow"},
 		"roots": {"type":"foundsetref[]", "tags": { "scope": "private" }},
 	    "bindings" : {"type":"binding[]", "tags": { "scope": "private" }},
 	    "visible" : {"type":"boolean", "default":true},
@@ -320,77 +319,53 @@
         }				
 	},
 	"internalApi" : {
-		"loadRelatedFoundset" : {
-				"parameters" : [{"name": "index", "type": "int"}]
-		},
-		"getCheckBoxValuesFromTree": {
-			"parameters": [{"name": "datasourceID", "type": "object"}],
-			"returns": "object[]"
-		},
-		"updateCheckBoxValuesForTree": {
-						"parameters":[
-							{                                                                 
-							"name":"datasource",
-							"type": "object"
-		                	},
-							{                                                                 
-							"name":"pks",
-							"type": "string[]"
-		                	},
-							{                                                                 
-							"name":"state",
-							"type": "boolean"
-		                	}								
-						 ]
-		},
-		"updateFoundsetRow": {
-						"parameters":[
-							{                                                                 
-							"name":"isRoot",
-							"type": "boolean"
-		                	},
-							{                                                                 
-							"name":"fsInfoID",
-							"type": "int"
-		                	},
-							{                                                                 
-							"name":"index",
-							"type": "int"
-		                	},
-							{
-							"name":"checkboxValueDP",
-							"type": "string"
-		                	}, 
-						    {
-							"name":"value",
-							"type": "object"
-		                	}							
-						 ]
-		}
-	 },
-
-	 "types": {
+        "setSelectionPathClientSide" : {
+                "parameters" : [{"name": "idarray", "type": "string[]"}]
+        },
+        "isNodeExpandedClientSide": {
+            "parameters":[
+                            {                                                                 
+                            "name":"idarray",
+                            "type": "string[]"
+                            }
+                         ],
+            "returns": "boolean"
+        },
+        "setExpandNodeClientSide": {
+            "parameters":[
+                            {                                                                 
+                            "name":"idarray",
+                            "type": "string[]"
+                            },
+                            {                                                                 
+                            "name":"state",
+                            "type": "boolean"
+                            }                           
+                         ]
+        }
+    },
+	"types": {
 	  "callback": {
 	  		"f": "function",
 	  		"param": "string"
 	  },
 	  "binding": {
-	  		"datasource": "string",
-	  		"textdataprovider": "string",
-	  		"nrelationname": "string",
-	  		"hascheckboxdataprovider": "string",
-	  		"checkboxvaluedataprovider": "string",
-	  		"tooltiptextdataprovider": "string",
-	  		"imageurldataprovider": "string",
-	  		"childsortdataprovider": "string",
-	  		"callbackinfo": "callback",
-	  		"methodToCallOnCheckBoxChange": "callback",
-	  		"methodToCallOnDoubleClick": "callback",
-	  		"methodToCallOnRightClick": "callback",
-			"nRelationInfos": "relationInfo[]",
-			"hasCheckboxValue": "object[]",
-			"initialCheckboxValues": "object[]"
-	  },
+            "datasource": "string",
+            "textdataprovider": "string",
+            "nrelationname": "string",
+            "hascheckboxdataprovider": "string",
+            "checkboxvaluedataprovider": "string",
+            "tooltiptextdataprovider": "string",
+            "imageurldataprovider": "string",
+            "childsortdataprovider": "string",
+            "callbackinfo": "callback",
+            "methodToCallOnCheckBoxChange": "callback",
+            "methodToCallOnDoubleClick": "callback",
+            "methodToCallOnRightClick": "callback",
+            "nRelationInfos": "relationInfo[]",
+            "hasCheckboxValue": "object[]",
+            "initialCheckboxValues": "object[]"
+      },
 	  "levelVisibilityType": {
 	  		"level": "int",
 	  		"value": "boolean"
@@ -398,14 +373,6 @@
 	  "relationInfo": {
 		  	"label": "string",
 			"nRelationName": "string"
-	  }, 
-	  "foundsetInfo": { 
-		  "datasourceID": "int",
-		  "foundset": "foundset",
-		  "foundsetpk": "string", 
-		  "foundsetInfoID": "int",
-		  "foundsetInfoParentID": "int",
-		  "indexOfTheParentRecord": "int"
 	  }
 	}
 }
