@@ -42,7 +42,8 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     isBranchFilter = false;
     filterMatchedNodes: any[];
     filterPartNodes: any[];
-
+    lastSelectedNode: number;
+    
     folderImgPath = './assets/images/folder.png';
     fileImgPath = './assets/images/file.png';
 
@@ -164,8 +165,9 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
 
     onselect(event) {
       if(this.onNodeSelected) {
-        if(this.getSeletedNode() !== event.data.id) {
+        if(this.lastSelectedNode !== event.data.id) {
           this.onNodeSelected(event.data.id);
+          this.lastSelectedNode = event.data.id;
         }
       }
     }
