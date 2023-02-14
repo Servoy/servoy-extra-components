@@ -295,11 +295,13 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     private compareArrays(arr1: any, arr2: any) {
         if (!Array.isArray(arr1) || !Array.isArray(arr2)) return false;
         if (arr1.length !== arr2.length) return false;
+        let count = 0;
         for (let i = 0, len = arr1.length; i < len; i++) {
-            if (arr1[i] + '' !== arr2[i] + '') {
-                return false;
+            if (arr1[i] + '' === arr2[i] + '') {
+                count++;
             }
         }
+        if (count === arr1.length) return false;
         return true;
     }
 
