@@ -242,8 +242,8 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
 	}
 
 	onUserChangeEnd(changeContext: ChangeContext) {
-		this.dataProviderChange.emit(this.dataProvider);
-		this.dataProviderHighChange.emit(this.dataProviderHigh);
+		this.dataProviderChange.emit(changeContext.value);
+		this.dataProviderHighChange.emit(changeContext.highValue);
 		if (this.onSlideEnd) {
 			this.onSlideEnd(null, changeContext.value, changeContext.highValue, changeContext.pointerType);
 		}
