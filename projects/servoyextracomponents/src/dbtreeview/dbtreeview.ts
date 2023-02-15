@@ -174,9 +174,9 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
                     }
                 }
             }
-            if (event.node.data.checked) {
-                child.data.checked = true;
-            }
+           // if (event.node.data.checked) {
+           //     child.data.checked = true;
+           //}
             if (this.levelVisibility && this.levelVisibility.level > child.level) {
                 child.expand();
             } else if (this.expandedNodes && !child.isExpanded && this.expandedNodes.indexOf(child.data.id) >= 0) {
