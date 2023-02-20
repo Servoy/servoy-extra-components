@@ -1,4 +1,4 @@
-import { Component, SimpleChanges, Input, Renderer2, EventEmitter, Output, ChangeDetectorRef, ChangeDetectionStrategy, Inject } from '@angular/core';
+import { Component, SimpleChanges, Input, Renderer2, EventEmitter, Output, ChangeDetectorRef, ChangeDetectionStrategy, Inject, ViewChild, ElementRef } from '@angular/core';
 import { ServoyBaseComponent, ServoyPublicService } from '@servoy/public';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { DOCUMENT } from '@angular/common';
@@ -41,6 +41,8 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
     @Input() uploadNotSupportedFileText: string;
     @Input() toolTipText: string;
 
+    @ViewChild('fileInputLabel') fileInputLabel: ElementRef;
+
     uploader: FileUploader;
     hasBaseDropZoneOver = false;
     customText: string;
@@ -59,8 +61,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     public fileInputClick(): void {
-        const element: HTMLElement = this.doc.getElementById('fileInputLabel') as HTMLElement;
-        element.click();
+        this.fileInputLabel.nativeElement.click();
     }
 
     initializeComponent() {
