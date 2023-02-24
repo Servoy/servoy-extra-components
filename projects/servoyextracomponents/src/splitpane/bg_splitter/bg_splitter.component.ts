@@ -95,7 +95,7 @@ export class BGSplitter implements AfterContentInit , OnChanges {
             if ( height - pos < this.panes.last.minSize ) return;
             this.renderer.setStyle( this.handler, 'top', pos + 'px' );
             this.renderer.setStyle( this.panes.first.element.nativeElement, 'height', pos + 'px' );
-            this.renderer.setStyle( this.panes.last.element.nativeElement, 'top', pos + 'px' );
+            this.renderer.setStyle( this.panes.last.element.nativeElement, 'top', (pos + this.handler.offsetHeight) + 'px' );
         } else {
             const width = bounds.right - bounds.left;
 
@@ -103,7 +103,7 @@ export class BGSplitter implements AfterContentInit , OnChanges {
             if ( width - pos < this.panes.last.minSize ) return;
             this.renderer.setStyle( this.handler, 'left', pos + 'px' );
             this.renderer.setStyle( this.panes.first.element.nativeElement, 'width', pos + 'px' );
-            this.renderer.setStyle( this.panes.last.element.nativeElement, 'left',  pos + 'px' );
+            this.renderer.setStyle( this.panes.last.element.nativeElement, 'left',  (pos + this.handler.offsetWidth) + 'px' );
         }
     }
 
