@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ContentChild, TemplateRef, ChangeDetectorRef, SimpleChanges, Renderer2, ChangeDetectionStrategy} from '@angular/core';
+import { Component, Input, Output, EventEmitter, ContentChild, TemplateRef, ChangeDetectorRef, SimpleChanges, Renderer2, ChangeDetectionStrategy, ViewChild, ElementRef} from '@angular/core';
 
 import { BaseCustomObject, ServoyBaseComponent } from '@servoy/public';
 
@@ -28,6 +28,8 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
     @Input() responsiveHeight: number;
 
     @ContentChild( TemplateRef, {static: true} ) templateRef: TemplateRef<any>;
+
+    @ViewChild('element', { static: true }) elementRef: ElementRef;
 
     containerStyle = {
         width: '100%',
@@ -60,6 +62,28 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
             this.rightTab = this.tabSwitch(this.rightTab, this.pane2?this.pane2:null);
 		}
         super.svyOnChanges(changes);
+        if (changes) {
+            for (const property of Object.keys(changes)) {
+                const change = changes[property];
+                switch (property) {
+                    case 'styleClass':
+                        if (change.previousValue) {
+                            const array = change.previousValue.trim().split(' ');
+                            array.filter((element: string) => element !== '').forEach(
+                                (element: string) => this.elementRef.nativeElement.classList.remove(element)
+                            );
+                        }
+                        if (change.currentValue) {
+                            const array = change.currentValue.trim().split(' ');
+                            array.filter((element: string) => element !== '').forEach(
+                                (element: string) => this.elementRef.nativeElement.classList.add(element)
+                            );
+                        }
+                    break;
+                }
+            }            
+        }
+        //this.elementRef.nativeElement.classList.add(this.styleClass);
     }
 
     onChange( location ) {
