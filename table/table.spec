@@ -48,7 +48,7 @@
 			"initialWidth": { "type": "string", "tags": { "scope": "runtime" } },
 			"autoResize": { "type": "boolean", "default": false },
 			"showAs": { "type": "string", "default": "text", "values": ["text", "html", "sanitizedHtml"] },
-			"id" : {"type": "string", "tags": {"wizard": {"prefill" : "dataprovider"}, "doc": "Used to identify the column in cell event handlers, because column index can change if columns are added/removed at runtime."}}
+			"id" : {"type": "string", "tags": {"wizard": {"prefill" : "dataprovider", "unique": true}, "doc": "Used to identify the column in cell event handlers, because column index can change if columns are added/removed at runtime."}}
 		},
 		"settings": {
 			"minBatchSizeForRenderingMoreRows" : { "type": "int", "default": 10 }, 
