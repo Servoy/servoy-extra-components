@@ -83,7 +83,6 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
                 }
             }            
         }
-        //this.elementRef.nativeElement.classList.add(this.styleClass);
     }
 
     onChange( location ) {
