@@ -69,6 +69,19 @@ $scope.api.setHasCheckBoxDataprovider = function(datasource, hascheckboxdataprov
 }   
 
 /**
+* Set the nodes whose checkbox will automatically autoselect children.
+* 
+* @example
+* %%elementName%%.setCheckBoxAutoselectsChildren(databaseManager.getDataSource('example_data', 'categories'),false);
+* 
+* @param datasource 
+* @param autoselect
+*/
+$scope.api.setCheckBoxAutoselectsChildren = function(datasource, autoselect) {
+    $scope.model.foundsettree.getBinding(datasource).checkboxAutoselectsChildren = autoselect;
+}
+
+/**
 * Set callback info for a datasource foundset display. 
 * 
 * @example

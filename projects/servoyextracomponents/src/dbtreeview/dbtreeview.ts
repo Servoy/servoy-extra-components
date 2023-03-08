@@ -228,8 +228,10 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     }
 
     check(node: TreeNode, checked: boolean) {
-        this.updateChildNodeCheckbox(node, checked);
-        this.updateParentNodeCheckbox(node.realParent);
+        if (node.data.checkboxautoselectschildren){
+            this.updateChildNodeCheckbox(node, checked);
+            this.updateParentNodeCheckbox(node.realParent);
+        }
 
         this.foundsettree.updateCheckboxValue(node.data.id, checked);
 
@@ -373,6 +375,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
         child.name = dataNode.name;
         child.tooltip = dataNode.tooltip;
         child.hascheckbox = dataNode.hascheckbox;
+        child.checkboxautoselectschildren = dataNode.checkboxautoselectschildren;
         child.checked = dataNode.checked;
 
         if (dataNode.image) {
@@ -513,6 +516,7 @@ class ChildNode {
     hasChildren?: boolean;
     image?: string;
     hascheckbox?: boolean;
+    checkboxautoselectschildren?: boolean;
     checked?: boolean;
     expanded?: boolean;
     active?: boolean;

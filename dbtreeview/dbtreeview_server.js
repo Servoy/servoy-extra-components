@@ -262,6 +262,20 @@ $scope.api.setHasCheckBoxValue = function(datasource, hasCheckboxValue) {
 }
 
 /**
+* Set the nodes whose checkbox will automatically autoselect children.
+* 
+* @example
+* %%elementName%%.setCheckBoxAutoselectsChildren(databaseManager.getDataSource('example_data', 'categories'),false);
+* 
+* @param datasource 
+* @param autoselect
+*/
+$scope.api.setCheckBoxAutoselectsChildren = function(datasource, autoselect) {
+    //$scope.getBinding(datasource).checkboxAutoselectsChildren = autoselect;
+    //TODO not implemented in ng1
+}
+
+/**
  * Returns array of pk of nodes that are checked for the datasource
  *
  * @example

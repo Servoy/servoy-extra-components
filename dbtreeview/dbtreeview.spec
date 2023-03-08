@@ -316,6 +316,18 @@
 		                	}
 						 ],
 			"returns": "string[]"
+        },
+        "setCheckBoxAutoselectsChildren": {
+            "parameters":[
+                            {                                                                 
+                            "name":"datasource",
+                            "type": "string"
+                            },
+                            {                                                                 
+                            "name":"autoselect",
+                            "type": "boolean"
+                            }   
+                         ]
         }				
 	},
 	"internalApi" : {
