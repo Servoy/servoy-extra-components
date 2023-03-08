@@ -45,7 +45,6 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     mustExecuteOnFocus = true;
 
     private updateValueCallsToSkip = 0;
-    private currentSelectedValues = 0;
 
     constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, @Inject(DOCUMENT) private doc: Document) {
         super(renderer, cdRef);
@@ -145,7 +144,6 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 
     updateValue(event: Select2UpdateEvent<any>) {
         if (this.updateValueCallsToSkip > 0 && --this.updateValueCallsToSkip !== 0) return;
-        this.currentSelectedValues = event.options.length;
 
         if (!this.compareArrays(this.filteredDataProviderId, event.value)) {
             if (event.value.length > 0) {
@@ -180,8 +178,11 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
             this.setData();
         }
         if (changes['dataProviderID']) {
+            const prevFiltered = this.filteredDataProviderId;
             this.filteredDataProviderId = this.dataProviderID ? (this.isTypeString() ? this.dataProviderID.split('\n') : [this.dataProviderID]) : [];
-            this.updateValueCallsToSkip = Math.max(this.filteredDataProviderId.length - this.currentSelectedValues, 0);
+            if (!this.compareArrays(prevFiltered, this.filteredDataProviderId)){
+                this.updateValueCallsToSkip = this.filteredDataProviderId.length;
+            }
             this.setData();
         }
         if (changes['size']) {
@@ -295,13 +296,11 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     private compareArrays(arr1: any, arr2: any) {
         if (!Array.isArray(arr1) || !Array.isArray(arr2)) return false;
         if (arr1.length !== arr2.length) return false;
-        let count = 0;
         for (let i = 0, len = arr1.length; i < len; i++) {
-            if (arr1[i] + '' === arr2[i] + '') {
-                count++;
+            if (arr1[i] + '' !== arr2[i] + '') {
+                return false;
             }
         }
-        if (count === arr1.length) return false;
         return true;
     }
 
