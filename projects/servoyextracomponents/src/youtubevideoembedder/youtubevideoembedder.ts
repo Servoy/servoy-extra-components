@@ -27,6 +27,7 @@ export class ServoyExtraYoutubeVideoEmbedder extends ServoyBaseComponent<HTMLIFr
 
     constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, private sanitizer: DomSanitizer) {
         super(renderer, cdRef);
+         this.fullYoutubeURL = this.sanitizer.bypassSecurityTrustResourceUrl('');
     }
 
     svyOnChanges(changes: SimpleChanges) {
