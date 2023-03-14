@@ -403,7 +403,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         }
         
         // checking if the item was selected twice in a row, return true or false
-		var isItemAlreadySelected = this.selectedIndex[level] == item.id && this.selectedIndex[level + 1];
+		const isItemAlreadySelected = this.selectedIndex[level] === item.id && !this.selectedIndex[level + 1];
 
         const confirmSelection = () => {
             this.setSelectedIndex(level, index, item);
