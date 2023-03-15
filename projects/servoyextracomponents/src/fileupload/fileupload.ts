@@ -112,6 +112,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
 
     onWhenAddingFileFailed = () => {
         this.customText = this.uploadNotSupportedFileText;
+        this.cdRef.detectChanges();
     };
 
     svyOnChanges(changes: SimpleChanges) {

@@ -31,7 +31,7 @@
     "angular-tree-grid": "<6",
     "file-saver": "<3",
     "ng-select2-component": "<11",
-    "ng2-file-upload": "<4",
+    "ng2-file-upload": "4.0.0",
     "ngx-filesaver": "<16",
     "ngx-lightbox": "<4",
     "rx-dom-html": "<8",
