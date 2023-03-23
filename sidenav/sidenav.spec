@@ -16,7 +16,7 @@
 		"selectedIndex"					: {"type" :"string", "tags": { "scope" :"private" }, "pushToServer" : "deep"},
 		"expandedIndex"					: {"type" :"string", "tags": { "scope" :"private" }, "pushToServer" : "deep"},
 		"tabSeq"						: { "type": "tabseq", "tags": { "scope": "design" } },
-		"containedForm"					: {"type" :"form"},
+		"containedForm"					: {"type" :"form", "pushToServer": "shallow"},
 		"headerForm"					: {"type" :"form"},
 		"footerForm"					: {"type" :"form"},
 		"relationName"					: "relation",
@@ -257,7 +257,9 @@
       		"isDivider"				: {"type" : "boolean", "default": false},
       		"tooltip"				: {"type" : "tagstring"},
       		"badgeText"             : {"type" : "tagstring"},
-      		"badgeStyleClass"       : {"type" : "styleclass", "default": "badge text-bg-secondary"}
+      		"badgeStyleClass"       : {"type" : "styleclass", "default": "badge text-bg-secondary"},
+			"formName"              : {"type" : "form"},
+			"relationName"			: "relation"
     	}
 	}
 }

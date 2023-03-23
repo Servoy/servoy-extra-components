@@ -15,6 +15,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
     @Input() sidenavWidth: number;
     @Input() responsiveHeight: number;
     @Input() containedForm: string;
+    @Output() containedFormChange = new EventEmitter();
     @Input() headerForm: string;
     @Input() footerForm: string;
     @Input() relationName: string;
@@ -401,11 +402,13 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         if (this.isDisabled(item.id)) {
             return false;
         }
-        
+
         // checking if the item was selected twice in a row, return true or false
 		const isItemAlreadySelected = this.selectedIndex[level] === item.id && !this.selectedIndex[level + 1];
 
         const confirmSelection = () => {
+			this.setRelationName(item);
+			this.setContainedForm(item);
             this.setSelectedIndex(level, index, item);
 
             // expand the item
@@ -658,6 +661,21 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         this.selectedIndexChange.emit(JSON.stringify(this.selectedIndex));
     }
 
+    setContainedForm(item: MenuItem) {
+        if (item.formName) {
+			this.containedForm = item.formName;
+        	this.containedFormChange.emit(this.containedForm);
+		}
+    }
+
+    setRelationName(item: MenuItem) {
+        if (item.relationName) {
+			this.relationName = item.relationName;
+		} else {
+			this.relationName = null;
+		}
+    }
+
     clearSelectedIndex(level: number) {
         const levels = this.selectedIndex;
         // reset all sub levels
@@ -887,4 +905,6 @@ class MenuItem {
     public tooltip: string;
     public badgeText: string;
     public badgeStyleClass: string;
+    public formName: string;
+    public relationName: string;
 }

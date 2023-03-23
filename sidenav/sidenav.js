@@ -70,6 +70,8 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				var getSelectedIndexPath;
 				var getSelectedNode;
 				var setSelectedIndex;
+				var setContainedForm;
+				var setRelationName;
 				var storeSelectedIndex;
 				var setExpandedIndex;
 				var storeExpandedIndex;
@@ -173,8 +175,10 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					return true;
 
 					function confirmSelection() {
+						setRelationName(item);
+						setContainedForm(item);
 						setSelectedIndex(level, index, item);
-
+						
 						// expand the item
 						if (item.menuItems) { // expand the node if not leaf
 							if (!isItemAlreadySelected) { // expand the node if not isItemAlreadySelected
@@ -666,6 +670,21 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					$scope.selectedIndex = newSelectedIndex;
 
 					storeSelectedIndex();
+				}
+				
+				setContainedForm = function(item) {
+					if (item.formName) {
+						$scope.model.containedForm = item.formName;
+						$scope.svyServoyapi.apply("containedForm");
+					}
+				}
+				
+				setRelationName = function(item) {
+					if (item.relationName) {
+						$scope.model.relationName = item.relationName;
+					} else {
+						$scope.model.relationName = null;
+					}
 				}
 
 				storeSelectedIndex = function() {
