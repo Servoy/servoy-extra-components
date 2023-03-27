@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ContentChild, TemplateRef, ChangeDetectorRef, SimpleChanges, Renderer2, ChangeDetectionStrategy, ViewChild, ElementRef} from '@angular/core';
+import { Component, Input, Output, EventEmitter, ContentChild, TemplateRef, ChangeDetectorRef, SimpleChanges, Renderer2, ChangeDetectionStrategy} from '@angular/core';
 
 import { BaseCustomObject, ServoyBaseComponent } from '@servoy/public';
 
@@ -28,8 +28,6 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
     @Input() responsiveHeight: number;
 
     @ContentChild( TemplateRef, {static: true} ) templateRef: TemplateRef<any>;
-
-    @ViewChild('element', { static: true }) elementRef: ElementRef;
 
     containerStyle = {
         width: '100%',
@@ -69,14 +67,14 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
                     case 'styleClass':
                         if (change.previousValue) {
                             const array = change.previousValue.trim().split(' ');
-                            array.filter((element: string) => element !== '').forEach(
-                                (element: string) => this.elementRef.nativeElement.classList.remove(element)
+                            array.filter((elementStyleClass: string) => elementStyleClass !== '').forEach(
+                                (elementStyleClass: string) => this.renderer.removeClass(this.getNativeElement(), elementStyleClass)
                             );
                         }
                         if (change.currentValue) {
                             const array = change.currentValue.trim().split(' ');
-                            array.filter((element: string) => element !== '').forEach(
-                                (element: string) => this.elementRef.nativeElement.classList.add(element)
+                            array.filter((elementStyleClass: string) => elementStyleClass !== '').forEach(
+                                (elementStyleClass: string) => this.renderer.addClass(this.getNativeElement(), elementStyleClass)
                             );
                         }
                     break;
