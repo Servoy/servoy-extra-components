@@ -206,7 +206,9 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         // so when that one (batchSizeForRenderingMoreRows) is calculated adjust this one as well
         this.batchSizeForLoadingMoreRows = Math.max(52, this.performanceSettings.minBatchSizeForLoadingMoreRows);
         this.attachHandlers();
-
+        if (this.foundset.viewPort.startIndex > 0) {
+			this.setCurrentPage(this.getPageForIndex(this.foundset.viewPort.startIndex));
+		}
     }
 
     svyOnChanges(changes: SimpleChanges) {
@@ -1663,7 +1665,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         tbl.classList.add("mobileview");
         this.updateSelection(this.foundset.selectedRowIndexes, null);
         this.scrollToSelectionIfNeeded();
-        this.adjustLoadedRowsIfNeeded();
+        //this.adjustLoadedRowsIfNeeded();
 
         if (!this.onTBodyScrollListener) {
             this.onTBodyScrollListener = () => {
