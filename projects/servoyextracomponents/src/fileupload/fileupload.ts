@@ -46,7 +46,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
     uploader: FileUploader;
     hasBaseDropZoneOver = false;
     customText: string;
-
+    acceptMimeTypes = '*/*';
     private ready = true;
     private log: LoggerService;
 
@@ -74,13 +74,18 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
         const options: FileUploaderOptions = { url }
         if (this.accept && '*/*' != this.accept) {
             options.allowedMimeType = this.accept.split(',').map(value => {
-                if (value.indexOf("/") > -1) {
+                // library wants mime type here, so try to guess it
+                if (value.indexOf('/') > -1) {
                     return value;
-                }
-                else{
-                    return this.fileutilsService.mimeFor(value);
+                } else{
+                    value = value.trim();
+                    if (value.indexOf('.') >= 0) value = value.substring(value.indexOf('.')+1);
+                    const mime = this.fileutilsService.mimeFor(value);
+                    if (!mime) console.warn("Cannot set accept value for fileupload component, cannot determine mime type from: " + value);
+                    return mime;
                 }
             });
+            this.acceptMimeTypes =  options.allowedMimeType.join(',');
         }
         if (!this.multiFileUpload) {
             options.filters = [{
