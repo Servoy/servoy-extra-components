@@ -15,7 +15,6 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
     @Input() sidenavWidth: number;
     @Input() responsiveHeight: number;
     @Input() containedForm: string;
-    @Output() containedFormChange = new EventEmitter();
     @Input() headerForm: string;
     @Input() footerForm: string;
     @Input() relationName: string;
@@ -407,8 +406,6 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		const isItemAlreadySelected = this.selectedIndex[level] === item.id && !this.selectedIndex[level + 1];
 
         const confirmSelection = () => {
-			this.setRelationName(item);
-			this.setContainedForm(item);
             this.setSelectedIndex(level, index, item);
 
             // expand the item
@@ -426,6 +423,16 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
                     this.expandItem(level - 1, null, parentNode, event, preventExpandHandler);
                 }
             }
+
+			// change containedForm
+			if (item.formName && !isItemAlreadySelected){
+				this.servoyApi.hideForm(this.containedForm, null, null, item.formName, (item.relationName ? item.relationName : null)).then((ok) => {
+					if (ok) {
+						this.containedForm = item.formName
+						this.realContainedForm = this.containedForm;
+					}
+                }).finally(() => this.cdRef.detectChanges());
+			}
         };
 
         if (preventSelectHandler !== true && this.onMenuItemSelected) { // change selection only if onMenuItemSelected allows it
@@ -659,21 +666,6 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         }
         this.selectedIndex = newSelectedIndex;
         this.selectedIndexChange.emit(JSON.stringify(this.selectedIndex));
-    }
-
-    setContainedForm(item: MenuItem) {
-        if (item.formName) {
-			this.containedForm = item.formName;
-        	this.containedFormChange.emit(this.containedForm);
-		}
-    }
-
-    setRelationName(item: MenuItem) {
-        if (item.relationName) {
-			this.relationName = item.relationName;
-		} else {
-			this.relationName = null;
-		}
     }
 
     clearSelectedIndex(level: number) {

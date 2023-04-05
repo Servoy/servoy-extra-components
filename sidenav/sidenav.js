@@ -70,8 +70,6 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				var getSelectedIndexPath;
 				var getSelectedNode;
 				var setSelectedIndex;
-				var setContainedForm;
-				var setRelationName;
 				var storeSelectedIndex;
 				var setExpandedIndex;
 				var storeExpandedIndex;
@@ -175,8 +173,6 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					return true;
 
 					function confirmSelection() {
-						setRelationName(item);
-						setContainedForm(item);
 						setSelectedIndex(level, index, item);
 						
 						// expand the item
@@ -195,6 +191,16 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 								$scope.expandItem(level - 1, null, parentNode, event, preventExpandHandler);
 							}
 						}
+						
+						// change containedForm
+						 if (item.formName && !isItemAlreadySelected) {
+							 $scope.svyServoyapi.hideForm($scope.model.containedForm,null,null,item.formName,(item.relationName ? item.relationName : null),null).then(function(ok) {
+								 if (ok) {
+									 $scope.model.containedForm = item.formName;
+									 realContainedForm = $scope.model.containedForm;
+								 }
+							})
+						 }
 					}
 				}
 
@@ -670,21 +676,6 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 					$scope.selectedIndex = newSelectedIndex;
 
 					storeSelectedIndex();
-				}
-				
-				setContainedForm = function(item) {
-					if (item.formName) {
-						$scope.model.containedForm = item.formName;
-						$scope.svyServoyapi.apply("containedForm");
-					}
-				}
-				
-				setRelationName = function(item) {
-					if (item.relationName) {
-						$scope.model.relationName = item.relationName;
-					} else {
-						$scope.model.relationName = null;
-					}
 				}
 
 				storeSelectedIndex = function() {
