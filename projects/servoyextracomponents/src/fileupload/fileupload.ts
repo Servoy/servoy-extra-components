@@ -126,10 +126,13 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
                 const change = changes[property];
                 switch (property) {
                     case 'enabled':
-                        if (change.currentValue)
-                            this.renderer.removeAttribute(this.getFocusElement(), 'disabled');
-                        else
+                        if (change.currentValue){
+                             this.renderer.removeAttribute(this.getFocusElement(), 'disabled');
+                             this.customText = this.uploadText;
+                        } else{
                             this.renderer.setAttribute(this.getFocusElement(), 'disabled', 'disabled');
+                            if (!this.servoyApi.isInDesigner()) this.customText = "Component disabled, cannot upload file.";
+                        }
                         break;
                 }
             }
