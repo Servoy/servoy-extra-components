@@ -987,3 +987,23 @@ function createJSEvent() {
 	var event = {type:'event'}
 	return event;
 }
+
+/**
+ * @private 
+ * @return {Boolean}
+ *  */
+$scope.api.showForm = function(formToHide, formToShow, relationToShow) {
+	var formHideIsOK = true;
+	
+    if (formToHide)
+    {
+		formHideIsOK = servoyApi.hideForm(formToHide);
+    }
+    
+    if (!formHideIsOK) return false;    
+    
+    $scope.model.containedForm = formToShow;
+    $scope.model.relationName = relationToShow; 
+    
+    return true;  
+}

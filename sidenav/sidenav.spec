@@ -243,6 +243,15 @@
 				{ "name": "menuItemId",	"type": "object" }
 			],
 			"returns" : "dimension"
+		},
+		"showForm": 
+		{
+			"parameters": [
+				{ "name": "formToHide", "type": "string" },
+				{ "name": "formToShow", "type": "string" },
+				{ "name": "relationToShow", "type": "relation" }
+			],
+			"returns": "boolean"
 		}
 	},
 	"types": {

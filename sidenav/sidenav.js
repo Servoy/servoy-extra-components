@@ -194,12 +194,11 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 						
 						// change containedForm
 						 if (item.formName && !isItemAlreadySelected) {
-							 $scope.svyServoyapi.hideForm($scope.model.containedForm,null,null,item.formName,(item.relationName ? item.relationName : null),null).then(function(ok) {
-								 if (ok) {
-									 $scope.model.containedForm = item.formName;
-									 realContainedForm = $scope.model.containedForm;
-								 }
-							})
+							 var formToHide = $scope.model.containedForm;
+							 var formToShow = item.formName;
+							 var relationToShow = item.relationName ? item.relationName : null;
+							 $scope.svyServoyapi.callServerSideApi('showForm', [formToHide, formToShow, relationToShow]);
+							
 						 }
 					}
 				}
@@ -1363,6 +1362,10 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 							setRealContainedForm(newValue, $scope.model.relationName);
 						}
 					}	
+				});
+				
+				$scope.$watch("model.relationName", function(newValue) {
+					$scope.model.relationName = newValue;	
 				});
 
 				$scope.$watch("model.open", function(newValue,oldValue) {

@@ -109,6 +109,9 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
                             }).finally(() => this.cdRef.detectChanges());
                         }
                         break;
+                    case 'realtionName':
+						this.relationName = change.currentValue;
+						break;
                     case 'headerForm':
                         if (change.previousValue) {
                             this.servoyApi.hideForm(change.previousValue, null, null, this.headerForm, this.relationName).then(() => {
@@ -426,12 +429,10 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 
 			// change containedForm
 			if (item.formName && !isItemAlreadySelected){
-				this.servoyApi.hideForm(this.containedForm, null, null, item.formName, (item.relationName ? item.relationName : null)).then((ok) => {
-					if (ok) {
-						this.containedForm = item.formName
-						this.realContainedForm = this.containedForm;
-					}
-                }).finally(() => this.cdRef.detectChanges());
+				const formToHide = this.containedForm;
+				const formToShow = item.formName;
+				const relationToShow = item.relationName ? item.relationName : null;
+				this.servoyApi.callServerSideApi('showForm', [formToHide, formToShow, relationToShow]);
 			}
         };
 
