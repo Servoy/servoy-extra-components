@@ -140,7 +140,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 
 		if (handlerFunction) {
 
-			const dataTarget = this.getCollapsibleElement(collapsibleIndex, 'header').querySelector('.svy-collapse-header-content').querySelector('[data-target]');
+			const dataTarget = (e.target as HTMLElement).closest('[data-target]');
 			handlerFunction(e, collapsible, collapsibleIndex, dataTarget ? dataTarget.getAttribute('data-target') : null)
 				.then((result) => {
 					if (result !== false) {
