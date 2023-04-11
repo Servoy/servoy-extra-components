@@ -231,6 +231,8 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
         if (node.data.checkboxautoselectschildren){
             this.updateChildNodeCheckbox(node, checked);
             this.updateParentNodeCheckbox(node.realParent);
+        } else{
+             node.data.checked = checked;
         }
 
         this.foundsettree.updateCheckboxValue(node.data.id, checked);
