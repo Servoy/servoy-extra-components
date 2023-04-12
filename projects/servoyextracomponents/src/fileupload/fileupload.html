@@ -16,7 +16,7 @@
 					<input type="file" ng2FileSelect [uploader]="uploader" multiple (onFileSelected) = "uploader.uploadAll()" [accept]="acceptMimeTypes" [disabled]="!enabled"/>
 				</div>
 				<ng-template #elseBlock>
-	            	<input type="file" ng2FileSelect [uploader]="uploader" (onFileSelected) = "uploader.uploadAll()" [accept]="acceptMimeTypes" [disabled]="!enabled"/>
+	            	<input #fileInputSingleUpload type="file" ng2FileSelect [uploader]="uploader" (onFileSelected) = "uploader.uploadAll()" [accept]="acceptMimeTypes" [disabled]="!enabled"/>
 				</ng-template>
 			</label>
             

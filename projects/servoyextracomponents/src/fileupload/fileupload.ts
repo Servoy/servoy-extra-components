@@ -42,6 +42,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
     @Input() toolTipText: string;
 
     @ViewChild('fileInputLabel') fileInputLabel: ElementRef;
+    @ViewChild('fileInputSingleUpload') fileInput: ElementRef;
 
     uploader: FileUploader;
     hasBaseDropZoneOver = false;
@@ -112,6 +113,9 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
         this.ready = true;
         if (this.onFileTransferFinishedMethodID) this.onFileTransferFinishedMethodID(new CustomEvent('onFileTransferFinishedMethodID'));
         this.customText = this.uploadSuccessText;
+        if (this.fileInput){
+            this.fileInput.nativeElement.value = null;
+        }
         this.cdRef.detectChanges();
     };
 
