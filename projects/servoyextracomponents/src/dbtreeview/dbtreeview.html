@@ -10,7 +10,7 @@
                 type="checkbox"
                 [indeterminate]="node.data.indeterminate"
                 [checked]="node.data.checked">
-                <img [src]="node.data.image" alt="Node image"  [ngStyle]="{'width': '15px', 'height': '15px', 'margin-left': '5px', 'margin-bottom': '5px'}">
+                <img [src]="node.data.image" [ngStyle]="{'width': '15px', 'height': '15px', 'margin-left': '5px', 'margin-bottom': '5px'}">
                 {{node.data.name}}
             </div>
         </ng-template>
