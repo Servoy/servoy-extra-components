@@ -410,19 +410,19 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
         if (binding && (binding.callbackinfo || binding.methodToCallOnCheckBoxChange || binding.methodToCallOnDoubleClick || binding.methodToCallOnRightClick)) {
             if (binding.callbackinfo) {
                 child.callbackinfo = binding.callbackinfo.f;
-                child.callbackinfoParamValue = binding.callbackinfo.param;
+                child.callbackinfoParamValue = dataNode.callbackinfoParamValue;
             }
             if (binding.methodToCallOnCheckBoxChange) {
                 child.methodToCallOnCheckBoxChange = binding.methodToCallOnCheckBoxChange.f;
-                child.methodToCallOnCheckBoxChangeParamValue = binding.methodToCallOnCheckBoxChange.param;
+                child.methodToCallOnCheckBoxChangeParamValue = dataNode.methodToCallOnCheckBoxChangeParamValue;
             }
             if (binding.methodToCallOnDoubleClick) {
                 child.methodToCallOnDoubleClick = binding.methodToCallOnDoubleClick.f;
-                child.methodToCallOnDoubleClickParamValue = binding.methodToCallOnDoubleClick.param;
+                child.methodToCallOnDoubleClickParamValue = dataNode.methodToCallOnDoubleClickParamValue;
             }
             if (binding.methodToCallOnRightClick) {
                 child.methodToCallOnRightClick = binding.methodToCallOnRightClick.f;
-                child.methodToCallOnRightClickParamValue = binding.methodToCallOnRightClick.param;
+                child.methodToCallOnRightClickParamValue = dataNode.methodToCallOnRightClickParamValue;
             }
         }
 

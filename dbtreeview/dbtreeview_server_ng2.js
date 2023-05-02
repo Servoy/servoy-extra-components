@@ -93,6 +93,9 @@ $scope.api.setCheckBoxAutoselectsChildren = function(datasource, autoselect) {
 */
 $scope.api.setCallBackInfo = function(datasource, callbackfunction, param) {
 	$scope.getBinding(datasource).callbackinfo = {f: callbackfunction, param: param }
+	if (param){ 
+	   $scope.model.foundsettree.getBinding(datasource).callbackinfoparamdataprovider = param;
+	}
 }   
 
 /**
@@ -120,6 +123,9 @@ $scope.api.setCheckBoxValueDataprovider = function(datasource, checkboxvaluedata
 */
 $scope.api.setMethodToCallOnCheckBoxChange = function(datasource, callbackfunction, param) {
 	$scope.getBinding(datasource).methodToCallOnCheckBoxChange = {f: callbackfunction, param: param }
+	if (param){ 
+       $scope.model.foundsettree.getBinding(datasource).checkboxChangeparamdataprovider = param;
+    }
 }
 
 /**
@@ -172,7 +178,10 @@ $scope.api.setChildSortDataprovider = function(datasource, childsortdataprovider
 * @param param
 */
 $scope.api.setMethodToCallOnDoubleClick = function(datasource, callbackfunction, param) {
-	$scope.getBinding(datasource).methodToCallOnDoubleClick = {f: callbackfunction, param: param }  
+	$scope.getBinding(datasource).methodToCallOnDoubleClick = {f: callbackfunction, param: param };
+	if (param){ 
+       $scope.model.foundsettree.getBinding(datasource).doubleclickparamdataprovider = param;
+    }  
 }   
 
 /**
@@ -186,7 +195,10 @@ $scope.api.setMethodToCallOnDoubleClick = function(datasource, callbackfunction,
 * @param param
 */
 $scope.api.setMethodToCallOnRightClick = function(datasource, callbackfunction, param) {
-	$scope.getBinding(datasource).methodToCallOnRightClick = {f: callbackfunction, param: param }  	
+	$scope.getBinding(datasource).methodToCallOnRightClick = {f: callbackfunction, param: param };
+	if (param){ 
+       $scope.model.foundsettree.getBinding(datasource).rightclickparamdataprovider = param;
+    }	
 }
 
 $scope.getBinding = function(datasource) {
