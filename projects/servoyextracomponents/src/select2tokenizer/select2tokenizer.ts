@@ -44,7 +44,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     listPosition: 'above' | 'below' | 'auto' = 'auto';
     mustExecuteOnFocus = true;
 
-    private updateValueCallsToSkip = 0;
+    userChangedValue = false;
 
     constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, @Inject(DOCUMENT) private doc: Document) {
         super(renderer, cdRef);
@@ -143,34 +143,36 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     }
 
     updateValue(event: Select2UpdateEvent<any>) {
-        if (this.updateValueCallsToSkip > 0 && --this.updateValueCallsToSkip !== 0) return;
+		setTimeout(()=>{
+			if (!this.userChangedValue) return;
 
-        if (!this.compareArrays(this.filteredDataProviderId, event.value)) {
-            if (event.value.length > 0) {
-                if (event.value.length > 1 && this.isTypeString()) {
-                    this.filteredDataProviderId = event.value;
-                    this.dataProviderID = event.value.join('\n');
-                } else if (event.value.length === 1 || this.isTypeNumber() || this.isTypeBoolean()) {
-                    this.filteredDataProviderId[0] = event.value[event.value.length - 1];
-                    this.dataProviderID = this.filteredDataProviderId[0];
-                } else {
-                    console.log('Warning dataProviderID typeof ' + typeof this.dataProviderID + ' not allowed');
-                }
-            } else {
-                this.dataProviderID = null;
-            }
-            this.dataProviderIDChange.emit(this.dataProviderID);
-            if (this.closeOnSelect && event.component.isOpen) {
-                event.component.toggleOpenAndClose();
-            }
-            if (this.clearSearchTextOnSelect && !this.closeOnSelect && event.component.isOpen) {
-                const searchText = this.getNativeChild().querySelector('input');
-                if (searchText) {
-                    searchText.value = '';
-                    searchText.dispatchEvent(new KeyboardEvent('keyup'));
-                }
-            }
-        }
+        	if (!this.compareArrays(this.filteredDataProviderId, event.value)) {
+            	if (event.value.length > 0) {
+                	if (event.value.length > 1 && this.isTypeString()) {
+                    	this.filteredDataProviderId = event.value;
+                    	this.dataProviderID = event.value.join('\n');
+                	} else if (event.value.length === 1 || this.isTypeNumber() || this.isTypeBoolean()) {
+                    	this.filteredDataProviderId[0] = event.value[event.value.length - 1];
+                    	this.dataProviderID = this.filteredDataProviderId[0];
+                	} else {
+                    	console.log('Warning dataProviderID typeof ' + typeof this.dataProviderID + ' not allowed');
+                	}
+            	} else {
+                	this.dataProviderID = null;
+            	}
+            	this.dataProviderIDChange.emit(this.dataProviderID);
+            	if (this.closeOnSelect && event.component.isOpen) {
+                	event.component.toggleOpenAndClose();
+ 	           	}
+            	if (this.clearSearchTextOnSelect && !this.closeOnSelect && event.component.isOpen) {
+                	const searchText = this.getNativeChild().querySelector('input');
+                	if (searchText) {
+                    	searchText.value = '';
+                    	searchText.dispatchEvent(new KeyboardEvent('keyup'));
+                	}
+            	}
+        	}
+		});
     }
 
     svyOnChanges(changes: SimpleChanges) {
@@ -178,11 +180,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
             this.setData();
         }
         if (changes['dataProviderID']) {
-            const prevFiltered = this.filteredDataProviderId;
             this.filteredDataProviderId = this.dataProviderID ? (this.isTypeString() ? this.dataProviderID.split('\n') : [this.dataProviderID]) : [];
-            if (!this.compareArrays(prevFiltered, this.filteredDataProviderId)){
-                this.updateValueCallsToSkip = this.filteredDataProviderId.length;
-            }
             this.setData();
         }
         if (changes['size']) {
@@ -208,12 +206,14 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     }
 
     removedOption(event: Select2RemoveEvent<any>) {
+		this.userChangedValue = true;
         if (this.openOnUnselect && !event.component.isOpen) {
             event.component.toggleOpenAndClose();
         }
     }
 
     listClosed(event: Select2) {
+		this.userChangedValue = false;
         if (this.selectOnClose) {
             const highlightItem = this.getNativeChild().querySelector('.select2-results__option--highlighted');
             if (highlightItem) {
@@ -239,6 +239,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     }
 
     listOpened(event: Select2) {
+		this.userChangedValue = true;
         if (this.allowNewEntries || this.hasKeyListenerAttribute()) {
             setTimeout(() => {
                 const inputTextfield = this.doc.querySelector('.select2-search__field') as HTMLInputElement;
