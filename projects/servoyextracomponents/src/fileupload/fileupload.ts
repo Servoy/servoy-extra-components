@@ -76,10 +76,10 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
         if (this.accept && '*/*' != this.accept) {
             options.allowedMimeType = this.accept.split(',').map(value => {
                 // library wants mime type here, so try to guess it
+                value = value.trim();
                 if (value.indexOf('/') > -1) {
                     return value;
                 } else{
-                    value = value.trim();
                     if (value.indexOf('.') >= 0) value = value.substring(value.indexOf('.')+1);
                     const mime = this.fileutilsService.mimeFor(value);
                     if (!mime) console.warn("Cannot set accept value for fileupload component, cannot determine mime type from: " + value);
