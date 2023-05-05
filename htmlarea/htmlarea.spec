@@ -8,12 +8,32 @@
 	"libraries": [{"name":"tinymce", "version":"5.7.0", "url":"servoyextra/htmlarea/lib/tinymce/tinymce.min.js", "mimetype":"text/javascript", "group":false},{"name":"ui-tinymce", "version":"1", "url":"servoyextra/htmlarea/lib/ui-tinymce.js", "mimetype":"text/javascript"}],
 	"ng2Config": {
        "assets": [{
-                "glob" : "**/*.js",
+                "glob" : "tinymce.min.js",
                 "input" : "node_modules/tinymce",
                 "output": "/tinymce/"
             },
             {
-                "glob" : "**/*.css",
+                "glob" : "plugins/*/plugin.min.js",
+                "input" : "node_modules/tinymce",
+                "output": "/tinymce/"
+            },
+            {
+                "glob" : "themes/*/theme.min.js",
+                "input" : "node_modules/tinymce",
+                "output": "/tinymce/"
+            },
+            {
+                "glob" : "models/*/model.min.js",
+                "input" : "node_modules/tinymce",
+                "output": "/tinymce/"
+            },
+            {
+                "glob" : "skins/**",
+                "input" : "node_modules/tinymce",
+                "output": "/tinymce/"
+            },
+            {
+                "glob" : "icons/*/icons.min.js",
                 "input" : "node_modules/tinymce",
                 "output": "/tinymce/"
             },
