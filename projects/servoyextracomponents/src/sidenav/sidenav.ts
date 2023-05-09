@@ -795,7 +795,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
     **************************************************************/
 
 
-    setSelectedByIndexPath(path: Array<number>, mustExecuteOnSelectNode: boolean) {
+   public setSelectedByIndexPath(path: Array<number>, mustExecuteOnSelectNode: boolean) {
 
         // search node in tree
         const node = this.getNodeByIndexPath(path, this.menu);
@@ -804,9 +804,11 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         return;
     }
 
-    isMenuItemExpanded = (menuItemId: string | number) =>this.isNodeExpanded(menuItemId);
+    public isMenuItemExpanded(menuItemId: string | number): boolean{
+        return this.isNodeExpanded(menuItemId);
+    }
 
-    isMenuItemEnabled = (menuItemId: string | number) => {
+    public isMenuItemEnabled(menuItemId: string | number): boolean {
         const disabled = this.isDisabled(menuItemId);
         if (disabled === null) {
             return false;
@@ -815,7 +817,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         }
     };
 
-    getLocation(nodeId: string | number): {x: number; y: number} {
+    public getLocation(nodeId: string | number): {x: number; y: number} {
         const domElement = this.getDOMElementByID(nodeId);
         if (domElement) {
             const position = domElement.getBoundingClientRect();
@@ -824,7 +826,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         return null;
     }
 
-    getSize(nodeId: string | number): {width: number; height: number} {
+    public getSize(nodeId: string | number): {width: number; height: number} {
         const domElement = this.getDOMElementByID(nodeId);
         if (domElement) {
             const position = domElement.getBoundingClientRect();
