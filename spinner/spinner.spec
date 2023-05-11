@@ -38,7 +38,7 @@
 	        }, 
 	        "onDataChangeMethodID" : {
 	          "returns": "boolean", 
-	         	
+	         	"code": "return true",
 	        	"parameters":[
 								{
 						          "name":"oldValue",
