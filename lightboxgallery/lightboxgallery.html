@@ -3,7 +3,7 @@
 		<div ng-repeat="image in images" class="svyextra-lightboxgallery-image-cell">
 			<div class="svyextra-lightboxgallery-image-container">
 				<a href="{{image.url}}" class="svyextra-lightboxgallery-image" data-lightbox="{{::model.svyMarkupId}}" data-title="{{image.caption}}">
-					<img ng-src="{{image.thumbUrl}}" class="svyextra-lightboxgallery-thumbnail" ng-style="getStyle()">
+					<img ng-src="{{image.thumbUrl}}" class="svyextra-lightboxgallery-thumbnail" ng-style="getStyle()" ng-click="clickImage()">
 				</a>
 				<div ng-if="handlers.onHoverButtonClicked && model.enabled" class="svyextra-lightboxgallery-image-delete" svy-click="handlers.onHoverButtonClicked($event, image.imageId)"><i class="{{model.hoverButtonIcon}}"></i></div>
 			</div>

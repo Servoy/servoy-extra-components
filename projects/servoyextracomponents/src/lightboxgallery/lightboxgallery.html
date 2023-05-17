@@ -1,4 +1,4 @@
-<div class="svyextra-lightboxgallery" *ngIf="galleryVisible" #element>
+<div class="svyextra-lightboxgallery" *ngIf="galleryVisible" (scroll)="onScroll()" #element>
 	<div class="svyextra-lightboxgallery-image-set"
 		[ngClass]=" maxImageHeight ? '' : 'svyextra-lightboxgallery-image-contain'">
 		<div *ngFor="let image of images; let i=index"

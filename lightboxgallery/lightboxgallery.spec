@@ -13,7 +13,7 @@
 	"keywords": ["collection", "library"],
 	"model":
 	{
-		"imagesFoundset"			: { "type": "foundset", "dataproviders": ["image", "caption", "thumbnail", "imageId"], "tags": { "doc": "Component needs dataproviders from the foundset for the following: imageId, image, caption and thumbnail."} },
+		"imagesFoundset"			: { "type": "foundset", "initialPreferredViewPortSize": 5, "dataproviders": ["image", "caption", "thumbnail", "imageId"], "tags": { "doc": "Component needs dataproviders from the foundset for the following: imageId, image, caption and thumbnail."} },
 		"maxImageWidth"				: { "type": "int" },
 		"maxImageHeight"			: { "type": "int" },
 		"albumLabel"				: { "type": "string", "default": "image %1 of %2" },
@@ -29,7 +29,8 @@
 		"hoverButtonIcon"			: { "type": "string", "default": "fa fa-trash fa-lg" },
 		"buttonText"				: { "type": "tagstring" },
 		"buttonStyleClass"			: { "type": "styleclass" },
-		"enabled"					: { "type": "boolean", "default": "false" }
+		"enabled"					: { "type": "boolean", "default": "false" },
+		"numberOfImages"			: { "type": "int", "default": 5, "tags": { "doc": "The default/ minimum value is 5, the component will not render less than 5 images, will load more on scrolling or using next in gallery mode."} }
 	},
 	"api": {
 		"showLightbox": {},

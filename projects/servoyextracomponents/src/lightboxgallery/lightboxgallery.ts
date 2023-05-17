@@ -29,6 +29,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
     @Input() buttonText: string;
     @Input() buttonStyleClass: string;
     @Input() enabled: boolean;
+    @Input() numberOfImages: number;
 
     public images: Array<any> = [];
 
@@ -62,10 +63,41 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
         super.svyOnChanges(changes);
     }
 
+    onScroll() {
+		const scrollTop = this.elementRef.nativeElement.scrollTop;
+		const pos = scrollTop + this.elementRef.nativeElement.offsetHeight;
+		const max = this.elementRef.nativeElement.scrollHeight;
+ 		if (scrollTop > 0 && pos === max ) {
+ 			if (this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
+				 this.imagesFoundset.loadExtraRecordsAsync(this.numberOfImages);
+			 }
+ 		}
+	}
+
     open(index: number): void {
         // open lightbox
         this._lightbox.open(this.images, index);
+        if (this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
+			setInterval(() => {
+				if (document.querySelector('#outerContainer')) {
+					document.querySelector('.lb-next').addEventListener('click', this.handleClick);
+				}
+			}, 50);
+		}
     }
+
+    handleClick = () => {
+		const arr = document.querySelector('.lb-number').textContent.split(' ');
+		// eslint-disable-next-line radix
+		if(parseInt(arr[1]) === parseInt(arr[3])-1){
+			this.imagesFoundset.loadExtraRecordsAsync(this.numberOfImages).then(()=>{
+				document.querySelector('.lb-next').removeEventListener('click', this.handleClick);
+				this.close();
+				// eslint-disable-next-line radix
+				this.open((parseInt(arr[3])-1));
+			});
+		}
+	}
 
     close(): void {
         // close lightbox programmatically
@@ -83,6 +115,9 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
     private createImages = () => {
         this.images = [];
         if (this.imagesFoundset) {
+			if (this.numberOfImages > 5 && this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size && this.numberOfImages > this.imagesFoundset.viewPort.size){
+				this.imagesFoundset.loadExtraRecordsAsync(this.numberOfImages - 5);
+			}
             for (const row of this.imagesFoundset.viewPort.rows) {
                 const image = {
                     src: row.image && row.image.url ? row.image.url : null,
