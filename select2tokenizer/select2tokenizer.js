@@ -345,7 +345,6 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 				  		// filter on valuelist
 				  		var results = [];
 				  		var list = $scope.model.valuelistID;
-				  		console.log(list);
 				  		for (var i = 0; list && i < list.length; i++) {
 				  							  			
 				  			// Check if the text contains the term
