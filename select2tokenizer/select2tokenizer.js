@@ -345,6 +345,7 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 				  		// filter on valuelist
 				  		var results = [];
 				  		var list = $scope.model.valuelistID;
+				  		console.log(list);
 				  		for (var i = 0; list && i < list.length; i++) {
 				  							  			
 				  			// Check if the text contains the term
@@ -353,7 +354,14 @@ angular.module('servoyextraSelect2tokenizer',['servoy', 'diacritics'])
 				  			}
 				  		}
 				  		
-				  		resolve(results);
+						if ($scope.model.containSearchText && results.length == 0) {
+							searchTerm = "%" + searchTerm;
+							resolve($scope.model.valuelistID.filterList(searchTerm));
+						} else if (results.length == 0) {
+							resolve($scope.model.valuelistID.filterList(searchTerm));
+						} else {
+							resolve(results);
+						}
 				  	});
 				  	
 				  	$request = promise.then(querySuccess, queryFailure);

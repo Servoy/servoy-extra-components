@@ -236,7 +236,22 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                 }
             }
         }
+        if (!this.allowNewEntries && !this.hasKeyListenerAttribute()) {
+			const searchBox = this.doc.querySelector('.select2-search__field');
+			if (searchBox) {
+				searchBox.removeEventListener('keydown', this.handleSearch);
+			}
+		}
     }
+
+    handleSearch = (event: KeyboardEvent) => {
+		const input = event.target as HTMLInputElement;
+		const value = input.value;
+		if (value) {
+			this.valuelistID.filterList('%' + value);
+			this.setData();
+		}
+	}
 
     listOpened(event: Select2) {
 		this.userChangedValue = true;
@@ -277,7 +292,14 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                     }
                 }
             }, 300);
-        }
+        } else {
+			setTimeout(() => {
+				const searchBox = this.doc.querySelector('.select2-search__field');
+				if (searchBox) {
+					searchBox.addEventListener('keyup', this.handleSearch);
+				}
+			}, 50);
+		}
     }
 
     hasKeyListenerAttribute() {
