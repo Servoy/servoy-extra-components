@@ -62,7 +62,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 					}
 				}
 				if (collapsible.form) {
-					this.getFormState(collapsible.form, collapsible);
+					this.getFormState(collapsible.form, collapsible, !collapsible.isCollapsed);
 				}
 			}
 		}
@@ -73,12 +73,12 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 		if (this.collapsibles) {
 			for (const collapsible of this.collapsibles) {
 				if (collapsible.form) {
-					this.getFormState(collapsible.form, collapsible);
+					this.getFormState(collapsible.form, collapsible, !collapsible.isCollapsed);
 				}
 				if (collapsible.cards) {
 					for (const card of collapsible.cards) {
 						if (card.form) {
-							this.getFormState(card.form, card);
+							this.getFormState(card.form, card, !collapsible.isCollapsed);
 						}
 					}
 				}
@@ -342,14 +342,16 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 	/**
 	 * Loads a form's absoluteLayout property and its properties to be able to obtain the design size
 	 */
-	private getFormState(form: string, collapsibleOrCard: Collapsible | Card) {
-		this.servoyApi.formWillShow(form, ('relationName' in collapsibleOrCard) ? collapsibleOrCard.relationName : null).then(() => {
-			const formCache = this.servoyPublic.getFormCacheByName(form);
-			if (formCache && formCache.absolute) {
-				collapsibleOrCard.minResponsiveHeight = formCache.size.height;
-				collapsibleOrCard.maxResponsiveHeight = formCache.size.height;
-			}
-		});
+	private getFormState(form: string, collapsibleOrCard: Collapsible | Card, formWillShow: boolean) {
+		if (formWillShow) {
+			this.servoyApi.formWillShow(form, ('relationName' in collapsibleOrCard) ? collapsibleOrCard.relationName : null).then(() => {
+				const formCache = this.servoyPublic.getFormCacheByName(form);
+				if (formCache && formCache.absolute) {
+					collapsibleOrCard.minResponsiveHeight = formCache.size.height;
+					collapsibleOrCard.maxResponsiveHeight = formCache.size.height;
+				}
+			});
+		}
 	}
 }
 
