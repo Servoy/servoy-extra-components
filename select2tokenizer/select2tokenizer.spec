@@ -5,6 +5,7 @@
 	"version": "1.0.0",
 	"icon": "servoyextra/select2tokenizer/tags.png",
 	"definition": "servoyextra/select2tokenizer/select2tokenizer.js",
+	"doc": "servoyextra/select2tokenizer/select2tokenizer_doc.js",
 	"libraries": [
 		{
 			"name": "diacritics.js",

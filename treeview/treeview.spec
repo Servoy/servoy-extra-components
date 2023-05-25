@@ -5,6 +5,7 @@
 	"version": 1,
 	"icon": "servoyextra/dbtreeview/treeview.png",
 	"definition": "servoyextra/treeview/treeview.js",
+	"doc": "servoyextra/treeview/treeview_doc.js",
 	"serverscript": "servoyextra/treeview/treeview_server.js",
 	"libraries": [{"name":"treeview.css", "version":"1", "url":"servoyextra/treeview/css/treeview.css", "mimetype":"text/css"}],
 	"keywords": [],

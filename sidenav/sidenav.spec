@@ -5,6 +5,7 @@
 	"version": 1,
 	"icon": "servoyextra/sidenav/bars.png",
 	"definition": "servoyextra/sidenav/sidenav.js",
+	"doc": "servoyextra/sidenav/sidenav_doc.js",
 	"serverscript" : "servoyextra/sidenav/sidenav_server.js",
 	"libraries": [{"name":"svy-sidenav.css", "version":"1", "url":"servoyextra/sidenav/svy-sidenav.css", "mimetype":"text/css"},
 				  {"name":"angular-animate.js", "version":"1.6.3", "url":"servoyextra/sidenav/angular-animate.min.js", "mimetype":"text/javascript"}],

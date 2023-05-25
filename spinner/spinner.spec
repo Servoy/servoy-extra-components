@@ -5,6 +5,7 @@
 	"version": 1,
 	"icon": "servoyextra/spinner/spinner.png",
 	"definition": "servoyextra/spinner/spinner.js",
+	"doc": "servoyextra/spinner/spinner_doc.js",
 	"libraries": [{"name":"svy-spinner", "version":"1", "url":"servoyextra/spinner/spinner.css", "mimetype":"text/css"}],
 	"model":
 	{
