@@ -5,6 +5,7 @@
     "version": 1,
     "icon": "servoyextra/multifileupload/multifileupload.png",
     "definition": "servoyextra/multifileupload/multifileupload.js",
+    "doc": "servoyextra/multifileupload/multifileupload_doc.js",
     "libraries": [
         { "name": "style.min.css", "version": "2.1.2", "url": "servoyextra/multifileupload/lib/style.min.css", "mimetype": "text/css" },
         { "name": "dashboard-style.min.css", "version": "2.1.1", "url": "servoyextra/multifileupload/lib/dashboard/style.min.css", "mimetype": "text/css" },

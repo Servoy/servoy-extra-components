@@ -5,6 +5,7 @@
 	"version": 1,
 	"icon": "servoyextra/splitpane/split.png",
 	"definition": "servoyextra/splitpane/splitpane.js",
+	"doc": "servoyextra/splitpane/splitpane_doc.js",
 	"serverscript": "servoyextra/splitpane/splitpane_server.js",
 	"libraries": [{"name":"bg-splitter", "version":"1", "url":"servoyextra/splitpane/bg-splitter/js/splitter.js", "mimetype":"text/javascript"},{"name":"bg-splitter", "version":"1", "url":"servoyextra/splitpane/bg-splitter/css/style.css", "mimetype":"text/css"},{"name":"splitpanecustom", "version":"1", "url":"servoyextra/splitpane/splitpanecustom.css", "mimetype":"text/css"}],
 	"keywords": [],

@@ -5,6 +5,7 @@
 	"version": 1,
 	"icon": "servoyextra/collapse/collapse.png",
 	"definition": "servoyextra/collapse/collapse.js",
+	"doc": "servoyextra/collapse/collapse_doc.js",
 	"serverscript": "servoyextra/collapse/collapse_server.js",
 	"libraries": [
 		{"name":"svy-collapse.css", "version":"1.0.0", "url":"servoyextra/collapse/svy-collapse.css", "mimetype":"text/css"},

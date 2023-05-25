@@ -5,6 +5,7 @@
 	"version": 1,
 	"icon": "servoyextra/table/table.png",
 	"definition": "servoyextra/table/table.js",
+	"doc": "servoyextra/table/table_doc.js",
 	"serverscript": "servoyextra/table/table_server.js",
 	"libraries": [{ "name": "servoyextra-table-css", "version": "1.0", "url": "servoyextra/table/table.css", "mimetype": "text/css" }, { "name": "colResizable", "version": "1.7", "url": "servoyextra/table/js/colResizable-1.7.js", "mimetype": "text/javascript" },
 	{ "name": "servoyextra-table-mobileview-css", "version": "1.0", "url": "servoyextra/table/mobileview.css", "mimetype": "text/css" }],

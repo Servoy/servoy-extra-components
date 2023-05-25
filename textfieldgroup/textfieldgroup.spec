@@ -5,6 +5,7 @@
 	"version": 1,
 	"icon": "servoyextra/textfieldgroup/textbox_group.png",
 	"definition": "servoyextra/textfieldgroup/textfieldgroup.js",
+	"doc": "servoyextra/textfieldgroup/textfieldgroup_doc.js",
 	"libraries": [{"name":"textboxgroup.css", "version":"1", "url":"servoyextra/textfieldgroup/textfieldgroup.css", "mimetype":"text/css"}],
 	"keywords": [],
 	"model":

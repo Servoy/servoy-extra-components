@@ -5,6 +5,7 @@
 	"version": 1,
 	"icon": "servoyextra/lightboxgallery/lightbox.png",
 	"definition": "servoyextra/lightboxgallery/lightboxgallery.js",
+	"doc": "servoyextra/lightboxgallery/lightboxgallery_doc.js",
 	"libraries": [
 		{"name":"lightbox.min.js", "version":"2.10.0", "url":"servoyextra/lightboxgallery/js/lightbox.min.js", "mimetype":"text/javascript"},
 		{"name":"lightbox.min.css", "version":"2.10.0", "url":"servoyextra/lightboxgallery/css/lightbox.min.css", "mimetype":"text/css"},

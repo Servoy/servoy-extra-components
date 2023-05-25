@@ -5,6 +5,7 @@
 	"version": "1.0.0",
 	"icon": "servoyextra/select2tokenizer/tags.png",
 	"definition": "servoyextra/select2tokenizer/select2tokenizer.js",
+	"doc": "servoyextra/select2tokenizer/select2tokenizer_doc.js",
 	"libraries": [
 		{
 			"name": "diacritics.js",
@@ -36,8 +37,7 @@
 	{
 		"dataProviderID": { "type":"dataprovider", "pushToServer": "allow","tags": { "scope" :"design" }, "ondatachange": { "onchange":"onDataChangeMethodID" , "callback":"onDataChangeCallback"}},
 		"format" : {"for":["dataProviderID"] , "type" :"format", "tags": { "scope" :"private" }}, 
-		"valuelistID": { "type" : "valuelist", "tags": {  "logWhenOverMax" : false },"config": "valuelistConfig", "default":"autoVL" , "max" : 100},
-		"valuelistConfig" : { "type" : "valuelistConfig"}, 
+		"valuelistID": { "type" : "valuelist", "tags": {  "logWhenOverMax" : false }, "default":"autoVL" , "max" : 100}, 
 		"visible" : {"type":"visible", "default":true},
         "allowNewEntries": {"type": "boolean", "default": false, "tags": {"scope" : "design"}}, 
         "closeOnSelect": {"type": "boolean", "default": true, "tags": {"scope" : "design"}}, 
@@ -64,7 +64,7 @@
 	{
 		"onDataChangeMethodID" : {
 	          "returns": "boolean", 
-	         	
+	         	"code": "return true",
 	        	"parameters":[
 								{
 						          "name":"oldValue",

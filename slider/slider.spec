@@ -4,6 +4,7 @@
 	"categoryName": "Input Control",
 	"version": 1,
 	"definition": "servoyextra/slider/slider.js",
+	"doc": "servoyextra/slider/slider_doc.js",
 	"icon": "servoyextra/slider/slider.png",
 	"libraries": [
 		{ "name": "rzslider-css", "version": "6.4.3", "url": "servoyextra/slider/rzslider/rzslider.min.css", "mimetype": "text/css" }, 

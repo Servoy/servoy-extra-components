@@ -5,6 +5,7 @@
 	"version": 1,
 	"icon": "servoyextra/dbtreeview/treeview.png",
 	"definition": "servoyextra/dbtreeview/dbtreeview.js",
+	"doc": "servoyextra/dbtreeview/dbtreeview_doc.js",
 	"serverscript": "servoyextra/dbtreeview/dbtreeview_server.js",
 	"ng2Config": {
     	"dependencies": {
