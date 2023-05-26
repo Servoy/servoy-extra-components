@@ -90,20 +90,6 @@
 		"valueBoxOptions": "ValueBoxOptions"
 	},
 
-	"api": 
-	{
-		"setValue": 
-		{
-			"parameters": 
-			[
-				{
-					"name": "_value",
-					"type": "double"
-				}
-			]
-		}
-	},
-
 	"types": 
 	{
 		"TickOptions": 
