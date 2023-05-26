@@ -99,6 +99,37 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 		}
 	}
 
+	getStyle = () => {
+		const style = { };
+		if (this.maxImageWidth) {
+			if (this.maxImageWidth === -1) {
+				style['maxWidth'] = 'none';
+			} else {
+				style['maxWidth'] = this.maxImageWidth + 'px';
+			}
+		}
+		if (this.maxImageHeight) {
+			if (this.maxImageHeight === -1) {
+				style['height'] = 'auto';
+			} else {
+				style['maxHeight'] = this.maxImageHeight + 'px';
+			}
+		}
+		return style;
+	}
+
+	getCaptionStyle = () => {
+		const style = { };
+		if (this.maxImageWidth) {
+			if (this.maxImageWidth === -1) {
+				style['maxWidth'] = 'none';
+			} else {
+				style['maxWidth'] = this.maxImageWidth + 'px';
+			}
+		}
+		return style;
+	}
+
     close(): void {
         // close lightbox programmatically
         this._lightbox.close();
