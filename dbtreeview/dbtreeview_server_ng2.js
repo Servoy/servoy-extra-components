@@ -94,7 +94,7 @@ $scope.api.setCheckBoxAutoselectsChildren = function(datasource, autoselect) {
 $scope.api.setCallBackInfo = function(datasource, callbackfunction, param) {
 	$scope.getBinding(datasource).callbackinfo = {f: callbackfunction, param: param }
 	if (param){ 
-	   $scope.model.foundsettree.getBinding(datasource).callbackinfoparamdataprovider = param;
+	   $scope.model.foundsettree.getBinding(datasource).dataproviders.put('callbackinfoParamValue',param);
 	}
 }   
 
@@ -124,7 +124,7 @@ $scope.api.setCheckBoxValueDataprovider = function(datasource, checkboxvaluedata
 $scope.api.setMethodToCallOnCheckBoxChange = function(datasource, callbackfunction, param) {
 	$scope.getBinding(datasource).methodToCallOnCheckBoxChange = {f: callbackfunction, param: param }
 	if (param){ 
-       $scope.model.foundsettree.getBinding(datasource).checkboxChangeparamdataprovider = param;
+      $scope.model.foundsettree.getBinding(datasource).dataproviders.put('methodToCallOnCheckBoxChangeParamValue',param);
     }
 }
 
@@ -138,7 +138,7 @@ $scope.api.setMethodToCallOnCheckBoxChange = function(datasource, callbackfuncti
 * @param tooltiptextdataprovider dataprovider of the displayed checkbox
 */
 $scope.api.setToolTipTextDataprovider = function(datasource, tooltiptextdataprovider) {
-	$scope.model.foundsettree.getBinding(datasource).tooltiptextdataprovider = tooltiptextdataprovider;
+	 $scope.model.foundsettree.getBinding(datasource).dataproviders.put('tooltip',tooltiptextdataprovider);
 }   
 
 /**
@@ -151,7 +151,7 @@ $scope.api.setToolTipTextDataprovider = function(datasource, tooltiptextdataprov
 * @param imageurldataprovider dataprovider of the node image
 */
 $scope.api.setImageURLDataprovider = function(datasource, imageurldataprovider) {
-	$scope.model.foundsettree.getBinding(datasource).imageurldataprovider = imageurldataprovider;
+	$scope.model.foundsettree.getBinding(datasource).dataproviders.put('image',imageurldataprovider);
 }   
 
 /**
@@ -180,7 +180,7 @@ $scope.api.setChildSortDataprovider = function(datasource, childsortdataprovider
 $scope.api.setMethodToCallOnDoubleClick = function(datasource, callbackfunction, param) {
 	$scope.getBinding(datasource).methodToCallOnDoubleClick = {f: callbackfunction, param: param };
 	if (param){ 
-       $scope.model.foundsettree.getBinding(datasource).doubleclickparamdataprovider = param;
+       $scope.model.foundsettree.getBinding(datasource).dataproviders.put('methodToCallOnDoubleClickParamValue',param);
     }  
 }   
 
@@ -197,7 +197,7 @@ $scope.api.setMethodToCallOnDoubleClick = function(datasource, callbackfunction,
 $scope.api.setMethodToCallOnRightClick = function(datasource, callbackfunction, param) {
 	$scope.getBinding(datasource).methodToCallOnRightClick = {f: callbackfunction, param: param };
 	if (param){ 
-       $scope.model.foundsettree.getBinding(datasource).rightclickparamdataprovider = param;
+       $scope.model.foundsettree.getBinding(datasource).dataproviders.put('methodToCallOnRightClickParamValue',param);
     }	
 }
 
