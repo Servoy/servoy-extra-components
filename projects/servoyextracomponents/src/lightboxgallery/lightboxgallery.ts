@@ -33,6 +33,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 
     public images: Array<any> = [];
 
+    private checkNumber: number;
 
     constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, private _lightbox: Lightbox, private _lightboxConfig: LightboxConfig) {
         super(renderer, cdRef);
@@ -51,7 +52,18 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
         }
         this._lightboxConfig.wrapAround = this.wrapAround;
         this._lightboxConfig.showImageNumberLabel = this.showImageNumberLabel;
-
+		this.checkNumber = this.numberOfImages - 1;
+		setTimeout(() => {
+			if (this.maxImageHeight || this.maxImageWidth) {
+				let n = 0;
+				while (n < 5){
+					n++;
+					if (!(this.elementRef.nativeElement.clientHeight < this.elementRef.nativeElement.scrollHeight)) {
+						this.imagesFoundset.loadExtraRecordsAsync(this.numberOfImages);
+					}
+				}
+			}
+		}, 50);
     }
 
     svyOnChanges(changes: SimpleChanges) {
@@ -64,10 +76,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
     }
 
     onScroll() {
-		const scrollTop = this.elementRef.nativeElement.scrollTop;
-		const pos = scrollTop + this.elementRef.nativeElement.offsetHeight;
-		const max = this.elementRef.nativeElement.scrollHeight;
- 		if (scrollTop > 0 && pos === max ) {
+ 		if (Math.abs(this.elementRef.nativeElement.scrollHeight - this.elementRef.nativeElement.clientHeight - this.elementRef.nativeElement.scrollTop) < 1) {
  			if (this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
 				 this.imagesFoundset.loadExtraRecordsAsync(this.numberOfImages);
 			 }
@@ -78,25 +87,48 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
         // open lightbox
         this._lightbox.open(this.images, index);
         if (this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
-			setInterval(() => {
+			setTimeout(() => {
 				if (document.querySelector('#outerContainer')) {
 					document.querySelector('.lb-next').addEventListener('click', this.handleClick);
+					document.querySelector('.lb-prev').addEventListener('click', () => {
+						this.updateTotalImages(-1);
+					});
 				}
-			}, 50);
+				this.updateTotalImages(0);
+			}, 1000);
 		}
     }
 
-    handleClick = () => {
+    updateTotalImages(page: number) {
+		let totalImages: string = this.imagesFoundset.serverSize.toString();
+		if (this.imagesFoundset.hasMoreRows) {
+			totalImages += '+';
+		}
 		const arr = document.querySelector('.lb-number').textContent.split(' ');
-		// eslint-disable-next-line radix
-		if(parseInt(arr[1]) === parseInt(arr[3])-1){
+		arr[arr.length-1] = totalImages;
+		if (page === -1) {
+			// eslint-disable-next-line radix
+			arr[1] = (parseInt(arr[1]) - 1).toString();
+		} else if (page === 1) {
+			// eslint-disable-next-line radix
+			arr[1] = (parseInt(arr[1]) + 1).toString();
+		}
+		if (document.querySelector('.lb-number').textContent.length > 0) {
+			document.querySelector('.lb-number').textContent = arr.join(' ');
+		}
+	}
+
+    handleClick = () => {
+		const currentImage = parseInt(document.querySelector('.lb-number').textContent.split(' ')[1], 10);
+		if(currentImage === this.checkNumber){
 			this.imagesFoundset.loadExtraRecordsAsync(this.numberOfImages).then(()=>{
 				document.querySelector('.lb-next').removeEventListener('click', this.handleClick);
 				this.close();
-				// eslint-disable-next-line radix
-				this.open((parseInt(arr[3])-1));
+				this.open(this.checkNumber);
+				this.checkNumber += this.numberOfImages;
 			});
 		}
+		this.updateTotalImages(1);
 	}
 
 	getStyle = () => {

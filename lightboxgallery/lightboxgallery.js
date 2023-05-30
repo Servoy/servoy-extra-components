@@ -8,31 +8,58 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 				svyServoyapi: "="
 			},
 			link: function($scope, $element, $attrs) {
+				var checkNumber = $scope.model.numberOfImages - 1;
+				
+				$timeout(function() {
+					if ($scope.model.maxImageHeight || $scope.model.maxImageWidth) {
+						var n = 0;
+						while (n < 5){
+							n++;
+							if (!($element.find('.svyextra-lightboxgallery-image-set')[0].clientHeight < $element.find('.svyextra-lightboxgallery-image-set')[0].scrollHeight)) {
+								$scope.model.imagesFoundset.loadExtraRecordsAsync($scope.model.numberOfImages);
+							}
+						}	
+					}
+				}, 50);
+				
 				$element.find('.svyextra-lightboxgallery-image-set').on('scroll', function(){
-					var scrollTop = this.scrollTop;
-					var pos = scrollTop + this.offsetHeight;
-					var max = this.scrollHeight;
- 					if (scrollTop > 0 && pos === max ) {
+ 					if (Math.abs(this.scrollHeight - this.clientHeight - this.scrollTop) < 1) {
  						if ($scope.model.imagesFoundset.serverSize > $scope.model.imagesFoundset.viewPort.size) {
 				 			$scope.model.imagesFoundset.loadExtraRecordsAsync($scope.model.numberOfImages);
 			 			}
  					}
 				});
 				
+				function updateTotalImages() {
+					var totalImages = $scope.model.imagesFoundset.serverSize;
+					if ($scope.model.imagesFoundset.hasMoreRows) {
+						totalImages += "+";
+					}
+					var arr = $('.lb-number')[0].textContent.split(' ');
+					arr[arr.length-1] = totalImages; 
+					$('.lb-number')[0].textContent = arr.join(' ');
+				}
+				
 				$scope.clickImage = function() {
 					if ($scope.model.imagesFoundset.serverSize > $scope.model.imagesFoundset.viewPort.size) {
 						if ($('#lightbox')) {
+							$timeout(function() { updateTotalImages(); },50);
 							$('.lb-next').on('click', function() {
-								var arr = $('.lb-number')[0].textContent.split(' ');
-								if(parseInt(arr[1]) === parseInt(arr[3])-1){
+								$timeout(function() { updateTotalImages(); },50);
+								var currentImage = parseInt($('.lb-number')[0].textContent.split(' ')[1]);
+								if (currentImage === checkNumber && $scope.model.imagesFoundset.serverSize > $scope.model.imagesFoundset.viewPort.size) {
 									$scope.model.imagesFoundset.loadExtraRecordsAsync($scope.model.numberOfImages).then(()=>{
 										$('.lb-close').click();
 										$timeout(function() {
-											$window.lightbox.start(angular.element($('a')[arr[3]-1]));
-										},50);
-										
+											$window.lightbox.start(angular.element($element[0].querySelectorAll('a')[checkNumber]));
+											$timeout(function() { updateTotalImages(); }, 50);
+											checkNumber += $scope.model.numberOfImages;
+										});
 									});
 								}
+							});
+							$('.lb-prev').on('click', function() {
+								$timeout(function() { updateTotalImages(); },50);
 							});
 						}
 					}
