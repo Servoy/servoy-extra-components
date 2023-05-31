@@ -33,5 +33,6 @@ servoyextra-spinner {
 }
 
 .svy-layoutcontainer > servoyextra-spinner .svy-extra-spinner {
-    height: unset;
+    height: 0px;
+    min-height: 30px;
 }
