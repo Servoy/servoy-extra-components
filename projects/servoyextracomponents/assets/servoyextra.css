@@ -27,3 +27,11 @@
     width: 100%;
     height: 100%;
 }
+
+servoyextra-spinner {
+	position: relative;
+}
+
+.svy-layoutcontainer > servoyextra-spinner .svy-extra-spinner {
+    height: unset;
+}
