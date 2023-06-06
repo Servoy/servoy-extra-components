@@ -327,16 +327,23 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
 
     public setSelectionPathClientSide(idarray: Array<string>) {
         this.selection = idarray;
-        for (let i = idarray.length - 1; i >= 0; i--) {
-            const node = this.tree.treeModel.getNodeById(idarray[i]);
-            if (node) {
-                if (i === idarray.length - 1) {
-                    node.setIsActive(true);
-                } else {
-                    node.ensureVisible();
-                    node.expand();
-                    break;
+        if (idarray && idarray.length){
+            for (let i = idarray.length - 1; i >= 0; i--) {
+                const node = this.tree.treeModel.getNodeById(idarray[i]);
+                if (node) {
+                    if (i === idarray.length - 1) {
+                        node.setIsActive(true);
+                    } else {
+                        node.ensureVisible();
+                        node.expand();
+                        break;
+                    }
                 }
+            }
+        } else{
+            const node = this.tree.treeModel.getActiveNode();
+            if (node) {
+                node.setIsActive(false);
             }
         }
     }
