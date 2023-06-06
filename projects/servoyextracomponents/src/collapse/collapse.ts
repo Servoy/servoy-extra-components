@@ -6,7 +6,6 @@ import { DOCUMENT } from '@angular/common';
 @Component({
 	selector: 'servoyextra-collapse',
 	templateUrl: './collapse.html',
-	styleUrls: ['./svy-collapse.css'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 
