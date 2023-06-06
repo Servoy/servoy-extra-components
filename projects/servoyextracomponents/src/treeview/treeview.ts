@@ -74,6 +74,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
                                         [5, 1, 'George', this.fileImgPath]
                                         ];
         }
+        super.svyOnInit();
    }
 
     updateTreeGridData() {
