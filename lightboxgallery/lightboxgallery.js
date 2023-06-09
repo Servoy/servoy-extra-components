@@ -15,7 +15,7 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 					loadMoreData();
 				}, 50);
 				
-				if ($element.find('.svyextra-lightboxgallery-image-set')[0].closest('.svy-layoutcontainer')) {
+				if (!$scope.svyServoyapi.isInAbsoluteLayout()) {
 					$element.find('.svyextra-lightboxgallery-image-set')[0].style.height = $scope.model.responsiveHeight + "px";
 					$element.find('.svyextra-lightboxgallery-image-set')[0].style.overflow = "auto";
 				}

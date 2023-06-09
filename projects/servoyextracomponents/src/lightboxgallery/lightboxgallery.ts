@@ -57,7 +57,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 		setTimeout(() => {
 			this.loadMoreData();
 		}, 50);
-		if (this.elementRef.nativeElement.closest('.svy-layoutcontainer')) {
+		if (!this.servoyApi.isInAbsoluteLayout()) {
 			this.elementRef.nativeElement.style.height = this.responsiveHeight + 'px';
 			this.elementRef.nativeElement.style.overflow = 'auto';
 		}
