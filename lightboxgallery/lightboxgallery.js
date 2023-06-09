@@ -8,19 +8,17 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 				svyServoyapi: "="
 			},
 			link: function($scope, $element, $attrs) {
-				var checkNumber = $scope.model.numberOfImages - 1;
+				var checkNumber;
+				var nullImages;
 				
 				$timeout(function() {
-					if ($scope.model.maxImageHeight || $scope.model.maxImageWidth) {
-						var n = 0;
-						while (n < 5){
-							n++;
-							if (!($element.find('.svyextra-lightboxgallery-image-set')[0].clientHeight < $element.find('.svyextra-lightboxgallery-image-set')[0].scrollHeight)) {
-								$scope.model.imagesFoundset.loadExtraRecordsAsync($scope.model.numberOfImages);
-							}
-						}	
-					}
+					loadMoreData();
 				}, 50);
+				
+				if ($element.find('.svyextra-lightboxgallery-image-set')[0].closest('.svy-layoutcontainer')) {
+					$element.find('.svyextra-lightboxgallery-image-set')[0].style.height = $scope.model.responsiveHeight + "px";
+					$element.find('.svyextra-lightboxgallery-image-set')[0].style.overflow = "auto";
+				}
 				
 				$element.find('.svyextra-lightboxgallery-image-set').on('scroll', function(){
  					if (Math.abs(this.scrollHeight - this.clientHeight - this.scrollTop) < 1) {
@@ -31,7 +29,7 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 				});
 				
 				function updateTotalImages() {
-					var totalImages = $scope.model.imagesFoundset.serverSize;
+					var totalImages = $scope.model.imagesFoundset.serverSize - nullImages;
 					if ($scope.model.imagesFoundset.hasMoreRows) {
 						totalImages += "+";
 					}
@@ -43,27 +41,37 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 				$scope.clickImage = function() {
 					if ($scope.model.imagesFoundset.serverSize > $scope.model.imagesFoundset.viewPort.size) {
 						if ($('#lightbox')) {
-							$timeout(function() { updateTotalImages(); },50);
+							$timeout(function() { updateTotalImages(); }, 50);
 							$('.lb-next').on('click', function() {
-								$timeout(function() { updateTotalImages(); },50);
+								$timeout(function() { updateTotalImages(); }, 50);
 								var currentImage = parseInt($('.lb-number')[0].textContent.split(' ')[1]);
-								if (currentImage === checkNumber && $scope.model.imagesFoundset.serverSize > $scope.model.imagesFoundset.viewPort.size) {
+								if ((currentImage + nullImages) === checkNumber && $scope.model.imagesFoundset.serverSize > $scope.model.imagesFoundset.viewPort.size) {
+									var openAt = currentImage;
 									$scope.model.imagesFoundset.loadExtraRecordsAsync($scope.model.numberOfImages).then(()=>{
 										$('.lb-close').click();
 										$timeout(function() {
-											$window.lightbox.start(angular.element($element[0].querySelectorAll('a')[checkNumber]));
+											$window.lightbox.start(angular.element($element[0].querySelectorAll('a')[openAt]));
 											$timeout(function() { updateTotalImages(); }, 50);
-											checkNumber += $scope.model.numberOfImages;
 										});
 									});
 								}
 							});
 							$('.lb-prev').on('click', function() {
-								$timeout(function() { updateTotalImages(); },50);
+								$timeout(function() { updateTotalImages(); }, 50);
 							});
 						}
 					}
-				}		
+				}
+				
+				function loadMoreData() {
+					if ($scope.model.maxImageHeight || $scope.model.maxImageWidth) {
+						if ($scope.model.imagesFoundset.serverSize > $scope.model.imagesFoundset.viewPort.size) {
+							if (!($element.find('.svyextra-lightboxgallery-image-set')[0].clientHeight < $element.find('.svyextra-lightboxgallery-image-set')[0].scrollHeight)) {
+								$scope.model.imagesFoundset.loadExtraRecordsAsync($scope.model.numberOfImages);
+							}
+						}	
+					}
+				}	
 				
 				$scope.images = [];
 
@@ -74,6 +82,7 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 						if ($scope.model.numberOfImages > 5 && $scope.model.imagesFoundset.serverSize > $scope.model.imagesFoundset.viewPort.size && $scope.model.numberOfImages > $scope.model.imagesFoundset.viewPort.size){
 							$scope.model.imagesFoundset.loadExtraRecordsAsync($scope.model.numberOfImages - 5);
 						}
+						nullImages = 0;
     					for (var i = 0; i < $scope.model.imagesFoundset.viewPort.rows.length; i++) {
     						/** @type {{image: {url: String}, thumbnail: {url: String}, caption: String, imageId: String}} */
     						var row = $scope.model.imagesFoundset.viewPort.rows[i];
@@ -84,6 +93,8 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
     							imageId: row.imageId
     						}	
     						
+    						if (!row.image) nullImages += 1;
+    						
     						//check if using url strings instead of media/blob
     						image.url = typeof row.image == 'string' ? row.image : image.url;
     						image.thumbUrl = typeof row.thumbnail == 'string' ? row.thumbnail : image.thumbUrl;
@@ -91,6 +102,7 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
     						if (!image.url) continue;
     						images.push(image);
     					}
+    					checkNumber = images.length + nullImages - 1;
 					}
 					$scope.images = images;
 					$timeout(function() {
@@ -126,6 +138,7 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 					       || changes[$foundsetTypeConstants.NOTIFY_VIEW_PORT_ROW_UPDATES_RECEIVED]
 					       || changes[$foundsetTypeConstants.NOTIFY_FULL_VALUE_CHANGED]) {
 						createImagesFromFs();
+						loadMoreData();
 					}					
 				};
 				

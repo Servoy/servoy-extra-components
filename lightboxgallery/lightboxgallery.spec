@@ -31,6 +31,7 @@
 		"buttonText"				: { "type": "tagstring" },
 		"buttonStyleClass"			: { "type": "styleclass" },
 		"enabled"					: { "type": "boolean", "default": "false" },
+		"responsiveHeight"			: { "type": "int", "default": 300, "tags": { "doc": "This will be the height of the componenet into a responsive form and will affect only the responsive form."}},
 		"numberOfImages"			: { "type": "int", "default": 5, "tags": { "doc": "The default/ minimum value is 5, the component will not render less than 5 images, will load more on scrolling or using next in gallery mode."} }
 	},
 	"api": {

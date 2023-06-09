@@ -30,10 +30,12 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
     @Input() buttonStyleClass: string;
     @Input() enabled: boolean;
     @Input() numberOfImages: number;
+    @Input() responsiveHeight: number;
 
     public images: Array<any> = [];
 
     private checkNumber: number;
+    private nullImages: number;
 
     constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, private _lightbox: Lightbox, private _lightboxConfig: LightboxConfig) {
         super(renderer, cdRef);
@@ -52,24 +54,20 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
         }
         this._lightboxConfig.wrapAround = this.wrapAround;
         this._lightboxConfig.showImageNumberLabel = this.showImageNumberLabel;
-		this.checkNumber = this.numberOfImages - 1;
 		setTimeout(() => {
-			if (this.maxImageHeight || this.maxImageWidth) {
-				let n = 0;
-				while (n < 5){
-					n++;
-					if (!(this.elementRef.nativeElement.clientHeight < this.elementRef.nativeElement.scrollHeight)) {
-						this.imagesFoundset.loadExtraRecordsAsync(this.numberOfImages);
-					}
-				}
-			}
+			this.loadMoreData();
 		}, 50);
+		if (this.elementRef.nativeElement.closest('.svy-layoutcontainer')) {
+			this.elementRef.nativeElement.style.height = this.responsiveHeight + 'px';
+			this.elementRef.nativeElement.style.overflow = 'auto';
+		}
     }
 
     svyOnChanges(changes: SimpleChanges) {
         if (changes) {
             if (changes.imagesFoundset) {
                 this.createImages();
+                this.loadMoreData();
             }
         }
         super.svyOnChanges(changes);
@@ -83,24 +81,37 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
  		}
 	}
 
+	loadMoreData() {
+		if (this.maxImageHeight || this.maxImageWidth) {
+			if (this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
+				if (!(this.elementRef.nativeElement.clientHeight < this.elementRef.nativeElement.scrollHeight)) {
+					this.imagesFoundset.loadExtraRecordsAsync(this.numberOfImages);
+				}
+			}
+		}
+	}
+
     open(index: number): void {
         // open lightbox
         this._lightbox.open(this.images, index);
         if (this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
-			setTimeout(() => {
-				if (document.querySelector('#outerContainer')) {
-					document.querySelector('.lb-next').addEventListener('click', this.handleClick);
-					document.querySelector('.lb-prev').addEventListener('click', () => {
+			const interval = setInterval(() => {
+				if (document.querySelector('.fadeIn.lightbox')) {
+					document.querySelector('.fadeIn.lightbox').querySelector('.lb-next').addEventListener('click', this.handleClick);
+					document.querySelector('.fadeIn.lightbox').querySelector('.lb-prev').addEventListener('click', () => {
 						this.updateTotalImages(-1);
 					});
+					setTimeout(()=>{
+						this.updateTotalImages(0);
+					}, 1000);
+					clearInterval(interval);
 				}
-				this.updateTotalImages(0);
-			}, 1000);
+			}, 50);
 		}
     }
 
     updateTotalImages(page: number) {
-		let totalImages: string = this.imagesFoundset.serverSize.toString();
+		let totalImages: string = (this.imagesFoundset.serverSize - this.nullImages).toString();
 		if (this.imagesFoundset.hasMoreRows) {
 			totalImages += '+';
 		}
@@ -120,12 +131,12 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 
     handleClick = () => {
 		const currentImage = parseInt(document.querySelector('.lb-number').textContent.split(' ')[1], 10);
-		if(currentImage === this.checkNumber){
+		if((currentImage + this.nullImages) === this.checkNumber){
+			const openAt = currentImage;
 			this.imagesFoundset.loadExtraRecordsAsync(this.numberOfImages).then(()=>{
 				document.querySelector('.lb-next').removeEventListener('click', this.handleClick);
 				this.close();
-				this.open(this.checkNumber);
-				this.checkNumber += this.numberOfImages;
+				this.open(openAt);
 			});
 		}
 		this.updateTotalImages(1);
@@ -181,6 +192,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 			if (this.numberOfImages > 5 && this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size && this.numberOfImages > this.imagesFoundset.viewPort.size){
 				this.imagesFoundset.loadExtraRecordsAsync(this.numberOfImages - 5);
 			}
+			this.nullImages = 0;
             for (const row of this.imagesFoundset.viewPort.rows) {
                 const image = {
                     src: row.image && row.image.url ? row.image.url : null,
@@ -189,6 +201,8 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
                     imageId: row.imageId
                 };
 
+                if (!row.image) this.nullImages += 1;
+
                 //check if using url strings instead of media/blob
                 image.src = typeof row.image == 'string' ? row.image : image.src;
                 image.thumb = typeof row.thumbnail == 'string' ? row.thumbnail : image.thumb;
@@ -196,6 +210,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
                 if (!image.src) continue;
                 this.images.push(image);
             }
+            this.checkNumber = this.images.length + this.nullImages - 1;
         }
 
     };
