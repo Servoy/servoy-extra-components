@@ -29,7 +29,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
     @Input() buttonText: string;
     @Input() buttonStyleClass: string;
     @Input() enabled: boolean;
-    @Input() numberOfImages: number;
+    @Input() imageBatchSize: number;
     @Input() responsiveHeight: number;
 
     public images: Array<any> = [];
@@ -76,7 +76,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
     onScroll() {
  		if (Math.abs(this.elementRef.nativeElement.scrollHeight - this.elementRef.nativeElement.clientHeight - this.elementRef.nativeElement.scrollTop) < 1) {
  			if (this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
-				 this.imagesFoundset.loadExtraRecordsAsync(this.numberOfImages);
+				 this.imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize);
 			 }
  		}
 	}
@@ -85,7 +85,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 		if (this.maxImageHeight || this.maxImageWidth) {
 			if (this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
 				if (!(this.elementRef.nativeElement.clientHeight < this.elementRef.nativeElement.scrollHeight)) {
-					this.imagesFoundset.loadExtraRecordsAsync(this.numberOfImages);
+					this.imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize);
 				}
 			}
 		}
@@ -133,7 +133,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 		const currentImage = parseInt(document.querySelector('.lb-number').textContent.split(' ')[1], 10);
 		if((currentImage + this.nullImages) === this.checkNumber){
 			const openAt = currentImage;
-			this.imagesFoundset.loadExtraRecordsAsync(this.numberOfImages).then(()=>{
+			this.imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize).then(()=>{
 				document.querySelector('.lb-next').removeEventListener('click', this.handleClick);
 				this.close();
 				this.open(openAt);
@@ -189,8 +189,8 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
     private createImages = () => {
         this.images = [];
         if (this.imagesFoundset) {
-			if (this.numberOfImages > 5 && this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size && this.numberOfImages > this.imagesFoundset.viewPort.size){
-				this.imagesFoundset.loadExtraRecordsAsync(this.numberOfImages - 5);
+			if (this.imageBatchSize > 5 && this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size && this.imageBatchSize > this.imagesFoundset.viewPort.size){
+				this.imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize - 5);
 			}
 			this.nullImages = 0;
             for (const row of this.imagesFoundset.viewPort.rows) {
