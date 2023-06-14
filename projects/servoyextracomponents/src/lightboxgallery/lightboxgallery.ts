@@ -58,7 +58,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 			this.loadMoreData();
 		}, 50);
 		if (!this.servoyApi.isInAbsoluteLayout()) {
-			this.elementRef.nativeElement.style.height = this.responsiveHeight + 'px';
+			this.elementRef.nativeElement.style.maxHeight = this.responsiveHeight + 'px';
 			this.elementRef.nativeElement.style.overflow = 'auto';
 		}
     }
