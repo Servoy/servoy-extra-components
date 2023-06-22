@@ -1,5 +1,5 @@
 import { Component, ViewChild, SimpleChanges, Input, Renderer2, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { LoggerFactory, LoggerService, ServoyBaseComponent, ServoyPublicService } from '@servoy/public';
+import { JSEvent, LoggerFactory, LoggerService, ServoyBaseComponent, ServoyPublicService } from '@servoy/public';
 import { FileProgress, Restrictions, Uppy, UppyFile, UppyOptions } from '@uppy/core';
 import Dashboard from '@uppy/dashboard';
 import Tus, { TusOptions } from '@uppy/tus';
@@ -33,14 +33,14 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     @Input() webcamOptions: WebcamOptions;
     @Input() localeStrings: any;
 
-    @Input() onFileUploaded: (file: any) => void;
-    @Input() onFileAdded: (file: UploadFile) => void;
-    @Input() onBeforeFileAdded: (fileToAdd: UploadFile, files: UploadFile[]) => Promise<boolean>;
-    @Input() onFileRemoved: (file: UploadFile) => void;
-    @Input() onUploadComplete: (successfulFiles: UploadFile[], failedFiles: UploadFile[]) => void;
+    @Input() onFileUploaded: (file: any, event: JSEvent) => void;
+    @Input() onFileAdded: (file: UploadFile, event: JSEvent) => void;
+    @Input() onBeforeFileAdded: (fileToAdd: UploadFile, files: UploadFile[], event: JSEvent) => Promise<boolean>;
+    @Input() onFileRemoved: (file: UploadFile, event: JSEvent) => void;
+    @Input() onUploadComplete: (successfulFiles: UploadFile[], failedFiles: UploadFile[], event: JSEvent) => void;
     @Input() onModalOpened: () => void;
     @Input() onModalClosed: () => void;
-    @Input() onRestrictionFailed: (file: UploadFile, error: string) => void;
+    @Input() onRestrictionFailed: (file: UploadFile, error: string, event: JSEvent) => void;
 
     showDashboard = false;
 
@@ -72,19 +72,19 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     initUppy() {
         if (this.onFileAdded) {
             this.uppy.on('file-added', (file) => {
-                this.onFileAdded(this.createUppyFile(file));
+                this.onFileAdded(this.createUppyFile(file), this.createJSEvent('file-added'));
             });
         }
 
         if (this.onFileRemoved) {
             this.uppy.on('file-removed', (file: UppyFile) => {
-                this.onFileRemoved(this.createUppyFile(file));
+                this.onFileRemoved(this.createUppyFile(file), this.createJSEvent('file-removed'));
             });
         }
 
         if (this.onRestrictionFailed) {
             this.uppy.on('restriction-failed', (file: UppyFile, error: { message: string }) => {
-                if (file) this.onRestrictionFailed(this.createUppyFile(file), error.message);
+                if (file) this.onRestrictionFailed(this.createUppyFile(file), error.message, this.createJSEvent('restriction-failed'));
                 else if (error?.message) {
                     if (error.message.indexOf('onBeforeFileAdded') === -1) {
                         this.log.error(error.message);
@@ -119,7 +119,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
                         filesFailed.push(this.createUppyFile(result.failed[f]));
                     }
                 }
-                this.onUploadComplete(filesSuccess, filesFailed);
+                this.onUploadComplete(filesSuccess, filesFailed, this.createJSEvent('complete'));
             });
         }
         this.uppy.on('error', (error) => {
@@ -284,7 +284,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
 
         this.filesToBeAdded.push(currentFile.name);
 
-        this.onBeforeFileAdded(this.createUppyFile(currentFile), currentFiles).then((result: boolean) => {
+        this.onBeforeFileAdded(this.createUppyFile(currentFile), currentFiles, this.createJSEvent('before-file-added')).then((result: boolean) => {
             if (result === true) {
                 this.uppy.addFile(currentFile);
             }
@@ -292,6 +292,13 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
         });
         return false;
     }
+
+    createJSEvent(type: string): JSEvent{
+		const event = new JSEvent();
+		event.eventType = type;
+
+		return event;
+	}
 
     getFile(fileID: string): UploadFile {
         const file = this.uppy.getFile(fileID);

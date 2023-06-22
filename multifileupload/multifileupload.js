@@ -1,5 +1,5 @@
 angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
-	.directive('servoyextraMultifileupload', ['$sabloApplication', '$timeout', '$sabloConstants', function($sabloApplication, $timeout, $sabloConstants) {
+	.directive('servoyextraMultifileupload', ['$sabloApplication', '$timeout', '$sabloConstants', function($sabloApplication, $timeout, $sabloConstants, $utils) {
 		return {
 			restrict: 'E',
 			scope: {
@@ -179,7 +179,7 @@ angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
 								}
 							}
 							
-							$scope.handlers.onUploadComplete(filesSuccess, filesFailed);
+							$scope.handlers.onUploadComplete(filesSuccess, filesFailed, createJSEvent('complete'));
 						});
 					}
 
@@ -189,19 +189,19 @@ angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
 								//onBeforeFileAdded is now synchronous and we need to swallow this in case that returned false
 								return;
 							}
-							$scope.handlers.onRestrictionFailed(createUppyFile(file), error.message);
+							$scope.handlers.onRestrictionFailed(createUppyFile(file), error.message, createJSEvent('restriction-failed'));
 						});
 					}
 
 					if ($scope.handlers.onFileAdded) {
 						uppy.on('file-added', function(file) {
-							$scope.handlers.onFileAdded(createUppyFile(file));
+							$scope.handlers.onFileAdded(createUppyFile(file), createJSEvent('file-added'));
 						});
 					}
 
 					if ($scope.handlers.onFileRemoved) {
 						uppy.on('file-removed', function(file) {
-							$scope.handlers.onFileRemoved(createUppyFile(file));
+							$scope.handlers.onFileRemoved(createUppyFile(file), createJSEvent('file-removed'));
 						});
 					}
 				}
@@ -220,13 +220,20 @@ angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
 					
 					filesToBeAdded.push(currentFile.name);
 					
-					$scope.handlers.onBeforeFileAdded(createUppyFile(currentFile), currentFiles).then(function(result) {
+					$scope.handlers.onBeforeFileAdded(createUppyFile(currentFile), currentFiles, createJSEvent('before-file-added')).then(function(result) {
 						if (result === true) {
 							uppy.addFile(currentFile);
 						}
 						filesToBeAdded.splice(filesToBeAdded.indexOf(currentFile.name), 1);
 					});
 					return false;
+				}
+				
+				function createJSEvent(type){
+					var event = {};
+					event.eventType = type;
+
+					return event;
 				}
 				
 				function getUploadUrl() {

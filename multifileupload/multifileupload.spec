@@ -100,27 +100,29 @@
     "handlers": {
         "onFileUploaded": {
         	"parameters": [
-            	{"name": "jsUpload", "type": "JSUpload"}
+            	{"name": "jsUpload", "type": "JSUpload"}, {"name": "event", "type": "JSEvent"}
         ]},
         "onFileAdded": {
         	"parameters": [
-        		{"name": "fileAdded", "type": "uploadFile"}
+        		{"name": "fileAdded", "type": "uploadFile"}, {"name": "event", "type": "JSEvent"}
         ]},
         "onBeforeFileAdded": {
             "returns": "boolean",
             "parameters": [
                 {"name": "fileToAdd", "type": "uploadFile"},
-                {"name": "files", "type": "uploadFile[]"}
+                {"name": "files", "type": "uploadFile[]"},
+                {"name": "event", "type": "JSEvent"}
             ]
         },
         "onFileRemoved": {
         	"parameters": [
-        		{"name": "fileRemoved", "type": "uploadFile"}
+        		{"name": "fileRemoved", "type": "uploadFile"}, {"name": "event", "type": "JSEvent"}
         ]},
         "onUploadComplete": {
         	"parameters": [
 	            {"name": "successfulFiles","type": "uploadFile[]"},
-	            {"name": "failedFiles", "type": "uploadFile[]"}
+	            {"name": "failedFiles", "type": "uploadFile[]"},
+	            {"name": "event", "type": "JSEvent"}
         ]},
         "onModalOpened": {
         	"parameters": []
@@ -131,7 +133,8 @@
         "onRestrictionFailed": {
         	"parameters": [
 	            {"name": "file", "type": "uploadFile"},
-	            {"name": "error", "type": "string"}
+	            {"name": "error", "type": "string"},
+	            {"name": "event", "type": "JSEvent"}
         ]}
     },
     "types": {
