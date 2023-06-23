@@ -1,5 +1,5 @@
 angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
-	.directive('servoyextraMultifileupload', ['$sabloApplication', '$timeout', '$sabloConstants', function($sabloApplication, $timeout, $sabloConstants, $utils) {
+	.directive('servoyextraMultifileupload', ['$sabloApplication', '$timeout', '$sabloConstants', function($sabloApplication, $timeout, $sabloConstants) {
 		return {
 			restrict: 'E',
 			scope: {
