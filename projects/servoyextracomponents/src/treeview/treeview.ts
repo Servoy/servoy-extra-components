@@ -79,7 +79,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
 
     updateTreeGridData() {
       this.configs.columns.length = 0;
-      this.data.length = 0;
+      this.data = [];
 
       let isFAIcon = false;
       const idIdx = this.jsDataSet[0].indexOf('id');
@@ -243,7 +243,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
      */
     expandNode(nodeId) {
       if(this.isTreeReady) {
-        this.angularGrid.expandRow(nodeId.toString());
+        this.angularGrid.expandRow(isNaN(nodeId) ? nodeId.toString() : nodeId);
       }
     }
 
