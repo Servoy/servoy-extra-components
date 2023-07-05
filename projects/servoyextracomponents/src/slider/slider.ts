@@ -74,7 +74,7 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
 	ngOnInit() {
 		super.ngOnInit();
 		// these options must be initialized otherwise dataprovider is not displayed in ui
-		this.setNewOptions('ceil', this.ceil ? this.ceil : 100);
+		this.setNewOptions('ceil', this.ceilValue(this.ceil));
 		this.setNewOptions('floor', this.floor);
 	}
 
@@ -90,7 +90,7 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
 						this.setNewOptions('floor', change.currentValue);
 						break;
 					case 'ceil':
-						this.setNewOptions('ceil', change.currentValue ? change.currentValue : 100);
+						this.setNewOptions('ceil', this.ceilValue(change.currentValue));
 						break;
 					case 'step':
 						this.setNewOptions('step', change.currentValue);
@@ -251,6 +251,17 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
 		if (this.onSlideEnd) {
 			this.onSlideEnd(null, changeContext.value, changeContext.highValue, changeContext.pointerType);
 		}
+	}
+
+	ceilValue(ceil: number) {
+		if (ceil >= 0) {
+			return ceil;
+		} else if (this.dataProviderHigh >= 0) {
+			return this.dataProviderHigh;
+		} else if (this.dataProvider >= 0) {
+			return this.dataProvider;
+		}
+		return 100;
 	}
 
 	public refresh() {
