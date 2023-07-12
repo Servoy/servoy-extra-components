@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, Renderer2, SimpleChanges, ViewChild } from '@angular/core';
 import { LoggerService, LoggerFactory, ServoyBaseComponent, BaseCustomObject, IFoundsetTree, ServoyPublicService, EventLike, JSEvent } from '@servoy/public';
-import { IActionMapping, ITreeOptions, TreeComponent, TreeNode } from '@circlon/angular-tree-component';
-import { ITreeNode } from '@circlon/angular-tree-component/lib/defs/api';
+import { IActionMapping, ITreeOptions, TreeComponent, TreeNode } from '@servoy/angular-tree-component';
+
 
 
 @Component({
@@ -160,7 +160,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     }
 
     onLoadNodeChildren(event: any) {
-        event.node.children.forEach((child: ITreeNode) => {
+        event.node.children.forEach((child: TreeNode) => {
             if (child.data.active) {
                 child.setIsActive(true);
             }

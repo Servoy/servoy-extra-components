@@ -14,7 +14,7 @@
     "@popperjs/core",
     "ngx-lightbox", "ngx-filesaver","file-saver",
     "ng2-file-upload", 
-    "@circlon/angular-tree-component", 
+    "@servoy/angular-tree-component", 
     "angular-tree-grid", 
     "@uppy/angular",
     "@uppy/drag-drop",
@@ -27,7 +27,7 @@
     "@uppy/status-bar",
     "@uppy/utils",
     "@uppy/webcam",
-    "@angular-slider/ngx-slider", 
+    "ngx-slider-v2", 
     "angular-resizable-element", "ng-select2-component", "@tinymce/tinymce-angular", 
     "tinymce", "tinymce-i18n", "@servoy/canvas-gauges", "rx-dom-html","@angular/cdk"]
 }

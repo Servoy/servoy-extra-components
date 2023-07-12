@@ -1,7 +1,7 @@
 @import "table/table.css";
 @import "table/mobileview.css";
 @import "sidenav/svy-sidenav.css";
-@import '@circlon/angular-tree-component/src/lib/angular-tree-component.css';
+@import '@servoy/angular-tree-component/css/angular-tree-component.css';
 @import "treeview/treeview.css";
 @import "select2tokenizer/select2tokenizer.css";
 @import "collapse/collapse.css";
