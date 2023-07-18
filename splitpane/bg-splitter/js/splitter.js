@@ -29,7 +29,7 @@ angular.module('servoyextraSplitpane').directive('bgSplitter', function() {
         
         pane1.elem.after(handler);
         
-        element.bind('mousemove', function (ev) {
+        element.bind('pointermove', function (ev) {
           if (!drag) return;
           
           var bounds = element[0].getBoundingClientRect();
@@ -60,13 +60,16 @@ angular.module('servoyextraSplitpane').directive('bgSplitter', function() {
             pane2.elem.css('left', (pos+handler[0].clientWidth) + 'px');
           }
         });
-    
-        handler.bind('mousedown', function (ev) { 
-          ev.preventDefault();
-          drag = true; 
+
+        element.bind('pointerdown', function (ev) { 
+          var el = document.elementFromPoint(ev.clientX, ev.clientY);
+          if(el === handler[0]) {
+            ev.preventDefault();
+            drag = true;
+          }
         });
 
-        angular.element(document).bind('mouseup', function (ev) {
+        angular.element(document).bind('pointerup', function (ev) {
           if(drag) {
         	  scope.onDividerChange();
           }

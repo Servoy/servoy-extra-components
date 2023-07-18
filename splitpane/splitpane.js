@@ -153,13 +153,13 @@ angular.module('servoyextraSplitpane',['servoy']).directive('servoyextraSplitpan
 			$window.addEventListener('resize',onResize);
 			
 			$scope.$watch('model.divSize', function(newValue, oldValue){
+				var dividerEl = getHandlerElement();
+				if($scope.model.splitType == 1) {
+					dividerEl.css('height', $scope.model.divSize + 'px'); 
+				} else {
+					dividerEl.css('width',  $scope.model.divSize + 'px'); 
+				}
 				if(newValue != oldValue) {
-					var dividerEl = getHandlerElement();
-					if($scope.model.splitType == 1) {
-						dividerEl.css('height', $scope.model.divSize + 'px'); 
-					} else {
-						dividerEl.css('width',  $scope.model.divSize + 'px'); 
-					}
 					$scope.processDivLocation()
 				}
 			});

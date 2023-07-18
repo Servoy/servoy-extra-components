@@ -7,6 +7,10 @@
   position: absolute;
 }
 
+.split-panes .svy-body {
+  touch-action: none;
+}
+
 .split-panes > .split-handler 
 {
   background: transparent;

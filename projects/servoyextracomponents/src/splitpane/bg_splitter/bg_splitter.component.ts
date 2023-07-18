@@ -1,6 +1,6 @@
 import { Component, Input, Output, OnChanges,SimpleChanges, EventEmitter, HostListener, AfterContentInit,
-                ContentChildren, QueryList, Renderer2, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
-
+                ContentChildren, QueryList, Renderer2, ViewEncapsulation, ViewChild, ElementRef, Inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import { BGPane } from './bg_pane.component';
 @Component( {
     selector: 'bg-splitter',
@@ -27,18 +27,13 @@ export class BGSplitter implements AfterContentInit , OnChanges {
     private drag = false;
     private handler;
 
-    constructor( private readonly renderer: Renderer2 ) {
+    constructor( private readonly renderer: Renderer2, @Inject(DOCUMENT) private doc: Document) {
         this.handler = this.renderer.createElement( 'div' );
         this.renderer.addClass( this.handler, 'split-handler' );
-
-        this.handler.addEventListener( 'mousedown', ( ev ) => {
-            ev.preventDefault();
-            this.drag = true;
-        } );
     }
 
-    @HostListener( 'document:mouseup', ['$event'] )
-    mouseup( event: MouseEvent ) {
+    @HostListener( 'document:pointerup', ['$event'] )
+    pointerup( event: PointerEvent ) {
         if ( this.drag ) {
             let dividerLocation: string;
             if(this.orientation === 'vertical' ) {
@@ -51,10 +46,19 @@ export class BGSplitter implements AfterContentInit , OnChanges {
         this.drag = false;
     }
 
-    @HostListener( 'mousemove', ['$event'] )
-    mousemove( event: MouseEvent ) {
+    @HostListener( 'pointermove', ['$event'] )
+    pointermove( event: PointerEvent ) {
         if ( !this.drag ) return;
         this.adjustLocation(event);
+    }
+
+    @HostListener( 'pointerdown', ['$event'] )
+    pointerdown( event: PointerEvent ) {
+        const el = this.doc.elementFromPoint(event.clientX, event.clientY);
+        if(el === this.handler) {
+            event.preventDefault();
+            this.drag = true;
+        }
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -84,7 +88,7 @@ export class BGSplitter implements AfterContentInit , OnChanges {
     }
 
 
-    private adjustLocation(event?: MouseEvent,wantedPosition?: number) {
+    private adjustLocation(event?: PointerEvent,wantedPosition?: number) {
         if (!this.panes || this.panes.length !== 2) return;
         const bounds = this.elementRef.nativeElement.getBoundingClientRect();
         const pos = this.getPosition(bounds, event, wantedPosition);
