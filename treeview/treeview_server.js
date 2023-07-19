@@ -26,5 +26,6 @@
  *
  */
 $scope.api.setDataSet = function(jsDataSet) {
+	$scope.model.jsDataSet = null; // make sure the jsDataSet is seen as changed (even if the same instance is passed in)
 	$scope.model.jsDataSet = jsDataSet;
 }
