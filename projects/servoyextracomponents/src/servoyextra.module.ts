@@ -26,7 +26,7 @@ import { Select2Module } from 'ng-select2-component';
 import { LightboxModule } from 'ngx-lightbox';
 import { ServoyExtraCollapse } from './collapse/collapse';
 import { Binding, Callback, LevelVisibilityType, RelationInfo, ServoyExtraDbtreeview } from './dbtreeview/dbtreeview';
-import { TreeModule } from '@servoy/angular-tree-component';
+import { TreeModule } from '@ali-hm/angular-tree-component';
 import { EditorModule , TINYMCE_SCRIPT_SRC} from '@tinymce/tinymce-angular';
 import { ServoyExtraTreeview } from './treeview/treeview';
 import { AngularTreeGridModule } from 'angular-tree-grid';

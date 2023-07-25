@@ -14,7 +14,7 @@
     "@popperjs/core",
     "ngx-lightbox", "ngx-filesaver","file-saver",
     "ng2-file-upload", 
-    "@servoy/angular-tree-component", 
+    "@ali-hm/angular-tree-component", 
     "angular-tree-grid", 
     "@uppy/angular",
     "@uppy/drag-drop",

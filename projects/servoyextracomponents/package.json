@@ -11,7 +11,7 @@
   "dependencies": {
 	"@angular/cdk": "^16",
     "ngx-slider-v2": "^16",
-    "@servoy/angular-tree-component": "^16",
+    "@ali-hm/angular-tree-component": "^12",
     "@ng-bootstrap/ng-bootstrap": "^15",
     "bootstrap": "<6",
     "@servoy/canvas-gauges": "<3",

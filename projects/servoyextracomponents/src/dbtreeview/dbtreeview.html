@@ -2,7 +2,8 @@
      <tree-root #tree [nodes]="displayNodes" [options]="options" 
         (toggleExpanded)="onNodeExpanded($event)" 
         (initialized)="onTreeLoad($event)"
-        (loadNodeChildren)="onLoadNodeChildren($event)">
+        (loadNodeChildren)="onLoadNodeChildren($event)"
+        (moveNode)="nodeDropped($event)">
         <ng-template #treeNodeTemplate let-node="node" let-index="index">
             <div [title]="node.data.tooltip"> 
                 <input *ngIf="node.data.hascheckbox"

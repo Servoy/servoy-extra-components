@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, Renderer2, SimpleChanges, ViewChild } from '@angular/core';
 import { LoggerService, LoggerFactory, ServoyBaseComponent, BaseCustomObject, IFoundsetTree, ServoyPublicService, EventLike, JSEvent } from '@servoy/public';
-import { IActionMapping, ITreeOptions, TreeComponent, TreeNode } from '@servoy/angular-tree-component';
+import { IActionMapping, ITreeOptions, TreeComponent, TreeNode } from '@ali-hm/angular-tree-component';
 
 
 
@@ -18,6 +18,8 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
 
     @Input() foundsettree: IFoundsetTree;
     @Input() autoRefresh: boolean;
+    @Input() allowDrag: any;
+    @Input() allowDrop: any;
     @Input() bindings: Array<Binding>;
     @Input() enabled: boolean;
     @Input() levelVisibility: LevelVisibilityType;
@@ -26,6 +28,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     @Input() visible: boolean;
     @Input() showLoadingIndicator: boolean;
     @Input() onReady: (e: JSEvent) => void;
+    @Input() onDrop: (sourceNodePkPath: Array<string>, targetNodePkPath: Array<string>, indexInParent: number, e: JSEvent) => void;
 
     @Input() isInitialized: boolean;
     @Output() isInitializedChange = new EventEmitter();
@@ -77,7 +80,8 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
 
     svyOnInit() {
         super.svyOnInit();
-
+        this.options.allowDrag = this.allowDrag;
+        this.options.allowDrop = this.allowDrop;
         if (!this.displayNodes || this.displayNodes.length === 0) {
             this.initTree();
         }
@@ -188,6 +192,13 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
 
     onNodeExpanded(event: any) {
         event.node.data.expanded = event.isExpanded;
+    }
+
+    nodeDropped(event: any){
+       if (this.onDrop){
+           this.onDrop(this.getNodePKPath(event.node), this.getNodePKPath(event.to.parent), event.to.index,
+                this.servoyPublicService.createJSEvent({ target: this.elementRef.nativeElement } as EventLike, 'onDrop'));
+       }
     }
 
     onTreeLoad(event: any) {
@@ -491,6 +502,21 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
             }
         }
         return null;
+    }
+
+    private getNodePKPath(node: ChildNode): Array<any>{
+        let arr = new Array();
+        let currentNode = node;
+        while (currentNode){
+            if (currentNode.id && currentNode.id.toString().indexOf(';') > 0 && currentNode.id.toString().indexOf('.') > 0){
+                let id = currentNode.id.split('.')[1];
+                id = id.split(';')[0];
+                arr.push(id);
+            }
+            currentNode = node.parent;
+        }
+        arr = arr.reverse();
+        return arr;
     }
 }
 

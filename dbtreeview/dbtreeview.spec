@@ -19,6 +19,8 @@
 		"foundsettree" : {"type": "foundsettree", "default" : [], "tags": { "scope": "private" }, "pushToServer": "allow"},
 		"roots": {"type":"foundsetref[]", "tags": { "scope": "private" }},
 	    "bindings" : {"type":"binding[]", "tags": { "scope": "private" }},
+	    "allowDrag" : {"type":"object", "tags": { "scope": "runtime", "doc": "Can be used to enable dragging of nodes. Can either be a boolean value or a clientfunction that is executed in browser. Default value is false." }},
+	    "allowDrop" : {"type":"object", "tags": { "scope": "runtime", "doc": "Can be used to enable dropping of nodes. Can either be a boolean value or a clientfunction that is executed in browser. Default value is false." }},
 	    "visible" : {"type":"boolean", "default":true},
 		"enabled" : {"type":"boolean", "default":true},
 		"autoRefresh": {"type":"boolean", "default":true, "tags": { "doc" :"If true, component listens to foundset changes and updates itself while visible."}},
@@ -35,7 +37,23 @@
       						"name":"event",
       						"type":"JSEvent"
       						}
-      			]}
+      			]},
+      			"onDrop": {
+                    "doc": "Called when a node is dropped as a result of a drag-n-drop",
+                    "parameters": [{
+                        "name": "sourceNodePkPath",
+                        "type": "string[]"
+                    }, {
+                        "name": "targetNodePkPath",
+                        "type": "string[]"
+                    }, {
+                        "name": "indexInParent",
+                        "type": "int"
+                    }, {
+                        "name": "event",
+                        "type": "JSEvent"
+                    }]
+                }
 	},
 	"api":
 	{
