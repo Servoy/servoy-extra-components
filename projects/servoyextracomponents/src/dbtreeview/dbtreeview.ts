@@ -344,6 +344,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
             const node = this.tree.treeModel.getActiveNode();
             if (node) {
                 node.setIsActive(false);
+                node.blur();
             }
         }
     }

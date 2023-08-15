@@ -23,6 +23,7 @@
     "@uppy/core",
     "@uppy/locales",
     "@uppy/screen-capture",
+    "@uppy/thumbnail-generator",
     "@uppy/tus",
     "@uppy/status-bar",
     "@uppy/utils",
