@@ -7,9 +7,15 @@ angular.module('servoyextraHtmlarea',['servoy','ui.tinymce']).directive('servoye
 			api: "=svyApi",
 			svyServoyapi: "="
 		},
-		controller: function($scope, $element, $attrs) {
+		controller: function($scope, $element) {
 			var lastServerValueAsSeenByTinyMCEContent;
             var element = $element.children().first();
+            function setEditable(ed) {
+                if (!$scope.init) return;
+                var editable = $scope.model.editable && !$scope.model.readOnly && $scope.model.enabled;
+                editable ? ed.setMode('design') : ed.setMode('readonly')
+                ed.getBody().setAttribute('contenteditable', editable);
+            }
             
 			$scope.findMode = false;
 			$scope.tinyValue = !$scope.svyServoyapi.isInDesigner() && $scope.model.dataProviderID ? $scope.model.dataProviderID : '' ;
@@ -25,15 +31,14 @@ angular.module('servoyextraHtmlarea',['servoy','ui.tinymce']).directive('servoye
                                 ed.getContainer().style.minHeight = $scope.model.responsiveHeight + "px";
                             }
 							$scope.init = true;
-							if($scope.model.editable){
-								ed.setMode('design');
-								ed.settings.readonly = 0;				
-							}
-							else{
-								ed.setMode('readonly');
-								ed.settings.readonly = 1;
-							}							
-							ed.getBody().setAttribute('contenteditable', $scope.model.editable);
+							setEditable(ed);
+                            var editable = $scope.model.editable && !$scope.model.readOnly && $scope.model.enabled;
+                            if(editable){
+                                ed.settings.readonly = 0;               
+                            }
+                            else{
+                                ed.settings.readonly = 1;
+                            }
 							
 							if (!$scope.svyServoyapi.isInDesigner())
 							{
@@ -44,12 +49,20 @@ angular.module('servoyextraHtmlarea',['servoy','ui.tinymce']).directive('servoye
 							$svyProperties.setScrollbars($(ed.getBody()), $scope.model.scrollbars);
 						});
 						$scope.$watch('model.editable',function (newVal,oldVal){
-							if (!$scope.init) return;
-							if(oldVal != newVal){
-								newVal ? ed.setMode('design') : ed.setMode('readonly')
-								ed.getBody().setAttribute('contenteditable', newVal);
-							}    			   		
-						})
+                            if(oldVal != newVal){
+                                setEditable(ed);
+                            }                       
+                        })
+                        $scope.$watch('model.enabled',function (newVal,oldVal){
+                            if(oldVal != newVal){
+                                setEditable(ed);
+                            }                       
+                        })
+                        $scope.$watch('model.readOnly',function (newVal,oldVal){
+                            if(oldVal != newVal){
+                                setEditable(ed);
+                            }                       
+                        })
 						$scope.$watch('model.dataProviderID', function(newVal, oldVal) {
 							if (!$scope.svyServoyapi.isInDesigner())
 							{
