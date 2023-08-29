@@ -175,6 +175,9 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
             allowMultipleUploads: this.allowMultipleUploads,
             restrictions: this.restrictions,
         };
+        if (this.closeAfterFinish){
+            options.allowMultipleUploadBatches = false;
+        }
         return options;
     }
 

@@ -441,12 +441,14 @@ angular.module('servoyextraMultifileupload', ['servoy', 'sabloApp'])
 					
 					uppyProperties = {
 						autoProceed: $scope.model.autoProceed,
-						allowMultipleUploads: $scope.model.allowMultipleUploads, 
+						allowMultipleUploads: $scope.model.allowMultipleUploads,
 						restrictions: $scope.model.restrictions,
 						locale: uppyLanguage,
 						onBeforeFileAdded: onBeforeFileAdded
 					}
-					
+					if ($scope.model.closeAfterFinish){
+					   uppyProperties['allowMultipleUploadBatches'] = false;
+					}
 					tusProperties = {
 						endpoint: uploadURL,
 					}
