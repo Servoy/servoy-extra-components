@@ -181,7 +181,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
            // if (event.node.data.checked) {
            //     child.data.checked = true;
            //}
-            if (this.levelVisibility && this.levelVisibility.level > child.level) {
+            if (this.levelVisibility && this.levelVisibility.level >= child.level) {
                 child.expand();
             } else if (this.expandedNodes && !child.isExpanded && this.expandedNodes.indexOf(child.data.id) >= 0) {
                 // expand node if is within the expandedNodes path. It allows to expand nodes async on multiple levels
@@ -367,7 +367,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
                 if (state) {
                     child.setIsHidden(false);
                     child.setIsExpanded(state);
-                    if (child.level + 1 < level && child.children && child.children.length > 0) {
+                    if (child.level + 1 <= level && child.children && child.children.length > 0) {
                         this.expandChildNodes(child, level, state);
                     }
                 } else if (level === 1) {
