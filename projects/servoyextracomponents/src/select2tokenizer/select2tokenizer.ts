@@ -66,9 +66,9 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 
     attachFocusListeners(nativeElement: HTMLDivElement) {
         if (this.onFocusGainedMethodID) {
-            this.select2.focus.subscribe(() => {
+            this.select2.open.subscribe(() => {
                 if (this.mustExecuteOnFocus !== false) {
-                    this.onFocusGainedMethodID(new CustomEvent('focus'));
+                    this.onFocusGainedMethodID(new CustomEvent('open'));
                 }
                 this.mustExecuteOnFocus = true;
             });
