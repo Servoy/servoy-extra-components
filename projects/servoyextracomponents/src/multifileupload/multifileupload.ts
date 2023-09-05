@@ -7,7 +7,6 @@ import type { DashboardOptions } from '@uppy/dashboard';
 import type { WebcamOptions } from '@uppy/webcam';
 import { DashboardComponent } from '@uppy/angular';
 
-
 @Component({
     selector: 'servoyextra-multifileupload',
     templateUrl: './multifileupload.html',
@@ -32,6 +31,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     @Input() tusOptions: TusOptions;
     @Input() webcamOptions: WebcamOptions;
     @Input() localeStrings: any;
+    @Input() language: string;
 
     @Input() onFileUploaded: (file: any, event: JSEvent) => void;
     @Input() onFileAdded: (file: UploadFile, event: JSEvent) => void;
@@ -125,9 +125,9 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
         this.uppy.on('error', (error) => {
             this.log.error(error);
         });
-        const tusOptions: TusOptions = Object.assign({} as TusOptions, this.tusOptions?this.tusOptions:{});
+        const tusOptions: TusOptions = Object.assign({} as TusOptions, this.tusOptions ? this.tusOptions : {});
         tusOptions.endpoint = this.servoyService.generateUploadUrl(this.servoyApi.getFormName(), this.name, 'onFileUploaded', true);
-        if (!tusOptions.retryDelays) tusOptions.retryDelays =[0, 1000, 3000, 5000];
+        if (!tusOptions.retryDelays) tusOptions.retryDelays = [0, 1000, 3000, 5000];
         this.uppy.use(Tus, tusOptions);
 
         const debugLogger = {
@@ -147,57 +147,41 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
                 this.showDashboard = true;
                 this.cdRef.detectChanges();
             });
-       }
-       else {
+        }
+        else {
             this.showDashboard = true;
         }
     }
 
     installWebcam = () => import(`@uppy/webcam`).then(module => {
-            this.uppy.use(module.default, this.webcamOptions);
-            this.properties.plugins.push('Webcam');
-        }, (err) => {
-            this.log.error(err);
-        }
+        this.uppy.use(module.default, this.webcamOptions);
+        this.properties.plugins.push('Webcam');
+    }, (err) => {
+        this.log.error(err);
+    }
     );
 
     installScreenCapture = () => import(`@uppy/screen-capture`).then(module => {
-            this.uppy.use(module.default);
-            this.properties.plugins.push('ScreenCapture');
-        }, (err) => {
-            this.log.error(err);
-        }
+        this.uppy.use(module.default);
+        this.properties.plugins.push('ScreenCapture');
+    }, (err) => {
+        this.log.error(err);
+    }
     );
 
     getUppyOptions() {
         const options: UppyOptions = {
             autoProceed: this.autoProceed,
-            allowMultipleUploads: this.allowMultipleUploads,
+            allowMultipleUploadBatches: this.allowMultipleUploads,
             restrictions: this.restrictions,
         };
-        if (this.closeAfterFinish){
+        if (this.closeAfterFinish) {
             options.allowMultipleUploadBatches = false;
         }
         return options;
     }
 
     pushDashboardOptions() {
-        const locale = { strings: {} };
-        if (this.localeStrings) {
-            for (const key of Object.keys(this.localeStrings)) {
-                const localeString = this.localeStrings[key];
-                if (key.indexOf('.') !== -1) {
-                    const keyParts = key.split('.');
-                    if (!locale.strings.hasOwnProperty(keyParts[0])) {
-                        locale.strings[keyParts[0]] = {};
-                    }
-                    locale.strings[keyParts[0]][keyParts[1]] = localeString;
-                } else {
-                    locale.strings[key] = localeString;
-                }
-            }
-        }
-
         this.properties = {
             note: this.note,
             width: this.cssPosition.width,
@@ -208,8 +192,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
             inline: this.inline,
             closeAfterFinish: this.closeAfterFinish && !this.inline,
             metaFields: this.metaFields,
-            plugins: [],
-            locale
+            plugins: []
         };
 
         if (this.options) {
@@ -218,9 +201,9 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
             }
         }
         // this must be done becuse the options above are not set through to the plugin state.
-//        this.uppy.getPlugin('angular:Dashboard').setPluginState({
-//            metaFields: this.metaFields?this.metaFields:[],
-//        });
+        //        this.uppy.getPlugin('angular:Dashboard').setPluginState({
+        //            metaFields: this.metaFields?this.metaFields:[],
+        //        });
 
     }
 
@@ -229,10 +212,13 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
         this.pushDashboardOptions();
         const options = this.getUppyOptions();
         this.uppy.setOptions(options);
+        if (this.language || this.localeStrings) {
+            this.loadUppyLocale();
+        }
     }
 
     reset(): void {
-        this.uppy.cancelAll({reason : 'unmount'});
+        this.uppy.cancelAll({ reason: 'unmount' });
     }
 
     upload(): void {
@@ -244,7 +230,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     }
 
     cancelAll(): void {
-        this.uppy.cancelAll({reason : 'unmount'});
+        this.uppy.cancelAll({ reason: 'unmount' });
     }
 
     retryUpload(fileID: string): void {
@@ -260,7 +246,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     }
 
     initialize(): void {
-        this.uppy.close({reason : 'unmount'});
+        this.uppy.close({ reason: 'unmount' });
         this.uppy = new Uppy();
         this.initUppy();
         this.loadUppyLocale();
@@ -296,12 +282,12 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
         return false;
     }
 
-    createJSEvent(type: string): JSEvent{
-		const event = new JSEvent();
-		event.eventType = type;
+    createJSEvent(type: string): JSEvent {
+        const event = new JSEvent();
+        event.eventType = type;
 
-		return event;
-	}
+        return event;
+    }
 
     getFile(fileID: string): UploadFile {
         const file = this.uppy.getFile(fileID);
@@ -357,13 +343,70 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     }
 
     private loadUppyLocale() {
-        let localeId = this.servoyService.getLocale().replace('-', '_');
+        let localeId = null;
+        if (this.language) {
+            if (this.language === 'English') {
+                localeId = 'en_US';
+            } else if (this.language === 'German') {
+                localeId = 'de_DE';
+            } else if (this.language === 'Dutch') {
+                localeId = 'nl_NL';
+            } else if (this.language === 'French') {
+                localeId = 'fr_FR';
+            } else if (this.language === 'Italian') {
+                localeId = 'it_IT';
+            } else if (this.language === 'Spanish') {
+                localeId = 'es_ES';
+            } else if (this.language === 'Chinese') {
+                localeId = 'zh_CN';
+            } else if (this.language === 'Czech') {
+                localeId = 'cs_CZ';
+            } else if (this.language === 'Danish') {
+                localeId = 'da_DK';
+            } else if (this.language === 'Finnish') {
+                localeId = 'fi_FI';
+            } else if (this.language === 'Greek') {
+                localeId = 'el_GR';
+            } else if (this.language === 'Hungarian') {
+                localeId = 'hu_HU';
+            } else if (this.language === 'Japanese') {
+                localeId = 'ja_JP';
+            } else if (this.language === 'Persian') {
+                this.language = 'fa_IR';
+            } else if (this.language === 'Russian') {
+                localeId = 'ru_RU';
+            } else if (this.language === 'Swedish') {
+                localeId = 'sv_SE';
+            } else if (this.language === 'Turkish') {
+                localeId = 'tr_TR';
+            }
+        } else {
+            localeId = this.servoyService.getLocale().replace('-', '_');
+        }
         if (localeId.indexOf('_') === -1) {
             localeId = localeId + '_' + localeId.toUpperCase();
         }
+        if (localeId == 'en_GB'){
+            localeId = 'en_US';
+        }
         import(`@uppy/locales/lib/${localeId}.js`).then(
             module => {
-                this.uppy.setOptions({ locale: module });
+                const locale = module.default;
+                if (this.localeStrings) {
+                    for (const key of Object.keys(this.localeStrings)) {
+                        const localeString = this.localeStrings[key];
+                        if (key.indexOf('.') !== -1) {
+                            const keyParts = key.split('.');
+                            if (!locale.strings.hasOwnProperty(keyParts[0])) {
+                                locale.strings[keyParts[0]] = {};
+                            }
+                            locale.strings[keyParts[0]][keyParts[1]] = localeString;
+                        } else {
+                            locale.strings[key] = localeString;
+                        }
+                    }
+                }
+                this.uppy.setOptions({ locale });
             },
             () => {
                 console.log('not found uppy locale data for ' + localeId);
@@ -386,9 +429,9 @@ interface UploadFile extends BaseFile {
 }
 
 interface MetaField {
-  id: string;
-  name: string;
-  placeholder?: string;
+    id: string;
+    name: string;
+    placeholder?: string;
 }
 
 
