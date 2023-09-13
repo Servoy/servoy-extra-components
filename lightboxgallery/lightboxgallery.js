@@ -38,27 +38,40 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 					$('.lb-number')[0].textContent = arr.join(' ');
 				}
 				
-				$scope.clickImage = function() {
-					if ($scope.model.imagesFoundset.serverSize > $scope.model.imagesFoundset.viewPort.size) {
-						if ($('#lightbox')) {
-							$timeout(function() { updateTotalImages(); }, 50);
-							$('.lb-next').on('click', function() {
-								$timeout(function() { updateTotalImages(); }, 50);
-								var currentImage = parseInt($('.lb-number')[0].textContent.split(' ')[1]);
-								if ((currentImage + nullImages) === checkNumber && $scope.model.imagesFoundset.serverSize > $scope.model.imagesFoundset.viewPort.size) {
-									var openAt = currentImage;
-									$scope.model.imagesFoundset.loadExtraRecordsAsync($scope.model.imageBatchSize).then(()=>{
-										$('.lb-close').click();
-										$timeout(function() {
-											$window.lightbox.start(angular.element($element[0].querySelectorAll('a')[openAt]));
-											$timeout(function() { updateTotalImages(); }, 50);
-										});
+				$scope.clickImage = function(index) {
+					if (($scope.images && $scope.images.length - 1 <= index) && $scope.model.imagesFoundset.serverSize > $scope.model.imagesFoundset.viewPort.size) {
+						$scope.model.imagesFoundset.loadExtraRecordsAsync($scope.model.imageBatchSize).then(() => {
+							$timeout(function() {
+								$scope.clickImage(index); 
+							});
+						});
+					} else {
+						if ($scope.images && $scope.images.length - 1 >= index) {
+							$window.lightbox.start(angular.element($element[0].querySelectorAll('a')[index]));
+							if ($scope.model.imagesFoundset.serverSize > $scope.model.imagesFoundset.viewPort.size) {
+								if ($('#lightbox')) {
+									$timeout(function() { updateTotalImages(); }, 50);
+									$('.lb-next').on('click', function() {
+										$timeout(function() { updateTotalImages(); }, 50);
+										var currentImage = parseInt($('.lb-number')[0].textContent.split(' ')[1]);
+										if ((currentImage + nullImages) === checkNumber && $scope.model.imagesFoundset.serverSize > $scope.model.imagesFoundset.viewPort.size) {
+											var openAt = currentImage;
+											$scope.model.imagesFoundset.loadExtraRecordsAsync($scope.model.imageBatchSize).then(() => {
+												$('.lb-close').click();
+												$timeout(function() {
+													$window.lightbox.start(angular.element($element[0].querySelectorAll('a')[openAt]));
+													$timeout(function() { updateTotalImages(); }, 50);
+												});
+											});
+										}
+									});
+									$('.lb-prev').on('click', function() {
+										$timeout(function() { updateTotalImages(); }, 50);
 									});
 								}
-							});
-							$('.lb-prev').on('click', function() {
-								$timeout(function() { updateTotalImages(); }, 50);
-							});
+							}
+						} else {
+							console.warn(`Cannot load the image with index ${index}`);
 						}
 					}
 				}
@@ -180,13 +193,8 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 					return style;
 				}				
 
-				$scope.api.showLightbox = function() {
-					if ($scope.images && $scope.images.length > 0) {
-						var firstImg = angular.element($element[0].querySelector('a'));
-						if (firstImg) {
-							$window.lightbox.start(firstImg);
-						}
-					}
+				$scope.api.showLightbox = function(index) {
+					$scope.clickImage(index >=0 ? index : 0);
 				}
 				
 				$scope.api.refresh = function() {

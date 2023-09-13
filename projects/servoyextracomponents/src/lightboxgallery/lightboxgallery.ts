@@ -92,21 +92,31 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 	}
 
     open(index: number): void {
-        // open lightbox
-        this._lightbox.open(this.images, index);
-        if (this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
-			const interval = setInterval(() => {
-				if (document.querySelector('.fadeIn.lightbox')) {
-					document.querySelector('.fadeIn.lightbox').querySelector('.lb-next').addEventListener('click', this.handleClick);
-					document.querySelector('.fadeIn.lightbox').querySelector('.lb-prev').addEventListener('click', () => {
-						this.updateTotalImages(-1);
-					});
-					setTimeout(()=>{
-						this.updateTotalImages(0);
-					}, 1000);
-					clearInterval(interval);
+        if ((this.images && this.images.length - 1 <= index) && this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
+			this.imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize).then(() => {
+				this.open(index);
+			});
+		} else {
+			if (this.images && this.images.length - 1 >= index) {
+				// open lightbox
+				this._lightbox.open(this.images, index);
+        		if (this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
+					const interval = setInterval(() => {
+						if (document.querySelector('.fadeIn.lightbox')) {
+							document.querySelector('.fadeIn.lightbox').querySelector('.lb-next').addEventListener('click', this.handleClick);
+							document.querySelector('.fadeIn.lightbox').querySelector('.lb-prev').addEventListener('click', () => {
+								this.updateTotalImages(-1);
+							});
+							setTimeout(()=>{
+								this.updateTotalImages(0);
+							}, 1000);
+							clearInterval(interval);
+						}
+					}, 50);
 				}
-			}, 50);
+			} else {
+				console.warn(`Cannot load the image with index ${index}`);
+			}
 		}
     }
 
@@ -179,10 +189,10 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
     }
 
     showLightbox(index: number): void {
-        this.open(0);
+        this.open(index >= 0 ? index : 0);
     }
 
-    refresh(index: number): void {
+    refresh(): void {
         this.svyOnInit();
     }
 

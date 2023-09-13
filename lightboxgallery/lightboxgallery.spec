@@ -35,7 +35,11 @@
 		"imageBatchSize"			: { "type": "int", "default": 5, "tags": { "doc": "The default / minimum value is 5 (the component will not render less than 5 images); it will load more when scrolling or using next in gallery mode."} }
 	},
 	"api": {
-		"showLightbox": {},
+		"showLightbox": {
+			"parameters": [
+				{ "name": "index", "type": "int", "optional": true }
+			]
+		},
 		"refresh":{}
 	},
 	"handlers": {
