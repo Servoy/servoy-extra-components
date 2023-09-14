@@ -89,7 +89,7 @@ a.svyextra-lightboxgallery-image {
 	height: 100%;
 }
 
-.svy-wrapper > * > .svyextra-lightboxgallery > .svyextra-lightboxgallery-image-set {
+.svyextra-lightboxgallery-image-set {
 	overflow: auto;
 }
 

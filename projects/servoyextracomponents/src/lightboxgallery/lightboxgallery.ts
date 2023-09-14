@@ -57,10 +57,6 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 		setTimeout(() => {
 			this.loadMoreData();
 		}, 50);
-		if (!this.servoyApi.isInAbsoluteLayout()) {
-			this.elementRef.nativeElement.style.maxHeight = this.responsiveHeight + 'px';
-			this.elementRef.nativeElement.style.overflow = 'auto';
-		}
     }
 
     svyOnChanges(changes: SimpleChanges) {
@@ -69,6 +65,9 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
                 this.createImages();
                 this.loadMoreData();
             }
+            if (changes.responsiveHeight) {
+				this.setHeight();
+			}
         }
         super.svyOnChanges(changes);
     }
@@ -194,6 +193,16 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 
     refresh(): void {
         this.svyOnInit();
+    }
+
+    setHeight() {
+        if (!this.servoyApi.isInAbsoluteLayout()) {
+            if (this.responsiveHeight) {
+                this.elementRef.nativeElement.style.height = this.responsiveHeight + 'px';
+            } else {
+                this.elementRef.nativeElement.style.height = '100%';
+            }
+        }
     }
 
     private createImages = () => {

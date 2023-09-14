@@ -15,10 +15,7 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 					loadMoreData();
 				}, 50);
 				
-				if (!$scope.svyServoyapi.isInAbsoluteLayout()) {
-					$element.find('.svyextra-lightboxgallery-image-set')[0].style.maxHeight = $scope.model.responsiveHeight + "px";
-					$element.find('.svyextra-lightboxgallery-image-set')[0].style.overflow = "auto";
-				}
+				setHeight();
 				
 				$element.find('.svyextra-lightboxgallery-image-set').on('scroll', function(){
  					if (Math.abs(this.scrollHeight - this.clientHeight - this.scrollTop) < 1) {
@@ -145,6 +142,10 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 					if (newValue) newValue.addChangeListener(foundsetListener);
 				});
 				
+				$scope.$watch('model.responsiveHeight', function(newValue, oldValue) {
+					setHeight();
+				});
+				
 				var foundsetListener = function(changes) {
 					// check to see what actually changed and update what is needed in browser
 					if (changes[$foundsetTypeConstants.NOTIFY_VIEW_PORT_ROWS_COMPLETELY_CHANGED]
@@ -199,6 +200,16 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 				
 				$scope.api.refresh = function() {
 					createImagesFromFs();
+				}
+				
+				function setHeight() {
+					if (!$scope.$parent.absoluteLayout) {
+						if ($scope.model.responsiveHeight) {
+							$element.find('.svyextra-lightboxgallery-image-set')[0].style.height = $scope.model.responsiveHeight + 'px';
+						} else {
+							$element.find('.svyextra-lightboxgallery-image-set')[0].style.height = '100%';
+						}
+					} 
 				}
 			},
 			controller: function($scope, $element, $attrs) { },
