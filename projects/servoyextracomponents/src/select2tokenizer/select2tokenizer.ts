@@ -34,6 +34,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     @Input() allowNewEntries: boolean;
     @Input() size: { width: number; height: number };
     @Input() format: Format;
+    @Input() cssPosition: { width: number; height: number };
 
     @Output() dataProviderIDChange = new EventEmitter();
 
@@ -186,6 +187,13 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
         if (changes['size']) {
             this.renderer.setProperty(this.elementRef.nativeElement, 'height', this.size.height);
         }
+        if (changes['cssPosition']) {
+			const currentValue = changes['cssPosition'].currentValue;
+			const listContainer = this.doc.querySelector('.cdk-overlay-pane') as HTMLElement;
+			if (currentValue && listContainer) {
+				listContainer.style.minWidth = currentValue.width;
+			}
+		}
         super.svyOnChanges(changes);
     }
 
