@@ -10,7 +10,7 @@
 	"libraries": [{"name":"onrenderlabel-css", "version":"1.0", "url":"servoyextra/onrenderlabel/onrenderlabel.css", "mimetype":"text/css"}],
 	"model":
 	{
-	        "dataProviderID" : { "type":"dataprovider", "tags": { "scope": "design", "main": true}, "displayTagsPropertyName" : "displaysTags"}, 
+	        "dataProviderID" : { "type":"dataprovider", "tags": { "wizard": true, "scope": "design", "main": true}, "displayTagsPropertyName" : "displaysTags"}, 
 	        "displaysTags" : { "type" : "boolean", "tags": { "scope" : "design" } }, 
 	        "enabled" : { "type": "enabled", "blockingOn": false, "default": true, "for": ["onActionMethodID","onDoubleClickMethodID","onRightClickMethodID"] }, 
 	        "format" : { "type" :"format", "for":["dataProviderID"]}, 

@@ -35,7 +35,7 @@
 	"keywords": [],
 	"model":
 	{
-		"dataProviderID": { "type":"dataprovider", "pushToServer": "allow","tags": { "scope" :"design" }, "ondatachange": { "onchange":"onDataChangeMethodID" , "callback":"onDataChangeCallback"}},
+		"dataProviderID": { "type":"dataprovider", "pushToServer": "allow","tags": { "wizard": true, "scope" :"design" }, "ondatachange": { "onchange":"onDataChangeMethodID" , "callback":"onDataChangeCallback"}},
 		"format" : {"for":["dataProviderID"] , "type" :"format", "tags": { "scope" :"private" }}, 
 		"valuelistID": { "type" : "valuelist", "tags": {  "logWhenOverMax" : false },"config": "valuelistConfig", "default":"autoVL" , "max" : 100},
 		"valuelistConfig" : { "type" : "valuelistConfig"}, 
