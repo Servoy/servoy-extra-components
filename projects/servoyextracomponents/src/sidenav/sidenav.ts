@@ -109,7 +109,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
                             }).finally(() => this.cdRef.detectChanges());
                         }
                         break;
-                    case 'realtionName':
+                    case 'relationName':
 						this.relationName = change.currentValue;
 						break;
                     case 'headerForm':
