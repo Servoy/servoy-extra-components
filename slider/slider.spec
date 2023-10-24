@@ -16,8 +16,8 @@
 	{
 		"size"							: { "type": "dimension", "default": {"width": 400, "height": 70} },
 		
-		"dataProvider" 					: { "type": "dataprovider", "pushToServer": "allow", "ondatachange": { "onchange":"onDataChangeMethodID", "callback":"onDataChangeCallback"}, "tags": { "doc": "The dataProvider for the slider value" } },
-		"dataProviderHigh" 				: { "type": "dataprovider", "pushToServer": "allow", "ondatachange": { "onchange":"onDataChangeHigh", "callback":"onDataChangeCallback"}, "tags": { "doc": "The dataProvider for a range slider's maximum value" } },
+		"dataProvider" 					: { "type": "dataprovider", "pushToServer": "allow", "ondatachange": { "onchange":"onDataChangeMethodID", "callback":"onDataChangeCallback"}, "tags": { "wizard": true, "doc": "The dataProvider for the slider value" } },
+		"dataProviderHigh" 				: { "type": "dataprovider", "pushToServer": "allow", "ondatachange": { "onchange":"onDataChangeHigh", "callback":"onDataChangeCallback"}, "tags": { "wizard": true, "doc": "The dataProvider for a range slider's maximum value" } },
 		"enabled" 						: { "type": "enabled", "blockingOn": false, "default": true, "for": ["dataProvider", "dataProviderHigh", "onDataChange", "onDataChangeHigh"] },
 		"ticksValuesInterval"			: { "type": "int", "default": 0, "tags": { "doc": "Number of steps between each tick to display tick values at intermediate positions" } },
 		"ticksInterval"					: { "type": "int", "default": null, "tags": { "doc": "Number of steps between each tick to display ticks at intermediate positions" } },
