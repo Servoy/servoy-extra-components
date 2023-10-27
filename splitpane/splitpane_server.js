@@ -80,6 +80,26 @@
 			}
 			
 			/**
+			 * Gets the divider location in percentage.
+			 * @example var divRelativeLocation = %%prefix%%%%elementName%%.getRelativeDividerLocation()
+			 * @return the location in percentage
+			 */
+			$scope.api.getRelativeDividerLocation = function() {
+				var location = $scope.model.divLocation;
+				var direction = $scope.model.splitType;
+				if (location == -1) {
+					return 0.5;
+				} else if (location >= 0 && location <= 1) {
+					return location;
+				} else {
+					if (direction == 0) {
+						return location/$scope.model.cssPosition.width;
+					}
+					return location/$scope.model.cssPosition.height;
+				}
+			}
+			
+			/**
 			 * Sets divider location. If location is less then 1 then the location will be considered at (location * 100) percent of the split pane from left, otherwise it will represent the pixels from left.
 			 * @example %%prefix%%%%elementName%%.dividerLocation = 0.75;
 			 * %%prefix%%%%elementName%%.dividerLocation = 100;

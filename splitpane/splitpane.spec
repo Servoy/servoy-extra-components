@@ -48,6 +48,9 @@
 	        "getDividerLocation": {
 	            "returns": "double"
 	        },
+	        "getRelativeDividerLocation": {
+	        	"returns": "double"
+	        },
 	        "getDividerSize": {
 	            "returns": "int"
 	        },
