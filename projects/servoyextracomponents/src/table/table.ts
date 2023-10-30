@@ -591,12 +591,12 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
             if (this.columns) {
                 if (this.responsiveDynamicHeight) {
                     let h = 0;
-                    const p = this.pager.nativeElement;
+                    const p = this.pager ? this.pager.nativeElement : null;
                     if (p) {
                         h += p.clientHeight;
                     }
-                    const rows = this.getNativeElement().querySelectorAll('tr');
-                    for (let i = 0; i < rows.length; i++) {
+                    const rows = this.getNativeElement() ? this.getNativeElement().querySelectorAll('tr') : null;
+                    for (let i = 0; rows && i < rows.length; i++) {
                         h += rows.item(i).clientHeight;
                         if (h > this.responsiveHeight) {
                             break;
@@ -2571,7 +2571,9 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
             // make sure no scrollbar is shown in this scenario
             if (h < this.responsiveHeight) {
                 tBodyStyle['overflow-y'] = 'hidden';
-            }
+            } else  {
+				tBodyStyle['overflow-y'] = 'auto';
+			}
         }
 
         for (const key of Object.keys(tBodyStyle)) {
