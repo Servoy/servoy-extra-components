@@ -43,6 +43,8 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
         toolbar: 'fontselect fontsizeselect | bold italic underline | superscript subscript | undo redo |alignleft aligncenter alignright alignjustify | styleselect | outdent indent bullist numlist'
     };
     editor: Editor;
+    
+    private tabIndex = -2;
 
     constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, protected servoyPublicService: ServoyPublicService, @Inject(DOCUMENT) private document: Document) {
         super(renderer, cdRef);
@@ -169,6 +171,19 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
         }
         super.svyOnChanges(changes);
     }
+    
+    public setTabIndex(index: number) {
+        this.tabIndex = index;
+        this.setTabIndexOnIFrame();
+    }
+    
+    private setTabIndexOnIFrame() {
+        if (this.editor && this.tabIndex != -2) {
+            const iframe = this.editor.getContainer().getElementsByTagName('iframe');
+            if (iframe.item(0))
+                iframe.item(0).tabIndex = this.tabIndex;
+        }
+    }
 
     getEditor() {
         return this.editor;
@@ -179,6 +194,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
         this.lastServerValueAsSeenByTinyMCEContent = editor.getContent();
         const editable = this.editable && !this.readOnly && this.enabled;
         if (!editable) editor.mode.set('readonly')
+        this.setTabIndexOnIFrame();
     }
 
     requestFocus(mustExecuteOnFocusGainedMethod: boolean) {
