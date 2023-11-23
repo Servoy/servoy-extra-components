@@ -2,7 +2,9 @@
   "root": true,
   "ignorePatterns": [],
   "plugins": [
-    "only-warn"
+    "only-warn",
+    "prefer-arrow",
+    "@stylistic/ts"
   ],
   "overrides": [
     {
@@ -16,8 +18,10 @@
         "createDefaultProgram": true
       },
       "extends": [
-        "plugin:@angular-eslint/ng-cli-compat",
-        "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:@angular-eslint/recommended",
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
       "rules": {
@@ -56,6 +60,7 @@
           }
         ],
         "@angular-eslint/use-lifecycle-interface": "off",
+        "@stylistic/ts/quotes": ["warn", "single", { "avoidEscape": true }],
         "@typescript-eslint/consistent-type-definitions": "error",
         "@typescript-eslint/dot-notation": "off",
         "@typescript-eslint/explicit-member-accessibility": [
