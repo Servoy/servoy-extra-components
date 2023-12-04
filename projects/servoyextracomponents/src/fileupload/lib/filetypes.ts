@@ -773,7 +773,9 @@ export class FileTypesUtilsService {
                 return match.mime[0];
             }
         }
-        return "application/x-" + s;
+        // do not try to guess, is probably wrong anyway
+        //return "application/x-" + s;
+        return null;
     }
 
     public extensionFor(s: string) {

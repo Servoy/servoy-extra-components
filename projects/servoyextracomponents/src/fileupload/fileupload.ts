@@ -47,7 +47,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
     uploader: FileUploader;
     hasBaseDropZoneOver = false;
     customText: string;
-    acceptMimeTypes = '*/*';
+    acceptFiles = '*/*';
     private ready = true;
     private log: LoggerService;
 
@@ -67,46 +67,64 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
 
     initializeComponent() {
         super.initializeComponent();
-        if (this.multiFileUpload && !this.onFileUploadedMethodID) {
-            this.log.warn('Multifile upload without onFileUploaded Method isn\'t supported. To upload multi file start using onFileUploaded Method');
-        }
-        const url = this.onFileUploadedMethodID ? this.servoyService.generateUploadUrl(this.servoyApi.getFormName(), this.name, 'onFileUploadedMethodID') :
-            this.servoyService.generateUploadUrl(this.servoyApi.getFormName(), this.name, 'dataProviderID');
-        const options: FileUploaderOptions = { url }
-        if (this.accept && '*/*' != this.accept) {
-            options.allowedMimeType = this.accept.split(',').map(value => {
-                // library wants mime type here, so try to guess it
-                value = value.trim();
-                if (value.indexOf('/') > -1) {
-                    return value;
-                } else{
-                    if (value.indexOf('.') >= 0) value = value.substring(value.indexOf('.')+1);
-                    const mime = this.fileutilsService.mimeFor(value);
-                    if (!mime) console.warn("Cannot set accept value for fileupload component, cannot determine mime type from: " + value);
-                    return mime;
+        if (!this.uploader) {
+            if (this.multiFileUpload && !this.onFileUploadedMethodID) {
+                this.log.warn('Multifile upload without onFileUploaded Method isn\'t supported. To upload multi file start using onFileUploaded Method');
+            }
+            const url = this.onFileUploadedMethodID ? this.servoyService.generateUploadUrl(this.servoyApi.getFormName(), this.name, 'onFileUploadedMethodID') :
+                this.servoyService.generateUploadUrl(this.servoyApi.getFormName(), this.name, 'dataProviderID');
+            const options: FileUploaderOptions = { url }
+            if (this.accept && '*/*' != this.accept) {
+                let acceptsZip = false;
+                const acceptedFiles = new Array();
+                options.allowedMimeType = this.accept.split(',').map(value => {
+                    // library wants mime type here, so try to guess it
+                    value = value.trim();
+                    if (value.indexOf('/') > -1) {
+                        acceptedFiles.push(value);
+                        return value;
+                    } else {
+                        if (value.indexOf('.') >= 0) value = value.substring(value.indexOf('.') + 1);
+                        const mime = this.fileutilsService.mimeFor(value);
+                        if (!mime) {
+                            console.warn("Cannot set accept value for fileupload component, cannot determine mime type from: " + value);
+                            acceptedFiles.push('.' + value);
+                        }
+                        else {
+                            acceptedFiles.push(mime);
+                        }
+                        if (mime == 'application/zip') {
+                            acceptsZip = true;
+                        }
+                        return mime;
+                    }
+                });
+                if (acceptsZip && options.allowedMimeType) {
+                    // add extra mime type for windows zip file
+                    options.allowedMimeType.push('application/x-zip-compressed');
                 }
-            });
-            this.acceptMimeTypes =  options.allowedMimeType.join(',');
-        }
-        if (!this.multiFileUpload) {
-            options.filters = [{
+                this.acceptFiles = acceptedFiles.join(',');
+            }
+            if (!this.multiFileUpload) {
+                options.filters = [{
                     name: 'multi', fn: (): boolean => {
                         const retValue = this.ready;
                         this.ready = false;
                         return retValue;
                     }
                 }];
-            this.uploader = new FileUploader(options);
+                this.uploader = new FileUploader(options);
+            }
+            else this.uploader = new FileUploader(options);
+            this.uploader.onProgressItem = () => {
+                this.cdRef.detectChanges();
+            };
+            if (!this.multiFileUpload || this.onFileTransferFinishedMethodID) {
+                this.uploader.onCompleteAll = this.onComplete;
+            }
+            this.uploader.onWhenAddingFileFailed = this.onWhenAddingFileFailed;
+            this.customText = this.uploadText;
         }
-        else this.uploader = new FileUploader(options);
-        this.uploader.onProgressItem = () => {
-            this.cdRef.detectChanges();
-        };
-        if (!this.multiFileUpload || this.onFileTransferFinishedMethodID) {
-            this.uploader.onCompleteAll = this.onComplete;
-        }
-        this.uploader.onWhenAddingFileFailed = this.onWhenAddingFileFailed;
-        this.customText = this.uploadText;
     }
 
     onComplete = () => {

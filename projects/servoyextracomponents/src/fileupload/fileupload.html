@@ -13,10 +13,10 @@
         	
         	<label #fileInputLabel class="custom-file-upload" >  {{customText}}
             	<div *ngIf="multiFileUpload; else elseBlock">
-					<input type="file" ng2FileSelect [uploader]="uploader" multiple (onFileSelected) = "uploader.uploadAll()" [accept]="acceptMimeTypes" [disabled]="!enabled"/>
+					<input type="file" ng2FileSelect [uploader]="uploader" multiple (onFileSelected) = "uploader.uploadAll()" [accept]="acceptFiles" [disabled]="!enabled"/>
 				</div>
 				<ng-template #elseBlock>
-	            	<input #fileInputSingleUpload type="file" ng2FileSelect [uploader]="uploader" (onFileSelected) = "uploader.uploadAll()" [accept]="acceptMimeTypes" [disabled]="!enabled"/>
+	            	<input #fileInputSingleUpload type="file" ng2FileSelect [uploader]="uploader" (onFileSelected) = "uploader.uploadAll()" [accept]="acceptFiles" [disabled]="!enabled"/>
 				</ng-template>
 			</label>
             
