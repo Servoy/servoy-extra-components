@@ -156,6 +156,12 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
                             if (!this.servoyApi.isInDesigner()) this.customText = "Component disabled, cannot upload file.";
                         }
                         break;
+                    case 'uploadText':
+                        if (!change.isFirstChange()){
+                             this.customText = this.uploadText;
+                             this.cdRef.detectChanges();
+                        }
+                        break;    
                 }
             }
         }
