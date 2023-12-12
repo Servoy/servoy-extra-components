@@ -57,11 +57,13 @@
 			] 
 		},
 		"getCollapsible"	: { 
+			"returns"		: "collapsible",
 			"parameters": [ 
 				{ "name": "index", "type": "int" }
 			] 
 		},
 		"getCollapsibleById": { 
+			"returns"		: "collapsible",
 			"parameters": [ 
 				{ "name": "collapsibleId", "type": "string" }
 			] 
