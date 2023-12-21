@@ -75,14 +75,14 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
                 this.servoyService.generateUploadUrl(this.servoyApi.getFormName(), this.name, 'dataProviderID');
             const options: FileUploaderOptions = { url }
             if (this.accept && '*/*' != this.accept) {
-                let acceptsZip = false;
                 const acceptedFiles = new Array();
-                options.allowedMimeType = this.accept.split(',').map(value => {
+                const acceptedMimeTypes = new Array();
+                this.accept.split(',').forEach(value => {
                     // library wants mime type here, so try to guess it
                     value = value.trim();
                     if (value.indexOf('/') > -1) {
                         acceptedFiles.push(value);
-                        return value;
+                        acceptedMimeTypes.push(value);
                     } else {
                         if (value.indexOf('.') >= 0) value = value.substring(value.indexOf('.') + 1);
                         const mime = this.fileutilsService.mimeFor(value);
@@ -92,18 +92,17 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
                         }
                         else {
                             acceptedFiles.push(mime);
+                            acceptedMimeTypes.push(mime);
                         }
                         if (mime == 'application/zip') {
-                            acceptsZip = true;
+                            acceptedMimeTypes.push('application/x-zip-compressed');
                         }
-                        return mime;
                     }
                 });
-                if (acceptsZip && options.allowedMimeType) {
-                    // add extra mime type for windows zip file
-                    options.allowedMimeType.push('application/x-zip-compressed');
-                }
                 this.acceptFiles = acceptedFiles.join(',');
+                if (acceptedMimeTypes.length > 0){
+                    options.allowedMimeType = acceptedMimeTypes;
+                }
             }
             if (!this.multiFileUpload) {
                 options.filters = [{
