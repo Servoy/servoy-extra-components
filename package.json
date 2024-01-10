@@ -55,7 +55,7 @@
     "rx-dom-html": "7.0.3",
     "rxjs": "7.8.1",
     "tinymce": "6.8.1",
-    "tinymce-i18n": "23.12.4",
+    "tinymce-i18n": "23.12.19",
     "tslib": "2.6.2",
     "zone.js": "0.13.1"
   },
