@@ -147,7 +147,13 @@
 	},
 	
 	"internalApi" : {
-		"onShow" : {}
+		"onShow" : {},
+		"getInternalWidth": {
+			"returns": "double"
+		},
+		"getInternalHeight": {
+			"returns": "double"
+		}
 	},
 	
 "types": {

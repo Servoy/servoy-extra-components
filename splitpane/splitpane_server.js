@@ -93,9 +93,9 @@
 					return location;
 				} else {
 					if (direction == 0) {
-						return location/$scope.model.cssPosition.width;
+						return location/$scope.api.getInternalWidth();
 					}
-					return location/$scope.model.cssPosition.height;
+					return location/$scope.api.getInternalHeight();
 				}
 			}
 			

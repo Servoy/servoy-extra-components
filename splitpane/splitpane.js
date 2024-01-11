@@ -270,6 +270,14 @@ angular.module('servoyextraSplitpane',['servoy']).directive('servoyextraSplitpan
     	  			}	
   			}	
   		  });
+			
+			$scope.api.getInternalWidth = function() {
+				return getWidth();
+			}
+			
+			$scope.api.getInternalHeight = function() {
+				return getHeight();
+			}
 
 			var className = null;
 			var element = $element.children().first();

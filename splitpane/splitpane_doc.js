@@ -69,7 +69,7 @@ function getDividerLocation() {
 }
 
 /**
- * Gets the divider location in percentage.
+ * Gets the divider location in percentage when the component is visible.
  * @example var divRelativeLocation = %%prefix%%%%elementName%%.getRelativeDividerLocation()
  * @return the location in percentage
  */

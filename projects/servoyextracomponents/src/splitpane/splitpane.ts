@@ -115,6 +115,14 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
         }
         return newTab;
     }
+    
+    private getInternalHeight() {
+		return this.elementRef.nativeElement.getBoundingClientRect().height;
+	}
+	
+	private getInternalWidth() {
+		return this.elementRef.nativeElement.getBoundingClientRect().width;
+	}
 }
 
 class Pane extends BaseCustomObject {
