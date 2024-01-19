@@ -32,6 +32,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     @Input() webcamOptions: WebcamOptions;
     @Input() localeStrings: any;
     @Input() language: string;
+    @Input() size: { width: number, height: number };
 
     @Input() onFileUploaded: (file: any, event: JSEvent) => void;
     @Input() onFileAdded: (file: UploadFile, event: JSEvent) => void;
@@ -184,8 +185,8 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     pushDashboardOptions() {
         this.properties = {
             note: this.note,
-            width: this.cssPosition.width,
-            height: this.cssPosition.height,
+            width: this.servoyApi.isInAbsoluteLayout() && this.cssPosition.width || this.size.width,
+            height: this.servoyApi.isInAbsoluteLayout() && this.cssPosition.height || this.size.height,
             hideUploadButton: this.hideUploadButton,
             proudlyDisplayPoweredByUppy: false,
             disableStatusBar: this.disableStatusBar,
