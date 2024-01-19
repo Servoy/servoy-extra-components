@@ -153,12 +153,13 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                     	this.filteredDataProviderId = event.value;
                     	this.dataProviderID = event.value.join('\n');
                 	} else if (event.value.length === 1 || this.isTypeNumber() || this.isTypeBoolean()) {
-                    	this.filteredDataProviderId[0] = event.value[event.value.length - 1];
+                    	this.filteredDataProviderId = event.value;
                     	this.dataProviderID = this.filteredDataProviderId[0];
                 	} else {
                     	console.log('Warning dataProviderID typeof ' + typeof this.dataProviderID + ' not allowed');
                 	}
             	} else {
+					this.filteredDataProviderId = [];
                 	this.dataProviderID = null;
             	}
             	this.dataProviderIDChange.emit(this.dataProviderID);
@@ -177,11 +178,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     }
 
     svyOnChanges(changes: SimpleChanges) {
-        if (changes['valuelistID']) {
-            this.setData();
-        }
-        if (changes['dataProviderID']) {
-            this.filteredDataProviderId = this.dataProviderID ? (this.isTypeString() ? this.dataProviderID.split('\n') : [this.dataProviderID]) : [];
+        if (changes['valuelistID'] || changes['dataProviderID']) {
             this.setData();
         }
         if (changes['size']) {
