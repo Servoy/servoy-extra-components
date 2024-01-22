@@ -3,7 +3,7 @@
     "displayName":"Servoy Extra Components",
     "packageType": "Web-Component",
     "icon": "https://raw.githubusercontent.com/Servoy/servoy-extra-components/master/servoy.png",
-    "description": "A set of extra components like a tree and a table",
+    "description": "A set of extra components. These components are a bit more specialized then the basic ones. For example: a tree, a table, an image gallery etc.",
     "wikiUrl": "https://github.com/Servoy/servoy-extra-components/wiki",
     "sourceUrl" : "https://github.com/Servoy/servoy-extra-components",
     "releases" : [
