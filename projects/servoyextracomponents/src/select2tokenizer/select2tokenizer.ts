@@ -112,17 +112,29 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 
     setData() {
         if (this.valuelistID) {
+			let typeRealValue = null;
             const options: Select2Option[] = [];
             for (const value of this.valuelistID) {
                 if (value.realValue === null || value.realValue === '') {
                     continue;
                 }
+                typeRealValue == null && (typeRealValue = typeof value.realValue); 
                 options.push({
                     value: value.realValue,
                     label: value.displayValue
                 });
             }
             this.data = options;
+            if (this.dataProviderID && typeRealValue !== null) {
+				this.filteredDataProviderId = this.isTypeString() && typeof this.dataProviderID === 'string' ? this.dataProviderID.split('\n') : [this.dataProviderID];
+				if (this.filteredDataProviderId.length && typeRealValue === 'number') {
+					this.filteredDataProviderId.forEach((item,index) => {
+						!isNaN(item) && (this.filteredDataProviderId[index] = Number(item));
+					});
+				}
+			} else if (!this.dataProviderID) {
+				this.filteredDataProviderId = []
+			}
             if (this.filteredDataProviderId && this.filteredDataProviderId.length) {
                 for (let i = 0; this.filteredDataProviderId && i < this.filteredDataProviderId.length; i++) {
                     const realValue = this.filteredDataProviderId[i];
@@ -144,37 +156,35 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     }
 
     updateValue(event: Select2UpdateEvent<any>) {
-		setTimeout(()=>{
-			if (!this.userChangedValue) return;
+		if (!this.userChangedValue) return;
 
-        	if (!this.compareArrays(this.filteredDataProviderId, event.value)) {
-            	if (event.value.length > 0) {
-                	if (event.value.length > 1 && this.isTypeString()) {
-                    	this.filteredDataProviderId = event.value;
-                    	this.dataProviderID = event.value.join('\n');
-                	} else if (event.value.length === 1 || this.isTypeNumber() || this.isTypeBoolean()) {
-                    	this.filteredDataProviderId = event.value;
-                    	this.dataProviderID = this.filteredDataProviderId[0];
-                	} else {
-                    	console.log('Warning dataProviderID typeof ' + typeof this.dataProviderID + ' not allowed');
-                	}
-            	} else {
-					this.filteredDataProviderId = [];
-                	this.dataProviderID = null;
-            	}
-            	this.dataProviderIDChange.emit(this.dataProviderID);
-            	if (this.closeOnSelect && event.component.isOpen) {
-                	event.component.toggleOpenAndClose();
- 	           	}
-            	if (this.clearSearchTextOnSelect && !this.closeOnSelect && event.component.isOpen) {
-                	const searchText = this.getNativeChild().querySelector('input');
-                	if (searchText) {
-                    	searchText.value = '';
-                    	searchText.dispatchEvent(new KeyboardEvent('keyup'));
-                	}
-            	}
-        	}
-		});
+        if (!this.compareArrays(this.filteredDataProviderId, event.value)) {
+            if (event.value.length > 0) {
+                if (event.value.length > 1 && this.isTypeString()) {
+                    this.filteredDataProviderId = event.value;
+                    this.dataProviderID = event.value.join('\n');
+                } else if (event.value.length === 1 || this.isTypeNumber() || this.isTypeBoolean()) {
+                    this.filteredDataProviderId = event.value;
+                    this.dataProviderID = this.filteredDataProviderId[0];
+                } else {
+                    console.log('Warning dataProviderID typeof ' + typeof this.dataProviderID + ' not allowed');
+                }
+            } else {
+				this.filteredDataProviderId = [];
+                this.dataProviderID = null;
+            }
+            this.dataProviderIDChange.emit(this.dataProviderID);
+            if (this.closeOnSelect && event.component.isOpen) {
+                event.component.toggleOpenAndClose();
+ 	        }
+            if (this.clearSearchTextOnSelect && !this.closeOnSelect && event.component.isOpen) {
+                const searchText = this.getNativeChild().querySelector('input');
+                if (searchText) {
+                    searchText.value = '';
+                    searchText.dispatchEvent(new KeyboardEvent('keyup'));
+                }
+            }
+        }
     }
 
     svyOnChanges(changes: SimpleChanges) {
@@ -210,11 +220,12 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
         }
     }
 
-    removedOption(event: Select2RemoveEvent<any>) {
+    removedOption(event: any) {
 		this.userChangedValue = true;
         if (this.openOnUnselect && !event.component.isOpen) {
             event.component.toggleOpenAndClose();
         }
+        this.updateValue(event);
     }
 
     listClosed(event: Select2) {
