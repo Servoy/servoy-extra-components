@@ -30,6 +30,7 @@
     "@uppy/thumbnail-generator",
     "@uppy/tus",
     "@uppy/status-bar",
+    "@uppy/store-default",
     "@uppy/utils",
     "@uppy/webcam",
     "ngx-slider-v2", 
