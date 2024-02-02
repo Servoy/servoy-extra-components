@@ -244,7 +244,9 @@
 				{ "name": "menuItemId",	"type": "object" }
 			],
 			"returns" : "dimension"
-		},
+		}
+	},
+	"internalApi":{
 		"showForm": 
 		{
 			"parameters": [
