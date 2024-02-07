@@ -4,6 +4,7 @@ import { ServoyBaseComponent } from '@servoy/public';
 @Component( {
     selector: 'servoyextra-imagelabel',
     templateUrl: './imagelabel.html',
+    styleUrls: ['./imagelabel.css'],
     changeDetection: ChangeDetectionStrategy.OnPush
 } )
 export class ServoyExtraImageLabel extends ServoyBaseComponent<HTMLImageElement> {
@@ -15,6 +16,7 @@ export class ServoyExtraImageLabel extends ServoyBaseComponent<HTMLImageElement>
     @Input() styleClass: string;
     @Input() tabSeq: number;
     @Input() media: any;
+    @Input() centerImage: boolean;
 
     imageURL = 'servoyextra/imagelabel/empty.gif';
 
@@ -56,6 +58,11 @@ export class ServoyExtraImageLabel extends ServoyBaseComponent<HTMLImageElement>
                             array.filter((element: string) => element !== '').forEach((element: string) => this.renderer.addClass(this.getNativeElement(), element));
                         }
                         break;
+                    case 'centerImage':
+						this.renderer.removeClass(this.getNativeElement(), 'svy-extra-imagelabel-center');
+						if (change.currentValue && !this.servoyApi.isInDesigner()) {
+							this.renderer.addClass(this.getNativeElement(), 'svy-extra-imagelabel-center');
+						}
                 }
             }
         }
