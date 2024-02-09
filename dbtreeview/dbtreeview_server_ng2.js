@@ -18,7 +18,7 @@ $scope.api.addRoots = function(foundset) {
 * 
 */
 $scope.api.removeAllRoots = function() {
-   $scope.model.foundsettree.removeAllRoots();
+   $scope.model.foundsettree.roots.clear();
 }
 
 $scope.api.getCheckBoxValues = function(datasource) {
