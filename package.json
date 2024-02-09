@@ -1,6 +1,6 @@
 {
   "name": "servoyextracomponents",
-  "version": "2023.12.2",
+  "version": "2023.12.3",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
