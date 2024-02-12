@@ -42,6 +42,8 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
     @Input() showOuterSelectionBars;
     @Input() showTicks;
     @Input() showTicksValues;
+    @Input() ticksInterval;
+    @Input() ticksValuesInterval;
     @Input() hidePointerLabels;
     @Input() hideLimitLabels;
     @Input() autoHideLimitLabels;
@@ -145,12 +147,18 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
                     case 'showOuterSelectionBars':
                         this.setNewOptions('showOuterSelectionBars', change.currentValue);
                         break;
+                    case 'ticksInterval':
+                        this.setNewOptions('tickStep', change.currentValue);
+                        break;
                     case 'showTicks':
                         this.setNewOptions('showTicks', change.currentValue);
-                        break;
+                        break;    
                     case 'showTicksValues':
                         this.setNewOptions('showTicksValues', change.currentValue);
                         break;
+                    case 'ticksValuesInterval':
+                        this.setNewOptions('tickValueStep', change.currentValue);
+                        break;    
                     case 'hidePointerLabels':
                         this.setNewOptions('hidePointerLabels', change.currentValue);
                         break;
