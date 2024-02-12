@@ -54,7 +54,7 @@
     "ngx-lightbox": "3.0.0",
     "rx-dom-html": "7.0.3",
     "rxjs": "7.8.1",
-    "tinymce": "6.8.1",
+    "tinymce": "6.8.2",
     "tinymce-i18n": "23.12.4",
     "tslib": "2.6.2",
     "zone.js": "0.13.1"
