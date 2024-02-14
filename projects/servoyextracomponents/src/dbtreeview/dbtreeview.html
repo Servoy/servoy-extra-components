@@ -3,7 +3,8 @@
         (toggleExpanded)="onNodeExpanded($event)" 
         (initialized)="onTreeLoad($event)"
         (loadNodeChildren)="onLoadNodeChildren($event)"
-        (moveNode)="nodeDropped($event)">
+        (moveNode)="nodeDropped($event)"
+        (click)="clickRow($event)">
         <ng-template #treeNodeTemplate let-node="node" let-index="index">
             <div [title]="node.data.tooltip"> 
                 <input *ngIf="node.data.hascheckbox"

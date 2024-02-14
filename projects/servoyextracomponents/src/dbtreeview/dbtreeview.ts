@@ -253,6 +253,15 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
             this.servoyPublicService.executeInlineScript(checkboxChange.formname, checkboxChange.script, [node.data.methodToCallOnCheckBoxChangeParamValue]);
         }
     }
+    
+    clickRow(event: MouseEvent) {
+		if (event && event.target) {
+			const row: HTMLElement = (event.target as HTMLElement).querySelector('.node-content-wrapper');
+			if (row) {
+				row.click();
+			}
+    	}
+	}
 
     updateChildNodeCheckbox(node: TreeNode, checked: boolean) {
         node.data.checked = checked;
