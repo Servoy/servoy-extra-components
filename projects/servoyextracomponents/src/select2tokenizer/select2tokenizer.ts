@@ -35,6 +35,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     @Input() size: { width: number; height: number };
     @Input() format: Format;
     @Input() cssPosition: { width: number; height: number };
+    @Input() containSearchText: boolean;
 
     @Output() dataProviderIDChange = new EventEmitter();
 
@@ -264,9 +265,15 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 		const input = event.target as HTMLInputElement;
 		const value = input.value;
 		if (value) {
-			this.valuelistID.filterList('%' + value);
-			this.setData();
+			if (this.containSearchText) {
+				this.valuelistID.filterList('%' + value);
+			} else {
+				this.valuelistID.filterList(value);
+			}			
+		} else {
+			this.valuelistID.filterList('');
 		}
+		this.setData();
 	}
 
     listOpened(event: Select2) {
