@@ -47,21 +47,20 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
                 this.setSelectionFromTree(node);
                 if (node.data && node.data.callbackinfo) {
                     const doubleClick = node.data.callbackinfo;
-                    this.servoyPublicService.executeInlineScript(doubleClick.formname, doubleClick.script, [node.data.callbackinfoParamValue]);
+                    doubleClick(node.data.callbackinfoParamValue);
                 }
             },
             dblClick: (_tree, node, $event) => {
                 if (node.data && node.data.methodToCallOnDoubleClick) {
                     const doubleClick = node.data.methodToCallOnDoubleClick;
-                    this.servoyPublicService.executeInlineScript(doubleClick.formname, doubleClick.script, [node.data.methodToCallOnDoubleClickParamValue]);
+                    doubleClick(node.data.methodToCallOnDoubleClickParamValue);
                 }
             },
             contextMenu: (_tree, node, $event) => {
                 $event.preventDefault();
                 if (node.data && node.data.methodToCallOnRightClick) {
                     const rightClick = node.data.methodToCallOnRightClick;
-                    this.servoyPublicService.executeInlineScript(rightClick.formname, rightClick.script,
-                        [node.data.methodToCallOnRightClickParamValue, this.servoyPublicService.createJSEvent($event, 'rightClick')]);
+                    rightClick(node.data.methodToCallOnRightClickParamValue, this.servoyPublicService.createJSEvent($event, 'rightClick'));
                 }
             }
         }
@@ -250,7 +249,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
 
         if (node.data && node.data.methodToCallOnCheckBoxChange) {
             const checkboxChange = node.data.methodToCallOnCheckBoxChange;
-            this.servoyPublicService.executeInlineScript(checkboxChange.formname, checkboxChange.script, [node.data.methodToCallOnCheckBoxChangeParamValue]);
+            checkboxChange(node.data.methodToCallOnCheckBoxChangeParamValue);
         }
     }
     
