@@ -113,29 +113,17 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 
     setData() {
         if (this.valuelistID) {
-			let typeRealValue = null;
             const options: Select2Option[] = [];
             for (const value of this.valuelistID) {
                 if (value.realValue === null || value.realValue === '') {
                     continue;
-                }
-                typeRealValue == null && (typeRealValue = typeof value.realValue); 
+                } 
                 options.push({
                     value: value.realValue,
                     label: value.displayValue
                 });
             }
             this.data = options;
-            if (this.dataProviderID && typeRealValue !== null) {
-				this.filteredDataProviderId = this.isTypeString() && typeof this.dataProviderID === 'string' ? this.dataProviderID.split('\n') : [this.dataProviderID];
-				if (this.filteredDataProviderId.length && typeRealValue === 'number') {
-					this.filteredDataProviderId.forEach((item,index) => {
-						!isNaN(item) && (this.filteredDataProviderId[index] = Number(item));
-					});
-				}
-			} else if (!this.dataProviderID) {
-				this.filteredDataProviderId = []
-			}
             if (this.filteredDataProviderId && this.filteredDataProviderId.length) {
                 for (let i = 0; this.filteredDataProviderId && i < this.filteredDataProviderId.length; i++) {
                     const realValue = this.filteredDataProviderId[i];
@@ -189,9 +177,12 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     }
 
     svyOnChanges(changes: SimpleChanges) {
-        if (changes['valuelistID'] || changes['dataProviderID']) {
+        if (changes['valuelistID']) {
             this.setData();
         }
+        if (changes['dataProviderID']) {
+			this.setFilteredDataProviderId();
+		}
         if (changes['size']) {
             this.renderer.setProperty(this.elementRef.nativeElement, 'height', this.size.height);
         }
@@ -204,6 +195,19 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 		}
         super.svyOnChanges(changes);
     }
+    
+    setFilteredDataProviderId() {
+		if (!this.dataProviderID) {
+			this.filteredDataProviderId = [];
+		} else {
+			this.filteredDataProviderId = this.isTypeString() && typeof this.dataProviderID === 'string' ? this.dataProviderID.split('\n') : [this.dataProviderID];
+			if (this.valuelistID.length && typeof this.valuelistID[0].realValue === 'number') {
+				this.filteredDataProviderId.forEach((item,index) => {
+					!isNaN(item) && (this.filteredDataProviderId[index] = Number(item));
+				});
+			}
+		}
+	}
 
     checkDataList(realValue: any) {
         if (!this.data.some(option => realValue === option.value)) {
