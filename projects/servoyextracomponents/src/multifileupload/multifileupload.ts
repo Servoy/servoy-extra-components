@@ -154,7 +154,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
         }
     }
 
-    installWebcam = () => import(`@uppy/webcam`).then(module => {
+    installWebcam = () => import('@uppy/webcam').then(module => {
         this.uppy.use(module.default, this.webcamOptions);
         this.properties.plugins.push('Webcam');
     }, (err) => {
@@ -162,7 +162,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     }
     );
 
-    installScreenCapture = () => import(`@uppy/screen-capture`).then(module => {
+    installScreenCapture = () => import('@uppy/screen-capture').then(module => {
         this.uppy.use(module.default);
         this.properties.plugins.push('ScreenCapture');
     }, (err) => {
@@ -390,28 +390,71 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
         if (localeId == 'en_GB'){
             localeId = 'en_US';
         }
-        import(`@uppy/locales/lib/${localeId}.js`).then(
-            module => {
-                const locale = module.default;
-                if (this.localeStrings) {
-                    for (const key of Object.keys(this.localeStrings)) {
-                        const localeString = this.localeStrings[key];
-                        if (key.indexOf('.') !== -1) {
-                            const keyParts = key.split('.');
-                            if (!locale.strings.hasOwnProperty(keyParts[0])) {
-                                locale.strings[keyParts[0]] = {};
-                            }
-                            locale.strings[keyParts[0]][keyParts[1]] = localeString;
-                        } else {
-                            locale.strings[key] = localeString;
+        const moduleLoader =  module => {
+            const locale = module.default;
+            if (this.localeStrings) {
+                for (const key of Object.keys(this.localeStrings)) {
+                    const localeString = this.localeStrings[key];
+                    if (key.indexOf('.') !== -1) {
+                        const keyParts = key.split('.');
+                        if (!locale.strings.hasOwnProperty(keyParts[0])) {
+                            locale.strings[keyParts[0]] = {};
                         }
+                        locale.strings[keyParts[0]][keyParts[1]] = localeString;
+                    } else {
+                        locale.strings[key] = localeString;
                     }
                 }
-                this.uppy.setOptions({ locale });
-            },
-            () => {
+            }
+            this.uppy.setOptions({ locale });
+        }
+        const errorHandler = () => {
                 console.log('not found uppy locale data for ' + localeId);
-            });
+        }
+        switch(localeId) {
+            case 'ar_SA':import('@uppy/locales/lib/ar_SA.js').then(moduleLoader,errorHandler); break;
+            case 'bg_BG':import('@uppy/locales/lib/bg_BG.js').then(moduleLoader,errorHandler); break;
+            case 'ca_ES':import('@uppy/locales/lib/ca_ES.js').then(moduleLoader,errorHandler); break;
+            case 'cs_CZ':import('@uppy/locales/lib/cs_CZ.js').then(moduleLoader,errorHandler); break;
+            case 'da_DK':import('@uppy/locales/lib/da_DK.js').then(moduleLoader,errorHandler); break;
+            case 'de_DE':import('@uppy/locales/lib/de_DE.js').then(moduleLoader,errorHandler); break;
+            case 'el_GR':import('@uppy/locales/lib/el_GR.js').then(moduleLoader,errorHandler); break;
+            case 'es_ES':import('@uppy/locales/lib/es_ES.js').then(moduleLoader,errorHandler); break;
+            case 'es_MX':import('@uppy/locales/lib/es_MX.js').then(moduleLoader,errorHandler); break;
+            case 'fa_IR':import('@uppy/locales/lib/fa_IR.js').then(moduleLoader,errorHandler); break;
+            case 'fi_FI':import('@uppy/locales/lib/fi_FI.js').then(moduleLoader,errorHandler); break;
+            case 'fr_FR':import('@uppy/locales/lib/fr_FR.js').then(moduleLoader,errorHandler); break;
+            case 'gl_ES':import('@uppy/locales/lib/gl_ES.js').then(moduleLoader,errorHandler); break;
+            case 'he_IL':import('@uppy/locales/lib/he_IL.js').then(moduleLoader,errorHandler); break;
+            case 'hi_IN':import('@uppy/locales/lib/hi_IN.js').then(moduleLoader,errorHandler); break;
+            case 'hr_HR':import('@uppy/locales/lib/hr_HR.js').then(moduleLoader,errorHandler); break;
+            case 'hu_HU':import('@uppy/locales/lib/hu_HU.js').then(moduleLoader,errorHandler); break;
+            case 'id_ID':import('@uppy/locales/lib/id_ID.js').then(moduleLoader,errorHandler); break;
+            case 'is_IS':import('@uppy/locales/lib/is_IS.js').then(moduleLoader,errorHandler); break;
+            case 'it_IT':import('@uppy/locales/lib/it_IT.js').then(moduleLoader,errorHandler); break;
+            case 'ja_JP':import('@uppy/locales/lib/ja_JP.js').then(moduleLoader,errorHandler); break;
+            case 'ko_KR':import('@uppy/locales/lib/ko_KR.js').then(moduleLoader,errorHandler); break;
+            case 'nb_NO':import('@uppy/locales/lib/nb_NO.js').then(moduleLoader,errorHandler); break;
+            case 'nl_NL':import('@uppy/locales/lib/nl_NL.js').then(moduleLoader,errorHandler); break;
+            case 'pl_PL':import('@uppy/locales/lib/pl_PL.js').then(moduleLoader,errorHandler); break;
+            case 'pt_BR':import('@uppy/locales/lib/pt_BR.js').then(moduleLoader,errorHandler); break;
+            case 'pt_PT':import('@uppy/locales/lib/pt_PT.js').then(moduleLoader,errorHandler); break;
+            case 'ro_RO':import('@uppy/locales/lib/ro_RO.js').then(moduleLoader,errorHandler); break;
+            case 'ru_RU':import('@uppy/locales/lib/ru_RU.js').then(moduleLoader,errorHandler); break;
+            case 'sk_SK':import('@uppy/locales/lib/sk_SK.js').then(moduleLoader,errorHandler); break;
+            case 'sr_RS_Cyrillic':import('@uppy/locales/lib/sr_RS_Cyrillic.js').then(moduleLoader,errorHandler); break;
+            case 'sr_RS_Latin':import('@uppy/locales/lib/sr_RS_Latin.js').then(moduleLoader,errorHandler); break;
+            case 'sv_SE':import('@uppy/locales/lib/sv_SE.js').then(moduleLoader,errorHandler); break;
+            case 'th_TH':import('@uppy/locales/lib/th_TH.js').then(moduleLoader,errorHandler); break;
+            case 'tr_TR':import('@uppy/locales/lib/tr_TR.js').then(moduleLoader,errorHandler); break;
+            case 'uk_UA':import('@uppy/locales/lib/uk_UA.js').then(moduleLoader,errorHandler); break;
+            case 'uz_UZ':import('@uppy/locales/lib/uz_UZ.js').then(moduleLoader,errorHandler); break;
+            case 'vi_VN':import('@uppy/locales/lib/vi_VN.js').then(moduleLoader,errorHandler); break;
+            case 'zh_CN':import('@uppy/locales/lib/zh_CN.js').then(moduleLoader,errorHandler); break;
+            case 'zh_TW':import('@uppy/locales/lib/zh_TW.js').then(moduleLoader,errorHandler); break;
+            default:import('@uppy/locales/lib/en_US.js').then(moduleLoader,errorHandler); break;
+        }
+        
     }
 }
 
