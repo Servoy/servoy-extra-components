@@ -10,7 +10,7 @@
   },
   "dependencies": {
 	"@angular/cdk": "^17",
-    "ngx-slider-v2": "^17",
+    "@angular-slider/ngx-slider": "^17",
     "@ali-hm/angular-tree-component": "^12",
     "@ng-bootstrap/ng-bootstrap": "^16",
     "bootstrap": "<6",

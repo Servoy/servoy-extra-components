@@ -33,7 +33,7 @@
     "@uppy/store-default",
     "@uppy/utils",
     "@uppy/webcam",
-    "ngx-slider-v2", 
+    "@angular-slider/ngx-slider", 
     "angular-resizable-element", "ng-select2-component", "@tinymce/tinymce-angular", 
     "tinymce", "tinymce-i18n", "@servoy/canvas-gauges", "rx-dom-html","@angular/cdk"]
 }

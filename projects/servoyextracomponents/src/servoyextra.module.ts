@@ -19,7 +19,6 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule, AsyncPipe } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FileUploadModule } from 'ng2-file-upload';
-import { NgxSliderModule } from 'ngx-slider-v2';
 import { BGPane } from './splitpane/bg_splitter/bg_pane.component';
 import { BGSplitter } from './splitpane/bg_splitter/bg_splitter.component';
 import { Select2Module } from 'ng-select2-component';
@@ -36,6 +35,7 @@ import { LinearGauge } from './gauge/lib/linear-gauge';
 import { RadialGauge } from './gauge/lib/radial-gauge';
 import { UppyAngularDashboardModule } from '@uppy/angular';
 import {FileTypesUtilsService} from './fileupload/lib/filetypes';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
 
 @NgModule({
     declarations: [
