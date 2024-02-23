@@ -14,7 +14,6 @@
 	<natures>
 		<nature>com.servoy.eclipse.core.ServoyNGPackage</nature>
 		<nature>sj.jsonSchemaValidationNature</nature>
-		<nature>org.eclipse.dltk.javascript.core.nature</nature>
 	</natures>
 	<filteredResources>
 		<filter>
