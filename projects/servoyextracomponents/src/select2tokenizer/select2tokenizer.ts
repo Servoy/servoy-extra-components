@@ -235,6 +235,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 
     listClosed(event: Select2) {
 		this.userChangedValue = false;
+		this.resetSearch();
         if (this.selectOnClose) {
             const highlightItem = this.getNativeChild().querySelector('.select2-results__option--highlighted');
             if (highlightItem) {
@@ -264,6 +265,11 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 			}
 		}
     }
+    
+    resetSearch = () => {
+		this.valuelistID.filterList('');
+		this.setData();
+	}
 
     handleSearch = (event: KeyboardEvent) => {
 		const input = event.target as HTMLInputElement;
@@ -273,11 +279,11 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 				this.valuelistID.filterList('%' + value);
 			} else {
 				this.valuelistID.filterList(value);
-			}			
+			}
+			this.setData();			
 		} else {
-			this.valuelistID.filterList('');
+			this.resetSearch();
 		}
-		this.setData();
 	}
 
     listOpened(event: Select2) {
