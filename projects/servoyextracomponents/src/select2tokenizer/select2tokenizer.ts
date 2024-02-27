@@ -201,7 +201,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 			this.filteredDataProviderId = [];
 		} else {
 			this.filteredDataProviderId = this.isTypeString() && typeof this.dataProviderID === 'string' ? this.dataProviderID.split('\n') : [this.dataProviderID];
-			if (this.valuelistID.length && typeof this.valuelistID[0].realValue === 'number') {
+			if (this.valuelistID.length && typeof this.valuelistID[this.valuelistID.length-1].realValue === 'number') {
 				this.filteredDataProviderId.forEach((item,index) => {
 					!isNaN(item) && (this.filteredDataProviderId[index] = Number(item));
 				});
