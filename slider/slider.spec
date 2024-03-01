@@ -20,7 +20,7 @@
 		"dataProviderHigh" 				: { "type": "dataprovider", "pushToServer": "allow", "ondatachange": { "onchange":"onDataChangeHigh", "callback":"onDataChangeCallback"}, "tags": { "wizard": true, "doc": "The dataProvider for a range slider's maximum value" } },
 		"enabled" 						: { "type": "enabled", "blockingOn": false, "default": true, "for": ["dataProvider", "dataProviderHigh", "onDataChange", "onDataChangeHigh"] },
 		"ticksValuesInterval"			: { "type": "int", "default": 0, "tags": { "doc": "Number of steps between each tick to display tick values at intermediate positions" } },
-		"ticksInterval"					: { "type": "int", "default": null, "tags": { "doc": "Number of steps between each tick to display ticks at intermediate positions" } },
+		"ticksInterval"					: { "type": "int", "default": null, "tags": { "doc": "Number of steps between each tick to display ticks at intermediate positions. In Titanium Client you cannot select by click values between ticks, you can only drag slider pointer to select." } },
 		"styleClass"					: { "type": "styleclass" },
 		"dataChangeOnSlideEnd"			: { "type": "boolean", "default": true, "tags": { "doc": "Set this to false to update the dataProvider(s) while the user drags the slider and not only when the user is done dragging" } },
 		"numberFormat"					: { "type": "format", "for":["dataProvider"], "tags": { "doc": "A Servoy number format that is used to format numbers when a formattingFunction is not provided" }},
