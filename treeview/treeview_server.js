@@ -2,6 +2,7 @@
  * Sets the tree data
  * @param jsDataSet the JSDataSet used for the tree model
  * @example
+ *  // in order to use font awesome icons, column should be called fa-icon (instead of icon) and should contain font awesome css classes 
  * 	var treeviewDataSet = databaseManager.createEmptyDataSet( 0,  ['id', 'pid', 'treeColumn', 'icon']);
  * 
  *	treeviewDataSet.addRow([1,		null,	'Main group',	'media:///group.png']);

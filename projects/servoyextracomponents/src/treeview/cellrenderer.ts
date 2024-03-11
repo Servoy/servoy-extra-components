@@ -6,7 +6,7 @@ import { ServoyExtraTreeview } from './treeview';
     <div style="display: inline;" (contextmenu)="oncontextmenu($event)">
       <img *ngIf="!isFAIcon() && getIcon()" [src]="getIcon()">
       <span *ngIf="isFAIcon() && getIcon()" [class]="getIcon()"></span>
-      <span class="treeLabel" [class]="getFilterClass()">{{ getLabel() }}</span>
+      <span class="treeLabel" [class]="getFilterClass()" [innerHtml]="getLabel()"></span>
     </div>
   `
 })
