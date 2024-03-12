@@ -18,7 +18,8 @@
 		"accordionMode"			: { "type": "boolean", "default": true },
 		"expandedIndices"		: { "type": "int[]", "tags": { "scope": "design" } },
 		"styleClass"			: { "type": "styleclass" },
-		"tabSeq" : {"type" :"tabseq", "tags": { "scope" :"design" }}
+		"tabSeq" : {"type" :"tabseq", "tags": { "scope" :"design" }},
+		"visible" : "visible"
 	},
 	"api": 
 	{
