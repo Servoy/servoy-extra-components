@@ -172,8 +172,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 	onCardClick(e: Event, cardIndex: number, collapsibleIndex: number) {
 		if (this.onCardClicked) {
 			const collapsible = this.getCollapsible(collapsibleIndex);
-			const dataTarget = this.getCollapsibleElement(collapsibleIndex, 'header');
-
+            const dataTarget = (e.target as HTMLElement).closest('[data-target]');
 			if (collapsible.cards && collapsible.cards[cardIndex]) {
 				this.onCardClicked(e, collapsible.cards[cardIndex], collapsible, cardIndex, collapsibleIndex, dataTarget ? dataTarget.getAttribute('data-target') : null);
 			} else {
