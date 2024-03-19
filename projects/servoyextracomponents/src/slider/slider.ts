@@ -1,4 +1,4 @@
-import { ChangeContext, LabelType, Options } from '@angular-slider/ngx-slider';
+import { PointerType, ChangeContext, LabelType, Options } from '@angular-slider/ngx-slider';
 import { Component, SimpleChanges, Input, Renderer2, EventEmitter, Output, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { Format, ServoyBaseComponent } from '@servoy/public'
 
@@ -249,7 +249,7 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
 
     onUserChangeStart(changeContext: ChangeContext) {
         if (this.onSlideStart) {
-            this.onSlideStart(null, changeContext.value, changeContext.highValue, changeContext.pointerType);
+            this.onSlideStart(null, changeContext.value, changeContext.highValue, changeContext.pointerType == PointerType.Min ? "value" : "high");
         }
     }
 
@@ -257,7 +257,7 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
         this.dataProviderChange.emit(changeContext.value);
         this.dataProviderHighChange.emit(changeContext.highValue);
         if (this.onSlideEnd) {
-            this.onSlideEnd(null, changeContext.value, changeContext.highValue, changeContext.pointerType);
+            this.onSlideEnd(null, changeContext.value, changeContext.highValue, changeContext.pointerType == PointerType.Min ? "value" : "high");
         }
     }
 

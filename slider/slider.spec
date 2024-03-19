@@ -94,7 +94,7 @@
 					{ "name": "event", "type": "JSEvent"} , 
 					{ "name": "value", "type": "object", "description": "the value when the user dragged the pointer of a non-range slider or the low value in a range slider" }, 
 					{ "name": "highValue", "type": "object", "description": "the valueHigh when the user dragged the high value pointer in a range slider" },
-					{ "name": "pointerType", "type": "string", "description": "either \"value\" or \"valueHigh\"" }
+					{ "name": "pointerType", "type": "string", "description": "either \"value\" or \"high\"" }
 				]
 	        },
 	    "onSlideEnd" : {
@@ -103,7 +103,7 @@
 					{ "name": "event", "type": "JSEvent"}, 
 					{ "name": "value", "type": "object", "description": "the value when the user dragged the pointer of a non-range slider or the low value in a range slider" }, 
 					{ "name": "highValue", "type": "object", "description": "the valueHigh when the user dragged the high value pointer in a range slider" },
-					{ "name": "pointerType", "type": "string", "description": "either \"value\" or \"valueHigh\"" }
+					{ "name": "pointerType", "type": "string", "description": "either \"value\" or \"high\"" }
 				]
 	        }
 	},
