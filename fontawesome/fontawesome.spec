@@ -3,7 +3,7 @@
 	"displayName": "Font-awesome",
 	"categoryName": "Buttons & Text",
 	"version": 1,
-	"icon": "servoyextra/fontawesome/fontawesome.gif",
+	"icon": "servoyextra/fontawesome/fontawesome.png",
 	"definition": "servoyextra/fontawesome/fontawesome.js",
 	"libraries": [{"name":"fontawesome-custom.css", "version":"1.0.0", "url":"servoyextra/fontawesome/fontawesome.css", "mimetype":"text/css"}],
 	"keywords": ["style", "styling"],
