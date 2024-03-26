@@ -6,7 +6,7 @@
 	"icon": "servoyextra/htmlarea/html_area.png",
 	"definition": "servoyextra/htmlarea/htmlarea.js",
 	"doc": "servoyextra/htmlarea/htmlarea_doc.js",
-	"libraries": [{"name":"tinymce", "version":"5.7.0", "url":"servoyextra/htmlarea/lib/tinymce/tinymce.min.js", "mimetype":"text/javascript", "group":false},{"name":"ui-tinymce", "version":"1", "url":"servoyextra/htmlarea/lib/ui-tinymce.js", "mimetype":"text/javascript"}],
+	"libraries": [{"name":"tinymce", "version":"5.10.9", "url":"servoyextra/htmlarea/lib/tinymce/tinymce.min.js", "mimetype":"text/javascript", "group":false},{"name":"ui-tinymce", "version":"1", "url":"servoyextra/htmlarea/lib/ui-tinymce.js", "mimetype":"text/javascript"}],
 	"ng2Config": {
        "assets": [{
                 "glob" : "**/*.js",
