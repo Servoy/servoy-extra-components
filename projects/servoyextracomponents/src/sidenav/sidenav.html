@@ -121,7 +121,7 @@
     </div>
     <ng-template #containedFormRuntime>
         <div class="svy-sidenav-tablesspanel"
-            *ngIf="containedForm != null"
+            *ngIf="realContainedForm != null"
             [ngStyle]="getContainerStyle()"
             [ngClass]="{'svy-sidenav-right': slidePosition == 'right', 'svy-sidenav-static': slidePosition == 'static' , 'svy-sidenav-left': slidePosition == 'left' }"
             [sabloTabseq]="tabSeq"

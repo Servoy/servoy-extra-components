@@ -50,7 +50,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
     mouseEnterTimeout: number;
     mouseLeaveTimeout: number;
 
-    private realContainedForm: any;
+    public realContainedForm: string;
     private realHeaderForm: any;
     private realFooterForm: any;
     private log: LoggerService;
@@ -90,7 +90,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
                         }
                         if (change.currentValue) {
                             const array = change.currentValue.trim().split(' ');
-                           array.filter((element: string) => element !== '').forEach((element: string) => this.renderer.addClass(sidenav, element));
+                            array.filter((element: string) => element !== '').forEach((element: string) => this.renderer.addClass(sidenav, element));
                         }
                         break;
                     case 'containedForm':
@@ -100,18 +100,22 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
                             this.renderer.removeClass(this.getNativeElement(), 'has-panel');
                         }
                         if (change.previousValue) {
-                            this.servoyApi.hideForm(change.previousValue, null, null, this.containedForm, this.relationName).then(() => {
-                                this.realContainedForm = this.containedForm;
-                            }).finally(() => this.cdRef.detectChanges());
+                            this.servoyApi.hideForm(change.previousValue, null, null, change.currentValue, this.relationName).then(() => {
+                                if (change.currentValue == this.containedForm) this.realContainedForm = change.currentValue;
+                            }).finally(() => {
+                                this.cdRef.detectChanges();
+                            });
                         } else if (change.currentValue) {
-                            this.servoyApi.formWillShow(this.containedForm, this.relationName).then(() => {
-                                this.realContainedForm = this.containedForm;
-                            }).finally(() => this.cdRef.detectChanges());
+                            this.servoyApi.formWillShow(change.currentValue, this.relationName).then(() => {
+                                if (change.currentValue == this.containedForm) this.realContainedForm = change.currentValue;
+                            }).finally(() => {
+                                this.cdRef.detectChanges();
+                            });
                         }
                         break;
                     case 'relationName':
-						this.relationName = change.currentValue;
-						break;
+                        this.relationName = change.currentValue;
+                        break;
                     case 'headerForm':
                         if (change.previousValue) {
                             this.servoyApi.hideForm(change.previousValue, null, null, this.headerForm, this.relationName).then(() => {
@@ -167,7 +171,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
                         }
                         break;
                     case 'expandedIndex':
-                        if(!change.currentValue) {
+                        if (!change.currentValue) {
                             this.expandedIndex = {};
                         }
                         else if (typeof this.expandedIndex == 'string') {
@@ -175,7 +179,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
                         }
                         break;
                     case 'selectedIndex':
-                        if(!change.currentValue) {
+                        if (!change.currentValue) {
                             this.selectedIndex = {}
                         }
                         else if (typeof this.selectedIndex == 'string') {
@@ -194,10 +198,10 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
     getForm() {
         return this.realContainedForm;
     }
-    
+
     getHeaderForm() {
         return this.realHeaderForm;
-        
+
     }
 
     getFooterForm() {
@@ -221,36 +225,34 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     getHeaderFormStyle() {
-		let style = {}
-		let height = 0;
-		
-		// for absolute form default height is design height, for responsive form default height is 0
+        let style = {}
+        let height = 0;
+
+        // for absolute form default height is design height, for responsive form default height is 0
         const formCache = this.servoyPublic.getFormCacheByName(this.headerForm);
         if (formCache && formCache.absolute) {
             height = formCache.size.height;
-        }  
-	    if (height > 0)
-	    {
-	        style['minHeight'] = height+'px';
-	    }	  
-		return style;
-	}
-    
+        }
+        if (height > 0) {
+            style['minHeight'] = height + 'px';
+        }
+        return style;
+    }
+
     getFooterFormStyle() {
-		let style = {}
-		let height = 0;
-		
-		// for absolute form default height is design height, for responsive form default height is 0
+        let style = {}
+        let height = 0;
+
+        // for absolute form default height is design height, for responsive form default height is 0
         const formCache = this.servoyPublic.getFormCacheByName(this.footerForm);
         if (formCache && formCache.absolute) {
             height = formCache.size.height;
-        }  
-	    if (height > 0)
-	    {
-	        style['minHeight'] = height+'px';
-	    }	  
-		return style;
-	}
+        }
+        if (height > 0) {
+            style['minHeight'] = height + 'px';
+        }
+        return style;
+    }
 
     getSidenavWidth() {
         if (this.sidenavWidth) {
@@ -406,7 +408,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         }
 
         // checking if the item was selected twice in a row, return true or false
-		const isItemAlreadySelected = this.selectedIndex[level] === item.id && !this.selectedIndex[level + 1];
+        const isItemAlreadySelected = this.selectedIndex[level] === item.id && !this.selectedIndex[level + 1];
 
         const confirmSelection = () => {
             this.setSelectedIndex(level, index, item);
@@ -414,12 +416,12 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
             // expand the item
             if (item.menuItems) { // expand the node if not leaf
                 if (!isItemAlreadySelected) { // expand the node if not isItemAlreadySelected
-					this.expandItem(level, index, item, event, preventExpandHandler);
-				} else if (!this.isMenuItemExpanded(item.id)) { // expand the node if if the node is not expanded
-					this.expandItem(level, index, item, event, preventExpandHandler);
-				} else { // collapse the node
-					this.collapseItem(level, index, item, event, preventExpandHandler);
-				}
+                    this.expandItem(level, index, item, event, preventExpandHandler);
+                } else if (!this.isMenuItemExpanded(item.id)) { // expand the node if if the node is not expanded
+                    this.expandItem(level, index, item, event, preventExpandHandler);
+                } else { // collapse the node
+                    this.collapseItem(level, index, item, event, preventExpandHandler);
+                }
             } else { // expand the parent node if is a leaf
                 const parentNode = this.getParentNode(item.id);
                 if (parentNode) {
@@ -427,13 +429,13 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
                 }
             }
 
-			// change containedForm
-			if (item.formName && !isItemAlreadySelected){
-				const formToHide = this.containedForm;
-				const formToShow = item.formName;
-				const relationToShow = item.relationName ? item.relationName : null;
-				this.servoyApi.callServerSideApi('showForm', [formToHide, formToShow, relationToShow]);
-			}
+            // change containedForm
+            if (item.formName && !isItemAlreadySelected) {
+                const formToHide = this.containedForm;
+                const formToShow = item.formName;
+                const relationToShow = item.relationName ? item.relationName : null;
+                this.servoyApi.callServerSideApi('showForm', [formToHide, formToShow, relationToShow]);
+            }
         };
 
         if (preventSelectHandler !== true && this.onMenuItemSelected) { // change selection only if onMenuItemSelected allows it
@@ -795,7 +797,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
     **************************************************************/
 
 
-   public setSelectedByIndexPath(path: Array<number>, mustExecuteOnSelectNode: boolean) {
+    public setSelectedByIndexPath(path: Array<number>, mustExecuteOnSelectNode: boolean) {
 
         // search node in tree
         const node = this.getNodeByIndexPath(path, this.menu);
@@ -804,7 +806,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         return;
     }
 
-    public isMenuItemExpanded(menuItemId: string | number): boolean{
+    public isMenuItemExpanded(menuItemId: string | number): boolean {
         return this.isNodeExpanded(menuItemId);
     }
 
@@ -817,7 +819,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         }
     };
 
-    public getLocation(nodeId: string | number): {x: number; y: number} {
+    public getLocation(nodeId: string | number): { x: number; y: number } {
         const domElement = this.getDOMElementByID(nodeId);
         if (domElement) {
             const position = domElement.getBoundingClientRect();
@@ -826,7 +828,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         return null;
     }
 
-    public getSize(nodeId: string | number): {width: number; height: number} {
+    public getSize(nodeId: string | number): { width: number; height: number } {
         const domElement = this.getDOMElementByID(nodeId);
         if (domElement) {
             const position = domElement.getBoundingClientRect();
