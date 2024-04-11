@@ -213,7 +213,8 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
         if (!this.data.some(option => realValue === option.value)) {
             const option: Select2Option = {
                 value: realValue,
-                label: realValue // should we do here just an empty string or really the realvalue..
+                label: `${realValue}` // should we do here just an empty string or really the realvalue..
+                // label should be a string, otherwise the library will throw an error when it tries to do a ".replace" on this label
             };
             this.data.push(option);
             this.valuelistID.getDisplayValue(realValue).subscribe((val) => {
