@@ -35,7 +35,7 @@
 		"readOnly"						: { "type": "protected", "blockingOn": true, "default": false,"for": ["dataProvider","onDataChangeMethod","dataProviderHigh","onDataChangeHigh"], "tags": {"scope":"runtime"} },
 		
 		"floor"							: { "type": "int", "default": 0, "tags": { "doc": "Minimum value for a slider" } },
-		"ceil"							: { "type": "int", "default": null, "tags": { "doc": "Maximum value for a slider" } },
+		"ceil"							: { "type": "int", "default": 0, "tags": { "doc": "Maximum value for a slider" } },
 		"step"							: { "type": "int", "default": 1, "tags": { "doc": "Step between each value" } },
 		"precision"						: { "type": "int", "default": 0, "tags": { "doc": "The precision to display values with." } },
 		"minLimit"						: { "type": "int", "default": null, "tags": { "doc": "The minimum value authorized on the slider." } },
