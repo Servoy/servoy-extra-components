@@ -7,7 +7,7 @@ angular.module('servoyextraSplitpane',['servoy']).directive('servoyextraSplitpan
 			handlers: "=svyHandlers",
 			api: "=svyApi"
 		},
-		controller: function($scope, $element, $attrs) {
+		controller: function($scope, $element, $attrs, $timeout) {
 
 			if ($scope.model.resizeWeight == undefined) $scope.model.resizeWeight = 0;
 			if ($scope.model.pane1MinSize == undefined) $scope.model.pane1MinSize = 30;
@@ -305,6 +305,22 @@ angular.module('servoyextraSplitpane',['servoy']).directive('servoyextraSplitpan
 			for (var key in $scope.model) {
 				modelChangFunction(key, $scope.model[key]);
 			}
+
+			// Temporarily hide and then display the second pane to force Safari to correctly render it on initial load.
+			$timeout(function() {
+				var pane2 = angular.element(document.querySelector('.split-pane2'));
+				if (pane2.length) {
+					pane2.css('display', 'none');
+					$timeout(function() {
+						pane2.css('display', '');  
+					}, 0);
+				}
+			}, 10);
+
+			// Initialize the divider location after AngularJS has completed the DOM updates to ensure all elements are rendered correctly.
+			$timeout(function() {
+				$scope.processDivLocation();
+			}, 0);
 		},
 		link: function($scope, $element, $attrs) {
 			$scope.processDivLocation();
