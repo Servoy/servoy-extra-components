@@ -308,16 +308,21 @@ angular.module('servoyextraSplitpane',['servoy']).directive('servoyextraSplitpan
 
 			// Temporarily hide and then display the second pane to force Safari to correctly render it on initial load.
 			$timeout(function() {
+				var pane1 = angular.element(document.querySelector('.split-pane1'));
 				var pane2 = angular.element(document.querySelector('.split-pane2'));
-				if (pane2.length) {
-					pane2.css('display', 'none');
-					$timeout(function() {
-						pane2.css('display', '');  
-					}, 0);
-				}
+			
+				// Force removal from the render tree
+				if (pane1.length) pane1.css('display', 'none');
+				if (pane2.length) pane2.css('display', 'none');
+			
+				$timeout(function() {
+					// Trigger a reflow for each pane
+					if (pane1.length) pane1.css('display', '');
+					if (pane2.length) pane2.css('display', '');
+				}, 0);
 			}, 10);
 
-			// Initialize the divider location after AngularJS has completed the DOM updates to ensure all elements are rendered correctly.
+			// Re-initialize the divider to ensure all elements are rendered correctly.
 			$timeout(function() {
 				$scope.processDivLocation();
 			}, 0);
