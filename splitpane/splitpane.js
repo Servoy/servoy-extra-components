@@ -306,7 +306,7 @@ angular.module('servoyextraSplitpane',['servoy']).directive('servoyextraSplitpan
 				modelChangFunction(key, $scope.model[key]);
 			}
 
-			// Temporarily hide and then display the second pane to force Safari to correctly render it on initial load.
+			// Force re-rendering (safari bug fix)
 			$timeout(function() {
 				var pane1 = angular.element(document.querySelector('.split-pane1'));
 				var pane2 = angular.element(document.querySelector('.split-pane2'));
