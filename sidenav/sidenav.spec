@@ -260,7 +260,7 @@
 	"types": {
     	"MenuItem": {
       		"id"					: {"type" : "object"},
-      		"text"					: {"type" : "tagstring"},
+      		"text"					: {"type" : "tagstring", "tags": { "useAsCaptionInDeveloper" : true, "captionPriority" : 1}},
       		"iconStyleClass"		: {"type" : "styleclass"},
       		"styleClass"			: {"type" : "styleclass"},
       		"enabled"				: {"type" : "boolean", "default": true},
