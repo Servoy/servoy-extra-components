@@ -14,3 +14,23 @@
     color: #c0c0c0;
     font-weight: lighter;
 }
+
+.svy-treeview img {
+	width: 15px;
+}
+
+.svy-treeview db-tree-cell div div {
+	display: flex;
+}
+
+.svy-treeview table tr {
+	border-bottom: none;
+}
+
+.svy-treeview thead tr th div {
+	display: none;
+}
+
+.svy-treeview span.no-expand-icon {
+	width: 0px !important;
+}

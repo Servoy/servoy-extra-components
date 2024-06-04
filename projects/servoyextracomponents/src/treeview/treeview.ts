@@ -1,7 +1,7 @@
-import { ChangeDetectorRef, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Output, SimpleChanges, ViewChild, Renderer2 } from '@angular/core';
 import { Component, Input } from '@angular/core';
 import { AngularTreeGridComponent } from 'angular-tree-grid';
-import { ServoyBaseComponent } from '@servoy/public';
+import { ServoyBaseComponent, ServoyPublicService, EventLike, JSEvent } from '@servoy/public';
 import { ServoyExtraTreeviewCellRenderer } from './cellrenderer';
 
 @Component({
@@ -20,20 +20,20 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     @Input() onNodeExpanded: any;
     @Input() onNodeRightClicked: any;
     @Input() onNodeSelected: any;
-    @Input() onReady: any;
+    @Input() onReady: (e: JSEvent) => void;
 
     isTreeReady = false;
     dblClickTimeout: any = null;
 
-    data = [];
+    data: Array<IRowData> = [];
 
     configs: any = {
       id_field: 'id',
       parent_id_field: 'pid',
       parent_display_field: 'treeColumn',
       css: {
-        expand_class: 'fa fa-caret-right',
-        collapse_class: 'fa fa-caret-down',
+        expand_icon: '<i class="fa fa-caret-right"> </i>',
+        collapse_icon: '<i class="fa fa-caret-down"> </i>',
       },
       columns: []
     };
@@ -46,6 +46,10 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     
     folderImgPath = './assets/images/folder.png';
     fileImgPath = './assets/images/file.png';
+	
+	constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, private servoyPublicService: ServoyPublicService) {
+		super(renderer, cdRef);
+	}
 
 
     svyOnChanges(changes: SimpleChanges) {
@@ -80,6 +84,8 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     updateTreeGridData() {
       this.configs.columns.length = 0;
       this.data = [];
+      const ids: Array<number|string> = [];
+      const pids: Array<number|string> = [];
 
       let isFAIcon = false;
       const idIdx = this.jsDataSet[0].indexOf('id');
@@ -137,13 +143,31 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         for (let c = 1; c <= columnsIdx.length; c++) {
           row['column' + c] = this.jsDataSet[i][columnsIdx[c - 1]];
         }
+		ids.push(this.jsDataSet[i][idIdx]);
+		this.jsDataSet[i][pidIdx] !== null && pids.push(this.jsDataSet[i][pidIdx]);
         this.data.push(row);
       }
 
+      this.addDefaultIconsIfNeeded(this.data, ids, pids);
+
       if(this.onReady) {
-        this.onReady();
+        this.onReady(this.servoyPublicService.createJSEvent({ target: this.elementRef.nativeElement } as EventLike, 'onReady'));
       }
     }
+	
+	addDefaultIconsIfNeeded(data: Array<IRowData>, ids: Array<number|string>, pids: Array<number|string>) {
+		ids.forEach(id => {
+			const row = data.filter(row => row.id === id);
+			if (row.length === 1 && !row[0].treeColumn.isFAIcon && row[0].treeColumn.icon === '') {
+				const index = data.indexOf(row[0]);
+				if (pids.includes(id)) {
+					data[index].treeColumn.icon = this.folderImgPath;
+				} else {
+					data[index].treeColumn.icon = this.fileImgPath;
+				}
+			}
+		});
+	}
 
     onclick(event) {
       if(this.onNodeDoubleClicked) {
@@ -517,4 +541,16 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         });
       }
     }
+}
+
+interface IRowData {
+	id: number | string;
+	pid: number | string;
+	treeColumn: IRowDataTreeColumn;
+}
+
+interface IRowDataTreeColumn {
+	text: string;
+	icon: string;
+	isFAIcon: boolean;
 }
