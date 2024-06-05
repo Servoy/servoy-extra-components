@@ -31,6 +31,8 @@
         "language": 					{ "type": "string", "default": null, "values": ["English", "Spanish", "German", "French", "Dutch", "Italian", "Chinese", "Czech", "Danish", "Finnish", "Greek", "Hungarian", "Japanese", "Persian", "Russian", "Swedish", "Turkish"], "tags": { "doc": "One of the language packs shipped. If you need to provide your own translations, use the localeStrings property."} },
         "localeStrings":				{ "type": "map", "tags": { "doc": "Any number of key/value pairs to translate single strings in the component, overriding the ones provided by the language pack selected." } }, 
         "size": 						{ "type": "dimension", "default": { "width": 290, "height": 450 } },
+        "responsiveWidth": 				{ "type": "string", "default": "0", "tags": { "scope" : "design", "doc": "Width to be set in a responsive form. When responsiveWidth is set to 0, the component will use default width value." } },
+        "responsiveHeight": 			{ "type": "string", "default": "0", "tags": { "scope" : "design", "doc": "Height to be set in a responsive form. When responsiveSize is set to 0, the component will use default height value." } },
         "options": 						{ "type": "map" },
         "tusOptions":                   { "type": "map", "tags": { "scope" : "design" , "doc":"Look at the Uppy TUS options what you can set here like chunkSize: nrOfBytes"}  },
         "webcamOptions":                { "type": "json", "default" : { "target" : "Dashboard", "showVideoSourceDropdown": true } ,"tags": { "scope" : "design" , "doc":"Look at the Uppy webcam plugin options what you can set here like showVideoSourceDropdown"}  }

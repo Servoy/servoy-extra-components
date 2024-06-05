@@ -33,6 +33,8 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     @Input() localeStrings: any;
     @Input() language: string;
     @Input() size: { width: number, height: number };
+	@Input() responsiveWidth: string;
+	@Input() responsiveHeight: string;
 
     @Input() onFileUploaded: (file: any, event: JSEvent) => void;
     @Input() onFileAdded: (file: UploadFile, event: JSEvent) => void;
@@ -183,10 +185,11 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     }
 
     pushDashboardOptions() {
+		const size = this.getSize();
         this.properties = {
             note: this.note,
-            width: this.servoyApi.isInAbsoluteLayout() && this.cssPosition.width || this.size.width,
-            height: this.servoyApi.isInAbsoluteLayout() && this.cssPosition.height || this.size.height,
+            width: size.width,
+            height: size.height,
             hideUploadButton: this.hideUploadButton,
             proudlyDisplayPoweredByUppy: false,
             disableStatusBar: this.disableStatusBar,
@@ -342,6 +345,29 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
         }
         return result;
     }
+	
+	getSize() {
+		if (this.servoyApi.isInAbsoluteLayout()) {
+			return {
+				width: this.cssPosition.width,
+				height: this.cssPosition.height
+			}
+		} else if (!this.servoyApi.isInAbsoluteLayout()) {
+			const responsiveWidth = this.responsiveWidth || '0';
+			const responsiveHeight = this.responsiveHeight || '0';
+			return {
+				width: responsiveWidth != '0' && this.convertToNumberOrReturnValue(responsiveWidth) || this.size.width,
+				height: responsiveHeight != '0' && this.convertToNumberOrReturnValue(responsiveHeight) || this.size.height
+			}
+		}
+	}
+	
+	convertToNumberOrReturnValue(value: string) {
+		if (Number(value) >= 0) {
+			return Number(value);
+		}
+		return value;
+	}
 
     private loadUppyLocale() {
         let localeId = null;
