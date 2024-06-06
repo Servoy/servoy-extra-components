@@ -24,6 +24,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
 
     isTreeReady = false;
     dblClickTimeout: any = null;
+	rowID = null;
 
     data: Array<IRowData> = [];
 
@@ -170,21 +171,22 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
 	}
 
     onclick(event) {
+      this.rowID = event.row?.id || event.data.id;
       if(this.onNodeDoubleClicked) {
         if(this.dblClickTimeout) {
-          this.onNodeDoubleClicked(event.row.id, event.event);
+          this.onNodeDoubleClicked(this.rowID, event.event);
           clearTimeout(this.dblClickTimeout);
           this.dblClickTimeout = null;
         } else {
           this.dblClickTimeout = setTimeout(() => {
             if(this.onNodeClicked) {
-              this.onNodeClicked(event.row.id, event.event);
+              this.onNodeClicked(this.rowID, event.event);
             }
             this.dblClickTimeout = null;
           }, 400);
         }
       } else if(this.onNodeClicked) {
-        this.onNodeClicked(event.row.id, event.event);
+        this.onNodeClicked(this.rowID, event.event);
       }
     }
 
@@ -195,6 +197,8 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
           this.lastSelectedNode = event.data.id;
         }
       }
+      this.rowID != event.data.id && this.onclick(event);
+      this.rowID = null;
     }
 
     onexpand(event) {
