@@ -178,9 +178,10 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
           clearTimeout(this.dblClickTimeout);
           this.dblClickTimeout = null;
         } else {
+          const id = this.rowID;
           this.dblClickTimeout = setTimeout(() => {
             if(this.onNodeClicked) {
-              this.onNodeClicked(this.rowID, event.event);
+              this.onNodeClicked(id, event.event);
             }
             this.dblClickTimeout = null;
           }, 400);
