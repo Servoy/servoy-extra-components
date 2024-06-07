@@ -29,7 +29,7 @@ function hide(index) {
  * @param {String} [headerHtml]
  * @param {String} [collapsibleId]
  * 
- * @return {svy-collapse.collapsible}
+ * @return {CustomType<svy-collapse.collapsible>}
  */
 function createCollapsible(headerHtml, collapsibleId) {
 }
@@ -40,7 +40,7 @@ function createCollapsible(headerHtml, collapsibleId) {
  * @param {String} [textOrHtml]
  * @param {String} [cardId]
  * @param {String} [styleClass]
- * @return {svy-collapse.card}
+ * @return {CustomType<svy-collapse.card>}
  */
 function createCard(textOrHtml, cardId, styleClass) {
 }
@@ -48,7 +48,7 @@ function createCard(textOrHtml, cardId, styleClass) {
 /**
  * Adds a new collapsible to the list of collapsibles of this Collapse component
  * 
- * @param {svy-collapse.collapsible} collapsible
+ * @param {CustomType<svy-collapse.collapsible>} collapsible
  * @param {Number} [index] the index to insert the new collapsible at
  */
 function addCollapsible(collapsible, index) {
@@ -57,7 +57,7 @@ function addCollapsible(collapsible, index) {
 /**
  * Sets all collapsibles of this Collapse component
  * 
- * @param {Array<svy-collapse.collapsible>} collapsibles
+ * @param {Array<CustomType<svy-collapse.collapsible>>} collapsibles
  */
 function setCollapsibles(collapsibles) {
 }
@@ -65,7 +65,7 @@ function setCollapsibles(collapsibles) {
 /**
  * Returns the card with the given ID
  * @param {String} cardId
- * @return {svy-collapse.card} the card or null when not found
+ * @return {CustomType<svy-collapse.card>} the card or null when not found
  */
 function getCardById(cardId) {
 }
@@ -75,7 +75,7 @@ function getCardById(cardId) {
  * @param {Number} cardIndex the index of the card to get (0 based)
  * @param {Number} [collapsibleIndex] if not given, the first collapsible is used
  * 
- * @return {svy-collapse.card} the card or null when not found
+ * @return {CustomType<svy-collapse.card>} the card or null when not found
  */
 function getCard(cardIndex, collapsibleIndex) {
 }
@@ -84,7 +84,7 @@ function getCard(cardIndex, collapsibleIndex) {
  * Returns the collapsible with the given index (0 based)
  * @param {Number} [collapsibleIndex] if not given, the first collapsible is used
  * 
- * @return {svy-collapse.card} the card or null when not found
+ * @return {CustomType<svy-collapse.card>} the card or null when not found
  */
 function getCollapsible(collapsibleIndex) {
 }
@@ -102,7 +102,7 @@ function isCollapsed(collapsibleIndex) {
  * Returns the collapsible with the given ID
  * @param {String} [collapsibleId] if not given, the first collapsible is used
  * 
- * @return {svy-collapse.card} the card or null when not found
+ * @return {CustomType<svy-collapse.card>} the card or null when not found
  */
 function getCollapsibleById(collapsibleId) {
 }
