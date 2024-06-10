@@ -182,6 +182,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
         }
         if (changes['dataProviderID']) {
 			this.setFilteredDataProviderId();
+			this.setData();
 		}
         if (changes['size']) {
             this.renderer.setProperty(this.elementRef.nativeElement, 'height', this.size.height);
