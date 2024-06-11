@@ -352,7 +352,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
 				width: this.cssPosition.width,
 				height: this.cssPosition.height
 			}
-		} else if (!this.servoyApi.isInAbsoluteLayout()) {
+		} else {
 			const responsiveWidth = this.responsiveWidth || '0';
 			const responsiveHeight = this.responsiveHeight || '0';
 			return {
