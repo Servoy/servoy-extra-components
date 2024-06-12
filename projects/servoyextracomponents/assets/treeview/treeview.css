@@ -1,3 +1,8 @@
+.svy-treeview {
+    height: 100%;
+    overflow: auto;
+}
+
 .svy-treeview table {
     width: 100%;
 }
@@ -27,8 +32,15 @@
 	border-bottom: none;
 }
 
-.svy-treeview thead tr th div {
+.svy-treeview thead tr th div:empty {
 	display: none;
+}
+
+.svy-treeview thead > tr > th { 
+	position: sticky !important; 
+	top: 0 !important;
+	background-color: #fff;
+	z-index: 10;
 }
 
 .svy-treeview span.no-expand-icon {
