@@ -331,6 +331,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         if (this.onCellRightClick) {
             this.renderer.listen(this.tableRef.nativeElement, 'contextmenu', e => {
                 this.tableClicked(e, 2);
+                e.preventDefault();
             });
         }
 
