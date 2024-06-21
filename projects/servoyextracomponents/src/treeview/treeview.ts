@@ -437,7 +437,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
       if(this.isTreeReady) {
         const displayData = this.angularGrid.store.getDisplayData();
         displayData.forEach(data => {
-          if(data.pid === null) {
+          if(['', null].includes(data.pid)) {
             rootNodesId.push(data.id);
           }
         });
