@@ -432,9 +432,8 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
             // change containedForm
             if (item.formName && !isItemAlreadySelected) {
                 const formToHide = this.containedForm;
-                const formToShow = item.formName;
-                const relationToShow = item.relationName ? item.relationName : null;
-                this.servoyApi.callServerSideApi('showForm', [formToHide, formToShow, relationToShow]);
+                const menuIDToShow = item.id;
+                this.servoyApi.callServerSideApi('showForm', [formToHide, menuIDToShow]);
             }
         };
 
