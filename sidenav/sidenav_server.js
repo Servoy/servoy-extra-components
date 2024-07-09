@@ -1003,6 +1003,9 @@ $scope.api.showForm = function(formToHide, menuIDToShow) {
     if (!formHideIsOK) return false;    
     
 	var menuItem = getNodeById(menuIDToShow, $scope.model.menu);
+	
+	if (!menuItem) return false;
+	
     $scope.model.containedForm = menuItem.formName;
     $scope.model.relationName = menuItem.relationName ? menuItem.relationName : null; 
     
