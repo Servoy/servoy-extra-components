@@ -992,7 +992,7 @@ function createJSEvent() {
  * @private 
  * @return {Boolean}
  *  */
-$scope.api.showForm = function(formToHide, formToShow, relationToShow) {
+$scope.api.showForm = function(formToHide, menuIDToShow) {
 	var formHideIsOK = true;
 	
     if (formToHide)
@@ -1002,8 +1002,9 @@ $scope.api.showForm = function(formToHide, formToShow, relationToShow) {
     
     if (!formHideIsOK) return false;    
     
-    $scope.model.containedForm = formToShow;
-    $scope.model.relationName = relationToShow; 
+	var menuItem = getNodeById(menuIDToShow, $scope.model.menu);
+    $scope.model.containedForm = menuItem.formName;
+    $scope.model.relationName = menuItem.relationName ? menuItem.relationName : null; 
     
     return true;  
 }
