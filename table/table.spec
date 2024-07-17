@@ -38,12 +38,12 @@
 	},
 	"types": {
 		"column": {
-			"dataprovider": { "type": "dataprovider", "forFoundset": "foundset", "resolveValuelist" : true, "tags": { "wizard": "1", "useAsCaptionInDeveloper" : true, "captionPriority" : 2 }},
+			"dataprovider": { "type": "dataprovider", "forFoundset": "foundset", "pushToServer": "reject", "resolveValuelist" : true, "tags": { "wizard": "1", "useAsCaptionInDeveloper" : true, "captionPriority" : 2 }},
 			"format": { "for": ["valuelist", "dataprovider"], "type": "format" },
 			"headerStyleClass": { "type": "styleclass" },
 			"headerText": { "type": "tagstring", "tags": {"wizard": "4", "useAsCaptionInDeveloper" : true, "captionPriority" : 1, "showInOutlineView": true }},
 			"styleClass": { "type": "styleclass","tags": {"wizard": {"order": "3", "values": [{"name": "Pencil icon", "cls": "fa fa-pencil"}, {"name": "Trash icon", "cls": "fa fa-trash"}, {"name": "Eye icon", "cls": "fa fa-eye"}, {"name": "Gear icon", "cls": "fa fa-gear"}] }} },
-			"styleClassDataprovider": { "type": "dataprovider", "forFoundset": "foundset",  "tags": {"wizard": "2"} },
+			"styleClassDataprovider": { "type": "dataprovider", "forFoundset": "foundset",  "pushToServer": "reject", "tags": {"wizard": "2"} },
 			"valuelist": { "type": "valuelist", "for": "dataprovider", "forFoundset": "foundset" },
 			"width": { "type": "string", "default": "auto"},
 			"initialWidth": { "type": "string", "tags": { "scope": "runtime" } },
