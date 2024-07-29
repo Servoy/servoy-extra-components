@@ -26,6 +26,7 @@
 
 .svy-treeview db-tree-cell div div {
 	display: flex;
+	align-items: center;
 }
 
 .svy-treeview table tr {
@@ -45,4 +46,16 @@
 
 .svy-treeview span.no-expand-icon {
 	width: 0px !important;
+}
+
+.svy-treeview table thead tr th div {
+    width: inherit;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+span.treeLabel {
+	overflow: hidden;
+	text-overflow: ellipsis;
 }

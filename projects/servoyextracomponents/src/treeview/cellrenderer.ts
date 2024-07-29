@@ -3,10 +3,10 @@ import { ServoyExtraTreeview } from './treeview';
 @Component({
   selector: 'servoyextra-treeview-cell-renderer',
   template: `
-    <div style="display: inline;" (contextmenu)="oncontextmenu($event)">
+    <div [ngStyle]="setDisplay()" (contextmenu)="oncontextmenu($event)">
       <img *ngIf="!isFAIcon() && getIcon()" [src]="getIcon()">
       <span *ngIf="isFAIcon() && getIcon()" [class]="getIcon()"></span>
-      <span class="treeLabel" [class]="getFilterClass()" [innerHtml]="getLabel()"></span>
+      <span class="treeLabel" [ngStyle]="setStyle()" [class]="getFilterClass()" [innerHtml]="getLabel()"></span>
     </div>
   `
 })
@@ -30,6 +30,25 @@ export class ServoyExtraTreeviewCellRenderer {
 
   isFAIcon() {
     return this.cell_value.isFAIcon;
+  }
+  
+  getWidth() {
+	const treeview: ServoyExtraTreeview  = this.column.treeview;
+	return treeview.columnWidth;
+  }
+  
+  setStyle() {
+	if (this.getWidth() !== 'auto' /*&& this.cell_value.text === undefined*/) {
+		return {width: this.getWidth(), whiteSpace: 'nowrap'}
+	}
+	return {};
+  }
+  
+  setDisplay() {
+	if (this.getWidth() === 'auto') {
+		return {display: 'inline'};
+	}
+	return {};
   }
 
   oncontextmenu(event) {

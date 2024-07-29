@@ -223,3 +223,15 @@ function filterBranches(text, options) {
  */
 function setDataSet(jsDataSet) {
 }
+
+/** 
+ * Sets the column width
+ * 
+ * @param {Number} columnWidth column width
+ * 
+ * @example
+ * %%prefix%%%%elementName%%.setColumnWidth(50);
+ * 
+*/
+function setColumnWidth(columnWidth) {
+}

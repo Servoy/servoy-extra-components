@@ -11,7 +11,8 @@
 	"keywords": [],
 	"model":
 	{
-	    "jsDataSet": {"type" :"dataset", "includeColumnNames": true, "columnTypes":{ "icon" : "media" }}
+	    "jsDataSet": {"type" :"dataset", "includeColumnNames": true, "columnTypes":{ "icon" : "media" }},
+	    "styleClass" : { "type" :"styleclass", "tags": { "scope" :"design" }, "values" :[]}
 	},	
 	"handlers":
 	{
@@ -79,6 +80,13 @@
 	},
 	"api":
 	{
+		"setColumnWidth" : {
+			"delayUntilFormLoads": true,
+			"parameters": [{
+				"name": "columnWidth",
+				"type": "int"
+			}]
+		},
         "setDataSet": {
 			"parameters":[
 							{                                                                 

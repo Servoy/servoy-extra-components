@@ -27,6 +27,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     @Input() selection: Array<string>;
     @Input() visible: boolean;
     @Input() showLoadingIndicator: boolean;
+	@Input() styleClass: string;
     @Input() onReady: (e: JSEvent) => void;
     @Input() onDrop: (sourceNodePkPath: Array<string>, targetNodePkPath: Array<string>, indexInParent: number, e: JSEvent) => void;
 
@@ -144,6 +145,21 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
                         }
                         break;
                     }
+					case 'styleClass': {
+						if (change.previousValue) {
+							const array: Array<string> = (change.previousValue as string).trim().split(' ');
+							array.filter((elementStyleClass: string) => elementStyleClass !== '').forEach(
+								(elementStyleClass: string) => this.renderer.removeClass(this.getNativeElement(), elementStyleClass)
+							);
+						}
+						if (change.currentValue) {
+							const array: Array<string> = (change.currentValue as string).trim().split(' ');
+							array.filter((elementStyleClass: string) => elementStyleClass !== '').forEach(
+								(elementStyleClass: string) => this.renderer.addClass(this.getNativeElement(), elementStyleClass)
+							);
+						}
+						break;
+					}
                 }
             }
         }
