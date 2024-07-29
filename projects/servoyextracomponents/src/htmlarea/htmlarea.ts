@@ -71,6 +71,13 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
         if (this.onActionMethodID) this.onActionMethodID(new CustomEvent('click'));
     }
 
+    contextMenu(event) {
+        if (this.onRightClickMethodID) {
+            this.onRightClickMethodID(new CustomEvent('contextmenu'));
+            event.event.preventDefault();
+        }
+    }
+
     keyUp(event) {
         this.getNativeElement().dispatchEvent(new KeyboardEvent('keyup', event.event));
     }
