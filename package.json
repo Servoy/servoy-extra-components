@@ -27,7 +27,7 @@
     "@popperjs/core": "2.11.8",
     "@servoy/canvas-gauges": "2.1.8",
     "@servoy/public": "2024.3.0",
-    "@tinymce/tinymce-angular": "7.0.0",
+    "@tinymce/tinymce-angular": "8.0.0",
     "@uppy/angular": "0.6.1",
     "@uppy/core": "3.9.3",
     "@uppy/companion-client": "3.7.4",
