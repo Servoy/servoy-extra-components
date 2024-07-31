@@ -6,7 +6,7 @@ import { LocaleService } from '../../ngclient/locale.service';
 import { I18NProvider } from '../../ngclient/services/i18n_provider.service';
 import { FormsModule } from '@angular/forms';
 import { ServoyPublicModule } from '@servoy/public';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ApplicationService } from '../../ngclient/services/application.service';
 import { ServoyService } from '../../ngclient/servoy.service';
 import { ClientFunctionService } from '../../ngclient/services/clientfunction.service';
@@ -24,11 +24,11 @@ describe('HtmlareaComponent', () => {
     beforeEach(waitForAsync(() => {
 
     TestBed.configureTestingModule({
-      declarations: [ ServoyExtraHtmlarea ],
-      imports: [EditorModule, ServoyTestingModule, FormsModule, HttpClientModule, ServoyPublicModule],
-      providers: [{ provide: LocaleService, useValue: {getLocale: () => 'en' } },ServoyService,ClientFunctionService, 
-      ViewportService,I18NProvider, FormService, { provide:ServerDataService, useValue: {init: ()=>{}}}, ApplicationService]
-    })
+    declarations: [ServoyExtraHtmlarea],
+    imports: [EditorModule, ServoyTestingModule, FormsModule, ServoyPublicModule],
+    providers: [{ provide: LocaleService, useValue: { getLocale: () => 'en' } }, ServoyService, ClientFunctionService,
+        ViewportService, I18NProvider, FormService, { provide: ServerDataService, useValue: { init: () => { } } }, ApplicationService, provideHttpClient(withInterceptorsFromDi())]
+})
     .compileComponents();
   }));
 

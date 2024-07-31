@@ -1,11 +1,13 @@
 import { Component, ViewChild, SimpleChanges, Input, Renderer2, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { JSEvent, LoggerFactory, LoggerService, ServoyBaseComponent, ServoyPublicService } from '@servoy/public';
-import { FileProgress, Restrictions, Uppy, UppyFile, UppyOptions } from '@uppy/core';
+import { Uppy, UppyFile, UppyOptions } from '@uppy/core';
 import Dashboard from '@uppy/dashboard';
-import Tus, { TusOptions } from '@uppy/tus';
+import Tus, { TusOpts } from '@uppy/tus';
 import type { DashboardOptions } from '@uppy/dashboard';
 import type { WebcamOptions } from '@uppy/webcam';
 import { DashboardComponent } from '@uppy/angular';
+import { Restrictions } from '@uppy/core/lib/Restricter';
+import { FileProgress } from '@uppy/utils/lib/FileProgress';
 
 @Component({
     selector: 'servoyextra-multifileupload',
@@ -14,7 +16,7 @@ import { DashboardComponent } from '@uppy/angular';
 })
 export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivElement> {
 
-    @ViewChild(DashboardComponent) dashboard: DashboardComponent;
+    @ViewChild(DashboardComponent) dashboard: DashboardComponent<any,any>;
 
     @Input() autoProceed: boolean;
     @Input() allowMultipleUploads: boolean;
@@ -28,8 +30,8 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     @Input() closeAfterFinish: boolean;
     @Input() sources: string[];
     @Input() options: any;
-    @Input() tusOptions: TusOptions;
-    @Input() webcamOptions: WebcamOptions;
+    @Input() tusOptions: TusOpts<any,any>;
+    @Input() webcamOptions: WebcamOptions<any,any>;
     @Input() localeStrings: any;
     @Input() language: string;
     @Input() size: { width: number, height: number };
@@ -50,7 +52,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     filesToBeAdded: Array<string> = [];
 
     uppy: Uppy = new Uppy();
-    properties: DashboardOptions = {
+    properties: DashboardOptions<any,any> = {
         proudlyDisplayPoweredByUppy: false,
         inline: false
     };
@@ -80,13 +82,13 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
         }
 
         if (this.onFileRemoved) {
-            this.uppy.on('file-removed', (file: UppyFile) => {
+            this.uppy.on('file-removed', (file: UppyFile<any,any>) => {
                 this.onFileRemoved(this.createUppyFile(file), this.createJSEvent('file-removed'));
             });
         }
 
         if (this.onRestrictionFailed) {
-            this.uppy.on('restriction-failed', (file: UppyFile, error: { message: string }) => {
+            this.uppy.on('restriction-failed', (file: UppyFile<any,any>, error: { message: string }) => {
                 if (file) this.onRestrictionFailed(this.createUppyFile(file), error.message, this.createJSEvent('restriction-failed'));
                 else if (error?.message) {
                     if (error.message.indexOf('onBeforeFileAdded') === -1) {
@@ -128,7 +130,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
         this.uppy.on('error', (error) => {
             this.log.error(error);
         });
-        const tusOptions: TusOptions = Object.assign({} as TusOptions, this.tusOptions ? this.tusOptions : {});
+        const tusOptions: TusOpts<any,any> = Object.assign({} as TusOpts<any,any>, this.tusOptions ? this.tusOptions : {});
         tusOptions.endpoint = this.servoyService.generateUploadUrl(this.servoyApi.getFormName(), this.name, 'onFileUploaded', true);
         if (!tusOptions.retryDelays) tusOptions.retryDelays = [0, 1000, 3000, 5000];
         this.uppy.use(Tus, tusOptions);
@@ -140,7 +142,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
         };
         const options = this.getUppyOptions();
         options.logger = debugLogger;
-        options.onBeforeFileAdded = (currentFile: UppyFile) => this.onBeforeFileAddedEvent(currentFile);
+        options.onBeforeFileAdded = (currentFile: UppyFile<any,any>) => this.onBeforeFileAddedEvent(currentFile);
         this.uppy.setOptions(options);
 
         this.pushDashboardOptions();
@@ -173,7 +175,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     );
 
     getUppyOptions() {
-        const options: UppyOptions = {
+        const options: UppyOptions<any,any> = {
             autoProceed: this.autoProceed,
             allowMultipleUploadBatches: this.allowMultipleUploads,
             restrictions: this.restrictions,
@@ -222,7 +224,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     }
 
     reset(): void {
-        this.uppy.cancelAll({ reason: 'unmount' });
+        this.uppy.cancelAll();
     }
 
     upload(): void {
@@ -234,7 +236,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     }
 
     cancelAll(): void {
-        this.uppy.cancelAll({ reason: 'unmount' });
+        this.uppy.cancelAll();
     }
 
     retryUpload(fileID: string): void {
@@ -250,7 +252,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     }
 
     initialize(): void {
-        this.uppy.close({ reason: 'unmount' });
+        this.uppy.destroy();
         this.uppy = new Uppy();
         this.initUppy();
         this.loadUppyLocale();
@@ -258,11 +260,11 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     }
 
     openModal(): void {
-        (this.uppy.getPlugin('angular:Dashboard') as Dashboard).openModal();
+        (this.uppy.getPlugin('angular:Dashboard') as Dashboard<any,any>).openModal();
     }
 
     closeModal(): void {
-        (this.uppy.getPlugin('angular:Dashboard') as Dashboard).closeModal();
+        (this.uppy.getPlugin('angular:Dashboard') as Dashboard<any,any>).closeModal();
     }
 
     onBeforeFileAddedEvent(currentFile: any): boolean {
@@ -312,7 +314,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
         return result;
     }
 
-    createUppyFile(file: UppyFile): UploadFile {
+    createUppyFile(file: UppyFile<any,any>): UploadFile {
         const result: UploadFile = {
             id: file.id,
             name: file.name,
@@ -338,7 +340,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
         };
         if (file.progress) {
             result.progress.bytesTotal = file.progress.bytesTotal;
-            result.progress.bytesUploaded = file.progress.bytesUploaded;
+            result.progress.bytesUploaded = file.progress.bytesUploaded as number;
             result.progress.percentage = file.progress.percentage;
             result.progress.uploadComplete = file.progress.uploadComplete;
             result.progress.uploadStarted = file.progress.uploadStarted;

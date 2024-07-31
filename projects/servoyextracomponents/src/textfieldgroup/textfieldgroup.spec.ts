@@ -3,7 +3,7 @@ import { ServoyExtraTextfieldGroup  } from './textfieldgroup';
 import { FormattingService, ServoyApi, TooltipService } from '@servoy/public';
 import { FormsModule } from '@angular/forms';
 import { ServoyPublicTestingModule } from '@servoy/public';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('TextfieldgroupComponent', () => {
   let component: ServoyExtraTextfieldGroup;
@@ -14,10 +14,10 @@ describe('TextfieldgroupComponent', () => {
     beforeEach(waitForAsync(() => {
 
     TestBed.configureTestingModule({
-      declarations: [ ServoyExtraTextfieldGroup ],
-      imports: [FormsModule, HttpClientModule, ServoyPublicTestingModule],
-      providers: [FormattingService, TooltipService]
-    })
+    declarations: [ServoyExtraTextfieldGroup],
+    imports: [FormsModule, ServoyPublicTestingModule],
+    providers: [FormattingService, TooltipService, provideHttpClient(withInterceptorsFromDi())]
+})
     .compileComponents();
   }));
 
