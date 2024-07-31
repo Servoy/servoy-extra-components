@@ -178,7 +178,7 @@
 			"headerStyleClass" 				: { "type": "styleclass", "default": "" },
 			"bodyStyleClass"				: { "type": "styleclass" },
 			"collapsibleHtml" 				: { "type": "tagstring", "default": "" },
-            "form" 							: { "type": "form", "default": "", "tags": {"wizard": {"order": "1", "wizardRelated": "relationName"}}},
+            "form" 							: { "type": "form", "default": "", "tags": {"useAsCaptionInDeveloper" : true, "wizard": {"order": "1", "wizardRelated": "relationName"}}},
             "relationName"                  : { "type":"relation", "tags": {"wizard": "2"}},
 			"cards"							: { "type": "card[]" },
 			"styleClass"					: { "type": "styleclass", "default": "" },

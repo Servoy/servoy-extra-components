@@ -158,7 +158,7 @@
 	
 "types": {
   "pane": {
-  		"containsFormId": "form",
+  		"containsFormId": {"type":"form", "tags": {"useAsCaptionInDeveloper" : true}},
   		"relationName": "relation"
   	}
 }
