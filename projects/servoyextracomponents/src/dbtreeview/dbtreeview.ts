@@ -69,7 +69,8 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
 
     options: ITreeOptions = {
         getChildren: this.getChildren.bind(this),
-        actionMapping: this.actionMapping
+        actionMapping: this.actionMapping,
+		scrollOnActivate: false
     };
 
     constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, logFactory: LoggerFactory,
