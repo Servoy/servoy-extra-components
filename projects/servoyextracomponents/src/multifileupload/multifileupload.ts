@@ -36,7 +36,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     @Input() language: string;
     @Input() size: { width: number, height: number };
 	@Input() responsiveWidth: string;
-	@Input() responsiveHeight: string;
+	@Input() responsiveHeight: number;
 
     @Input() onFileUploaded: (file: any, event: JSEvent) => void;
     @Input() onFileAdded: (file: UploadFile, event: JSEvent) => void;
@@ -356,10 +356,9 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
 			}
 		} else {
 			const responsiveWidth = this.responsiveWidth || '0';
-			const responsiveHeight = this.responsiveHeight || '0';
 			return {
 				width: responsiveWidth != '0' && this.convertToNumberOrReturnValue(responsiveWidth) || this.size.width,
-				height: responsiveHeight != '0' && this.convertToNumberOrReturnValue(responsiveHeight) || this.size.height
+				height: this.responsiveHeight || this.size.height
 			}
 		}
 	}
