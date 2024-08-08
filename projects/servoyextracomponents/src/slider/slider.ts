@@ -225,6 +225,10 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
             }
         }
         super.svyOnChanges(changes);
+		
+		if (this.dataProvider === undefined) {
+			this.dataProviderChange.emit(this.floor);
+		}
     }
 
     setNewOptions(propertyName: any, propertyValue: any): void {
