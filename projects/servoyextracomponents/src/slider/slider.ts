@@ -257,6 +257,13 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
         }
     }
 
+    onUserChange(changeContext: ChangeContext) {
+        if (!this.dataChangeOnSlideEnd) {
+            this.dataProviderChange.emit(changeContext.value);
+            this.dataProviderHighChange.emit(changeContext.highValue);
+        }
+    }
+
     onUserChangeEnd(changeContext: ChangeContext) {
         this.dataProviderChange.emit(changeContext.value);
         this.dataProviderHighChange.emit(changeContext.highValue);
