@@ -11,15 +11,15 @@ var clearGroups;
  *
  * @public
  * @param {Array<{id: String|Number ,
-  				text: String=,
-  				styleClass: String=,
-  				iconStyleClass: String=,
-  				enabled: Boolean=,
-  				data: Object=,
-  				menuItems: Array=,
-  				isDivider : Boolean=}>} menuItems is an array of MenuItem objects. 
-  				Each MenuItem object should set the required properties 'id', which uniquely identifies the menuItem object in menu, and 'text' property.
-  				The MenuItem may contain the optional properties 'styleClass', 'iconStyleClass', 'data', 'enabled', 'menuItems', 'isDivider'
+                    text: String=,
+                    styleClass: String=,
+                    iconStyleClass: String=,
+                    enabled: Boolean=,
+                    data: Object=,
+                    menuItems: Array=,
+                    isDivider : Boolean=}>} menuItems is an array of MenuItem objects. 
+                    Each MenuItem object should set the required properties 'id', which uniquely identifies the menuItem object in menu, and 'text' property.
+                    The MenuItem may contain the optional properties 'styleClass', 'iconStyleClass', 'data', 'enabled', 'menuItems', 'isDivider'
  *
  * @example var menu = [{
   id: 1,
@@ -28,11 +28,11 @@ var clearGroups;
   iconStyleClass:  "glyphicon glyphicon-search",
   data: { description: "This is sample information that can be added to a menuItem" },
   menuItems: [{
-  	id: 5,
-  	text: "Sub Item #1"
-  	}, {
-  	id: 6,
-  	text: "Sub Item #2"
+        id: 5,
+        text: "Sub Item #1"
+        }, {
+        id: 6,
+        text: "Sub Item #2"
   }]
   }, {
   id: 2,
@@ -47,8 +47,8 @@ var clearGroups;
   elements.sideNavigation.setRootMenuItems(menu);
  * */
 $scope.api.setRootMenuItems = function(menuItems) {
-	$scope.model.menu = menuItems;
-	menuItems = $scope.model.menu;
+    $scope.model.menu = menuItems;
+    menuItems = $scope.model.menu;
 }
 
 /**
@@ -58,8 +58,8 @@ $scope.api.setRootMenuItems = function(menuItems) {
  * @return {Array<CustomType<servoyextra-sidenav.MenuItem>>}
  * */
 $scope.api.getRootMenuItems = function() {
-	var menuItems = $scope.model.menu;
-	return menuItems;
+    var menuItems = $scope.model.menu;
+    return menuItems;
 }
 
 /**
@@ -71,7 +71,7 @@ $scope.api.getRootMenuItems = function() {
  * @return {CustomType<servoyextra-sidenav.MenuItem>}
  * */
 $scope.api.getMenuItem = function(menuItemId) {
-	return  getNodeById(menuItemId, $scope.model.menu);
+    return getNodeById(menuItemId, $scope.model.menu);
 }
 
 /**
@@ -83,9 +83,9 @@ $scope.api.getMenuItem = function(menuItemId) {
  * @return {CustomType<servoyextra-sidenav.MenuItem>}
  * */
 $scope.api.getParentMenuItem = function(menuItemId) {
-	/** @type {CustomType<servoyextra-sidenav.MenuItem>} */
-	var parent = getParentNode(menuItemId, $scope.model.menu);
-	return parent;
+    /** @type {CustomType<servoyextra-sidenav.MenuItem>} */
+    var parent = getParentNode(menuItemId, $scope.model.menu);
+    return parent;
 }
 
 /**
@@ -99,12 +99,12 @@ $scope.api.getParentMenuItem = function(menuItemId) {
  * @return {Boolean}
  * */
 $scope.api.setMenuItemEnabled = function(menuItemId, enabled) {
-	var node = getNodeById(menuItemId, $scope.model.menu);
-	if (node) {
-		node.enabled = enabled;
-		return true;
-	}
-	return false;
+    var node = getNodeById(menuItemId, $scope.model.menu);
+    if (node) {
+        node.enabled = enabled;
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -131,55 +131,55 @@ $scope.api.setMenuItemEnabled = function(menuItemId, enabled) {
   iconStyleClass:  "glyphicon glyphicon-search",
   data: { description: "This is sample information that can be added to a menuItem" },
   menuItems: [{
-  	id: 101,
-  	text: "Sub Item #1"
-  	}, {
-  	id: 102,
-  	text: "Sub Item #2"}]
+        id: 101,
+        text: "Sub Item #1"
+        }, {
+        id: 102,
+        text: "Sub Item #2"}]
   };
   elements.sideNavigation.addMenuItem(menuItem, 1, 0);</pre>
  * 
  * @return {Boolean}
  * */
 $scope.api.addMenuItem = function(menuItem, menuItemId, index) {
-	var nodes;
+    var nodes;
 
-	// find the nodes
-	if (menuItemId) { // add to node
-		var node = getNodeById(menuItemId, $scope.model.menu);
-		if (node) {
-			if (!node.menuItems) node.menuItems = [];
-			nodes = node.menuItems;
-		} else {
-			// TODO can i add some log here !?
-			// cannot find node with menuItemId
-			return false;
-		}
-	} else { // add to root
-		if (!$scope.model.menu) $scope.model.menu = [];
-		nodes = $scope.model.menu;
-	}
+    // find the nodes
+    if (menuItemId) { // add to node
+        var node = getNodeById(menuItemId, $scope.model.menu);
+        if (node) {
+            if (!node.menuItems) node.menuItems = [];
+            nodes = node.menuItems;
+        } else {
+            // TODO can i add some log here !?
+            // cannot find node with menuItemId
+            return false;
+        }
+    } else { // add to root
+        if (!$scope.model.menu) $scope.model.menu = [];
+        nodes = $scope.model.menu;
+    }
 
-	if (nodes) {
-		if (typeof (index) === 'number' && index >= 0 && index <= nodes.length) {
-			// insert in a proper position
-			var newNodes = nodes.splice(0, index).concat([menuItem]).concat(nodes);
-			if (node) {	 // add to node
-				node.menuItems = newNodes;
-			} else {	// add to root
-				$scope.model.menu = newNodes;
-			}
-		} else if (index === null || index === undefined) {
-			nodes.push(menuItem);
-		} else {
-			// invalid index
-			// TODO how to handle this exception ?
-			throw "invalid argument index " + index;
-		}
-		return true;
-	} else {
-		return false;
-	}
+    if (nodes) {
+        if (typeof (index) === 'number' && index >= 0 && index <= nodes.length) {
+            // insert in a proper position
+            var newNodes = nodes.splice(0, index).concat([menuItem]).concat(nodes);
+            if (node) {	 // add to node
+                node.menuItems = newNodes;
+            } else {	// add to root
+                $scope.model.menu = newNodes;
+            }
+        } else if (index === null || index === undefined) {
+            nodes.push(menuItem);
+        } else {
+            // invalid index
+            // TODO how to handle this exception ?
+            throw "invalid argument index " + index;
+        }
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /**
@@ -192,31 +192,31 @@ $scope.api.addMenuItem = function(menuItem, menuItemId, index) {
  * @return {Boolean}
  * */
 $scope.api.removeMenuItem = function(menuItemId) {
-	var nodes;
-	var index;
+    var nodes;
+    var index;
 
-	// find path to node;
-	var pathIndex = getPathToNode(menuItemId, $scope.model.menu);
-	if (pathIndex && pathIndex.length) {
-		index = pathIndex.pop();
+    // find path to node;
+    var pathIndex = getPathToNode(menuItemId, $scope.model.menu);
+    if (pathIndex && pathIndex.length) {
+        index = pathIndex.pop();
 
-		// find parent node and index;
-		if (pathIndex.length === 0) { // item is in root
-			nodes = $scope.model.menu;
-			$scope.model.menu = nodes.slice(0, index).concat(nodes.slice(index + 1, nodes.length));
-		} else if (pathIndex && pathIndex.length > 0) { // find the parent element
-			var parentNode = getNodeByIndexPath(pathIndex, $scope.model.menu);
-			if (parentNode) {
-				nodes = parentNode.menuItems;
-				parentNode.menuItems = nodes.slice(0, index).concat(nodes.slice(index + 1, nodes.length));
-			}
-		} else { // parent not found
-			console.log("debug: this should not happen");
-			return false;
-		}
-		return true;
-	}
-	return false;
+        // find parent node and index;
+        if (pathIndex.length === 0) { // item is in root
+            nodes = $scope.model.menu;
+            $scope.model.menu = nodes.slice(0, index).concat(nodes.slice(index + 1, nodes.length));
+        } else if (pathIndex && pathIndex.length > 0) { // find the parent element
+            var parentNode = getNodeByIndexPath(pathIndex, $scope.model.menu);
+            if (parentNode) {
+                nodes = parentNode.menuItems;
+                parentNode.menuItems = nodes.slice(0, index).concat(nodes.slice(index + 1, nodes.length));
+            }
+        } else { // parent not found
+            console.log("debug: this should not happen");
+            return false;
+        }
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -227,14 +227,14 @@ $scope.api.removeMenuItem = function(menuItemId) {
 * @return {Array<CustomType<servoyextra-sidenav.MenuItem>>} 
 */
 $scope.api.getSubMenuItems = function(menuItemId) {
-	/** @type {Array<CustomType<servoyextra-sidenav.MenuItem>>} */
-	var menuItems;
-	var tree = $scope.model.menu;
-	var node = getNodeById(menuItemId, tree);
-	if (node) {
-		menuItems = node.menuItems;
-	}
-	return menuItems;
+    /** @type {Array<CustomType<servoyextra-sidenav.MenuItem>>} */
+    var menuItems;
+    var tree = $scope.model.menu;
+    var node = getNodeById(menuItemId, tree);
+    if (node) {
+        menuItems = node.menuItems;
+    }
+    return menuItems;
 }
 
 /**
@@ -261,9 +261,9 @@ $scope.api.getSubMenuItems = function(menuItemId) {
   iconStyleClass:  "glyphicon glyphicon-search",
   data: { description: "This is sample information that can be added to a menuItem" },
   menuItems: [{
-  	id: 12,
-  	text: "Sub Item #1"
-  	}
+        id: 12,
+        text: "Sub Item #1"
+        }
   }]
   }, {
   id: 11,
@@ -276,13 +276,13 @@ $scope.api.getSubMenuItems = function(menuItemId) {
  * @return {Boolean}
  * */
 $scope.api.setSubMenuItems = function(menuItemId, menuItems) {
-	var tree = $scope.model.menu;
-	var node = getNodeById(menuItemId, tree);
-	if (node) {
-		node.menuItems = menuItems;
-		return true;
-	}
-	return false;
+    var tree = $scope.model.menu;
+    var node = getNodeById(menuItemId, tree);
+    if (node) {
+        node.menuItems = menuItems;
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -295,12 +295,12 @@ $scope.api.setSubMenuItems = function(menuItemId, menuItems) {
  * @return {Boolean}
  * */
 $scope.api.removeSubMenuItems = function(menuItemId) {
-	var node = getNodeById(menuItemId, $scope.model.menu);
-	if (node) {
-		delete node.menuItems;
-		return true;
-	}
-	return false;
+    var node = getNodeById(menuItemId, $scope.model.menu);
+    if (node) {
+        delete node.menuItems;
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -321,19 +321,19 @@ $scope.api.removeSubMenuItems = function(menuItemId) {
  * @param {Number} [depth] 1-based. Default 1.
  *  */
 $scope.api.clearMenuItems = function(depth) {
-	if (!depth) depth = 1;
-	if (depth === 1) { // if level is one remove the root
-		$scope.model.menu = [];
-	} else { // remove all subnodes at level
-		var nodes = $scope.model.menu;
-		clearGroups(depth, nodes, 2);
-	}
+    if (!depth) depth = 1;
+    if (depth === 1) { // if level is one remove the root
+        $scope.model.menu = [];
+    } else { // remove all subnodes at level
+        var nodes = $scope.model.menu;
+        clearGroups(depth, nodes, 2);
+    }
 
-	// TODO call update menu items
-	// clear indexes at deeper level
-	// clearSelectedIndex(level - 1);
-	// storeSelectedIndex();
-	// $scope.svyServoyapi.apply("menu");
+    // TODO call update menu items
+    // clear indexes at deeper level
+    // clearSelectedIndex(level - 1);
+    // storeSelectedIndex();
+    // $scope.svyServoyapi.apply("menu");
 }
 
 /**
@@ -347,24 +347,24 @@ $scope.api.clearMenuItems = function(depth) {
  * @return {CustomType<servoyextra-sidenav.MenuItem>} 
  * */
 function getNodeById(menuItemId, nodes) {
-	/** @type {CustomType<servoyextra-sidenav.MenuItem>} */
-	var node;
-	/** @type {CustomType<servoyextra-sidenav.MenuItem>} */
-	var subNode;
-	if (nodes) {
-		for (var i = 0; i < nodes.length; i++) { // search in each subtree
-		
-			subNode = nodes[i];
-			if (subNode.id == menuItemId) { // find the node
-				return subNode;
-			}
-			node = getNodeById(menuItemId, subNode.menuItems);
-			if (node) {
-				return node;
-			}
-		}
-	}
-	return node;
+    /** @type {CustomType<servoyextra-sidenav.MenuItem>} */
+    var node;
+    /** @type {CustomType<servoyextra-sidenav.MenuItem>} */
+    var subNode;
+    if (nodes) {
+        for (var i = 0; i < nodes.length; i++) { // search in each subtree
+
+            subNode = nodes[i];
+            if (subNode.id == menuItemId) { // find the node
+                return subNode;
+            }
+            node = getNodeById(menuItemId, subNode.menuItems);
+            if (node) {
+                return node;
+            }
+        }
+    }
+    return node;
 }
 
 /**
@@ -378,21 +378,21 @@ function getNodeById(menuItemId, nodes) {
  * @return {CustomType<servoyextra-sidenav.MenuItem>}
  * */
 getNodeByIndexPath = function(path, nodes) {
-	
-	/** @type {CustomType<servoyextra-sidenav.MenuItem>} */
-	var node = null;
-	if (nodes) {
-		if (path && path.length === 1) {
-			node = nodes[path[0]];
-		} else if (path && path.length) {
-			var subPathIndex = path[0];
-			var subtree = nodes[subPathIndex].menuItems;
-			node = getNodeByIndexPath(path.slice(1, path.length), subtree);
-		} else { // is the root
-			node = nodes;
-		}
-	}
-	return node;
+
+    /** @type {CustomType<servoyextra-sidenav.MenuItem>} */
+    var node = null;
+    if (nodes) {
+        if (path && path.length === 1) {
+            node = nodes[path[0]];
+        } else if (path && path.length) {
+            var subPathIndex = path[0];
+            var subtree = nodes[subPathIndex].menuItems;
+            node = getNodeByIndexPath(path.slice(1, path.length), subtree);
+        } else { // is the root
+            node = nodes;
+        }
+    }
+    return node;
 }
 
 /**
@@ -405,22 +405,22 @@ getNodeByIndexPath = function(path, nodes) {
  *
  * @return {Array<Number>} */
 getPathToNode = function(idOrNode, nodes, key) {
-	if (!key) key = 'id';
-	var menuItemId = idOrNode[key] ? idOrNode[key] : idOrNode;
+    if (!key) key = 'id';
+    var menuItemId = idOrNode[key] ? idOrNode[key] : idOrNode;
 
-	if (nodes) { // for each node in nodes
-		for (var i = 0; i < nodes.length; i++) { // search in each subtree
-			var subTree = nodes[i];
-			if (subTree[key] == menuItemId) { // find the node
-				return [i];
-			}
-			var path = getPathToNode(menuItemId, subTree.menuItems, key);
-			if (path) {
-				return [i].concat(path);
-			}
-		}
-	}
-	return null;
+    if (nodes) { // for each node in nodes
+        for (var i = 0; i < nodes.length; i++) { // search in each subtree
+            var subTree = nodes[i];
+            if (subTree[key] == menuItemId) { // find the node
+                return [i];
+            }
+            var path = getPathToNode(menuItemId, subTree.menuItems, key);
+            if (path) {
+                return [i].concat(path);
+            }
+        }
+    }
+    return null;
 }
 
 /**
@@ -432,12 +432,12 @@ getPathToNode = function(idOrNode, nodes, key) {
  *
  * @return {CustomType<servoyextra-sidenav.MenuItem>} */
 getParentNode = function(menuItemId, nodes) {
-	var indexPath = getPathToNode(menuItemId, nodes);
-	if (indexPath && indexPath.length > 1) {
-		indexPath.pop();
-		return getNodeByIndexPath(indexPath, nodes)
-	}
-	return null;
+    var indexPath = getPathToNode(menuItemId, nodes);
+    if (indexPath && indexPath.length > 1) {
+        indexPath.pop();
+        return getNodeByIndexPath(indexPath, nodes)
+    }
+    return null;
 }
 
 /**
@@ -451,10 +451,10 @@ getParentNode = function(menuItemId, nodes) {
  * @return {CustomType<servoyextra-sidenav.MenuItem>} 
  * */
 getParentNodeByIndexPath = function(indexPath, nodes) {
-	if (indexPath && indexPath.length > 1) {
-		return getNodeByIndexPath(indexPath.slice(0, indexPath.length - 1), nodes);
-	}
-	return null;
+    if (indexPath && indexPath.length > 1) {
+        return getNodeByIndexPath(indexPath.slice(0, indexPath.length - 1), nodes);
+    }
+    return null;
 }
 
 /**
@@ -465,12 +465,12 @@ getParentNodeByIndexPath = function(indexPath, nodes) {
  * @return Array
  * */
 getNodeLevel = function(nodeId) {
-	var path = getPathToNode(nodeId, $scope.model.menu);
-	if (path) {
-		return path.length;
-	} else {
-		return null;
-	}
+    var path = getPathToNode(nodeId, $scope.model.menu);
+    if (path) {
+        return path.length;
+    } else {
+        return null;
+    }
 }
 
 /**
@@ -483,15 +483,15 @@ getNodeLevel = function(nodeId) {
  *
  *  */
 clearGroups = function(level, nodes, deep) {
-	if (nodes) {
-		for (var i = 0; i < nodes.length; i++) { // go one level deeper
-			var subTree = nodes[i];
-			if (level === deep) { // delete all subgroups
-				delete subTree.menuItems;
-			}
-			clearGroups(level, subTree.menuItems, deep + 1);
-		}
-	}
+    if (nodes) {
+        for (var i = 0; i < nodes.length; i++) { // go one level deeper
+            var subTree = nodes[i];
+            if (level === deep) { // delete all subgroups
+                delete subTree.menuItems;
+            }
+            clearGroups(level, subTree.menuItems, deep + 1);
+        }
+    }
 }
 
 /**
@@ -503,9 +503,9 @@ clearGroups = function(level, nodes, deep) {
  * @return {Array<Number>}
  * */
 getSelectedIndexPath = function(level) {
-	var selectedNode = getSelectedNode(level);
-	var path = getPathToNode(selectedNode.id, $scope.model.menu);
-	return path;
+    var selectedNode = getSelectedNode(level);
+    var path = getPathToNode(selectedNode.id, $scope.model.menu);
+    return path;
 }
 
 /**`
@@ -516,18 +516,18 @@ getSelectedIndexPath = function(level) {
  * @return {CustomType<servoyextra-sidenav.MenuItem>}
  * */
 function getSelectedNode(level) {
-	var levels = $scope.model.selectedIndex ? JSON.parse($scope.model.selectedIndex) : {};
-	var maxLevel = -1;
+    var levels = $scope.model.selectedIndex ? JSON.parse($scope.model.selectedIndex) : {};
+    var maxLevel = -1;
 
-	// get the node at deeper level
-	for (var lvl in levels) {
-		if (lvl > maxLevel && (!level || lvl <= level)) {
-			maxLevel = lvl;
-		}
-	}
+    // get the node at deeper level
+    for (var lvl in levels) {
+        if (lvl > maxLevel && (!level || lvl <= level)) {
+            maxLevel = lvl;
+        }
+    }
 
-	var nodeId = levels[maxLevel];
-	return getNodeById(nodeId, $scope.model.menu);
+    var nodeId = levels[maxLevel];
+    return getNodeById(nodeId, $scope.model.menu);
 }
 
 /**
@@ -541,8 +541,8 @@ function getSelectedNode(level) {
  * @return {CustomType<servoyextra-sidenav.MenuItem>}
  * */
 $scope.api.getSelectedMenuItem = function(level) {
-	// TODO if level is greater then selected level, what should return ?
-	return getSelectedNode(level);
+    // TODO if level is greater then selected level, what should return ?
+    return getSelectedNode(level);
 }
 
 /**
@@ -563,44 +563,44 @@ $scope.api.getSelectedMenuItem = function(level) {
  *
  *  */
 $scope.api.setSelectedMenuItem = function(id, mustExecuteOnMenuItemSelect, mustExecuteOnMenuItemExpand, level) {
-	
-	var nodes;
-	var levelPath = [];
 
-	// if level is provided search only in the selected node
-	if (level && level > 1) { // search in selected node only
-		levelPath = getSelectedIndexPath(level - 1);
-		var parentNode = getNodeByIndexPath(levelPath, $scope.model.menu); // retrieve the selected node at level
-		if (parentNode) nodes = parentNode.menuItems;
-	} else if (level === 1) { // search in root
-		// FIXME it searches in the whole tree
-		nodes = $scope.model.menu;
-	} else {
-		nodes = $scope.model.menu;
-	}
+    var nodes;
+    var levelPath = [];
 
-	// search path to node
-	var path = levelPath;
-	var subPath = getPathToNode(id, nodes, 'id');
-	if (subPath) { // not found in the selected node
-		path = levelPath.concat(subPath);
-	} else {
-		return false;
-	}
+    // if level is provided search only in the selected node
+    if (level && level > 1) { // search in selected node only
+        levelPath = getSelectedIndexPath(level - 1);
+        var parentNode = getNodeByIndexPath(levelPath, $scope.model.menu); // retrieve the selected node at level
+        if (parentNode) nodes = parentNode.menuItems;
+    } else if (level === 1) { // search in root
+        // FIXME it searches in the whole tree
+        nodes = $scope.model.menu;
+    } else {
+        nodes = $scope.model.menu;
+    }
 
-	// do nothing if the item is already selected
-	var selectedIndex = $scope.model.selectedIndex ? JSON.parse($scope.model.selectedIndex) : {};
-	if (isNodeSelected(id, path.length) && !selectedIndex[path.length + 1]) {
-		return true;
-	} else {
-		// search the node
-		var node = getNodeByIndexPath(subPath, nodes);
+    // search path to node
+    var path = levelPath;
+    var subPath = getPathToNode(id, nodes, 'id');
+    if (subPath) { // not found in the selected node
+        path = levelPath.concat(subPath);
+    } else {
+        return false;
+    }
 
-		// select the item
-		var preventSelectHandler = mustExecuteOnMenuItemSelect == true ? false : true;
-		var preventExpandHandler = mustExecuteOnMenuItemExpand == true ? false : true;
-		return selectItem(path.length, path[path.length - 1], node, null, preventSelectHandler, preventExpandHandler);
-	}
+    // do nothing if the item is already selected
+    var selectedIndex = $scope.model.selectedIndex ? JSON.parse($scope.model.selectedIndex) : {};
+    if (isNodeSelected(id, path.length) && !selectedIndex[path.length + 1]) {
+        return true;
+    } else {
+        // search the node
+        var node = getNodeByIndexPath(subPath, nodes);
+
+        // select the item
+        var preventSelectHandler = mustExecuteOnMenuItemSelect == true ? false : true;
+        var preventExpandHandler = mustExecuteOnMenuItemExpand == true ? false : true;
+        return selectItem(path.length, path[path.length - 1], node, null, preventSelectHandler, preventExpandHandler);
+    }
 }
 
 /**
@@ -617,21 +617,21 @@ $scope.api.setSelectedMenuItem = function(id, mustExecuteOnMenuItemSelect, mustE
  * @return {Boolean}
  *  */
 $scope.api.setMenuItemExpanded = function(menuItemId, expanded, mustExecuteOnMenuItemExpand) {
-	var node = getNodeById(menuItemId, $scope.model.menu);
-	
-	if (!node) {
-		return false;
-	}
+    var node = getNodeById(menuItemId, $scope.model.menu);
 
-	// expandItem/collapsItem requires node level
-	var level = getNodeLevel(menuItemId);
-	var preventHandler = mustExecuteOnMenuItemExpand == true ? false : true;
+    if (!node) {
+        return false;
+    }
 
-	if (expanded) {
-		return expandItem(level, null, node, null, preventHandler);
-	} else {
-		return collapseItem(level, null, node, null, preventHandler);
-	}
+    // expandItem/collapsItem requires node level
+    var level = getNodeLevel(menuItemId);
+    var preventHandler = mustExecuteOnMenuItemExpand == true ? false : true;
+
+    if (expanded) {
+        return expandItem(level, null, node, null, preventHandler);
+    } else {
+        return collapseItem(level, null, node, null, preventHandler);
+    }
 
 }
 
@@ -646,33 +646,33 @@ $scope.api.setMenuItemExpanded = function(menuItemId, expanded, mustExecuteOnMen
  * Expand the item */
 function expandItem(level, index, item, event, preventHandler) {
 
-	// check if node is already collapsed
-	if (isNodeExpanded(item.id, level)) {
-		return true;
-	}
+    // check if node is already collapsed
+    if (isNodeExpanded(item.id, level)) {
+        return true;
+    }
 
-	// prevent selection if item is disabled
-	if (isDisabled(item.id)) {
-		return false;
-	}
-	
-	// create a dummy jsevent
-	if (!event) {
-		event = createJSEvent();
-	}
+    // prevent selection if item is disabled
+    if (isDisabled(item.id)) {
+        return false;
+    }
 
-	// if is expanded
-	if (preventHandler != true && $scope.handlers.onMenuItemExpanded) { // change selection only if onMenuItemSelected allows it
-		try {
-			$scope.handlers.onMenuItemExpanded(item.id, event);
-		} catch (err) {
-			console.log(err);
-		}
-	}
-	setExpandedIndex(level, index, item);
-	
+    // create a dummy jsevent
+    if (!event) {
+        event = createJSEvent();
+    }
 
-	return true;
+    // if is expanded
+    if (preventHandler != true && $scope.handlers.onMenuItemExpanded) { // change selection only if onMenuItemSelected allows it
+        try {
+            $scope.handlers.onMenuItemExpanded(item.id, event);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    setExpandedIndex(level, index, item);
+
+
+    return true;
 }
 
 /**
@@ -686,31 +686,31 @@ function expandItem(level, index, item, event, preventHandler) {
  * Collapse the Item */
 function collapseItem(level, index, item, event, preventHandler) {
 
-	// check if node is already collapsed
-	if (!isNodeExpanded(item.id, level)) {
-		return true;
-	}
+    // check if node is already collapsed
+    if (!isNodeExpanded(item.id, level)) {
+        return true;
+    }
 
-	// prevent selection if item is disabled
-	if (isDisabled(item.id)) {
-		return false;
-	}
-	
-	if (!event) { //
-		event = createJSEvent();
-	}
+    // prevent selection if item is disabled
+    if (isDisabled(item.id)) {
+        return false;
+    }
 
-	// call handler onMenuItemCollapsed
-	if (preventHandler != true && $scope.handlers.onMenuItemCollapsed) {
-		try {
-			$scope.handlers.onMenuItemCollapsed(item.id, event);
-		} catch (err) {
-			console.log(err);
-		}
-	}
-	clearExpandedIndex(level - 1);
-	
-	return true;
+    if (!event) { //
+        event = createJSEvent();
+    }
+
+    // call handler onMenuItemCollapsed
+    if (preventHandler != true && $scope.handlers.onMenuItemCollapsed) {
+        try {
+            $scope.handlers.onMenuItemCollapsed(item.id, event);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    clearExpandedIndex(level - 1);
+
+    return true;
 }
 
 /**
@@ -723,32 +723,32 @@ function collapseItem(level, index, item, event, preventHandler) {
  *
  * */
 function setExpandedIndex(level, index, item) {
-	var levels = $scope.model.expandedIndex ? JSON.parse($scope.model.expandedIndex) : { };
+    var levels = $scope.model.expandedIndex ? JSON.parse($scope.model.expandedIndex) : {};
 
-	// clear sub levels
-	for (var lvl in levels) {
-		if (lvl > level) { // reset the next levels
-			delete levels[lvl];
-		}
-	}
+    // clear sub levels
+    for (var lvl in levels) {
+        if (lvl > level) { // reset the next levels
+            delete levels[lvl];
+        }
+    }
 
-	// expand all anchestors
-	var newExpandedIndex = { }
-	var anchestors = getNodeAnchestors(item.id);
-	for (var i = 0; i < anchestors.length; i++) {
-		if (newExpandedIndex[i + 1] != anchestors[i].id) {
-			newExpandedIndex[i + 1] = anchestors[i].id;
-		}
-	}
+    // expand all anchestors
+    var newExpandedIndex = {}
+    var anchestors = getNodeAnchestors(item.id);
+    for (var i = 0; i < anchestors.length; i++) {
+        if (newExpandedIndex[i + 1] != anchestors[i].id) {
+            newExpandedIndex[i + 1] = anchestors[i].id;
+        }
+    }
 
-	// TODO select all parents as well
-	// expand node index
-	if (levels[level] != item.id) { // collapse the selected menu
-		newExpandedIndex[level] = item.id;
-	}
+    // TODO select all parents as well
+    // expand node index
+    if (levels[level] != item.id) { // collapse the selected menu
+        newExpandedIndex[level] = item.id;
+    }
 
-	// apply selected index
-	$scope.model.expandedIndex = JSON.stringify(newExpandedIndex);
+    // apply selected index
+    $scope.model.expandedIndex = JSON.stringify(newExpandedIndex);
 }
 
 /**
@@ -757,17 +757,17 @@ function setExpandedIndex(level, index, item) {
  * @param {Number} level
  *  */
 function clearExpandedIndex(level) {
-	var levels = $scope.model.expandedIndex ? JSON.parse($scope.model.expandedIndex) : { };
+    var levels = $scope.model.expandedIndex ? JSON.parse($scope.model.expandedIndex) : {};
 
-	// reset all sub levels
-	for (var lvl in levels) {
-		if (lvl > level) { // reset the next levels
-			delete levels[lvl];
-		}
-	}
-	
-	// apply selected index
-	$scope.model.expandedIndex = JSON.stringify(levels);
+    // reset all sub levels
+    for (var lvl in levels) {
+        if (lvl > level) { // reset the next levels
+            delete levels[lvl];
+        }
+    }
+
+    // apply selected index
+    $scope.model.expandedIndex = JSON.stringify(levels);
 }
 
 /**
@@ -782,47 +782,47 @@ function clearExpandedIndex(level) {
  * Select the main Item */
 function selectItem(level, index, item, event, preventSelectHandler, preventExpandHandler) {
 
-	// prevent selection if item is disabled
-	if (isDisabled(item.id)) {
-		return false;
-	}
-	
-	// create a dummy jsevent
-	if (!event) {
-		event = createJSEvent();
-	}
+    // prevent selection if item is disabled
+    if (isDisabled(item.id)) {
+        return false;
+    }
 
-	if (preventSelectHandler != true && $scope.handlers.onMenuItemSelected) { // change selection only if onMenuItemSelected allows it
-		try {
-			var confirm = $scope.handlers.onMenuItemSelected(item.id, event)
-			if (confirm !== false) {
-				confirmSelection();
-			} else {
-				return false;
-			}
-		} catch (err) {
-			console.log(err);
-			return false;
-		}
-	} else {
-		confirmSelection();
-	}	
-	
-	function confirmSelection() {
-		setSelectedIndex(level, index, item);
+    // create a dummy jsevent
+    if (!event) {
+        event = createJSEvent();
+    }
 
-		// expand the item
-		if (item.menuItems) { // expand the node if not leaf
-			expandItem(level, index, item, event, preventExpandHandler); // TODO add collapsed argument
-		} else { // expand the parent node if is a leaf
-			var parentNode = getParentNode(item.id);
-			if (parentNode) {
-				expandItem(level - 1, null, parentNode, event, preventExpandHandler);
-			}
-		}
-	}
-	
-	return true;
+    if (preventSelectHandler != true && $scope.handlers.onMenuItemSelected) { // change selection only if onMenuItemSelected allows it
+        try {
+            var confirm = $scope.handlers.onMenuItemSelected(item.id, event)
+            if (confirm !== false) {
+                confirmSelection();
+            } else {
+                return false;
+            }
+        } catch (err) {
+            console.log(err);
+            return false;
+        }
+    } else {
+        confirmSelection();
+    }
+
+    function confirmSelection() {
+        setSelectedIndex(level, index, item);
+
+        // expand the item
+        if (item.menuItems) { // expand the node if not leaf
+            expandItem(level, index, item, event, preventExpandHandler); // TODO add collapsed argument
+        } else { // expand the parent node if is a leaf
+            var parentNode = getParentNode(item.id);
+            if (parentNode) {
+                expandItem(level - 1, null, parentNode, event, preventExpandHandler);
+            }
+        }
+    }
+
+    return true;
 }
 
 /**
@@ -834,38 +834,38 @@ function selectItem(level, index, item, event, preventSelectHandler, preventExpa
  * @param {CustomType<servoyextra-sidenav.MenuItem>} item
  *
  * */
-function setSelectedIndex (level, index, item) {
-	var levels = $scope.model.selectedIndex ? JSON.parse($scope.model.selectedIndex) : {};
+function setSelectedIndex(level, index, item) {
+    var levels = $scope.model.selectedIndex ? JSON.parse($scope.model.selectedIndex) : {};
 
-	// clear level below selection (clearSelectedIndex)
-	
-	// reset all sub levels
-	for (var lvl in levels) {
-		if (lvl > level) { // reset the next levels
-			delete levels[lvl];
-		}
-	}
+    // clear level below selection (clearSelectedIndex)
 
-	//				// update levels above selection, all anchestors
-	var newSelectedIndex = { }
-	var anchestors = getNodeAnchestors(item.id);
-	for (var i = 0; i < anchestors.length; i++) {
-		if (newSelectedIndex[i + 1] != anchestors[i].id) {
-			newSelectedIndex[i + 1] = anchestors[i].id;
-		}
-	}
+    // reset all sub levels
+    for (var lvl in levels) {
+        if (lvl > level) { // reset the next levels
+            delete levels[lvl];
+        }
+    }
 
-	// TODO select all parents as well
-	// set level index
-	if (levels[level] == item.id) { // collapse the selected menu
-		// TODO allow unselect !?
-		newSelectedIndex[level] = item.id;
-	} else {
-		newSelectedIndex[level] = item.id;
-	}
-	
-	// apply selected index
-	$scope.model.selectedIndex = JSON.stringify(newSelectedIndex);
+    //				// update levels above selection, all anchestors
+    var newSelectedIndex = {}
+    var anchestors = getNodeAnchestors(item.id);
+    for (var i = 0; i < anchestors.length; i++) {
+        if (newSelectedIndex[i + 1] != anchestors[i].id) {
+            newSelectedIndex[i + 1] = anchestors[i].id;
+        }
+    }
+
+    // TODO select all parents as well
+    // set level index
+    if (levels[level] == item.id) { // collapse the selected menu
+        // TODO allow unselect !?
+        newSelectedIndex[level] = item.id;
+    } else {
+        newSelectedIndex[level] = item.id;
+    }
+
+    // apply selected index
+    $scope.model.selectedIndex = JSON.stringify(newSelectedIndex);
 
 }
 
@@ -878,18 +878,18 @@ function setSelectedIndex (level, index, item) {
  * @return {Boolean}
  *  */
 function isNodeSelected(nodeId, level) {
-	var levels = $scope.model.selectedIndex ? JSON.parse($scope.model.selectedIndex) : {};
-	
-	if (level) {
-		return levels[level] == nodeId;
-	} else {
-		for (level in levels) {
-			if (levels[level] == nodeId) {
-				return true;
-			}
-		}
-	}
-	return false;
+    var levels = $scope.model.selectedIndex ? JSON.parse($scope.model.selectedIndex) : {};
+
+    if (level) {
+        return levels[level] == nodeId;
+    } else {
+        for (level in levels) {
+            if (levels[level] == nodeId) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 /**
@@ -901,17 +901,17 @@ function isNodeSelected(nodeId, level) {
  * @return {Boolean}
  *  */
 function isNodeExpanded(nodeId, level) {
-	var levels = $scope.model.expandedIndex ? JSON.parse($scope.model.expandedIndex) : {};
-	if (level) {
-		return levels[level] == nodeId;
-	} else {
-		for (level in levels) {
-			if (levels[level] == nodeId) {
-				return true;
-			}
-		}
-	}
-	return false;
+    var levels = $scope.model.expandedIndex ? JSON.parse($scope.model.expandedIndex) : {};
+    if (level) {
+        return levels[level] == nodeId;
+    } else {
+        for (level in levels) {
+            if (levels[level] == nodeId) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 /**
@@ -921,9 +921,9 @@ function isNodeExpanded(nodeId, level) {
  * @return {Array}
  *  */
 function getNodeAnchestors(nodeId) {
-	var anchestors = getAllNodesToNodeId(nodeId);
-	anchestors.pop();
-	return anchestors;
+    var anchestors = getAllNodesToNodeId(nodeId);
+    anchestors.pop();
+    return anchestors;
 }
 
 /**
@@ -934,18 +934,18 @@ function getNodeAnchestors(nodeId) {
  * @return Array
  * */
 function getAllNodesToNodeId(nodeId) {
-	var nodes = $scope.model.menu;
-	var pathIndex = getPathToNode(nodeId, nodes);
-	var anchestors = [];
-	var node;
+    var nodes = $scope.model.menu;
+    var pathIndex = getPathToNode(nodeId, nodes);
+    var anchestors = [];
+    var node;
 
-	// returns all the anchestors of node
-	for (var i = 0; pathIndex && i < pathIndex.length; i++) {
-		node = nodes[pathIndex[i]];
-		anchestors.push(node);
-		nodes = node.menuItems;
-	}
-	return anchestors;
+    // returns all the anchestors of node
+    for (var i = 0; pathIndex && i < pathIndex.length; i++) {
+        node = nodes[pathIndex[i]];
+        anchestors.push(node);
+        nodes = node.menuItems;
+    }
+    return anchestors;
 }
 
 /**
@@ -957,35 +957,35 @@ function getAllNodesToNodeId(nodeId) {
  * @return {Boolean}
  *  */
 function isDisabled(nodeId) {
-	// check if menu itself is disable
-	if ($scope.model.enabled == false) {
-		return true;
-	}
+    // check if menu itself is disable
+    if ($scope.model.enabled == false) {
+        return true;
+    }
 
-	// TODO refactor: use getNodeAnchestors
-	var indexPath = getPathToNode(nodeId, $scope.model.menu);
-	var tree = $scope.model.menu;
-	/** @type {CustomType<servoyextra-sidenav.MenuItem>} */
-	var node;
+    // TODO refactor: use getNodeAnchestors
+    var indexPath = getPathToNode(nodeId, $scope.model.menu);
+    var tree = $scope.model.menu;
+    /** @type {CustomType<servoyextra-sidenav.MenuItem>} */
+    var node;
 
-	if (!indexPath || !indexPath.length) {
-		return null;
-	}
+    if (!indexPath || !indexPath.length) {
+        return null;
+    }
 
-	for (var i = 0; i < indexPath.length; i++) {
-		node = tree[indexPath[i]];
-		if (node.enabled == false) {
-			return true;
-		}
-		tree = node.menuItems;
-	}
-	return false;
+    for (var i = 0; i < indexPath.length; i++) {
+        node = tree[indexPath[i]];
+        if (node.enabled == false) {
+            return true;
+        }
+        tree = node.menuItems;
+    }
+    return false;
 }
 
 /** @private  */
 function createJSEvent() {
-	var event = {type:'event'}
-	return event;
+    var event = { type: 'event' }
+    return event;
 }
 
 /**
@@ -993,21 +993,29 @@ function createJSEvent() {
  * @return {Boolean}
  *  */
 $scope.api.showForm = function(formToHide, menuIDToShow) {
-	var formHideIsOK = true;
-	
-    if (formToHide)
-    {
-		formHideIsOK = servoyApi.hideForm(formToHide);
+    var formHideIsOK = true;
+
+    if (formToHide) {
+        formHideIsOK = servoyApi.hideForm(formToHide);
     }
-    
-    if (!formHideIsOK) return false;    
-    
-	var menuItem = getNodeById(menuIDToShow, $scope.model.menu);
-	
-	if (!menuItem) return false;
-	
-    $scope.model.containedForm = menuItem.formName;
-    $scope.model.relationName = menuItem.relationName ? menuItem.relationName : null; 
-    
-    return true;  
+
+    if (!formHideIsOK) return false;
+
+    var menuItem = getNodeById(menuIDToShow, $scope.model.menu);
+
+    if (menuItem) {
+        $scope.model.containedForm = menuItem.formName;
+        $scope.model.relationName = menuItem.relationName ? menuItem.relationName : null;
+        return true;
+    }
+    else if ($scope.model.servoyMenu) {
+        menuItem = $scope.model.servoyMenu.findMenuItem(menuIDToShow);
+        if (menuItem) {
+            $scope.model.containedForm = menuItem.getExtraProperty('Sidenav', 'formName');
+            $scope.model.relationName = menuItem.getExtraProperty('Sidenav', 'relationName');
+            return true;
+        }
+    }
+
+    return false;
 }

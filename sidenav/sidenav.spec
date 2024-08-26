@@ -12,8 +12,8 @@
 	"keywords": ["left", "right", "navigation"],
 	"model":
 	{
-		"menu"							: {"type" :"MenuItem[]", "default" : [], "pushToServer": "allow"},
-		
+		"menu"							: {"type" :"MenuItem[]", "default" : [], "pushToServer": "reject"},
+		"servoyMenu"                    : {"type" :"JSMenu", "extraPropertiesCategory" : "Sidenav","extraProperties": { "badgeText": "tagstring","badgeStyleClass": {"type" : "styleclass", "default": "badge text-bg-secondary"}, "formName": "form", "relationName": "relation", "isDivider": "boolean","data" : "object" }},
 		"selectedIndex"					: {"type" :"string", "tags": { "scope" :"private" }, "pushToServer" : "deep"},
 		"expandedIndex"					: {"type" :"string", "tags": { "scope" :"private" }, "pushToServer" : "deep"},
 		"tabSeq"						: { "type": "tabseq", "tags": { "scope": "design" } },

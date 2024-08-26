@@ -36,6 +36,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
     @Input() expandedIndex: any;
     @Output() expandedIndexChange = new EventEmitter();
     @Input() menu: Array<MenuItem>;
+    @Input() servoyMenu: any;
 
     @Input() onMenuItemSelected: (id: string, event: MouseEvent) => Promise<boolean>;
     @Input() onMenuItemExpanded: (id: string, event: MouseEvent) => Promise<boolean>;
@@ -54,6 +55,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
     private realHeaderForm: any;
     private realFooterForm: any;
     private log: LoggerService;
+    private shouldCopyServoyMenu = false;
 
     constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, private servoyPublic: ServoyPublicService, @Inject(DOCUMENT) private doc: Document, logFactory: LoggerFactory) {
         super(renderer, cdRef);
@@ -64,6 +66,10 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         super.svyOnInit();
         if (!this.selectedIndex) this.selectedIndex = {};
         if (!this.expandedIndex) this.expandedIndex = {};
+        if (this.servoyMenu && (!this.menu || this.menu.length == 0)) {
+            this.shouldCopyServoyMenu = true;
+            this.copyServoyMenu();
+        }
     }
 
     svyOnChanges(changes: SimpleChanges) {
@@ -184,6 +190,14 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
                         }
                         else if (typeof this.selectedIndex == 'string') {
                             this.selectedIndex = JSON.parse(this.selectedIndex);
+                        }
+                        break;
+                    case 'servoyMenu':
+                        if (!change.firstChange) {
+                            this.copyServoyMenu();
+                        } else if (this.servoyMenu && (!this.menu || this.menu.length == 0)) {
+                            this.shouldCopyServoyMenu = true;
+                            this.copyServoyMenu();
                         }
                         break;
                 }
@@ -888,6 +902,41 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
             }, 450);
         }
     };
+
+    private copyServoyMenu() {
+        if (this.shouldCopyServoyMenu) {
+            if (this.servoyMenu) {
+                const oldMenu = new Array();
+                for (let i = 0; i < this.servoyMenu.items.length; i++) {
+                    this.copyServoyMenuItem(oldMenu, this.servoyMenu.items[i]);
+                }
+                this.menu = oldMenu;
+            }
+        }
+    }
+
+    private copyServoyMenuItem(destination: Array<MenuItem>, source: any) {
+        const menuItem = {} as MenuItem;
+        menuItem.text = source.menuText;
+        menuItem.id = source.itemID;
+        menuItem.iconStyleClass = source.iconStyleClass;
+        menuItem.styleClass = source.styleClass;
+        menuItem.enabled = source.enabled;
+        menuItem.data = source.extraProperties?.Sidenav?.data;
+        menuItem.isDivider = source.extraProperties?.Sidenav?.isDivider;
+        menuItem.tooltip = source.tooltipText;
+        menuItem.badgeText = source.extraProperties?.Sidenav?.badgeText;
+        menuItem.badgeStyleClass = source.extraProperties?.Sidenav?.badgeStyleClass;
+        menuItem.formName = source.extraProperties?.Sidenav?.formName;
+        menuItem.relationName = source.extraProperties?.Sidenav?.relationName;
+        if (source.items && source.items.length > 0) {
+            menuItem.menuItems = new Array();
+            for (let i = 0; i < source.items.length; i++) {
+                this.copyServoyMenuItem(menuItem.menuItems, source.items[i]);
+            }
+        }
+        destination.push(menuItem);
+    }
 }
 class MenuItem {
     public text: string;
