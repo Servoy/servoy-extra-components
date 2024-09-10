@@ -133,6 +133,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
         const tusOptions: TusOpts<any,any> = Object.assign({} as TusOpts<any,any>, this.tusOptions ? this.tusOptions : {});
         tusOptions.endpoint = this.servoyService.generateUploadUrl(this.servoyApi.getFormName(), this.name, 'onFileUploaded', true);
         if (!tusOptions.retryDelays) tusOptions.retryDelays = [0, 1000, 3000, 5000];
+        if (tusOptions.removeFingerprintOnSuccess === undefined) tusOptions.removeFingerprintOnSuccess = true;
         this.uppy.use(Tus, tusOptions);
 
         const debugLogger = {
