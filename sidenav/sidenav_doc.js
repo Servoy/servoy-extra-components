@@ -10,7 +10,7 @@
  *
  * @param {String|Number} id
  *
- *  */
+ */
 function setSelectedMenuItemAsync(id) {
 }
 
@@ -22,7 +22,7 @@ function setSelectedMenuItemAsync(id) {
  * @param {String|Number} menuItemId
  *
  * @return {Boolean}
- *  */
+ */
 function isMenuItemExpanded(menuItemId) {
 }
 
@@ -35,7 +35,7 @@ function isMenuItemExpanded(menuItemId) {
  * @param {String|Number} menuItemId
  *
  * @return {Boolean}
- *  */
+ */
 function isMenuItemEnabled(menuItemId) {
 }
 
@@ -61,42 +61,35 @@ function getSize(nodeId) {
  * Init the menu setting the root menuItems.
  *
  * @public
- * @param {Array<{id: String|Number ,
-                text: String=,
-                styleClass: String=,
-                iconStyleClass: String=,
-                enabled: Boolean=,
-                data: Object=,
-                menuItems: Array=,
-                isDivider : Boolean=}>} menuItems is an array of MenuItem objects. 
-                Each MenuItem object should set the required properties 'id', which uniquely identifies the menuItem object in menu, and 'text' property.
-                The MenuItem may contain the optional properties 'styleClass', 'iconStyleClass', 'data', 'enabled', 'menuItems', 'isDivider'
+ * @param {Array<{id: String|Number, text: String=, styleClass: String=, iconStyleClass: String=, enabled: Boolean=, data: Object=, menuItems: Array=, isDivider : Boolean=}>} menuItems is an array of MenuItem objects.
+ *               Each MenuItem object should set the required properties 'id', which uniquely identifies the menuItem object in menu, and 'text' property.
+ *               The MenuItem may contain the optional properties 'styleClass', 'iconStyleClass', 'data', 'enabled', 'menuItems', 'isDivider'
  *
  * @example var menu = [{
-  id: 1,
-  text: "Sample Item #1",
-  styleClass : "sn-large",
-  iconStyleClass:  "glyphicon glyphicon-search",
-  data: { description: "This is sample information that can be added to a menuItem" },
-  menuItems: [{
-    id: 5,
-    text: "Sub Item #1"
-    }, {
-    id: 6,
-    text: "Sub Item #2"
-  }]
-  }, {
-  id: 2,
-  text: "Sample Item #2"
-  },{
-  isDivider: true
-  },{
-  id: 3,
-  text: "Sample Item #3",
-  enabled: false
-  }];
-  elements.sideNavigation.setRootMenuItems(menu);
- * */
+ *  id: 1,
+ *  text: "Sample Item #1",
+ *  styleClass : "sn-large",
+ *  iconStyleClass:  "glyphicon glyphicon-search",
+ *  data: { description: "This is sample information that can be added to a menuItem" },
+ *  menuItems: [{
+ *    id: 5,
+ *    text: "Sub Item #1"
+ *    }, {
+ *    id: 6,
+ *    text: "Sub Item #2"
+ *  }]
+ *  }, {
+ *  id: 2,
+ *  text: "Sample Item #2"
+ *  },{
+ *  isDivider: true
+ *  },{
+ *  id: 3,
+ *  text: "Sample Item #3",
+ *  enabled: false
+ *  }];
+ *  elements.sideNavigation.setRootMenuItems(menu);
+ */
 function setRootMenuItems(menuItems) {
 }
 
@@ -105,7 +98,7 @@ function setRootMenuItems(menuItems) {
  * @public
  *
  * @return {Array<CustomType<servoyextra-sidenav.MenuItem>>}
- * */
+ */
 function getRootMenuItems() {
 }
 
@@ -116,7 +109,7 @@ function getRootMenuItems() {
  * @param {String|Number} menuItemId
  *
  * @return {CustomType<servoyextra-sidenav.MenuItem>}
- * */
+ */
 function getMenuItem(menuItemId) {
 }
 
@@ -127,7 +120,7 @@ function getMenuItem(menuItemId) {
  * @param {String|Number} menuItemId
  *
  * @return {CustomType<servoyextra-sidenav.MenuItem>}
- * */
+ */
 function getParentMenuItem(menuItemId) {
 }
 
@@ -140,7 +133,7 @@ function getParentMenuItem(menuItemId) {
  * @param {Boolean} enabled
  *
  * @return {Boolean}
- * */
+ */
 function setMenuItemEnabled(menuItemId, enabled) {
 }
 
@@ -162,22 +155,22 @@ function setMenuItemEnabled(menuItemId, enabled) {
  * @param {Number} [index]  0-based. The index at which to insert the item. Optional. Index value should not be greater then number of sibelings. Default is at the end.
  * 
  * @example<pre> var menuItem = {
-  id: 100,
-  text: "Sample Item #1",
-  styleClass : "nav-large nav-primary",
-  iconStyleClass:  "glyphicon glyphicon-search",
-  data: { description: "This is sample information that can be added to a menuItem" },
-  menuItems: [{
-    id: 101,
-    text: "Sub Item #1"
-    }, {
-    id: 102,
-    text: "Sub Item #2"}]
-  };
-  elements.sideNavigation.addMenuItem(menuItem, 1, 0);</pre>
+ *  id: 100,
+ *  text: "Sample Item #1",
+ *  styleClass : "nav-large nav-primary",
+ *  iconStyleClass:  "glyphicon glyphicon-search",
+ *  data: { description: "This is sample information that can be added to a menuItem" },
+ *  menuItems: [{
+ *    id: 101,
+ *    text: "Sub Item #1"
+ *    }, {
+ *    id: 102,
+ *    text: "Sub Item #2"}]
+ *  };
+ *  elements.sideNavigation.addMenuItem(menuItem, 1, 0);</pre>
  * 
  * @return {Boolean}
- * */
+ */
 function addMenuItem(menuItem, menuItemId, index) {
 }
 
@@ -189,7 +182,7 @@ function addMenuItem(menuItem, menuItemId, index) {
  * @param {String|Number} menuItemId
  *
  * @return {Boolean}
- * */
+ */
 function removeMenuItem(menuItemId) {
 }
 
@@ -209,38 +202,31 @@ function getSubMenuItems(menuItemId) {
  * @public
  *
  * @param {String|Number} menuItemId
- * @param {Array<{id: String|Number, 
- *          text: String=,
- *          styleClass: String=,
- *          iconStyleClass: String=,
- *          enabled: Boolean=,
- *          data: Object=,
- *          menuItems: Array=,
- *          isDivider : Boolean=}>} menuItems  is an array of MenuItem objects. 
- *                                  Each MenuItem object should set the required properties 'id', which uniquely identifies the menuItem object in menu, and 'text' property. 
- *                                  The MenuItem may contain the optional properties 'styleClass', 'iconStyleClass', 'data', 'enabled', 'menuItems', 'isDivider'.
+ * @param {Array<{id: String|Number, text: String=, styleClass: String=, iconStyleClass: String=, enabled: Boolean=, data: Object=, menuItems: Array=, isDivider : Boolean=}>} menuItems is an array of MenuItem objects.
+ *          Each MenuItem object should set the required properties 'id', which uniquely identifies the menuItem object in menu, and 'text' property. 
+ *          The MenuItem may contain the optional properties 'styleClass', 'iconStyleClass', 'data', 'enabled', 'menuItems', 'isDivider'.
  *
  * @example <pre>var menuItems = [{
-  id: 10,
-  text: "Sample Item #1",
-  styleClass : "sn-large",
-  iconStyleClass:  "glyphicon glyphicon-search",
-  data: { description: "This is sample information that can be added to a menuItem" },
-  menuItems: [{
-    id: 12,
-    text: "Sub Item #1"
-    }
-  }]
-  }, {
-  id: 11,
-  text: "Sample Item #2"
-  },{
-  isDivider: true
-  }];
-  elements.sideNavigation.setSubMenuItems(menuItems);</pre>
+ *  id: 10,
+ *  text: "Sample Item #1",
+ *  styleClass : "sn-large",
+ *  iconStyleClass:  "glyphicon glyphicon-search",
+ *  data: { description: "This is sample information that can be added to a menuItem" },
+ *  menuItems: [{
+ *    id: 12,
+ *    text: "Sub Item #1"
+ *    }
+ *  }]
+ *  }, {
+ *  id: 11,
+ *  text: "Sample Item #2"
+ *  },{
+ *  isDivider: true
+ *  }];
+ *  elements.sideNavigation.setSubMenuItems(menuItems);</pre>
  *
  * @return {Boolean}
- * */
+ */
 function setSubMenuItems(menuItemId, menuItems) {
 }
 
@@ -252,7 +238,7 @@ function setSubMenuItems(menuItemId, menuItems) {
  * @param {String|Number} menuItemId
  *
  * @return {Boolean}
- * */
+ */
 function removeSubMenuItems(menuItemId) {
 }
 
@@ -272,7 +258,7 @@ function removeSubMenuItems(menuItemId) {
  * </pre>
  *
  * @param {Number} [depth] 1-based. Default 1.
- *  */
+ */
 function clearMenuItems(depth) {
 }
 
@@ -283,7 +269,7 @@ function clearMenuItems(depth) {
  * @param {Number} [level] if level is provided search for the selected menu item at level.
  *
  * @return {CustomType<servoyextra-sidenav.MenuItem>}
- * */
+ */
 function getSelectedMenuItem(level) {
 }
 
@@ -301,7 +287,7 @@ function getSelectedMenuItem(level) {
  *
  * @return {Boolean}
  *
- *  */
+ */
 function setSelectedMenuItem(id, mustExecuteOnMenuItemSelect, mustExecuteOnMenuItemExpand, level) {
 }
 
@@ -315,7 +301,7 @@ function setSelectedMenuItem(id, mustExecuteOnMenuItemSelect, mustExecuteOnMenuI
  * @param {Boolean} [mustExecuteOnMenuItemExpand] Force the onMenuItemExpand to be executed. Default false.
  *
  * @return {Boolean}
- *  */
+ */
 function setMenuItemExpanded(menuItemId, expanded, mustExecuteOnMenuItemExpand) {
 }
 
@@ -323,6 +309,6 @@ function setMenuItemExpanded(menuItemId, expanded, mustExecuteOnMenuItemExpand) 
 /**
  * @private 
  * @return {Boolean}
- *  */
+ */
 function showForm(formToHide, formToShow, relationToShow) {
 }

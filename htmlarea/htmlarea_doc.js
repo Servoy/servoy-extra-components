@@ -1,13 +1,15 @@
 
 /**
- * Sets the scroll location of an element. It takes as input the X (horizontal) and Y (vertical) coordinates - starting from the TOP LEFT side of the screen - only for an element where the height of the element is greater than the height of element content
- * NOTE: getScrollX() can be used with getScrollY() to return the current scroll location of an element; then use the X and Y coordinates with the setScroll function to set a new scroll location. 
+ * Sets the scroll location of an element. It takes as input the X (horizontal) and Y (vertical) coordinates - starting from the TOP LEFT side of the screen - only for an element where the height of the element is greater than the height of element content<br/>
+ * NOTE: getScrollX() can be used with getScrollY() to return the current scroll location of an element; then use the X and Y coordinates with the setScroll function to set a new scroll location.<br/><br/> 
  * For Example:
+ * <pre>
  * //returns the X and Y coordinates
  * var x = forms.company.elements.myarea.getScrollX();
  * var y = forms.company.elements.myarea.getScrollY();
  * //sets the new location
  * forms.company.elements.myarea.setScroll(x+10,y+10);
+ * </pre>
  * @example
  * %%prefix%%%%elementName%%.setScroll(200,200);
  *
@@ -18,14 +20,16 @@ function setScroll(x, y) {
 }
 
 /**
-  * Returns the x scroll location of specified element - only for an element where height of element is less than the height of element content. 
-  * NOTE: getScrollX() can be used with getScrollY() to set the scroll location of an element using the setScroll function. 
+  * Returns the x scroll location of specified element - only for an element where height of element is less than the height of element content.<br/>
+  * NOTE: getScrollX() can be used with getScrollY() to set the scroll location of an element using the setScroll function.<br/><br/>
   * For Example:
+  * <pre>
   * //returns the X and Y scroll coordinates
   * var x = forms.company.elements.myarea.getScrollX();
   * var y = forms.company.elements.myarea.getScrollY(); 
   * //sets the new scroll location
   * forms.company.elements.myarea.setScroll(x+10,y+10);
+  * </pre>
   * @example
   * var x = %%prefix%%%%elementName%%.getScrollX();
   * 
@@ -35,13 +39,16 @@ function getScrollX() {
 }
 
 /**
-   * Returns the y scroll location of specified element - only for an element where height of element is less than the height of element content.
-   * NOTE: getScrollY() can be used with getScrollX() to set the scroll location of an element using the setScroll function. For Example:
+   * Returns the y scroll location of specified element - only for an element where height of element is less than the height of element content.<br/>
+   * NOTE: getScrollY() can be used with getScrollX() to set the scroll location of an element using the setScroll function.<br/><br/>
+   * For Example:
+   * <pre>
    * //returns the X and Y scroll coordinates
    * var x = forms.company.elements.myarea.getScrollX();
    * var y = forms.company.elements.myarea.getScrollY();
    * //sets the new scroll location
    * forms.company.elements.myarea.setScroll(x+10,y+10);
+   * </pre>
    * @example
    * var y = %%prefix%%%%elementName%%.getScrollY(); 
    * @return The y scroll location in pixels.

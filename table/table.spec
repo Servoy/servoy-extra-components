@@ -80,7 +80,7 @@
 			}]
 		},	
 		"onCellClick": {
-			"doc": "Called when the mouse is clicked on a row/cell (foundset and column indexes are given) or\nwhen the ENTER key is used then only the selected foundset index is given\nUse the record to exactly match where the user clicked on",
+			"doc": "Called when the mouse is clicked on a row/cell (foundset and column indexes are given) or when the ENTER key is used (then only the selected foundset index is given).\nUse the record to exactly match what the user clicked on.",
 			"parameters": [{
 				"name": "foundsetindex",
 				"type": "int"
@@ -126,7 +126,7 @@
 			}]
 		},
 		"onCellRightClick": {
-			"doc": "Called when the right mouse button is clicked on a row/cell (foundset and column indexes are given) or\nwhen the ENTER key is used then only the selected foundset index is given\nUse the record to exactly match where the user clicked on",
+			"doc": "Called when the right mouse button is clicked on a row/cell (foundset and column indexes are given).\nUse the record to exactly match what the user clicked on.",
 			"parameters": [{
 				"name": "foundsetindex",
 				"type": "int"

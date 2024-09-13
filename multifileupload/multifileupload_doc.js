@@ -1,6 +1,6 @@
 
 /**
- * Stop all uploads in progress and clear file selection, set progress to 0. 
+ * Stop all uploads in progress and clear file selection, set progress to 0.
  * Basically, return things to the way they were before any user input.
  */
 function reset() {
