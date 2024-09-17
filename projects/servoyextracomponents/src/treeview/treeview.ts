@@ -13,7 +13,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     @ViewChild('angularGrid') angularGrid: AngularTreeGridComponent;
 
     @Input() jsDataSet: any;
-	@Input() styleClass: string;
+	  @Input() styleClass: string;
 
     @Input() onNodeClicked: any;
     @Input() onNodeCollapsed: any;
@@ -22,6 +22,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     @Input() onNodeRightClicked: any;
     @Input() onNodeSelected: any;
     @Input() onReady: (e: JSEvent) => void;
+    @Input() onNodeAction: any;
 
     isTreeReady = false;
     dblClickTimeout: any = null;
@@ -120,6 +121,8 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
       }
       const treeColumnIdx = this.jsDataSet[0].indexOf('treeColumn');
 
+      const actionsIdx = this.jsDataSet[0].indexOf('actions');
+
       // index for extra columns
       const columnsIdx = [];
       for (let c = 0; c < this.jsDataSet[0].length; c++) {
@@ -138,6 +141,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         filter_function: (record) =>
           this.filterText.length === 0 || (this.filterMatchedNodes.indexOf(record.id) !== -1 || this.filterPartNodes.indexOf(record.id) !== -1)
       });
+
       if(columnsIdx.length) {
         for (let c = 1; c <= columnsIdx.length; c++) {
           this.configs.columns.push({
@@ -148,6 +152,17 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
             component: ServoyExtraTreeviewCellRenderer
           });
         }
+      }
+
+      // If actions exist, add a column for actions
+      if(actionsIdx !== -1) {
+        this.configs.columns.push({
+            treeview: this,
+            name: 'actions',
+            header: '',
+            type: 'custom',
+            component: ServoyExtraTreeviewCellRenderer
+        });
       }
 
       // in table view the first contains the table header names
@@ -166,6 +181,12 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         for (let c = 1; c <= columnsIdx.length; c++) {
           row['column' + c] = this.jsDataSet[i][columnsIdx[c - 1]];
         }
+
+        // If actions exist, add actions to the row
+        if (actionsIdx !== -1) {
+          row['actions'] = this.jsDataSet[i][actionsIdx];
+      }
+
 		ids.push(this.jsDataSet[i][idIdx]);
 		!['', null].includes(this.jsDataSet[i][pidIdx]) && pids.push(this.jsDataSet[i][pidIdx]);
         this.data.push(row);

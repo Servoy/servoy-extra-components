@@ -70,6 +70,21 @@
       						"type":"object"
       						}
       					]},
+		"onNodeAction": {
+		      		"parameters":[
+							{
+      						"name":"actionId",
+      						"type":"object"
+      						},
+      						{
+      						"name":"nodeId",
+      						"type":"object"
+      						},
+      						{
+      						"name":"event",
+      						"type":"JSEvent"
+      						}
+      					]},
       	"onReady": {
 		      	"parameters":[
       						{
