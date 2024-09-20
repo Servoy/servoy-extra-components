@@ -47,6 +47,9 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     
     folderImgPath = './assets/images/folder.png';
     fileImgPath = './assets/images/file.png';
+
+    //map internal name of the column to the original name as received in the jsDataSet
+    columnNameMap: { [key: string]: string } = {};
 	
 	constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, private servoyPublicService: ServoyPublicService) {
 		super(renderer, cdRef);
@@ -85,6 +88,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     updateTreeGridData() {
       this.configs.columns.length = 0;
       this.data = [];
+      this.columnNameMap = {};
       const ids: Array<number|string> = [];
       const pids: Array<number|string> = [];
 
@@ -116,15 +120,20 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         filter_function: (record) =>
           this.filterText.length === 0 || (this.filterMatchedNodes.indexOf(record.id) !== -1 || this.filterPartNodes.indexOf(record.id) !== -1)
       });
+
+      this.columnNameMap['treeColumn'] = this.jsDataSet[0][treeColumnIdx]; 
       if(columnsIdx.length) {
         for (let c = 1; c <= columnsIdx.length; c++) {
+          const internalName = 'column' + c;
+          const originalName = this.jsDataSet[0][columnsIdx[c - 1]]; // Get the original name
           this.configs.columns.push({
             treeview: this,
-            name: 'column' + c,
+            name: internalName,
             header: this.jsDataSet[1][columnsIdx[c - 1]],
             type: 'custom',
             component: ServoyExtraTreeviewCellRenderer
           });
+          this.columnNameMap[internalName] = originalName;
         }
       }
 
@@ -172,6 +181,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
 
     onclick(event) {
       this.rowID = event.row?.id || event.data.id;
+      const originalColumnName = this.columnNameMap[event.column.name];
       if(this.onNodeDoubleClicked) {
         if(this.dblClickTimeout) {
           this.onNodeDoubleClicked(this.rowID, event.event);
@@ -181,13 +191,13 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
           const id = this.rowID;
           this.dblClickTimeout = setTimeout(() => {
             if(this.onNodeClicked) {
-              this.onNodeClicked(id, event.event);
+              this.onNodeClicked(id, event.event, originalColumnName);
             }
             this.dblClickTimeout = null;
           }, 400);
         }
       } else if(this.onNodeClicked) {
-        this.onNodeClicked(this.rowID, event.event);
+        this.onNodeClicked(this.rowID, event.event, originalColumnName);
       }
     }
 

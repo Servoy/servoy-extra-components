@@ -1,5 +1,6 @@
 /**
  * Sets the tree data
+ * Note: additional columns must be prefixed with 'column' keyword
  * @param jsDataSet the JSDataSet used for the tree model
  * @example
  *  // in order to use font awesome icons, column should be called fa-icon (instead of icon) and should contain font awesome css classes 
