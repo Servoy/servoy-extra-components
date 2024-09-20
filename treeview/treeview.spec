@@ -25,6 +25,10 @@
       						{
       						"name":"event",
       						"type":"JSEvent"
+      						},
+							{
+      						"name":"columnName",
+      						"type":"string"
       						}
       					]},
       	"onNodeRightClicked": {
