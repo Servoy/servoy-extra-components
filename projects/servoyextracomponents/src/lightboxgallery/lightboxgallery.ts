@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, SimpleChanges, Renderer2, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectorRef, SimpleChanges, Renderer2, Input, ChangeDetectionStrategy, HostListener } from '@angular/core';
 import { ServoyBaseComponent, IFoundset } from '@servoy/public';
 import { Lightbox, LightboxConfig } from 'ngx-lightbox';
 
@@ -54,6 +54,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
         }
         this._lightboxConfig.wrapAround = this.wrapAround;
         this._lightboxConfig.showImageNumberLabel = this.showImageNumberLabel;
+		this._lightboxConfig.disableKeyboardNav = true;
 		setTimeout(() => {
 			this.loadMoreData();
 		}, 50);
@@ -71,13 +72,28 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
         }
         super.svyOnChanges(changes);
     }
+	
+	@HostListener('document:keydown', ['$event'])
+		onKeyDown(event: KeyboardEvent) {
+			if (event.code === 'ArrowRight') {
+				if (document.querySelector('.fadeIn.lightbox')) {
+					const nextBtn: HTMLElement = document.querySelector('.fadeIn.lightbox').querySelector('.lb-next');
+					if (nextBtn) nextBtn.click();
+				}
+			} else if (event.code === 'ArrowLeft') {
+				if (document.querySelector('.fadeIn.lightbox')) {
+					const prevBtn: HTMLElement = document.querySelector('.fadeIn.lightbox').querySelector('.lb-prev');
+					if (prevBtn) prevBtn.click();
+				}
+			}
+		}
 
     onScroll() {
- 		if (Math.abs(this.elementRef.nativeElement.scrollHeight - this.elementRef.nativeElement.clientHeight - this.elementRef.nativeElement.scrollTop) < 1) {
- 			if (this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
-				 this.imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize);
-			 }
- 		}
+		if (Math.abs(this.elementRef.nativeElement.scrollHeight - this.elementRef.nativeElement.clientHeight - this.elementRef.nativeElement.scrollTop) < 1) {
+			if (this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
+				this.imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize);
+			}
+		}
 	}
 
 	loadMoreData() {
@@ -99,7 +115,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 			if (this.images && this.images.length - 1 >= index) {
 				// open lightbox
 				this._lightbox.open(this.images, index);
-        		if (this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
+				if (this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
 					const interval = setInterval(() => {
 						if (document.querySelector('.fadeIn.lightbox')) {
 							document.querySelector('.fadeIn.lightbox').querySelector('.lb-next').addEventListener('click', this.handleClick);

@@ -25,6 +25,14 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
  					}
 				});
 				
+				$(document).on('keydown', function(event) {
+					if (event.code === 'ArrowRight') {
+						$('.lb-next').click();
+					} else if (event.code === 'ArrowLeft') {
+						$('.lb-prev').click();
+					}
+				});
+				
 				function updateTotalImages() {
 					var totalImages = $scope.model.imagesFoundset.serverSize - nullImages;
 					if ($scope.model.imagesFoundset.hasMoreRows) {
@@ -127,6 +135,7 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 								'showImageNumberLabel': $scope.model.showImageNumberLabel
 							})
 							$window.lightbox.init();
+							$window.lightbox.keyboardAction = null;
 						}, 50);
 				}
 				
