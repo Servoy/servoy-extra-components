@@ -328,3 +328,33 @@ $scope.api.setInitialCheckBoxValues = function(datasource, initialCheckboxValues
 $scope.api.setHasCheckBoxValue = function(datasource, hasCheckboxValue) {
 	$scope.model.foundsettree.getBinding(datasource).hasCheckboxValue = hasCheckboxValue;
 }
+
+/**
+* Set callback info for specific actions. 
+* 
+* @example
+* %%elementName%%.setActionsCallBack([[datasource, function1, arg1, element1], [datasource, function2, arg2, element2]]);
+* 
+* @param actions
+*/
+$scope.api.setActionsCallBack = function(actions) {
+	if (!$scope.model.actions) {
+		$scope.model.actions = [];
+	}
+	for (var i = 0; i < actions.length; i++){
+		var action = actions[i];
+		var datasource = action[0];
+		var callbackfunction = action[1];
+		var param = action[2];
+		var name = action[3];
+		if (param) {
+			$scope.model.foundsettree.getBinding(datasource).dataproviders.put("customAction-#-" + name, param);
+		}
+		$scope.model.actions.push({
+			datasource: datasource,
+			callbackfunction: callbackfunction,
+			param: param,
+			name: name
+		});
+	}
+}
