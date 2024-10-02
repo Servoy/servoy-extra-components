@@ -30,6 +30,8 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
 	@Input() styleClass: string;
     @Input() onReady: (e: JSEvent) => void;
     @Input() onDrop: (sourceNodePkPath: Array<string>, targetNodePkPath: Array<string>, indexInParent: number, e: JSEvent) => void;
+	
+	@Input() actions: Array<Action>;
 
     @Input() isInitialized: boolean;
     @Output() isInitializedChange = new EventEmitter();
@@ -50,6 +52,13 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
                     const doubleClick = node.data.callbackinfo;
                     doubleClick(node.data.callbackinfoParamValue);
                 }
+				if (node.data && this.actions) {
+					const action = this.getAction(event.target as HTMLElement);
+					if (action) {
+						const callback = action.callbackfunction;
+						callback(node.data.customActions[action.name]);
+					}
+				}
             },
             dblClick: (_tree, node, $event) => {
                 if (node.data && node.data.methodToCallOnDoubleClick) {
@@ -419,7 +428,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
 
         child.level = dataNode.level;
         child.name = dataNode.name;
-        child.tooltip = dataNode.tooltip;
+        child.tooltip = dataNode.tooltip || '';
         child.hascheckbox = dataNode.hascheckbox;
         child.checkboxautoselectschildren = dataNode.checkboxautoselectschildren;
         child.checked = dataNode.checked;
@@ -469,6 +478,15 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
                 child.methodToCallOnRightClickParamValue = dataNode.methodToCallOnRightClickParamValue;
             }
         }
+		
+		const customActions = Object.keys(dataNode).filter(item=>item.includes('customAction-#-'));
+		if (customActions.length) {
+			child.customActions = {}
+			customActions.forEach((item) => {
+				const value = dataNode[item];
+				child.customActions[item.split('customAction-#-')[1]] = value;
+			});
+		}
 
         return child;
     }
@@ -483,6 +501,10 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
         }
         return null;
     }
+	
+	private getAction(action: HTMLElement): Action {
+		return this.actions.filter((item) => [...(this.elementRef.nativeElement as HTMLElement).querySelectorAll(item.name)].includes(action))[0];
+	}
 
     private initTree(): void {
         this.displayNodes = [];
@@ -569,6 +591,13 @@ export class LevelVisibilityType extends BaseCustomObject {
     public level: number;
 }
 
+export class Action extends BaseCustomObject {
+	public datasource: number;
+    public callbackfunction: (param?: string) => void;
+    public param: string;
+	public name: string;
+}
+
 class ChildNode {
     parent?: TreeNode;
     parentID?: string;
@@ -597,6 +626,7 @@ class ChildNode {
     methodToCallOnDoubleClickParamValue?: any;
     methodToCallOnRightClick?: () => void;
     methodToCallOnRightClickParamValue?: any;
+	customActions?: object;
 }
 
 

@@ -316,3 +316,14 @@ function setInitialCheckBoxValues(datasource, initialCheckboxValues) {
 */
 function setHasCheckBoxValue(datasource, hasCheckboxValue) {
 }
+
+/**
+* Set callback info for specific actions. 
+* 
+* @example
+* %%elementName%%.setActionsCallBack([[datasource, function1, arg1, element1], [datasource, function2, arg2, element2]]);
+* 
+* @param actions
+*/
+function setActionsCallBack(actions) {
+}
