@@ -50,6 +50,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
     acceptFiles = '*/*';
     private ready = true;
     private log: LoggerService;
+    private hideProgressTimer: any;
 
     constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, private servoyService: ServoyPublicService, @Inject(DOCUMENT) private doc: Document, 
         logFactory: LoggerFactory,private fileutilsService: FileTypesUtilsService) {
@@ -134,12 +135,26 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
             this.fileInput.nativeElement.value = null;
         }
         this.cdRef.detectChanges();
+        this.hideProgress();
     };
 
     onWhenAddingFileFailed = () => {
         this.customText = this.uploadNotSupportedFileText;
         this.cdRef.detectChanges();
+        this.hideProgress();
     };
+
+    hideProgress = () => {
+        if(this.hideProgressTimer) clearTimeout(this.hideProgressTimer);
+        if(this.resultDisplayTimeout > -1) {
+            this.hideProgressTimer = setTimeout(() =>  {
+                this.hideProgressTimer = null;
+                this.uploader.progress = 0;
+                this.customText = this.uploadText;
+                this.cdRef.detectChanges();
+            } , this.resultDisplayTimeout);
+        }
+    }
 
     svyOnChanges(changes: SimpleChanges) {
         if (changes) {
@@ -169,6 +184,11 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
 
     getFocusElement(): any {
         return this.getNativeElement();
+    }
+
+    ngOnDestroy() {
+        super.ngOnDestroy();
+        if(this.hideProgressTimer) clearTimeout(this.hideProgressTimer);
     }
 }
 
