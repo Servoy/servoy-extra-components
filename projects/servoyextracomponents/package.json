@@ -38,7 +38,7 @@
     "ng-select2-component": "^15",
     "ng2-file-upload": "^7.0.1",
     "ngx-filesaver": "^18",
-    "ngx-lightbox": "<4",
+    "@servoy/ngx-lightbox": "<4",
     "rx-dom-html": "<8",
     "tinymce": "<7",
     "tinymce-i18n": ">=24",

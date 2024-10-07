@@ -22,7 +22,7 @@ import { FileUploadModule } from 'ng2-file-upload';
 import { BGPane } from './splitpane/bg_splitter/bg_pane.component';
 import { BGSplitter } from './splitpane/bg_splitter/bg_splitter.component';
 import { Select2Module } from 'ng-select2-component';
-import { LightboxModule } from 'ngx-lightbox';
+import { LightboxModule } from '@servoy/ngx-lightbox';
 import { ServoyExtraCollapse } from './collapse/collapse';
 import { Binding, Callback, LevelVisibilityType, RelationInfo, ServoyExtraDbtreeview } from './dbtreeview/dbtreeview';
 import { TreeModule } from '@ali-hm/angular-tree-component';

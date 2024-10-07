@@ -1,6 +1,6 @@
 import { Component, ChangeDetectorRef, SimpleChanges, Renderer2, Input, ChangeDetectionStrategy, HostListener } from '@angular/core';
 import { ServoyBaseComponent, IFoundset } from '@servoy/public';
-import { Lightbox, LightboxConfig } from 'ngx-lightbox';
+import { Lightbox, LightboxConfig } from '@servoy/ngx-lightbox';
 
 @Component({
     selector: 'servoyextra-lightboxgallery',
