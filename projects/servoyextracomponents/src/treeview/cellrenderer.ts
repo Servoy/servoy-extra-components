@@ -29,7 +29,7 @@ export class ServoyExtraTreeviewCellRenderer {
   }
 
   isFAIcon() {
-    return this.cell_value.isFAIcon;
+    return return this.cell_value.isFAIcon !== undefined ? this.cell_value.isFAIcon : false;
   }
 
   oncontextmenu(event) {
