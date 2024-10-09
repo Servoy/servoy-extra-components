@@ -114,8 +114,24 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
                         }
                         break;
                     case 'relationName':
-                        this.relationName = change.currentValue;
-                        break;
+                        // if only relationName is changed while containeForm remain the same, call a formWillShow with the new relation.
+						if (!changes.containedForm && this.containedForm) {
+							console.log('FormWillShow: ' + this.containedForm + ' relation: ' + this.relationName)
+                            this.servoyApi.formWillShow(this.containedForm,  this.relationName).then(() => {
+                                this.realContainedForm = this.containedForm;
+                            }).finally(() => this.cdRef.detectChanges());
+                        }
+                        if (!changes.headerForm && this.headerForm) {
+                           this.servoyApi.formWillShow(this.headerForm,  this.relationName).then(() => {
+                               this.realHeaderForm = this.headerForm;
+                           }).finally(() => this.cdRef.detectChanges());
+                        }
+                        if (!changes.footerForm && this.footerForm) {
+                           this.servoyApi.formWillShow(this.footerForm,  this.relationName).then(() => {
+                               this.realFooterForm = this.footerForm;
+                           }).finally(() => this.cdRef.detectChanges());
+                        }
+                        break;                        break;
                     case 'headerForm':
                         if (change.previousValue) {
                             this.servoyApi.hideForm(change.previousValue, null, null, this.headerForm, this.relationName).then(() => {
