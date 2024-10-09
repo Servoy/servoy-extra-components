@@ -21,15 +21,15 @@ export class ServoyExtraTreeviewCellRenderer {
   row_data: any;
 
   getLabel() {
-    return this.cell_value.text !== undefined ? this.cell_value.text : this.cell_value;
+    return (this.cell_value && this.cell_value.text !== undefined) ? this.cell_value.text : this.cell_value;
   }
 
   getIcon() {
-    return this.cell_value.icon !== undefined ? this.cell_value.icon : null;
+    return (this.cell_value && this.cell_value.icon !== undefined) ? this.cell_value.icon : null;
   }
 
   isFAIcon() {
-    return this.cell_value.isFAIcon !== undefined ? this.cell_value.isFAIcon : false;
+    return (this.cell_value && this.cell_value.isFAIcon !== undefined) ? this.cell_value.isFAIcon : false;
   }
 
   oncontextmenu(event) {
