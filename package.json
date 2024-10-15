@@ -26,7 +26,7 @@
     "@ng-bootstrap/ng-bootstrap": "17.0.0",
     "@popperjs/core": "2.11.8",
     "@servoy/canvas-gauges": "2.1.8",
-    "@servoy/ngx-lightbox": "file:../ngx-lightbox/publish",
+    "@servoy/ngx-lightbox": "^3.0.2",
     "@servoy/public": "2024.9.0",
     "@tinymce/tinymce-angular": "^7",
     "@uppy/angular": "0.7.0",
