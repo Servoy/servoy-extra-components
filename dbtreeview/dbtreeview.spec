@@ -29,7 +29,7 @@
 		"responsiveHeight": { "type": "int", "default": 0, "tags": { "doc" :"Height of the treeview, set only in responsive forms."} },
 		"isInitialized": { "type": "boolean", "default":false, "tags": {"scope" : "private", "allowaccess": "enabled"}, "pushToServer": "allow"},
 		"showLoadingIndicator": {"type": "boolean", "default": true},
-		"styleClass" : { "type" :"styleclass", "tags": { "scope" :"design" }, "values" :[]},
+		"styleClass" : { "type" :"styleclass", "tags": { "scope": "private" }, "values" :[]},
 		"actions": {"type":"action[]", "tags": { "scope": "private" }}
 	},
 	"handlers": {
