@@ -59,6 +59,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
 
     //map internal name of the column to the original name as received in the jsDataSet
     columnNameMap: { [key: string]: string } = {};
+    columnNameMapIndex: { [key: number]: string } = {};
 	
 	constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, private servoyPublicService: ServoyPublicService) {
 		super(renderer, cdRef);
@@ -98,6 +99,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
       this.configs.columns.length = 0;
       this.data = [];
       this.columnNameMap = {};
+      this.columnNameMapIndex = {};
       const ids: Array<number|string> = [];
       const pids: Array<number|string> = [];
 
@@ -130,7 +132,8 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
           this.filterText.length === 0 || (this.filterMatchedNodes.indexOf(record.id) !== -1 || this.filterPartNodes.indexOf(record.id) !== -1)
       });
 
-      this.columnNameMap['treeColumn'] = this.jsDataSet[0][treeColumnIdx]; 
+      this.columnNameMap['treeColumn'] = this.jsDataSet[0][treeColumnIdx];
+      this.columnNameMapIndex[0] = this.jsDataSet[0][treeColumnIdx];
       if(columnsIdx.length) {
         for (let c = 1; c <= columnsIdx.length; c++) {
           const internalName = 'column' + c;
@@ -143,6 +146,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
             component: ServoyExtraTreeviewCellRenderer
           });
           this.columnNameMap[internalName] = originalName;
+          this.columnNameMapIndex[c] = originalName;
         }
       }
 
@@ -190,7 +194,13 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
 
     onclick(event) {
       this.rowID = event.row?.id || event.data.id;
-      const originalColumnName = this.columnNameMap[event.column.name];
+      let originalColumnName = null;
+      if (event?.column?.name) {
+        originalColumnName = this.columnNameMap[event.column.name];
+      }
+      if (originalColumnName === null) {
+        originalColumnName = this.columnNameMapIndex[[...event.event.currentTarget.childNodes].filter(item=>item instanceof HTMLElement).indexOf(event.event.target)];
+      }
       if(this.onNodeDoubleClicked) {
         if(this.dblClickTimeout) {
           this.onNodeDoubleClicked(this.rowID, event.event);
