@@ -1,6 +1,6 @@
 import {
     Component, ViewChild, Input, Renderer2, ElementRef, OnDestroy, ChangeDetectorRef,
-    ChangeDetectionStrategy, Directive, Inject, HostListener, SecurityContext, SimpleChanges
+    ChangeDetectionStrategy, Directive, Inject, HostListener, SecurityContext, SimpleChanges, CSP_NONCE
 } from '@angular/core';
 import { BaseCustomObject, Format, IFoundset, IValuelist, ServoyBaseComponent, ViewPortRow, FoundsetChangeEvent, ChangeType, FormattingService, ViewportRowUpdates, LogLevel } from '@servoy/public';
 import { LoggerFactory, LoggerService } from '@servoy/public';
@@ -120,7 +120,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     private tHeadStyle: { cursor?: string; left?: string } = {};
 
     constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, logFactory: LoggerFactory, private sanitizer: DomSanitizer,
-        @Inject(DOCUMENT) private doc: Document, private formatter: FormattingService) {
+        @Inject(DOCUMENT) private doc: Document, private formatter: FormattingService, @Inject(CSP_NONCE) private nonce: string) {
         super(renderer, cdRef);
         this.log = logFactory.getLogger('Table');
 //        this.log.logLevel = this.log.logLevel = LogLevel.DEBUG;
@@ -1328,6 +1328,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
             if (!this.columnCSSRules[columnIndex]) {
                 if (!targetStyleSheet) {
                     const styleElement = this.doc.createElement('style');
+                    styleElement.nonce = this.nonce;
                     styleElement.type = 'text/css';
                     this.doc.getElementsByTagName('head')[0].appendChild(styleElement);
                     targetStyleSheet = styleElement.sheet;
