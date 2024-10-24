@@ -40,6 +40,15 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         expand_icon: '<i class="fa fa-caret-right"> </i>',
         collapse_icon: '<i class="fa fa-caret-down"> </i>',
       },
+      row_class_function: rec => {
+		if (rec.pid === null || rec.pid === undefined) {
+			return 'svy-treenode-root';
+		} else if (rec.leaf) {
+			return 'svy-treenode-leaf';
+		} else {
+			return 'svy-treenode';
+		}
+	  },
       columns: []
     };
 
