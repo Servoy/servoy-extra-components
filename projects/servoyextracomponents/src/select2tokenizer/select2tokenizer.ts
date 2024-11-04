@@ -338,7 +338,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     }
 
     hasKeyListenerAttribute() {
-		return Object.keys(this.servoyAttributes).includes('keylistener');
+		return this.servoyAttributes ? Object.keys(this.servoyAttributes).includes('keylistener') : false;
 	}
 
     setTabIndex(tabIndex: number) {
