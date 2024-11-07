@@ -1,5 +1,5 @@
 import { Component, SimpleChanges, Input, Output, Renderer2, ChangeDetectorRef, ContentChild, TemplateRef, EventEmitter, ViewChild, ElementRef, Inject } from '@angular/core';
-import { ServoyBaseComponent, ServoyPublicService } from '@servoy/public';
+import { ServoyBaseComponent, ServoyPublicService, IJSMenu, IJSMenuItem } from '@servoy/public';
 import { DOCUMENT } from '@angular/common';
 import { LoggerFactory, LoggerService } from '@servoy/public';
 
@@ -36,7 +36,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
     @Input() expandedIndex: any;
     @Output() expandedIndexChange = new EventEmitter();
     @Input() menu: Array<MenuItem>;
-    @Input() servoyMenu: any;
+    @Input() servoyMenu: IJSMenu;
 
     @Input() onMenuItemSelected: (id: string, event: MouseEvent) => Promise<boolean>;
     @Input() onMenuItemExpanded: (id: string, event: MouseEvent) => Promise<boolean>;
@@ -931,7 +931,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         }
     }
 
-    private copyServoyMenuItem(destination: Array<MenuItem>, source: any) {
+    private copyServoyMenuItem(destination: Array<MenuItem>, source: IJSMenuItem) {
         const menuItem = {} as MenuItem;
         menuItem.text = source.menuText;
         menuItem.id = source.itemID;
