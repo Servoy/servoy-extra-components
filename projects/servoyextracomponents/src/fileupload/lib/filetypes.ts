@@ -208,7 +208,7 @@ export class FileTypesUtilsService {
         { desc: "QuickAnime Player", mime: ["application/vnd.epson.quickanime"], ext: ["qam"] },
         { desc: "SimpleAnimeLite Player", mime: ["application/vnd.epson.salt"], ext: ["slt"] },
         { desc: "QUASS Stream Player", mime: ["application/vnd.epson.ssf"], ext: ["ssf"] },
-        { desc: "MICROSEC e-Szign¢", mime: ["application/vnd.eszigno3+xml"], ext: ["es3"] },
+        { desc: "MICROSEC e-Szignï¿½", mime: ["application/vnd.eszigno3+xml"], ext: ["es3"] },
         { desc: "EZPix Secure Photo Album", mime: ["application/vnd.ezpix-album"], ext: ["ez2"] },
         { desc: "EZPix Secure Photo Album", mime: ["application/vnd.ezpix-package"], ext: ["ez3"] },
         { desc: "Forms Data Format", mime: ["application/vnd.fdf"], ext: ["fdf"] },
@@ -742,7 +742,7 @@ export class FileTypesUtilsService {
         for (const i in this._filetypes) {
             let item = this._filetypes[i];
             if (s.indexOf("/") > -1) {
-                if (item.mime.indexOf(s) > -1) {
+                if (item.mime.indexOf(s) > -1 || item.mime[0].indexOf(s) > -1) {
                     matches.push(item);
                 }
             } else {

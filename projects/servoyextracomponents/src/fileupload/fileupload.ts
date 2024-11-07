@@ -82,8 +82,22 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
                     // library wants mime type here, so try to guess it
                     value = value.trim();
                     if (value.indexOf('/') > -1) {
-                        acceptedFiles.push(value);
-                        acceptedMimeTypes.push(value);
+                        if (value === 'image/*') {
+                            const allImagesAccepted: any[] = this.fileutilsService.find('image/');
+                            allImagesAccepted.forEach(item => {
+                                acceptedFiles.push(item.mime[0]);
+                                acceptedMimeTypes.push(item.mime[0]);
+                            });
+                        } else if (value === 'video/*') {
+                            const allVideosAccepted: any[] = this.fileutilsService.find('video/');
+                            allVideosAccepted.forEach(item => {
+                                acceptedFiles.push(item.mime[0]);
+                                acceptedMimeTypes.push(item.mime[0]);
+                            });
+                        } else {
+                            acceptedFiles.push(value);
+                            acceptedMimeTypes.push(value);
+                        }
                     } else {
                         if (value.indexOf('.') >= 0) value = value.substring(value.indexOf('.') + 1);
                         const mime = this.fileutilsService.mimeFor(value);
