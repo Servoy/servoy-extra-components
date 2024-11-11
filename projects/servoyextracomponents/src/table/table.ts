@@ -290,6 +290,11 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                     }
                     case 'currentPage': {
                         if (change.currentValue && change.currentValue !== change.previousValue) {
+                            if (change.isFirstChange()) {
+                                this.scrollToSelectionNeeded = true;
+                                this.log.debug('svy extra table * svyOnChanges currentPage changed; scrollToSelectionNeeded = true');
+                                this.scrollToSelectionIfNeeded();
+                            }
                             this.adjustLoadedRowsIfNeeded(); // load needed records from new page if needed
                         }
                         break;
@@ -428,6 +433,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                             });
                             return newLoadPromise;
                         } else if (allowedBounds.size > 0) fs.requestSelectionUpdate([allowedBounds.startIdx]).then(() => {
+                            this.log.debug('svy extra table * HOME key 1; scrollToSelectionNeeded = true');
                             this.scrollToSelectionNeeded = true; /* just in case selection was already on first */
                         });
                     }
@@ -437,6 +443,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                     else {
                         // selection did not change but we still need to scroll to it
                         this.scrollToSelectionNeeded = true;
+                        this.log.debug('svy extra table * HOME key 2; scrollToSelectionNeeded = true');
                         this.scrollToSelectionIfNeeded();
                     }
                 }
@@ -459,6 +466,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                             return newLoadPromise;
                         } else fs.requestSelectionUpdate([allowedBounds.startIdx + allowedBounds.size - 1]).then(() => {
                             this.scrollToSelectionNeeded = true; /* just in case selection was already on first */
+                            this.log.debug('svy extra table * END key 1; scrollToSelectionNeeded = true');
                         });
                         return null;
                     };
@@ -468,6 +476,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                     else {
                         // selection did not change but we still need to scroll to it
                         this.scrollToSelectionNeeded = true;
+                        this.log.debug('svy extra table * END key 2; scrollToSelectionNeeded = true');
                         this.scrollToSelectionIfNeeded();
                     }
                 }
