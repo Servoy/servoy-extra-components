@@ -14,7 +14,7 @@
 		"columns": { "type": "column[]", "droppable": true, "pushToServer": "shallow", "elementConfig": { "pushToServer": "shallow" }, "tags": { "wizard": "autoshow","allowaccess": "visible" } },
 		"currentPage": { "type": "int", "default": 1, "tags": { "scope": "runtime" }, "pushToServer": "shallow" },
 		"foundset": { "type": "foundset", "default" : {"foundsetSelector":""}, "pushToServer": "allow", "initialPreferredViewPortSize": 130, "sendSelectionViewportInitially": true },
-		"pageSize": { "type": "int", "default": 20, "tags": { "doc" :"Number of rows per page, 0 means infinite scrolling mode." } },
+		"pageSize": { "type": "foundsetInitialPreferredViewportSize", "for": "foundset", "default": 20, "tags": { "doc" :"Number of rows per page, 0 means infinite scrolling mode." } },
 		"styleClass": { "type": "styleclass", "tags": { "scope": "design" }, "default": "table", "values": ["table", "table-striped", "table-bordered", "table-hover", "table-condensed"] },
 		"sortStyleClass": { "type": "styleclass", "default": "selected-column " },
 		"selectionClass": { "type": "styleclass", "default": "table-servoyextra-selected " },
