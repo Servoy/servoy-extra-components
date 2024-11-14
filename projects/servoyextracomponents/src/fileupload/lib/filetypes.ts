@@ -208,7 +208,7 @@ export class FileTypesUtilsService {
         { desc: "QuickAnime Player", mime: ["application/vnd.epson.quickanime"], ext: ["qam"] },
         { desc: "SimpleAnimeLite Player", mime: ["application/vnd.epson.salt"], ext: ["slt"] },
         { desc: "QUASS Stream Player", mime: ["application/vnd.epson.ssf"], ext: ["ssf"] },
-        { desc: "MICROSEC e-Szign�", mime: ["application/vnd.eszigno3+xml"], ext: ["es3"] },
+        { desc: "MICROSEC e-Szign¢", mime: ["application/vnd.eszigno3+xml"], ext: ["es3"] },
         { desc: "EZPix Secure Photo Album", mime: ["application/vnd.ezpix-album"], ext: ["ez2"] },
         { desc: "EZPix Secure Photo Album", mime: ["application/vnd.ezpix-package"], ext: ["ez3"] },
         { desc: "Forms Data Format", mime: ["application/vnd.fdf"], ext: ["fdf"] },
