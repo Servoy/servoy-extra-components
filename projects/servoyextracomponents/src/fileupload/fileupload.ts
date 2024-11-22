@@ -133,9 +133,8 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
             this.uploader.onProgressItem = () => {
                 this.cdRef.detectChanges();
             };
-            if (!this.multiFileUpload || this.onFileTransferFinishedMethodID) {
-                this.uploader.onCompleteAll = this.onComplete;
-            }
+
+            this.uploader.onCompleteAll = this.onComplete;
             this.uploader.onWhenAddingFileFailed = this.onWhenAddingFileFailed;
             this.customText = this.uploadText;
         }
