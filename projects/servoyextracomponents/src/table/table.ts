@@ -424,7 +424,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                 if (this.keyCodeSettings && !this.keyCodeSettings.home) return;
                 const allowedBounds = this.calculateAllowedLoadedDataBounds();
                 if (fs.viewPort.startIndex > allowedBounds.startIdx) { // see if we have the first record loaded
-                    function loadFirstRecordsIfNeeded() {
+                    const loadFirstRecordsIfNeeded = () => {
                         // this can be executed delayed, after pending loads finish, so do check again if we still need to load bottom of foundset
                         if (fs.viewPort.startIndex > allowedBounds.startIdx) {
                             const newLoadPromise = this.foundset.loadRecordsAsync(allowedBounds.startIdx, Math.min(allowedBounds.size, this.getInitialPreferredLoadedSize()));
@@ -436,6 +436,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                             this.log.debug('svy extra table * HOME key 1; scrollToSelectionNeeded = true');
                             this.scrollToSelectionNeeded = true; /* just in case selection was already on first */
                         });
+                        return null;
                     }
                     this.runWhenThereIsNoPendingLoadRequest(loadFirstRecordsIfNeeded);
                 } else if (allowedBounds.size > 0) {
@@ -952,7 +953,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                         });
 
                         return newLoadPromise;
-                    }, this.scrollToSelectionIfNeeded);
+                    }, () => this.scrollToSelectionIfNeeded());
                 } else {
                     this.updateRenderedRows(null); // this will center rendered rows and scroll position change might load more needed records around the already-present selected row
                 }
@@ -2065,7 +2066,8 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     }
 
     // tries to center new interval of desired size around old interval without going past allowed bounds
-    private centerAroundOldIntervalWithNewSizeIfPossible(oldStartIdx: number, oldSize: number, allowedStartIdx: number, allowedSize: number, newDesiredSize: number) {
+    private centerAroundOldIntervalWithNewSizeIfPossible(oldStartIdx: number, oldSize: number,
+                allowedStartIdx: number, allowedSize: number, newDesiredSize: number) {
         // try to compute center start index and compute size (if it doesn't fit in the beginning slide towards end of allowed as much as possible)
         let computedStart = Math.max(Math.min(oldStartIdx - Math.floor((newDesiredSize - oldSize) / 2), allowedStartIdx + allowedSize - 1), allowedStartIdx);
         let computedSize = Math.min(newDesiredSize, allowedStartIdx + allowedSize - computedStart);
@@ -2148,11 +2150,12 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         const vp = this.foundset.viewPort;
         const allowedBounds = this.calculateAllowedLoadedDataBounds(); // { startIdx, size }
         const correctedLoadedStartIdx = Math.max(vp.startIndex, allowedBounds.startIdx);
-        const correctedLoadedSize = Math.min(vp.startIndex + vp.size, allowedBounds.startIdx + allowedBounds.size) - correctedLoadedStartIdx;
+        const correctedLoadedSize = Math.max(0, Math.min(vp.startIndex + vp.size, allowedBounds.startIdx + allowedBounds.size) - correctedLoadedStartIdx);
+        
         const minRenderSize = Math.min(this.getInitialRenderSize(), correctedLoadedSize);
 
         if ((this.renderedStartIndex < correctedLoadedStartIdx && this.renderedStartIndex + this.renderedSize <= correctedLoadedStartIdx)
-            || (this.renderedStartIndex >= correctedLoadedStartIdx + correctedLoadedSize && this.renderedStartIndex + this.renderedSize > correctedLoadedStartIdx + correctedLoadedSize)) {
+                || (this.renderedStartIndex >= correctedLoadedStartIdx + correctedLoadedSize && this.renderedStartIndex + this.renderedSize > correctedLoadedStartIdx + correctedLoadedSize)) {
             // rendered rows are completely outside the loaded rows; set size to -1 so we will correct them & start fresh with a maximum of minRenderSize rows rendered
             this.renderedStartIndex = 0;
             this.renderedSize = -1;
@@ -2250,6 +2253,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
             }
         }
     }
+
     private getInitialRenderSize() {
         const potentialInitialRenderSize = Math.floor(this.batchSizeForRenderingMoreRows * 3);
         return this.pageSize > 0 ? Math.min(potentialInitialRenderSize, this.pageSize) : potentialInitialRenderSize;
