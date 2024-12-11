@@ -22,9 +22,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
     @Input() displaysTags: boolean;
     @Input() accept: string;
     @Input() enabled: boolean;
-    @Input() location: any;
     @Input() name: string;
-    @Input() size: any;
     @Input() styleClass: string;
     @Input() styleClassExpression: string;
     @Input() iconStyleClass: string;

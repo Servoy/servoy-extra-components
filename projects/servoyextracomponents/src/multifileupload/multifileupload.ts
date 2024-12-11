@@ -34,7 +34,6 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     @Input() webcamOptions: WebcamOptions<any,any>;
     @Input() localeStrings: any;
     @Input() language: string;
-    @Input() size: { width: number, height: number };
 	@Input() responsiveWidth: string;
 	@Input() responsiveHeight: number;
 
