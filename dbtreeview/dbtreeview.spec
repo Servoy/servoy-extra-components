@@ -382,6 +382,22 @@
                             "type": "boolean"
                             }                           
                          ]
+        },
+        "updateCheckBoxValuesForTree": {
+            "parameters":[
+                            {                                                                 
+                            "name":"datasource",
+                            "type": "string"
+                            },
+                            {                                                                 
+                            "name":"pks",
+                            "type": "string[]"
+                            },
+                            {                                                                 
+                            "name":"state",
+                            "type": "boolean"
+                            }                               
+                         ]
         }
     },
 	"types": {
