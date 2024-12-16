@@ -922,16 +922,18 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
     private copyServoyMenu() {
         if (this.shouldCopyServoyMenu) {
             if (this.servoyMenu) {
+                this.selectedIndex = {};
                 const oldMenu = new Array();
                 for (let i = 0; i < this.servoyMenu.items.length; i++) {
-                    this.copyServoyMenuItem(oldMenu, this.servoyMenu.items[i]);
+                    this.copyServoyMenuItem(oldMenu, this.servoyMenu.items[i],1);
                 }
                 this.menu = oldMenu;
+                this.selectedIndexChange.emit(JSON.stringify(this.selectedIndex));
             }
         }
     }
 
-    private copyServoyMenuItem(destination: Array<MenuItem>, source: IJSMenuItem) {
+    private copyServoyMenuItem(destination: Array<MenuItem>, source: IJSMenuItem, level: number) {
         const menuItem = {} as MenuItem;
         menuItem.text = source.menuText;
         menuItem.id = source.itemID;
@@ -945,10 +947,13 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         menuItem.badgeStyleClass = source.extraProperties?.Sidenav?.badgeStyleClass;
         menuItem.formName = source.extraProperties?.Sidenav?.formName;
         menuItem.relationName = source.extraProperties?.Sidenav?.relationName;
+        if (source.isSelected){
+            this.selectedIndex[level] = source.itemID;
+        }
         if (source.items && source.items.length > 0) {
             menuItem.menuItems = new Array();
             for (let i = 0; i < source.items.length; i++) {
-                this.copyServoyMenuItem(menuItem.menuItems, source.items[i]);
+                this.copyServoyMenuItem(menuItem.menuItems, source.items[i], level + 1);
             }
         }
         destination.push(menuItem);
