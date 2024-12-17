@@ -27,6 +27,7 @@
         "note": 						{ "type": "tagstring" },
         "closeAfterFinish": 			{ "type": "boolean", "default": false, "tags": { "doc": "Whether to automatically close the modal when all current uploads are complete. If this is set, allowMultipleUploads and inline properties ahould be false."} },
         "sources": 						{ "type": "string[]", "elementConfig": { "values": ["Webcam", "ScreenCapture"], "default": "Webcam" }, "tags": { "doc": "Allows to add additional sources of files (other than the user's file system)" } },
+        "styleClass":                   { "type" : "styleclass", "tags": { "scope" :"design" }, "values" :[] },
         "metaFields": 					{ "type": "metaField[]", "tags": { "doc": "An array of UI field objects that will be shown when a user clicks the 'edit' button on that file" } },
         "language": 					{ "type": "string", "default": null, "values": ["English", "Spanish", "German", "French", "Dutch", "Italian", "Chinese", "Czech", "Danish", "Finnish", "Greek", "Hungarian", "Japanese", "Persian", "Russian", "Swedish", "Turkish"], "tags": { "doc": "One of the language packs shipped. If you need to provide your own translations, use the localeStrings property."} },
         "localeStrings":				{ "type": "map", "tags": { "doc": "Any number of key/value pairs to translate single strings in the component, overriding the ones provided by the language pack selected." } }, 

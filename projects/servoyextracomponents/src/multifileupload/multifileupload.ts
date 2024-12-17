@@ -36,6 +36,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     @Input() language: string;
 	@Input() responsiveWidth: string;
 	@Input() responsiveHeight: number;
+    @Input() styleClass: string;
 
     @Input() onFileUploaded: (file: any, event: JSEvent) => void;
     @Input() onFileAdded: (file: UploadFile, event: JSEvent) => void;
