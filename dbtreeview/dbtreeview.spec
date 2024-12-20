@@ -30,8 +30,7 @@
 		"isInitialized": { "type": "boolean", "default":false, "tags": {"scope" : "private", "allowaccess": "enabled"}, "pushToServer": "allow"},
 		"showLoadingIndicator": {"type": "boolean", "default": true},
 		"styleClass" : { "type" :"styleclass", "tags": { "scope" :"design" }, "values" :[]},
-		"actions": {"type":"action[]", "tags": { "scope": "private" }},
-		"servoyMenu": {"type" :"JSMenu", "tags": { "scope" :"private", "doc" :"Hidden property, just for adding the dataproviders for menu items"}, "pushToServer": "shallow", "extraPropertiesCategory" : "DBTreeView","extraProperties": { "hasCheckbox" : { "type" : "boolean", "default": false, "pushToServer": "allow"},"checkboxValue" : { "type" : "boolean", "default": false, "pushToServer": "allow"}}}
+		"actions": {"type":"action[]", "tags": { "scope": "private" }}
 	},
 	"handlers": {
 		      	"onReady": {
