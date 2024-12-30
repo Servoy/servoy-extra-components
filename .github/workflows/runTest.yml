@@ -1,0 +1,47 @@
+name: Run the cypress component tests
+
+on:
+  push:
+    branches:
+      - master
+      - 20**
+      - v20**
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  build:
+
+      runs-on: ubuntu-latest
+
+      steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Find component directory
+        id: find_component_dir
+        run: echo "COMPONENT_DIR=$(find . -type d -name 'META-INF' -exec dirname {} \;)" >> $GITHUB_ENV
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+          cache-dependency-path: ${{ env.COMPONENT_DIR }}/package-lock.json
+
+      - name: Install and run the cypress component tests
+        working-directory: ${{ env.COMPONENT_DIR }}
+        run: |
+          npm install
+          npm run cy:run
+          
+      - name: Upload artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts
+          path: ${{ env.COMPONENT_DIR }}/cypress/screenshots/**
+          if-no-files-found: ignore
+          retention-days: 30
+          
+  
