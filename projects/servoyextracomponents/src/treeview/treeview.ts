@@ -550,6 +550,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         const filterTextLC = this.filterText.toLowerCase();
         const processedData = this.angularGrid.store.getProcessedData();
         processedData.forEach(data => {
+          if (!data.treeColumn.text) return;
           const nodeTextLC = data.treeColumn.text.toLowerCase();
           if(nodeTextLC.indexOf(filterTextLC) !== -1) {
             if(this.filterMatchedNodes.indexOf(data.id) === -1) {
