@@ -162,6 +162,8 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                 this.dataProviderID = null;
             }
             this.dataProviderIDChange.emit(this.dataProviderID);
+            // todo if this was a deselect, should we not check this and don't go into the if below?
+            // i guess this could be a deselect to nothing but also a select to a 1 less value... (but selection is still more then 0)
             if (this.closeOnSelect && event.component.isOpen) {
                 event.component.toggleOpenAndClose();
  	        }
@@ -225,10 +227,10 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 
     removedOption(event: any) {
 		this.userChangedValue = true;
+        this.updateValue(event);
         if (this.openOnUnselect && !event.component.isOpen) {
             event.component.toggleOpenAndClose();
         }
-        this.updateValue(event);
     }
 
     listClosed(event: Select2) {
