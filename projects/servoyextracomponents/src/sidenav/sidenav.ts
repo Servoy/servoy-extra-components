@@ -121,23 +121,23 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
                         break;
                     case 'relationName':
                         // if only relationName is changed while containeForm remain the same, call a formWillShow with the new relation.
-						if (!changes.containedForm && this.containedForm) {
-							console.log('FormWillShow: ' + this.containedForm + ' relation: ' + this.relationName)
-                            this.servoyApi.formWillShow(this.containedForm,  this.relationName).then(() => {
+                        if (!changes.containedForm && this.containedForm) {
+                            console.log('FormWillShow: ' + this.containedForm + ' relation: ' + this.relationName)
+                            this.servoyApi.formWillShow(this.containedForm, this.relationName).then(() => {
                                 this.realContainedForm = this.containedForm;
                             }).finally(() => this.cdRef.detectChanges());
                         }
                         if (!changes.headerForm && this.headerForm) {
-                           this.servoyApi.formWillShow(this.headerForm,  this.relationName).then(() => {
-                               this.realHeaderForm = this.headerForm;
-                           }).finally(() => this.cdRef.detectChanges());
+                            this.servoyApi.formWillShow(this.headerForm, this.relationName).then(() => {
+                                this.realHeaderForm = this.headerForm;
+                            }).finally(() => this.cdRef.detectChanges());
                         }
                         if (!changes.footerForm && this.footerForm) {
-                           this.servoyApi.formWillShow(this.footerForm,  this.relationName).then(() => {
-                               this.realFooterForm = this.footerForm;
-                           }).finally(() => this.cdRef.detectChanges());
+                            this.servoyApi.formWillShow(this.footerForm, this.relationName).then(() => {
+                                this.realFooterForm = this.footerForm;
+                            }).finally(() => this.cdRef.detectChanges());
                         }
-                        break;                        break;
+                        break; break;
                     case 'headerForm':
                         if (change.previousValue) {
                             this.servoyApi.hideForm(change.previousValue, null, null, this.headerForm, this.relationName).then(() => {
@@ -442,7 +442,9 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 
         const confirmSelection = () => {
             this.setSelectedIndex(level, index, item);
-
+            if (this.servoyMenu) {
+                this.servoyMenu.setSelectedItem(item.id);
+            }
             // expand the item
             if (item.menuItems) { // expand the node if not leaf
                 if (!isItemAlreadySelected) { // expand the node if not isItemAlreadySelected
@@ -923,17 +925,22 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         if (this.shouldCopyServoyMenu) {
             if (this.servoyMenu) {
                 this.selectedIndex = {};
+                const selectedNode = {};
                 const oldMenu = new Array();
                 for (let i = 0; i < this.servoyMenu.items.length; i++) {
-                    this.copyServoyMenuItem(oldMenu, this.servoyMenu.items[i],1);
+                    this.copyServoyMenuItem(oldMenu, this.servoyMenu.items[i], 1, selectedNode);
                 }
                 this.menu = oldMenu;
+                const selection = Object.keys(selectedNode);
+                if (selection && selection.length == 1) {
+                    this.updateSelectedNode(selectedNode[selection[0]], this.menu, parseInt(selection[0]));
+                }
                 this.selectedIndexChange.emit(JSON.stringify(this.selectedIndex));
             }
         }
     }
 
-    private copyServoyMenuItem(destination: Array<MenuItem>, source: IJSMenuItem, level: number) {
+    private copyServoyMenuItem(destination: Array<MenuItem>, source: IJSMenuItem, level: number, selectedNode: any) {
         const menuItem = {} as MenuItem;
         menuItem.text = source.menuText;
         menuItem.id = source.itemID;
@@ -947,16 +954,29 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         menuItem.badgeStyleClass = source.extraProperties?.Sidenav?.badgeStyleClass;
         menuItem.formName = source.extraProperties?.Sidenav?.formName;
         menuItem.relationName = source.extraProperties?.Sidenav?.relationName;
-        if (source.isSelected){
-            this.selectedIndex[level] = source.itemID;
+        if (source.isSelected) {
+            selectedNode[level] = source.itemID;
         }
         if (source.items && source.items.length > 0) {
             menuItem.menuItems = new Array();
             for (let i = 0; i < source.items.length; i++) {
-                this.copyServoyMenuItem(menuItem.menuItems, source.items[i], level + 1);
+                this.copyServoyMenuItem(menuItem.menuItems, source.items[i], level + 1, selectedNode);
             }
         }
         destination.push(menuItem);
+    }
+
+    updateSelectedNode(nodeId: string, nodes: Array<MenuItem>, level: number) {
+        if (nodes) {
+            for (let i = 0; i < nodes.length; i++) {
+                const subTree = nodes[i];
+                if (subTree.id === nodeId) {
+                    this.selectItem(level, i, subTree, null, true, true);
+                    return;
+                }
+                this.updateSelectedNode(nodeId, subTree.menuItems, level);
+            }
+        }
     }
 }
 class MenuItem {
