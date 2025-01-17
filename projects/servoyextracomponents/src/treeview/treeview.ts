@@ -6,7 +6,8 @@ import { ServoyExtraTreeviewCellRenderer } from './cellrenderer';
 
 @Component({
     selector: 'servoyextra-treeview',
-    templateUrl: './treeview.html'
+    templateUrl: './treeview.html',
+    standalone: false
 })
 export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
 

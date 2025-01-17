@@ -12,7 +12,8 @@ import { FileProgress } from '@uppy/utils/lib/FileProgress';
 @Component({
     selector: 'servoyextra-multifileupload',
     templateUrl: './multifileupload.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivElement> {
 

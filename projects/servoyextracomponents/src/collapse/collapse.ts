@@ -4,9 +4,10 @@ import { ServoyPublicService } from '@servoy/public';
 import { DOCUMENT } from '@angular/common';
 
 @Component({
-	selector: 'servoyextra-collapse',
-	templateUrl: './collapse.html',
-	changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'servoyextra-collapse',
+    templateUrl: './collapse.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 
 export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{

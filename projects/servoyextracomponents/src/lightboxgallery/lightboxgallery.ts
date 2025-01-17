@@ -6,7 +6,8 @@ import { Lightbox, LightboxConfig } from '@servoy/ngx-lightbox';
     selector: 'servoyextra-lightboxgallery',
     templateUrl: './lightboxgallery.html',
     styleUrls: ['./lightboxgallery.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivElement> {
 

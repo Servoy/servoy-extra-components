@@ -5,7 +5,8 @@ import { RadialGauge } from './lib/radial-gauge';
 
 @Component({
     selector: 'servoyextra-gauge',
-    templateUrl: './gauge.html'
+    templateUrl: './gauge.html',
+    standalone: false
 })
 export class ServoyExtraGauge extends ServoyBaseComponent<HTMLDivElement> {
     @Input() gaugeType: string;

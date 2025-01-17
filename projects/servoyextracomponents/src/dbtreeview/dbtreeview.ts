@@ -8,7 +8,8 @@ import { IActionMapping, ITreeOptions, TreeComponent, TreeNode } from '@ali-hm/a
     selector: 'servoyextra-dbtreeview',
     templateUrl: './dbtreeview.html',
     styleUrls: ['./dbtreeview.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 
 export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> implements OnDestroy {

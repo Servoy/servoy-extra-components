@@ -9,14 +9,15 @@ import { ResizableModule } from 'angular-resizable-element';
 
 
 @Component({
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'test-wrapper',
-  template: '<div style="position: absolute; left: 29px; top: 139px; width: 571px; height: 300px;">\
+    // eslint-disable-next-line @angular-eslint/component-selector
+    selector: 'test-wrapper',
+    template: '<div style="position: absolute; left: 29px; top: 139px; width: 571px; height: 300px;">\
                     <servoyextra-table #table [servoyApi]="servoyApi" [foundset]="foundset" [columns]="columns" [minRowHeight]="minRowHeight"\
                          [enableColumnResize]="enableColumnResize" [pageSize]="pageSize" [responsiveHeight]="responsiveHeight"\
                          [onCellClick]="cellClick" [onCellRightClick]="cellRightClick" [onCellDoubleClick]="cellDoubleClick"\
                          [onHeaderClick]="headerClick" [onHeaderRightClick]="headerRightClick" [onFocusGainedMethodID]="focusGained" [onFocusLostMethodID]="focusLost" >\
                     </servoyextra-table > </div>',
+    standalone: false
 })
 class TestWrapperComponent {
     @ViewChild('table', { static: false }) table: ServoyExtraTable;

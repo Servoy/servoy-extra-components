@@ -5,7 +5,8 @@ import { Format, FormattingService, ServoyBaseComponent, IValuelist } from '@ser
     selector: 'servoyextra-spinner',
     templateUrl: './spinner.html',
     styleUrls: ['./spinner.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ServoyExtraSpinner extends ServoyBaseComponent<HTMLDivElement> {
     @Input() onDataChangeMethodID: (e: Event, data?: any) => void;

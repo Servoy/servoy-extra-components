@@ -21,7 +21,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FileUploadModule } from 'ng2-file-upload';
 import { BGPane } from './splitpane/bg_splitter/bg_pane.component';
 import { BGSplitter } from './splitpane/bg_splitter/bg_splitter.component';
-import { Select2Module } from 'ng-select2-component';
+import { Select2 } from 'ng-select2-component';
 import { LightboxModule } from '@servoy/ngx-lightbox';
 import { ServoyExtraCollapse } from './collapse/collapse';
 import { Binding, Callback, LevelVisibilityType, RelationInfo, ServoyExtraDbtreeview } from './dbtreeview/dbtreeview';
@@ -72,7 +72,7 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
         NgbModule,
         FileUploadModule,
         NgxSliderModule,
-		Select2Module,
+		Select2,
         LightboxModule,
         TreeModule,
         EditorModule,

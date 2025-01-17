@@ -5,7 +5,8 @@ import { BaseCustomObject, ServoyBaseComponent } from '@servoy/public';
 @Component( {
     selector: 'servoyextra-splitpane',
     templateUrl: './splitpane.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 } )
 export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
 

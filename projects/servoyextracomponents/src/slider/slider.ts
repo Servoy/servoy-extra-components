@@ -7,7 +7,8 @@ import { FormattingService } from '@servoy/public';
 @Component({
     selector: 'servoyextra-slider',
     templateUrl: './slider.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
 

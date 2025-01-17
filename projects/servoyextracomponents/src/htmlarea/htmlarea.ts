@@ -6,7 +6,8 @@ import { DOCUMENT } from '@angular/common';
 @Component({
     selector: 'servoyextra-htmlarea',
     templateUrl: './htmlarea.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
 

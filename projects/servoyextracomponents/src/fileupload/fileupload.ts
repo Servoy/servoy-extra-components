@@ -9,7 +9,8 @@ import {FileTypesUtilsService} from './lib/filetypes';
     selector: 'servoyextra-fileupload',
     templateUrl: './fileupload.html',
     styleUrls: ['./fileupload.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
 

@@ -10,7 +10,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 @Directive({
     // eslint-disable-next-line @angular-eslint/directive-selector
-    selector: '[svyTableRow]'
+    selector: '[svyTableRow]',
+    standalone: false
 })
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
 export class TableRow {
@@ -27,7 +28,8 @@ const instanceOfValuelist = (obj: any): obj is IValuelist =>
 @Component({
     selector: 'servoyextra-table',
     templateUrl: './table.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implements OnDestroy {
 

@@ -1,14 +1,15 @@
 import { Component, Input } from '@angular/core';
 import { ServoyExtraTreeview } from './treeview';
 @Component({
-  selector: 'servoyextra-treeview-cell-renderer',
-  template: `
+    selector: 'servoyextra-treeview-cell-renderer',
+    template: `
     <div [ngStyle]="setDisplay()" (contextmenu)="oncontextmenu($event)">
       <img *ngIf="!isFAIcon() && getIcon()" [src]="getIcon()">
       <span *ngIf="isFAIcon() && getIcon()" [class]="getIcon()"></span>
       <span class="treeLabel" [ngStyle]="setStyle()" [class]="getFilterClass()" [innerHtml]="getLabel()"></span>
     </div>
-  `
+  `,
+    standalone: false
 })
 export class ServoyExtraTreeviewCellRenderer {
   @Input()

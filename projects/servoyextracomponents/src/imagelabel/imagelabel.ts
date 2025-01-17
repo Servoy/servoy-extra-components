@@ -5,7 +5,8 @@ import { ServoyBaseComponent } from '@servoy/public';
     selector: 'servoyextra-imagelabel',
     templateUrl: './imagelabel.html',
     styleUrls: ['./imagelabel.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 } )
 export class ServoyExtraImageLabel extends ServoyBaseComponent<HTMLImageElement> {
 

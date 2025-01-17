@@ -6,7 +6,8 @@ import { DOCUMENT } from '@angular/common';
 @Component({
     selector: 'servoyextra-select2tokenizer',
     templateUrl: './select2tokenizer.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElement> {
 

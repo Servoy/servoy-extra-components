@@ -4,7 +4,8 @@ import { ServoyBaseComponent, Format } from '@servoy/public';
 @Component( {
     selector: 'servoyextra-textfieldgroup',
     styleUrls: ['./textfieldgroup.css'],
-    templateUrl: './textfieldgroup.html'
+    templateUrl: './textfieldgroup.html',
+    standalone: false
 } )
 export class ServoyExtraTextfieldGroup extends ServoyBaseComponent<HTMLDivElement> {
 

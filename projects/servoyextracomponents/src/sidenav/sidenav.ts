@@ -5,7 +5,8 @@ import { LoggerFactory, LoggerService } from '@servoy/public';
 
 @Component({
     selector: 'servoyextra-sidenav',
-    templateUrl: './sidenav.html'
+    templateUrl: './sidenav.html',
+    standalone: false
 })
 export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 
