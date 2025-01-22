@@ -42,7 +42,7 @@ function isMenuItemEnabled(menuItemId) {
 /**
  * Retrieves the screen location of a specific menu item. Returns the location as point (object with x and y properties).
  * 
- * @param {object} nodeId the node to retrieve location for.
+ * @param {Object} menuItemId The node to retrieve location for.
  * @return {point} the location of the menu item.
  */
 function getLocation(nodeId) {
@@ -97,7 +97,7 @@ function setRootMenuItems(menuItems) {
  * Returns the root menu object
  * @public
  *
- * @return {Array<CustomType<servoyextra-sidenav.MenuItem>>}
+ * @return {Array<CustomType<servoyextra-sidenav.MenuItem>>} An array of root menu item objects representing the top-level menu structure of the sidenav.
  */
 function getRootMenuItems() {
 }
@@ -143,34 +143,27 @@ function setMenuItemEnabled(menuItemId, enabled) {
  * Return false if menuItemId cannot be found.
  * @public
  *
- * @param {String|Number} menuItem.id id uniquely identifies the menuItem in the menu object. <b>Required</b>
- * @param {String} [menuItem.text] The menu text, optional, default is empty
- * @param {String} [menuItem.StyleClass] add style classes to the menuItem, optional,. Separate multiple value with a SPACE char. example 'nav-large nav-primary'.
- * @param {String} [menuItem.iconStyleClass] use style classes to display icons as Font Icons, optional. example 'glyphicon glyphicon-search'.
- * @param {Boolean} [menuItem.enabled] menuItem cannot be selected or expanded if disabled, optional. Default true.
- * @param {Object} [menuItem.data] data object can be used to add custom properties to the menuItem, optional. For example you may set the formName to be shown when the menuItem is selected { formName: "aFormName", description: "This menu item will open the given form" }
- * @param {Array} [menuItem.menuItems] an array of nested menuItems, optional.
- * @param {Boolean} [menuItem.isDivider] if true render a divider into the menu instead of a menuItem, optional. All other properties are ignored. Default false.
- * @param {String|Number} [menuItemId] add the item as subMenuItem of the menuItemId, optional. Default add the menuItem as root.
- * @param {Number} [index]  0-based. The index at which to insert the item. Optional. Index value should not be greater then number of sibelings. Default is at the end.
+ * @return {Array<CustomType<servoyextra-sidenav.MenuItem>>} menuItem <<<<<<<< add description for this return <<<<<<<<
+ * @param {Object} [menuItemId] add the item as subMenuItem of the menuItemId. Default add the menuItem as root.
+ * @param {Number} [index]	0-based. The index at which to insert the item. Index value should not be greater then number of sibelings. Default is at the end.
  * 
  * @example<pre> var menuItem = {
- *  id: 100,
- *  text: "Sample Item #1",
- *  styleClass : "nav-large nav-primary",
- *  iconStyleClass:  "glyphicon glyphicon-search",
- *  data: { description: "This is sample information that can be added to a menuItem" },
- *  menuItems: [{
- *    id: 101,
- *    text: "Sub Item #1"
- *    }, {
- *    id: 102,
- *    text: "Sub Item #2"}]
- *  };
- *  elements.sideNavigation.addMenuItem(menuItem, 1, 0);</pre>
+  id: 100,
+  text: "Sample Item #1",
+  styleClass : "nav-large nav-primary",
+  iconStyleClass:  "glyphicon glyphicon-search",
+  data: { description: "This is sample information that can be added to a menuItem" },
+  menuItems: [{
+        id: 101,
+        text: "Sub Item #1"
+        }, {
+        id: 102,
+        text: "Sub Item #2"}]
+  };
+  elements.sideNavigation.addMenuItem(menuItem, 1, 0);</pre>
  * 
  * @return {Boolean}
- */
+ * */
 function addMenuItem(menuItem, menuItemId, index) {
 }
 
@@ -179,9 +172,9 @@ function addMenuItem(menuItem, menuItemId, index) {
  * Return false if menuItemId cannot be found.
  * @public
  *
- * @param {String|Number} menuItemId
+ * @param {String|Number} menuItemId The unique identifier of the menu item to be removed, including all its sub-menu items.
  *
- * @return {Boolean}
+ * @return {Boolean} True if the menu item was successfully removed; false if the specified menuItemId could not be found.
  */
 function removeMenuItem(menuItemId) {
 }
@@ -201,7 +194,8 @@ function getSubMenuItems(menuItemId) {
  * Return false if menuItemId cannot be found.
  * @public
  *
- * @param {String|Number} menuItemId
+ * @param {Object} menuItemId <<<<<<<< add description for this param <<<<<<<<
+ * @param {Array<CustomType<servoyextra-sidenav.MenuItem>>} menuItems String|Number, text: String=, styleClass: String=, iconStyleClass: String=, enabled: Boolean=, data: Object=, menuItems: Array=, isDivider : Boolean=}>} menuItems is an array of MenuItem objects.
  * @param {Array<{id: String|Number, text: String=, styleClass: String=, iconStyleClass: String=, enabled: Boolean=, data: Object=, menuItems: Array=, isDivider : Boolean=}>} menuItems is an array of MenuItem objects.
  *          Each MenuItem object should set the required properties 'id', which uniquely identifies the menuItem object in menu, and 'text' property. 
  *          The MenuItem may contain the optional properties 'styleClass', 'iconStyleClass', 'data', 'enabled', 'menuItems', 'isDivider'.

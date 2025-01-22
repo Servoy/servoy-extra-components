@@ -113,16 +113,9 @@ $scope.api.setMenuItemEnabled = function(menuItemId, enabled) {
  * Return false if menuItemId cannot be found.
  * @public
  *
- * @param {String|Number} menuItem.id id uniquely identifies the menuItem in the menu object. <b>Required</b>
- * @param {String} [menuItem.text] The menu text, optional, default is empty
- * @param {String} [menuItem.StyleClass] add style classes to the menuItem, optional,. Separate multiple value with a SPACE char. example 'nav-large nav-primary'.
- * @param {String} [menuItem.iconStyleClass] use style classes to display icons as Font Icons, optional. example 'glyphicon glyphicon-search'.
- * @param {Boolean} [menuItem.enabled] menuItem cannot be selected or expanded if disabled, optional. Default true.
- * @param {Object} [menuItem.data] data object can be used to add custom properties to the menuItem, optional. For example you may set the formName to be shown when the menuItem is selected { formName: "aFormName", description: "This menu item will open the given form" }
- * @param {Array} [menuItem.menuItems] an array of nested menuItems, optional.
- * @param {Boolean} [menuItem.isDivider] if true render a divider into the menu instead of a menuItem, optional. All other properties are ignored. Default false.
- * @param {String|Number} [menuItemId] add the item as subMenuItem of the menuItemId, optional. Default add the menuItem as root.
- * @param {Number} [index]	0-based. The index at which to insert the item. Optional. Index value should not be greater then number of sibelings. Default is at the end.
+ * @param {MenuItem} menuItem 
+ * @param {String|Number} [menuItemId] add the item as subMenuItem of the menuItemId. Default add the menuItem as root.
+ * @param {Number} [index]	0-based. The index at which to insert the item. Index value should not be greater then number of sibelings. Default is at the end.
  * 
  * @example<pre> var menuItem = {
   id: 100,

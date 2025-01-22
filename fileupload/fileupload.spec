@@ -5,6 +5,7 @@
 	"version": 1,
 	"icon": "servoyextra/fileupload/fileupload.png",
 	"definition": "servoyextra/fileupload/fileupload.js",
+	"doc": "servoyextra/fileupload/fileupload_doc.js",
 	"libraries": [
 		{"name":"fileupload.css", "version":"1", "url":"servoyextra/fileupload/fileupload.css", "mimetype":"text/css"}
 	],
