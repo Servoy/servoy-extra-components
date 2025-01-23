@@ -165,7 +165,7 @@
       						"type":"object"
       						}
       					],     	
-      		"returns": "object"
+      		"returns": "object[]"
       	},
       	
      	"getParentNode": {
@@ -189,7 +189,7 @@
       	},      	      	
       	
 		"getRootNodes": {   	
-      		"returns": "object"
+      		"returns": "object[]"
       	},
       	"filterNodes": {
       		"parameters":[

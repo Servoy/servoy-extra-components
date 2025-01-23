@@ -125,7 +125,8 @@
 			"parameters": 
 			[
 				{	"name": "menuItemId",	"type": "object" }
-			]
+			],
+			"deprecated": "use setSelectedMenuItem(id, false, false) instead"
 		},
 		"addMenuItem" :{
 			"parameters":[

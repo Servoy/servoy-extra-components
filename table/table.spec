@@ -214,7 +214,7 @@
 	         }]
 	     },
 		 "getViewPortPosition": {
-	            "returns": "object"
+	            "returns": "int[]"
 	     },
 	     "getSortClass": {
 	       "parameters": [{"name": "columnIndex", "type": "int"}],
@@ -242,7 +242,7 @@
 	     },
 	     "newColumn": {
 		      "parameters": [{
-		      		"name": "dataprovider",
+		      		"name": "dataproviderid",
 					"type": "string"
 		      	},{
 					"name": "index",

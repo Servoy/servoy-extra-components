@@ -41,7 +41,7 @@
 		"getCard"			: {
 			"returns"	: "card",
 			"parameters": [ 
-				{ "name": "index", "type": "int" }, 
+				{ "name": "cardIndex", "type": "int" }, 
 				{ "name": "collapsibleIndex", "type": "int", "optional": true }
 			] 
 		},
@@ -66,7 +66,7 @@
 		"getCollapsibleById": { 
 			"returns"		: "collapsible",
 			"parameters": [ 
-				{ "name": "collapsibleId", "type": "string" }
+				{ "name": "collapsibleId", "type": "string", "optional": true }
 			] 
 		},
 		"removeCollapsibleById": {
@@ -78,7 +78,7 @@
 		"removeCollapsibleAt"	: { 
 			"returns" 	: "boolean",
 			"parameters": [ 
-				{ "name": "index", "type": "int" }
+				{ "name": "index", "type": "int", "optional": true }
 			] 
 		},
 		"removeAllCollapsibles": {
@@ -87,7 +87,8 @@
 		"isCollapsed"	: { 
 			"parameters": [ 
 				{ "name": "index", "type": "int", "optional": true }
-			] 
+			],
+			"returns": "boolean"
 		},
 		"setCollapsibles"	: { 
 			"parameters": [ 

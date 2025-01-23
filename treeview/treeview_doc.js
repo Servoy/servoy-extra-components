@@ -4,7 +4,9 @@
  *
  * @example
  * %%elementName%%.refresh()
- *
+ * 
+ * @param {Boolean} restoreExpandedNodes Indicates whether the previously expanded nodes should be restored after the tree is refreshed. 
+ *                  Set to `true` to restore expanded nodes, or `false` to collapse all nodes.
  */
 function refresh(restoreExpandedNodes) {
 }
@@ -16,7 +18,7 @@ function refresh(restoreExpandedNodes) {
  * @example
  * %%elementName%%.expandAll
  * 
- * @return {Boolean}
+* @return {Boolean} Returns `true` if all nodes were successfully expanded, otherwise `false`.
  *
  */
 function expandAll() {
@@ -28,7 +30,7 @@ function expandAll() {
  * @example
  * %%elementName%%.collapseAll()
  * 
- * @return {Boolean}
+ * @return {Boolean} Returns `true` if all nodes were successfully collapsed, otherwise `false`.
  */
 function collapseAll() {
 }
@@ -39,7 +41,7 @@ function collapseAll() {
  * @example
  * %%elementName%%.expandNode(22)
  *
- * @param nodeId node id
+ * @param {Object} nodeId The identifier of the node to expand.
  * 
  */
 function expandNode(nodeId) {
@@ -51,9 +53,9 @@ function expandNode(nodeId) {
  * @example
  * var expanded = %%elementName%%.isNodeExpanded([22])
  *
- * @param pk array of each level id
+ * @param {Object} nodeId Array of each level id
  * 
- * @return {boolean}
+ * @return {Boolean} Returns `true` if the specified node is expanded, otherwise `false`.
  */
 function isNodeExpanded(nodeId) {
 }
@@ -64,7 +66,7 @@ function isNodeExpanded(nodeId) {
  * @example
  * %%elementName%%.collapseNode(22)
  *
- * @param nodeId node id
+  * @param {Object} nodeId The identifier of the node to collapse.
  * 
  */
 function collapseNode(nodeId) {
@@ -76,7 +78,7 @@ function collapseNode(nodeId) {
  * @example
  * %%elementName%%.setSelectedNode(22)
  *
- * @param nodeId node id
+ * @param {Object} nodeId The identifier of the node to set as selected.
  */
 function setSelectedNode(nodeId) {
 }
@@ -87,7 +89,7 @@ function setSelectedNode(nodeId) {
  * @example
  * var selection = %%elementName%%.getSeletedNode()
  *
- * @return {Object}
+ * @return {Object} Returns the selected node object, including its `id` and any other relevant properties.
  */
 function getSeletedNode() {
 }
@@ -98,9 +100,8 @@ function getSeletedNode() {
  * @example
  * var childNodes = %%elementName%%.getChildNodes()
  *
- * @param nodeId node id
- * 
- * @return {Array}
+ * @param {Object} nodeId The identifier of the parent node whose child node IDs are to be retrieved.
+ * @return {Array<Object>} Returns an array of objects representing the IDs of the child nodes for the specified parent node.
  */
 function getChildNodes(nodeId) {
 }
@@ -111,9 +112,9 @@ function getChildNodes(nodeId) {
  * @example
  * var childNodes = %%elementName%%.getChildNodes()
  *
- * @param nodeId node id
+ * @param {Object} nodeId The identifier of the parent node whose child node IDs are to be retrieved.
  * 
- * @return {Object}
+ * @return {Object} Returns an object containing the IDs of the child nodes for the specified parent node.
  */
 function getParentNode(nodeId) {
 }
@@ -124,9 +125,8 @@ function getParentNode(nodeId) {
  * @example
  * var nodeLevel = %%elementName%%.getNodeLevel()
  *
- * @param nodeId node id
- * 
- * @return {int}
+ * @param {Object} nodeId The identifier of the node whose level is to be determined.
+ * @return {Number} Returns the level of the specified node within the tree structure, where the root level is typically 0.
  */
 function getNodeLevel(nodeId) {
 }
@@ -137,7 +137,7 @@ function getNodeLevel(nodeId) {
  * @example
  * var rootNodes = %%elementName%%.getRootNodes()
  *
- * @return {Array}
+  * @return {Array<Object>} Returns an array of objects representing the IDs of the root nodes in the tree structure.
  */
 function getRootNodes() {
 }
@@ -196,7 +196,7 @@ function filterBranches(text, options) {
 
 /**
  * Sets the tree data
- * @param jsDataSet the JSDataSet used for the tree model
+ * @param {JSDataset} jsDataSet  the JSDataSet used for the tree model
  * @example
  *  var treeviewDataSet = databaseManager.createEmptyDataSet( 0,  ['id', 'pid', 'treeColumn', 'icon']);
  * 
