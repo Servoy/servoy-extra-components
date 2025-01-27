@@ -13,8 +13,8 @@
  * @example
  * %%prefix%%%%elementName%%.setScroll(200,200);
  *
- * @param x the X coordinate of the htmlarea scroll location in pixels
- * @param y the Y coordinate of the htmlarea scroll location in pixels
+ * @param {Number} x The X coordinate of the htmlarea scroll location in pixels
+ * @param {Number} y The Y coordinate of the htmlarea scroll location in pixels
  */
 function setScroll(x, y) {
 }
@@ -33,7 +33,7 @@ function setScroll(x, y) {
   * @example
   * var x = %%prefix%%%%elementName%%.getScrollX();
   * 
-  * @return The x scroll location in pixels.
+  * @return {Number} The x scroll location in pixels.
   */
 function getScrollX() {
 }
@@ -51,7 +51,7 @@ function getScrollX() {
    * </pre>
    * @example
    * var y = %%prefix%%%%elementName%%.getScrollY(); 
-   * @return The y scroll location in pixels.
+   * @return {Number} The y scroll location in pixels.
    */
 function getScrollY() {
 }
@@ -59,10 +59,11 @@ function getScrollY() {
 /**
  * Replaces the selected text; if no text has been selected, the replaced value will be inserted at the last cursor position.
  * @example %%prefix%%%%elementName%%.replaceSelectedText('John');
- * @param s The replacement text.
- * @return The new content after replace.
+ * @param {String} selectedText The replacement text
+ * 
+ * @return {String} The new content after replace.
  */
-function replaceSelectedText (s){
+function replaceSelectedText (){
 }
 /**
  * Selects all the contents of the Html Area.
@@ -82,7 +83,8 @@ function getSelectedText() {
 /**
  * Gets the plain text for the formatted Html Area.
  * @example var my_text = %%prefix%%%%elementName%%.getAsPlainText();
- * @return the plain text
+ * 
+ * @return {String} The plain text
  */
 function getAsPlainText() {
 }
@@ -90,7 +92,7 @@ function getAsPlainText() {
 /**
 * Set the focus to this Html Area.
 * @example %%prefix%%%%elementName%%.requestFocus();
-* @param mustExecuteOnFocusGainedMethod (optional) if false will not execute the onFocusGained method; the default value is true
+* @param {Boolean} [mustExecuteOnFocusGainedMethod] If false will not execute the onFocusGained method; the default value is true[0m
 */
 function requestFocus(mustExecuteOnFocusGainedMethod) {
 }

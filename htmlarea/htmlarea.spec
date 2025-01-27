@@ -141,7 +141,7 @@
 	        "replaceSelectedText": {
 				"parameters":[
 								{                                                                 
- 								"name":"s",
+ 								"name":"selectedText",
 								"type":"string"
 			                	}             
 							 ],

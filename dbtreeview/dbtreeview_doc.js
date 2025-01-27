@@ -53,7 +53,7 @@ function updateCheckBoxValuesForTree(datasource, pks, state) {}
 * @example
 * %%elementName%%.addRoots(foundset);
 * 
-* @param foundSet
+ * @param {Foundsetref} root The foundset reference to be added as a root node in the tree structure.
 */
 function addRoots(foundset) {
 }
@@ -80,8 +80,8 @@ function updateCheckBoxValues(datasource, pks, state) {
 * @example
 * %%elementName%%.setTextDataprovider(databaseManager.getDataSource('example_data', 'categories'),'categoryname');
 * 
-* @param datasource 
-* @param textdataprovider dataprovider of the displayed text
+* @param {String} datasource The datasource identifier, representing the foundset for which the text dataprovider is being set.
+* @param {String} textdataprovider The dataprovider that specifies the text to be displayed for each node in the tree.
 */
 function setTextDataprovider(datasource, textdataprovider) {
 }
@@ -92,8 +92,8 @@ function setTextDataprovider(datasource, textdataprovider) {
 * @example
 * %%elementName%%.setNRelationName(databaseManager.getDataSource('example_data', 'categories'),'companies_to_categories');
 * 
-* @param datasource 
-* @param nrelationname relation name
+ * @param {String} datasource The datasource identifier, representing the foundset to be displayed using the specified relation.
+ * @param {String} nrelationname The name of the relation used to link the datasource with its child nodes.
 */
 function setNRelationName(datasource, nrelationname) {
 }   
@@ -104,8 +104,8 @@ function setNRelationName(datasource, nrelationname) {
 * @example
 * %%elementName%%.setNRelationName(databaseManager.getDataSource('example_data', 'categories'),'companies_to_categories');
 * 
-* @param datasource 
-* @param nrelationname relation name
+* @param {String} datasource The datasource identifier, representing the foundset for which the checkbox dataprovider is being set.
+* @param {String} hascheckboxdataprovider Relation name
 */
 function setHasCheckBoxDataprovider(datasource, hascheckboxdataprovider) {
 }   
@@ -116,8 +116,8 @@ function setHasCheckBoxDataprovider(datasource, hascheckboxdataprovider) {
 * @example
 * %%elementName%%.setCheckBoxAutoselectsChildren(databaseManager.getDataSource('example_data', 'categories'),false);
 * 
-* @param datasource 
-* @param autoselect
+ * @param {String} datasource The datasource identifier, representing the foundset for which the checkbox behavior is set.
+ * @param {Boolean} autoselect A boolean value indicating whether the checkboxes should automatically select or deselect child nodes when a parent node is selected.
 */
 function setCheckBoxAutoselectsChildren(datasource, autoselect) {
 }
@@ -128,9 +128,9 @@ function setCheckBoxAutoselectsChildren(datasource, autoselect) {
 * @example
 * %%elementName%%.setCallBackInfo(databaseManager.getDataSource('example_data', 'categories'),'myfunction','arg');
 * 
-* @param datasource 
-* @param callbackfunction callback function name
-* @param param
+* @param {String} datasource The datasource identifier, representing the foundset to be displayed.
+* @param {Function} callbackfunction Callback function name
+* @param {String} param The parameter to pass to the callback function when it is invoked.
 */
 function setCallBackInfo(datasource, callbackfunction, param) {
 }   
@@ -141,8 +141,8 @@ function setCallBackInfo(datasource, callbackfunction, param) {
 * @example
 * %%elementName%%.setCheckBoxValueDataprovider(databaseManager.getDataSource('example_data', 'categories'),'enabled');
 * 
-* @param datasource 
-* @param checkboxvaluedataprovider dataprovider of the displayed checkbox
+* @param {String} datasource The datasource identifier, representing the foundset for which the checkbox value dataprovider is being set.
+* @param {String} checkboxvaluedataprovider Dataprovider of the displayed checkbox
 */
 function setCheckBoxValueDataprovider(datasource, checkboxvaluedataprovider) {
 }   
@@ -153,9 +153,9 @@ function setCheckBoxValueDataprovider(datasource, checkboxvaluedataprovider) {
 * @example
 * %%elementName%%.setMethodToCallOnCheckBoxChange(databaseManager.getDataSource('example_data', 'categories'),'myfunction','arg');
 * 
-* @param datasource 
-* @param callbackfunction callback function name
-* @param param
+* @param {String} datasource The datasource identifier, representing the foundset for which the checkbox change callback is being set.
+* @param {Function} callbackfunction Callback function name
+* @param {String} param A parameter to be passed to the callback function when the checkbox state changes.
 */
 function setMethodToCallOnCheckBoxChange(datasource, callbackfunction, param) {
 }
@@ -166,8 +166,8 @@ function setMethodToCallOnCheckBoxChange(datasource, callbackfunction, param) {
 * @example
 * %%elementName%%.setToolTipTextDataprovider(databaseManager.getDataSource('example_data', 'categories'),'tooltip');
 * 
-* @param datasource 
-* @param tooltiptextdataprovider dataprovider of the displayed checkbox
+ * @param {String} datasource The datasource identifier, representing the foundset for which the tooltip text dataprovider is being set.
+ * @param {String} tooltiptextdataprovider Dataprovider of the displayed checkbox
 */
 function setToolTipTextDataprovider(datasource, tooltiptextdataprovider) {
 }   
@@ -178,8 +178,8 @@ function setToolTipTextDataprovider(datasource, tooltiptextdataprovider) {
 * @example
 * %%elementName%%.setImageURLDataprovider(databaseManager.getDataSource('example_data', 'categories'),'mymedia');
 * 
-* @param datasource 
-* @param imageurldataprovider dataprovider of the node image
+ * @param {String} datasource The datasource identifier, representing the foundset for which the image dataprovider is being set.
+ * @param {String} imageurldataprovider The dataprovider that specifies the URL or path to the image displayed in the tree node.
 */
 function setImageURLDataprovider(datasource, imageurldataprovider) {
 }   
@@ -190,8 +190,8 @@ function setImageURLDataprovider(datasource, imageurldataprovider) {
 * @example
 * %%elementName%%.setChildSortDataprovider(databaseManager.getDataSource('example_data', 'companies'),'company_sort');
 * 
-* @param datasource 
-* @param childsortdataprovider dataprovider of the sort text
+* @param {String} datasource The datasource identifier, representing the foundset for which the child nodes' sort dataprovider is being set.
+* @param {String} childsortdataprovider Dataprovider of the sort text
 */
 function setChildSortDataprovider(datasource, childsortdataprovider) {
 }   
@@ -202,9 +202,9 @@ function setChildSortDataprovider(datasource, childsortdataprovider) {
 * @example
 * %%elementName%%.setMethodToCallOnDoubleClick(databaseManager.getDataSource('example_data', 'categories'),'myfunction','arg');
 * 
-* @param datasource 
-* @param callbackfunction callback function name
-* @param param
+* @param {String} datasource The datasource identifier, representing the foundset for which the double-click callback is being set.
+* @param {Function} callbackfunction The name of the function to be invoked when a double-click event occurs on a node.
+* @param {String} param A parameter to be passed to the callback function during invocation.
 */
 function setMethodToCallOnDoubleClick(datasource, callbackfunction, param) {
 }   
@@ -215,9 +215,9 @@ function setMethodToCallOnDoubleClick(datasource, callbackfunction, param) {
 * @example
 * %%elementName%%.setMethodToCallOnRightClick(databaseManager.getDataSource('example_data', 'categories'),'myfunction','arg');
 * 
-* @param datasource 
-* @param callbackfunction callback function name
-* @param param
+* @param {String} datasource The datasource identifier, representing the foundset for which the right-click callback is being set.
+* @param {Function} callbackfunction Callback function name
+ * @param {String} param A parameter to be passed to the callback function during invocation.
 */
 function setMethodToCallOnRightClick(datasource, callbackfunction, param) {
 }
@@ -228,7 +228,7 @@ function setMethodToCallOnRightClick(datasource, callbackfunction, param) {
  * @example
  * %%elementName%%.setSelectionPath([22])
  *
- * @param pkarray array of each level id
+ * @param {Array<Object>} pk Array of each level id
  */
 function setSelectionPath(pkarray) {
 }
@@ -239,9 +239,9 @@ function setSelectionPath(pkarray) {
 * @example
 * var expanded = %%elementName%%.isNodeExpanded([22])
 *
-* @param pkarray array of each level id
+* @param {Array<Object>} pk Array of each level id
 * 
-* @return {boolean}
+ * @return {Boolean} True if the specified node is expanded, false if it is collapsed.
 */
 function isNodeExpanded(pkarray) {
 }
@@ -252,13 +252,22 @@ function isNodeExpanded(pkarray) {
 * @example
 * %%elementName%%.setExpandNode([22],true)
 *
-* @param pkarray array of each level id
-* @param state expand state
+* @param {Array<Object>} pk Array of each level
+* @param {Boolean} state Expand state
 * 
 */
 function setExpandNode(pkarray, state) {
 }
 
+/**
+ * Returns the path of the currently selected node in the tree. 
+ *
+ * @example
+ * var selection = %%elementName%%.getSelectionPath();
+ * // selection might be an array like: [{ id: 1, name: 'Root' }, { id: 2, name: 'Child' }]
+ *
+ * @return {Array<Object>} An array representing the path of the selected node in the tree. 
+ */
 function getSelectionPath() {
 }
 
@@ -268,8 +277,8 @@ function getSelectionPath() {
  * @example
  * %%elementName%%.setNodeLevelVisible(2,true)
  *
- * @param level level in tree
- * @param state expanded state
+ * @param {Number} level The level of the tree to set the expanded state for.
+ * @param {Boolean} visible A boolean indicating whether the specified tree level should be expanded (true) or collapsed (false).
  */
 function setNodeLevelVisible(level, state) {
 }
@@ -277,9 +286,9 @@ function setNodeLevelVisible(level, state) {
 /**
  * Create relation info object used to set multiple child relations for a tree node
  * 
- * @param label 
- * @param nRelationName 
- * @return {relationInfo}
+ * @param {String} label The label for the relation, typically used as the display name for the tree node.
+ * @param {String} nRelationName The name of the relation used to define the child relations for the tree node.
+ * @return {CustomType<servoyextra-dbtreeview.relationInfo>} An object containing the relation information for setting child relations in the tree structure.
  */
 function createRelationInfo(label, nRelationName) {
 }
@@ -287,8 +296,8 @@ function createRelationInfo(label, nRelationName) {
 /**
  * Set n-relation infos (array of RelationInfo objects created using tree.createRelationInfo() for having multiple child relations for one node)
  * 
- * @param datasource 
- * @param relationInfos 
+ * @param {String} datasource The datasource identifier, representing the foundset for which the relations are being set.
+ * @param {Array<CustomType<servoyextra-dbtreeview.relationInfo>>} relationInfos An array of objects, defining multiple child relations for a single node.
  */
 function setNRelationInfos(datasource, relationInfos) {
 }
@@ -299,8 +308,8 @@ function setNRelationInfos(datasource, relationInfos) {
 * @example
 * %%elementName%%.setInitialCheckBoxValues(databaseManager.getDataSource('example_data', 'categories'),["1", "3", "5"]);
 * 
-* @param datasource 
-* @param checkboxValues array of pks that should have the checkbox checked
+* @param {String} datasource The datasource identifier, representing the foundset where checkboxes are applied.
+* @param {Array<String>} pks array of pks that should have the checkbox checked
 */
 function setInitialCheckBoxValues(datasource, initialCheckboxValues) {
 }
@@ -311,8 +320,8 @@ function setInitialCheckBoxValues(datasource, initialCheckboxValues) {
 * @example
 * %%elementName%%.setHasCheckBoxValue(databaseManager.getDataSource('example_data', 'categories'),["1", "3", "5"]);
 * 
-* @param datasource 
-* @param hasCheckboxValue array of pks that should have checkbox
+* @param {String} datasource The datasource identifier, representing the foundset for which the checkboxes should be applied.
+* @param {Array<String>} pks Array of primary keys that should have a checkbox associated with them.
 */
 function setHasCheckBoxValue(datasource, hasCheckboxValue) {
 }
@@ -323,7 +332,33 @@ function setHasCheckBoxValue(datasource, hasCheckboxValue) {
 * @example
 * %%elementName%%.setActionsCallBack([[datasource, function1, arg1, element1], [datasource, function2, arg2, element2]]);
 * 
-* @param actions
+* @param {Array<CustomType<servoyextra-dbtreeview.action>>} actions An array of action objects, each defining a datasource, a callback function, its arguments, and the associated tree element for which the action should be triggered.
 */
 function setActionsCallBack(actions) {
+}
+
+
+/**
+ * Update checkbox state for nodes
+ *
+ * @example
+ * %%elementName%%.updateCheckBoxValues(databaseManager.getDataSource('example_data', 'categories'),["1", "3", "5"], true);
+ *
+ * @param {String} datasource The datasource identifier, representing the foundset for which the checkbox states are being updated.
+ * @param {Array<String>} pks Array of primary keys of the nodes for which the checkbox state should be updated.
+ * @param {Boolean} state True to check the checkbox, false to uncheck it.
+ */	  
+function updateCheckBoxValues(){
+}
+
+/**
+ * Returns array of pk of nodes that are checked for the datasource
+ *
+ * @example
+ * var arrayPkChecked = %%elementName%%.getCheckBoxValues(databaseManager.getDataSource('example_data', 'categories'));
+ *
+ * @param {String} datasource The datasource identifier, representing the foundset for which the checked nodes' primary keys are retrieved.
+ * @return {Array<String>} An array of primary keys of the nodes that are checked for the specified datasource.
+ */
+function getCheckBoxValues () {
 }
