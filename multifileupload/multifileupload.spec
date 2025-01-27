@@ -77,8 +77,8 @@
             "delayUntilFormLoads": true,
             "parameters": [
                 {"name": "message", "type": "object"},
-                {"name": "type", "type": "string", "optional": "true"},
-                {"name": "duration", "type": "int", "optional": "true"}
+                {"name": "type", "type": "string", "optional": true},
+                {"name": "duration", "type": "int", "optional": true}
             ]
         },
         "getFiles": {
