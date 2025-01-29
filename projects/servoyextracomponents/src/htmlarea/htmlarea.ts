@@ -67,8 +67,8 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
         if (this.onFocusLostMethodID) this.onFocusLostMethodID(new CustomEvent('blur'));
     }
 
-    click() {
-        if (this.onActionMethodID) this.onActionMethodID(new CustomEvent('click'));
+    click({ event }: { event: MouseEvent }) {
+        if (this.onActionMethodID) this.onActionMethodID(new MouseEvent(event.type, event));
     }
 
     contextMenu(event) {
