@@ -237,7 +237,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 		this.userChangedValue = false;
 		this.resetSearch();
         if (this.selectOnClose) {
-            const highlightItem = this.getNativeChild().querySelector('.select2-results__option--highlighted');
+            const highlightItem = this.doc.querySelector('.select2-results__option--highlighted');
             if (highlightItem) {
                 const displayValue = highlightItem.textContent;
                 let found = false;
@@ -255,6 +255,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                         value: realValue,
                         label: realValue
                     });
+                    this.userChangedValue = true;
                 }
             }
         }
