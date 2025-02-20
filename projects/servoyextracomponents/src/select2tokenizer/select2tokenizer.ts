@@ -274,6 +274,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 	}
 
     handleSearch = (event: KeyboardEvent) => {
+        if (event.key === 'ArrowUp' || event.key === 'ArrowDown') return;
 		const input = event.target as HTMLInputElement;
 		const value = input.value;
 		if (value) {
