@@ -1,4 +1,35 @@
 /**
+ * Sets the initial splitter div location, between 0 and 1 is a percentange, more than 1 is a value in pixels.
+ */
+var divLocation;
+
+/**
+ * Size of the splitter div - in pixels.
+ */
+var divSize;
+
+var styleClass;
+
+var splitType;
+
+var tabSeq;
+
+/**
+ * Minimum height of the splitpane, set only in responsive forms.
+ */
+var responsiveHeight;
+
+
+
+var handlers = {
+    /**
+     * @param {Number} previousIndex
+     * @param {JSEvent} event
+     */
+    onChangeMethodID: function() {}
+};
+
+/**
  * Gets the resize weight, which specifies how to distribute extra space when the size of the split pane changes.
  * A value of 0, the default, indicates the right/bottom component gets all the extra space (the left/top component acts fixed),
  * where as a value of 1 specifies the left/top component gets all the extra space (the right/bottom component acts fixed).

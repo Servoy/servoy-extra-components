@@ -1,3 +1,52 @@
+var dataProviderID;
+
+var displaysTags;
+
+var findmode;
+
+var scrollbars;
+
+var styleClass;
+
+var tabSeq;
+
+/**
+ * Min height of the html editor, set only in responsive forms.
+ */
+var responsiveHeight;
+
+
+
+var handlers = {
+    /**
+     * @param {JSEvent} event
+     */
+    onActionMethodID: function() {},
+
+    /**
+     * @param {${dataproviderType}} oldValue
+     * @param {${dataproviderType}} newValue
+     * @param {JSEvent} event
+     * @returns {Boolean}
+     */
+    onDataChangeMethodID: function() {},
+
+    /**
+     * @param {JSEvent} event
+     */
+    onFocusGainedMethodID: function() {},
+
+    /**
+     * @param {JSEvent} event
+     */
+    onFocusLostMethodID: function() {},
+
+    /**
+     * @param {JSEvent} event
+     */
+    onRightClickMethodID: function() {}
+};
+
 
 /**
  * Sets the scroll location of an element. It takes as input the X (horizontal) and Y (vertical) coordinates - starting from the TOP LEFT side of the screen - only for an element where the height of the element is greater than the height of element content<br/>
