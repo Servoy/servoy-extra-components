@@ -1,3 +1,59 @@
+var dataProviderID;
+
+var enabled;
+
+var format;
+
+var faclass;
+
+var inputType;
+
+var inputValidation;
+
+var invalidEmailMessage;
+
+var readOnly;
+
+var placeholderText;
+
+var styleClass;
+
+var tabSeq;
+
+var visible;
+
+
+var handlers = {
+    /**
+     * @param {JSEvent} event
+     */
+    onActionMethodID: function() {},
+
+    /**
+     * @param {${dataproviderType}} oldValue
+     * @param {${dataproviderType}} newValue
+     * @param {JSEvent} event
+     *
+     * @returns {Boolean}
+     */
+    onDataChangeMethodID: function() {},
+
+    /**
+     * @param {JSEvent} event
+     */
+    onFocusGainedMethodID: function() {},
+
+    /**
+     * @param {JSEvent} event
+     */
+    onFocusLostMethodID: function() {},
+
+    /**
+     * @param {JSEvent} event
+     */
+    onRightClickMethodID: function() {}
+};
+
 /**
  * Request the focus to this field.
  * @example %%prefix%%%%elementName%%.requestFocus();

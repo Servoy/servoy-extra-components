@@ -1,3 +1,62 @@
+var collapsibles;
+
+var accordionMode;
+
+var expandedIndices;
+
+var styleClass;
+
+var tabSeq;
+
+var visible;
+
+
+var handlers = {
+    /**
+     * @param {JSEvent} event
+     * @param {CustomType<servoyextra-collapse.collapsible>} collapsible
+     * @param {Number} collapsibleIndex
+     */
+    onCollapsibleShown: function() {},
+
+    /**
+     * @param {JSEvent} event
+     * @param {CustomType<servoyextra-collapse.collapsible>} collapsible
+     * @param {Number} collapsibleIndex
+     */
+    onCollapsibleHidden: function() {},
+
+    /**
+     * @param {JSEvent} event
+     * @param {CustomType<servoyextra-collapse.collapsible>} collapsible
+     * @param {Number} collapsibleIndex
+     * @param {String} dataTarget
+     *
+     * @returns {Boolean}
+     */
+    onHeaderClicked: function() {},
+
+    /**
+     * @param {JSEvent} event
+     * @param {CustomType<servoyextra-collapse.card>} card
+     * @param {CustomType<servoyextra-collapse.collapsible>} collapsible
+     * @param {Number} cardIndex
+     * @param {Number} collapsibleIndex
+     * @param {String} dataTarget
+     */
+    onCardClicked: function() {},
+
+    /**
+     * @param {JSEvent} event
+     * @param {CustomType<servoyextra-collapse.collapsible>} collapsible
+     * @param {Number} collapsibleIndex
+     * @param {String} dataTarget
+     *
+     * @returns {Boolean}
+     */
+    onHeaderDoubleClicked: function() {}
+};
+
 /**
  * Toggles the collapsible at the given index (or the first/only one, if no index is given)
  * 

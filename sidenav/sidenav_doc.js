@@ -1,3 +1,85 @@
+var menu;
+
+var servoyMenu;
+
+var tabSeq;
+
+var containedForm;
+
+var headerForm;
+
+var footerForm;
+
+var relationName;
+
+/**
+ * Width of the container
+ */
+var sidenavWidth;
+
+/**
+ * Height of the container, set only in responsive forms.
+ */
+var responsiveHeight;
+
+var iconOpenStyleClass;
+
+var iconCloseStyleClass;
+
+var iconExpandStyleClass;
+
+var iconCollapseStyleClass;
+
+var styleClass;
+
+var slidePosition;
+
+var slideAnimation;
+
+var togglePosition;
+
+var scrollbarPosition;
+
+var open;
+
+var enabled;
+
+var animate;
+
+var size;
+
+var location;
+
+var visible;
+
+
+var handlers = {
+    /**
+     * @param {Object} menuItemId
+     * @param {JSEvent} event
+     *
+     * @returns {Boolean}
+     */
+    onMenuItemSelected: function() {},
+
+    /**
+     * @param {Object} menuItemId
+     * @param {JSEvent} event
+     */
+    onMenuItemExpanded: function() {},
+
+    /**
+     * @param {Object} menuItemId
+     * @param {JSEvent} event
+     */
+    onMenuItemCollapsed: function() {},
+
+    /**
+     * @param {JSEvent} event
+     */
+    onOpenToggled: function() {}
+};
+
 
 /**
  * @deprecated use setSelectedMenuItem(id, false, false) instead.

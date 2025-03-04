@@ -1,4 +1,50 @@
 /**
+ * Can be used to enable dragging of nodes. Can either be a boolean value or a clientfunction that is executed in browser. Default value is false.
+ */
+var allowDrag;
+
+/**
+ * Can be used to enable dropping of nodes. Can either be a boolean value or a clientfunction that is executed in browser. Default value is false.
+ */
+var allowDrop;
+
+var visible;
+
+var enabled;
+
+/**
+ * If true, component listens to foundset changes and updates itself while visible.
+ */
+var autoRefresh;
+
+/**
+ * Height of the treeview, set only in responsive forms.
+ */
+var responsiveHeight;
+
+var showLoadingIndicator;
+
+var styleClass;
+
+
+var handlers = {
+    /**
+     * @param {JSEvent} event
+     */
+    onReady: function() {},
+
+    /**
+     * Called when a node is dropped as a result of a drag-n-drop
+     *
+     * @param {Array<String>} sourceNodePkPath
+     * @param {Array<String>} targetNodePkPath
+     * @param {Number} indexInParent
+     * @param {JSEvent} event
+     */
+    onDrop: function() {}
+};
+
+/**
  * Refresh the tree display.
  *
  * @example
