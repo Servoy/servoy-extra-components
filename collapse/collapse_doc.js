@@ -193,3 +193,55 @@ function removeCollapsibleAt(index) {
  */
 function removeAllCollapsibles() {
 }
+
+
+var svy_types = {
+
+    card: {
+
+        cardId : null,
+
+        contentHtml : null,
+
+        form : null,
+
+        minResponsiveHeight : null,
+
+        maxResponsiveHeight : null,
+
+        styleClass : null,
+
+    },
+
+    collapsible: {
+
+        collapsibleId : null,
+
+        headerHtml : null,
+
+        headerStyleClass : null,
+
+        bodyStyleClass : null,
+
+        collapsibleHtml : null,
+
+        form : null,
+
+        relationName : null,
+
+        cards : null,
+
+        styleClass : null,
+
+        collapsedIconName : null,
+
+        expandedIconName : null,
+
+        iconLocation : null,
+
+        minResponsiveHeight : null,
+
+        maxResponsiveHeight : null,
+
+    }
+}

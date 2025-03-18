@@ -268,3 +268,15 @@ var handlers = {
  */
 function refresh() {
 }
+
+
+var svy_types = {
+
+    gradient: {
+
+        from : null,
+
+        to : null,
+
+    }
+}

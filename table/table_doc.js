@@ -234,3 +234,71 @@ function setSelectedHeader() {
  */
 function getSortClass() {
 }
+
+var svy_types = {
+
+    column: {
+
+        dataprovider : null,
+
+        format : null,
+
+        headerStyleClass : null,
+
+        headerText : null,
+
+        styleClass : null,
+
+        styleClassDataprovider : null,
+
+        valuelist : null,
+
+        width : null,
+
+        initialWidth : null,
+
+        autoResize : null,
+
+        showAs : null,
+
+        /**
+         * Used to identify the column in cell event handlers, because column index can change if columns are added/removed at runtime.
+         */
+        id : null,
+
+    },
+
+    settings: {
+
+        minBatchSizeForRenderingMoreRows : null,
+
+        minBatchSizeForLoadingMoreRows : null,
+
+        maxRenderedRows : null,
+
+        maxLoadedRows : null,
+
+        fastScrollRenderThresholdFactor : null,
+
+        fastScrollLoadThresholdFactor : null,
+
+    },
+
+    keyCodeSettings: {
+
+        pageUp : null,
+
+        pageDown : null,
+
+        arrowUp : null,
+
+        arrowDown : null,
+
+        home : null,
+
+        end : null,
+
+        enter : null,
+
+    }
+}

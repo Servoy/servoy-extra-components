@@ -408,3 +408,76 @@ function updateCheckBoxValues(){
  */
 function getCheckBoxValues () {
 }
+
+var svy_types = {
+
+    callback: {
+
+        f : null,
+
+        param : null,
+
+    },
+
+    binding: {
+
+        datasource : null,
+
+        textdataprovider : null,
+
+        nrelationname : null,
+
+        hascheckboxdataprovider : null,
+
+        checkboxvaluedataprovider : null,
+
+        tooltiptextdataprovider : null,
+
+        imageurldataprovider : null,
+
+        childsortdataprovider : null,
+
+        callbackinfo : null,
+
+        methodToCallOnCheckBoxChange : null,
+
+        methodToCallOnDoubleClick : null,
+
+        methodToCallOnRightClick : null,
+
+        nRelationInfos : null,
+
+        hasCheckboxValue : null,
+
+        initialCheckboxValues : null,
+
+    },
+
+    levelVisibilityType: {
+
+        level : null,
+
+        value : null,
+
+    },
+
+    relationInfo: {
+
+        label : null,
+
+        nRelationName : null,
+
+    },
+
+    action: {
+
+        datasource : null,
+
+        callbackfunction : null,
+
+        param : null,
+
+        name : null,
+
+    }
+}

@@ -183,3 +183,15 @@ function getLeftForm() {
  */
 function getRightForm() {
 }
+
+
+var svy_types = {
+
+    pane: {
+
+        containsFormId : null,
+
+        relationName : null,
+
+    }
+}

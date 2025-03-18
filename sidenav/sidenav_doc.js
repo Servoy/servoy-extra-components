@@ -384,3 +384,37 @@ function setMenuItemExpanded(menuItemId, expanded, mustExecuteOnMenuItemExpand) 
  */
 function showForm(formToHide, formToShow, relationToShow) {
 }
+
+
+var svy_types = {
+
+    MenuItem: {
+
+        id : null,
+
+        text : null,
+
+        iconStyleClass : null,
+
+        styleClass : null,
+
+        enabled : null,
+
+        data : null,
+
+        menuItems : null,
+
+        isDivider : null,
+
+        tooltip : null,
+
+        badgeText : null,
+
+        badgeStyleClass : null,
+
+        formName : null,
+
+        relationName : null,
+
+    }
+}

@@ -213,3 +213,63 @@ function info(message, type, duration) {
  */
 function initialize() {
 }
+
+
+var svy_types = {
+
+    uploadRestriction: {
+
+        maxFileSize : null,
+
+        maxNumberOfFiles : null,
+
+        minNumberOfFiles : null,
+
+        allowedFileTypes : null,
+
+    },
+
+    metaField: {
+
+        id : null,
+
+        name : null,
+
+        placeholder : null,
+
+    },
+
+    uploadFile: {
+
+        id : null,
+
+        name : null,
+
+        extension : null,
+
+        type : null,
+
+        size : null,
+
+        metaFields : null,
+
+        progress : null,
+
+        error : null,
+
+    },
+
+    progress: {
+
+        bytesTotal : null,
+
+        bytesUploaded : null,
+
+        percentage : null,
+
+        uploadComplete : null,
+
+        uploadStarted : null,
+
+    }
+}
