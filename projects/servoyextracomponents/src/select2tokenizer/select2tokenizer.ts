@@ -45,6 +45,8 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     filteredDataProviderId: Array<any>;
     listPosition: 'above' | 'below' | 'auto' = 'auto';
     mustExecuteOnFocus = true;
+    
+    options: Select2Option[] = []; 
 
     userChangedValue = false;
 
@@ -113,23 +115,25 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 
     setData() {
         if (this.valuelistID) {
-            const options: Select2Option[] = [];
+            this.options = [];
             for (const value of this.valuelistID) {
                 if (value.realValue === null || value.realValue === '') {
                     continue;
                 } 
-                options.push({
+                this.options.push({
                     value: value.realValue,
                     label: value.displayValue
                 });
             }
-            this.data = options;
-            if (this.filteredDataProviderId && this.filteredDataProviderId.length) {
-                for (let i = 0; this.filteredDataProviderId && i < this.filteredDataProviderId.length; i++) {
-                    const realValue = this.filteredDataProviderId[i];
-                    this.checkDataList(realValue);
-                }
+            if (this.filteredDataProviderId?.length) {
+                this.filteredDataProviderId.forEach(realValue => {
+                    const found = this.data.find(item => item.value === realValue);
+                    if (found && !this.options.some(item => item.value === found.value)) {
+                        this.options.push(found);
+                    }
+                });
             }
+            this.data = this.options;
         }
     }
 
@@ -208,23 +212,6 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 			}
 		}
 	}
-
-    checkDataList(realValue: any) {
-        if (!this.data.some(option => realValue === option.value)) {
-            const option: Select2Option = {
-                value: realValue,
-                label: `${realValue}` // should we do here just an empty string or really the realvalue..
-                // label should be a string, otherwise the library will throw an error when it tries to do a ".replace" on this label
-            };
-            this.data.push(option);
-            this.valuelistID.getDisplayValue(realValue).subscribe((val) => {
-                if (val) {
-                    option.label = val;
-                    this.cdRef.detectChanges();
-                }
-            });
-        }
-    }
 
     removedOption(event: any) {
 		this.userChangedValue = true;
@@ -307,15 +294,16 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                                     	value: newValue,
                                     	label: newValue
                                 	};
-                                	if (prevValue) {
-                                    	if (newValue != '' && !this.data.some(item => item.value == newValue)) {
-                                        	this.data[0] = option;
-                                    	} else {
-                                        	this.data.shift();
-                                    	}
-                                	} else {
-                                    	this.data.unshift(option);
-                                	}
+                                    if (!prevValue) {
+                                        this.data = [option, ...this.data];
+                                    } else if (newValue === '') {
+                                        this.data = [...this.data.slice(1)];
+                                    } else {
+                                        const valueExists = this.data.some(item => item.value === newValue);
+                                        if (!valueExists) {
+                                            this.data = [option, ...this.data.slice(1)];
+                                        }
+                                    }
                                 	prevValue = newValue;
                                 }
 							}
