@@ -13,6 +13,7 @@ import { ServoyExtraSelect2Tokenizer } from './select2tokenizer/select2tokenizer
 import { ServoyExtraYoutubeVideoEmbedder } from './youtubevideoembedder/youtubevideoembedder';
 import { ServoyExtraSidenav } from './sidenav/sidenav';
 import { ServoyPublicModule, SpecTypesService } from '@servoy/public';
+import { BidiModule } from '@angular/cdk/bidi';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { ResizableModule } from 'angular-resizable-element';
 import { FormsModule } from '@angular/forms';
@@ -68,6 +69,7 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
         CommonModule,
         FormsModule,
         ResizableModule,
+        BidiModule,
         ScrollingModule,
         NgbModule,
         FileUploadModule,
