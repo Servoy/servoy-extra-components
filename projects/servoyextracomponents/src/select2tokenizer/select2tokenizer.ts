@@ -45,8 +45,6 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     filteredDataProviderId: Array<any>;
     listPosition: 'above' | 'below' | 'auto' = 'auto';
     mustExecuteOnFocus = true;
-    
-    options: Select2Option[] = []; 
 
     userChangedValue = false;
 
@@ -115,12 +113,12 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 
     setData() {
         if (this.valuelistID) {
-            this.options = [];
+            const opt: Select2Option[] = [];
             for (const value of this.valuelistID) {
                 if (value.realValue === null || value.realValue === '') {
                     continue;
-                } 
-                this.options.push({
+                }
+                opt.push({
                     value: value.realValue,
                     label: value.displayValue
                 });
@@ -128,12 +126,12 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
             if (this.filteredDataProviderId?.length) {
                 this.filteredDataProviderId.forEach(realValue => {
                     const found = this.data.find(item => item.value === realValue);
-                    if (found && !this.options.some(item => item.value === found.value)) {
-                        this.options.push(found);
+                    if (found && !opt.some(item => item.value === found.value)) {
+                        opt.push(found);
                     }
                 });
             }
-            this.data = this.options;
+            this.data = opt;
         }
     }
 
