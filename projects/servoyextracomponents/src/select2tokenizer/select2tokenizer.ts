@@ -181,11 +181,6 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     }
 
     svyOnChanges(changes: SimpleChanges) {
-        if (changes['maximumSelectionSize']) {
-            if (changes['maximumSelectionSize'].currentValue === 0) {
-                this.maximumSelectionSize = 99999;
-            }
-        }
         if (changes['valuelistID']) {
             this.setData();
         }
