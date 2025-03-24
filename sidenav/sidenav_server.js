@@ -1019,7 +1019,7 @@ $scope.api.showForm = function(formToHide, menuIDToShow) {
 	return false;
 }
 
-$scope.api.setContainedForm = function(form) {
+$scope.setters.setContainedForm = function(form) {
 
 	if ($scope.model.containedForm && !servoyApi.hideForm($scope.model.containedForm)) {
 		return false;

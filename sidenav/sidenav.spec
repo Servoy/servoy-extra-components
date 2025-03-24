@@ -17,7 +17,7 @@
 		"selectedIndex"					: {"type" :"string", "tags": { "scope" :"private" }, "pushToServer" : "deep"},
 		"expandedIndex"					: {"type" :"string", "tags": { "scope" :"private" }, "pushToServer" : "deep"},
 		"tabSeq"						: { "type": "tabseq", "tags": { "scope": "design" } },
-		"containedForm"					: {"type" :"form", "setter": "setContainedForm"},
+		"containedForm"					: {"type" :"form"},
 		"headerForm"					: {"type" :"form"},
 		"footerForm"					: {"type" :"form"},
 		"relationName"					: "relation",
@@ -245,14 +245,6 @@
 				{ "name": "menuItemId",	"type": "object" }
 			],
 			"returns" : "dimension"
-		},
-		"setContainedForm":
-		{
-			"parameters": 
-			[
-				{	"name": "form",	"type": "form" }
-			],
-			"returns" : "boolean"
 		}
 	},
 	"internalApi":{
