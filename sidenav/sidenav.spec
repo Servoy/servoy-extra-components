@@ -256,7 +256,8 @@
 				{ "name": "relationToShow", "type": "relation" }
 			],
 			"returns": "boolean"
-		}
+		},
+		"onShow" : {}
 	},
 	"types": {
     	"MenuItem": {

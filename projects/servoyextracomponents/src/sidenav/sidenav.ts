@@ -106,17 +106,8 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 						} else {
 							this.renderer.removeClass(this.getNativeElement(), 'has-panel');
 						}
-						if (change.firstChange) {
-							this.servoyApi.formWillShow(change.currentValue, this.relationName).then(() => {
-								if (change.currentValue == this.containedForm) this.realContainedForm = change.currentValue;
-							}).finally(() => {
-								this.cdRef.detectChanges();
-							});
-						}
-						else{
-							this.realContainedForm = change.currentValue;
-							this.cdRef.detectChanges();
-						}
+						// do we still need realConttainedForm?
+						this.realContainedForm = change.currentValue;
 						break;
 					case 'relationName':
 						// if only relationName is changed while containeForm remain the same, call a formWillShow with the new relation.
