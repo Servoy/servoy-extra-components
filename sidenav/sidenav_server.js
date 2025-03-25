@@ -1033,5 +1033,7 @@ $scope.setters.setContainedForm = function(form) {
 }
 
 $scope.onShow = function() {
-	servoyApi.showForm($scope.model.containedForm, $scope.model.relationName)
+	if ($scope.model.containedForm){
+		servoyApi.showForm($scope.model.containedForm, $scope.model.relationName);
+	} 
 }
