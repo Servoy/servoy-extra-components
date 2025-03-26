@@ -120,7 +120,13 @@ $scope.api.setDividerLocation = function(location) {
  */
 $scope.api.setLeftForm = function(form, relation) {
 	$scope.initPanes();
-	if (form && isShowing && servoyApi.showForm(form, relation)) {
+	if (form && isShowing) {
+		if ($scope.model.pane1.containsFormId && !servoyApi.hideForm($scope.model.pane1.containsFormId)) {
+			return false;
+		}
+		if (!servoyApi.showForm(form, relation)) {
+			return false;
+		}
 		$scope.model.pane1 = {
 			containsFormId: form,
 			relationName: relation
@@ -145,7 +151,13 @@ $scope.api.setLeftForm = function(form, relation) {
  */
 $scope.api.setRightForm = function(form, relation) {
 	$scope.initPanes();
-	if (form && isShowing && servoyApi.showForm(form, relation)) {
+	if (form && isShowing) {
+		if ($scope.model.pane2.containsFormId && !servoyApi.hideForm($scope.model.pane2.containsFormId)) {
+			return false;
+		}
+		if (!servoyApi.showForm(form, relation)) {
+			return false;
+		}
 		$scope.model.pane2 = {
 			containsFormId: form,
 			relationName: relation
@@ -197,15 +209,15 @@ $scope.initPanes = function() {
 }
 
 $scope.setters.setContainsFormId = function(pane, form) {
+	if (isShowing) {
+		if (pane.containsFormId && !servoyApi.hideForm(pane.containsFormId)) {
+			return false;
+		}
 
-	if (pane.containsFormId && !servoyApi.hideForm(pane.containsFormId)) {
-		return false;
+		if (!servoyApi.showForm(form, pane.relationName)) {
+			return false;
+		}
 	}
-
-	if (!servoyApi.showForm(form, pane.relationName)) {
-		return false;
-	}
-
 	pane.containsFormId = form;
 }
 
