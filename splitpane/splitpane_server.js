@@ -1,3 +1,5 @@
+var isShowing = false;
+
 /**
  * Gets the resize weight, which specifies how to distribute extra space when the size of the split pane changes.
  * A value of 0, the default, indicates the right/bottom component gets all the extra space (the left/top component acts fixed),
@@ -117,14 +119,22 @@ $scope.api.setDividerLocation = function(location) {
  * @return {Boolean} value indicating if pane was successfully added
  */
 $scope.api.setLeftForm = function(form, relation) {
-	$scope.onShow();
-	$scope.model.pane1 = {
-		containsFormId: form,
-		relationName: relation
-	};
-	//				$scope.svyServoyapi.formWillShow($scope.model.panes[0].containsFormId,
-	//						$scope.model.panes[0].relationName, 0);
-	return true;
+	$scope.initPanes();
+	if (form && isShowing && servoyApi.showForm(form, relation)) {
+		$scope.model.pane1 = {
+			containsFormId: form,
+			relationName: relation
+		};
+		return true;
+	}
+	else if (!isShowing) {
+		$scope.model.pane1 = {
+			containsFormId: form,
+			relationName: relation
+		};
+		return true;
+	}
+	return false;
 }
 
 /**
@@ -134,14 +144,22 @@ $scope.api.setLeftForm = function(form, relation) {
  * @return {Boolean} value indicating if pane was successfully added
  */
 $scope.api.setRightForm = function(form, relation) {
-	$scope.onShow();
-	$scope.model.pane2 = {
-		containsFormId: form,
-		relationName: relation
-	};
-	//				$scope.svyServoyapi.formWillShow($scope.model.panes[1].containsFormId,
-	//						$scope.model.panes[1].relationName, 1);
-	return true;
+	$scope.initPanes();
+	if (form && isShowing && servoyApi.showForm(form, relation)) {
+		$scope.model.pane2 = {
+			containsFormId: form,
+			relationName: relation
+		};
+		return true;
+	}
+	else if (!isShowing) {
+		$scope.model.pane2 = {
+			containsFormId: form,
+			relationName: relation
+		};
+		return true;
+	}
+	return false;
 }
 
 /**
@@ -150,7 +168,7 @@ $scope.api.setRightForm = function(form, relation) {
  * @return {FormScope} left form of the split pane
  */
 $scope.api.getLeftForm = function() {
-	$scope.onShow();
+	$scope.initPanes();
 	if (!$scope.model.pane1) return null;
 	return $scope.model.pane1.containsFormId;
 }
@@ -161,17 +179,12 @@ $scope.api.getLeftForm = function() {
  * @return {FormScope} right form of the split pane
  */
 $scope.api.getRightForm = function() {
-	$scope.onShow();
+	$scope.initPanes();
 	if (!$scope.model.pane2) return null;
 	return $scope.model.pane2.containsFormId;
 }
 
-/**
-	 * Servoy component lifecycle callback
-	 *
-	 *	This is needed for backward compatibility with the deprecated property panes[]
-	 */
-$scope.onShow = function() {
+$scope.initPanes = function() {
 	if ($scope.model.panes) {
 		if (!$scope.model.pane1 && $scope.model.panes[0]) {
 			$scope.model.pane1 = $scope.model.panes[0];
@@ -181,5 +194,38 @@ $scope.onShow = function() {
 		}
 		$scope.model.panes = null;
 	}
+}
+
+$scope.setters.setContainsFormId = function(pane, form) {
+
+	if (pane.containsFormId && !servoyApi.hideForm(pane.containsFormId)) {
+		return false;
+	}
+
+	if (!servoyApi.showForm(form, pane.relationName)) {
+		return false;
+	}
+
+	pane.containsFormId = form;
+}
+
+/**
+	 * Servoy component lifecycle callback
+	 *
+	 *	This is needed for backward compatibility with the deprecated property panes[]
+	 */
+$scope.onShow = function() {
+	isShowing = true;
+	$scope.initPanes();
+	if ($scope.model.pane1.containsFormId) {
+		servoyApi.showForm($scope.model.pane1.containsFormId, $scope.model.pane1.relationName);
+	}
+	if ($scope.model.pane2.containsFormId) {
+		servoyApi.showForm($scope.model.pane2.containsFormId, $scope.model.pane2.relationName);
+	}
+}
+
+$scope.onHide = function() {
+	isShowing = false;
 }
 

@@ -92,8 +92,8 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
 
     svyOnChanges(changes: SimpleChanges) {
 		if(changes['pane1'] || changes['pane2']) {
-			this.leftTab = this.tabSwitch(this.leftTab, this.pane1?this.pane1:null);
-            this.rightTab = this.tabSwitch(this.rightTab, this.pane2?this.pane2:null);
+			this.leftTab = this.pane1;
+            this.rightTab = this.pane2;
 		}
         super.svyOnChanges(changes);
         if (changes) {
@@ -133,25 +133,6 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
         return this.leftTab?this.leftTab.containsFormId:null;
     }
 
-    private tabSwitch(oldTab: Pane,newTab: Pane): Pane {
-        if (oldTab && oldTab.containsFormId && newTab && newTab.containsFormId) {
-            const promise = this.servoyApi.hideForm(oldTab.containsFormId,oldTab.relationName,null,newTab.containsFormId,newTab.relationName);
-            promise.then((ok) => {
-                if (!ok) {
-                    // a splitpane can't block the hide so show should be called
-                    this.servoyApi.formWillShow(newTab.containsFormId,newTab.relationName).
-                        finally( () => this.cdRef.detectChanges());
-                }
-            });
-        } else if (oldTab && oldTab.containsFormId) {
-            this.servoyApi.hideForm(oldTab.containsFormId,oldTab.relationName);
-        } else if (newTab && newTab.containsFormId) {
-            this.servoyApi.formWillShow(newTab.containsFormId,newTab.relationName).
-                        finally( () => this.cdRef.detectChanges());
-        }
-        return newTab;
-    }
-    
     private getInternalHeight() {
 		return this.elementRef.nativeElement.getBoundingClientRect().height;
 	}

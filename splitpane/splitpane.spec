@@ -148,6 +148,7 @@
 	
 	"internalApi" : {
 		"onShow" : {},
+		"onHide" : {},
 		"getInternalWidth": {
 			"returns": "double"
 		},
