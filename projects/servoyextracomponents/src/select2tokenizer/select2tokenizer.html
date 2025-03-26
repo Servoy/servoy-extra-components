@@ -1,6 +1,7 @@
 <div #element (focus)="requestFocus(mustExecuteOnFocus)" class="svy-select2-autotokenizer" [class]="styleClass"> 
     <select2  
         [multiple]="true"
+        [hideSelectedItems]="hideSelectedItems"
         [data]="data"
         [id]="servoyApi.getMarkupId()"
         [svyTooltip]="toolTipText"
