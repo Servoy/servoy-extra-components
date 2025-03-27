@@ -1,4 +1,8 @@
 /**
+ * A component that provides a split pane container for displaying two forms side by side or one on top of the other.
+ */
+
+/**
  * Sets the initial splitter div location, between 0 and 1 is a percentange, more than 1 is a value in pixels.
  */
 var divLocation;
@@ -8,28 +12,64 @@ var divLocation;
  */
 var divSize;
 
+/**
+ * Flag indicating whether the split pane is enabled for user interaction.
+ */
 var enabled;
 
+/**
+ * Minimum size (in pixels) allowed for the left or top pane.
+ */
 var pane1MinSize;
 
+/**
+ * Minimum size (in pixels) allowed for the right or bottom pane.
+ */
 var pane2MinSize;
 
+/**
+ * Flag indicating whether the split pane is read-only.
+ */
 var readOnly;
 
+/**
+ * Specifies how extra space is distributed between the two panes. A value of 0 means the right/bottom pane gets all extra space; 1 means the left/top pane gets it.
+ */
 var resizeWeight;
 
+/**
+ * CSS style classes applied to the split pane component.
+ */
 var styleClass;
 
+/**
+ * Determines the split type. Typically, 0 represents horizontal splitting and 1 represents vertical splitting.
+ */
 var splitType;
 
+/**
+ * Tab sequence order for keyboard navigation.
+ */
 var tabSeq;
 
+/**
+ * An array of pane objects. (Deprecated: use pane1 and pane2 instead.)
+ */
 var panes;
 
+/**
+ * The left or top pane object.
+ */
 var pane1;
 
+/**
+ * The right or bottom pane object.
+ */
 var pane2;
 
+/**
+ * Flag indicating whether the split pane is visible.
+ */
 var visible;
 
 /**
@@ -40,8 +80,10 @@ var responsiveHeight;
 
 var handlers = {
     /**
-     * @param {Number} previousIndex
-     * @param {JSEvent} event
+     * Called when the split pane changes (for example, when the divider is moved).
+     *
+     * @param {Number} previousIndex The previous index or position of the divider.
+     * @param {JSEvent} event The event object associated with the change.
      */
     onChangeMethodID: function() {}
 };
@@ -187,11 +229,18 @@ function getRightForm() {
 
 var svy_types = {
 
+    /**
+     * Represents a pane within the split pane.
+     */
     pane: {
+        /**
+         * The form contained in this pane.
+         */
+        containsFormId: null,
 
-        containsFormId : null,
-
-        relationName : null,
-
+        /**
+         * The relation name used to link the pane's form to the main datasource.
+         */
+        relationName: null,
     }
 }

@@ -1,4 +1,8 @@
 /**
+ * A Servoy Extra Component that supports multi-file upload functionality.
+ */
+
+/**
  * By default the component will wait for an upload button to be pressed in the UI, or the upload() method to be called, before starting an upload. Setting this to autoProceed: true will start uploading automatically after the first file is selected.
  */
 var autoProceed;
@@ -18,6 +22,9 @@ var hideUploadButton;
  */
 var disableStatusBar;
 
+/**
+ * Flag indicating whether the component is visible.
+ */
 var visible;
 
 /**
@@ -30,6 +37,9 @@ var restrictions;
  */
 var inline;
 
+/**
+ * A note associated with the component.
+ */
 var note;
 
 /**
@@ -42,7 +52,11 @@ var closeAfterFinish;
  */
 var sources;
 
+/**
+ * CSS style classes applied to the component.
+ */
 var styleClass;
+
 
 /**
  * An array of UI field objects that will be shown when a user clicks the 'edit' button on that file
@@ -59,6 +73,9 @@ var language;
  */
 var localeStrings;
 
+/**
+ * Dimensions of the component.
+ */
 var size;
 
 /**
@@ -71,6 +88,9 @@ var responsiveWidth;
  */
 var responsiveHeight;
 
+/**
+ * A map of additional options.
+ */
 var options;
 
 /**
@@ -86,47 +106,66 @@ var webcamOptions;
 
 var handlers = {
     /**
-     * @param {JSUpload} jsUpload
-     * @param {JSEvent} event
+     * Fired when a file is successfully uploaded.
+     *
+     * @param {JSUpload} jsUpload The upload object containing details about the uploaded file
+     * @param {JSEvent} event The event object associated with the upload
      */
     onFileUploaded: function() {},
 
     /**
-     * @param {CustomType<servoyextra-multifileupload.uploadFile>} fileAdded
-     * @param {JSEvent} event
+     * Fired when a file is added.
+     *
+     * @param {CustomType<servoyextra-multifileupload.uploadFile>} fileAdded The file object that was added
+     * @param {JSEvent} event The event object associated with the addition
      */
     onFileAdded: function() {},
 
+    
     /**
-     * @param {CustomType<servoyextra-multifileupload.uploadFile>} fileToAdd
-     * @param {Array<CustomType<servoyextra-multifileupload.uploadFile>>} files
-     * @param {JSEvent} event
+     * Called before a file is added. Return true if the file should be accepted, or false otherwise.
      *
-     * @returns {Boolean}
+     * @param {CustomType<servoyextra-multifileupload.uploadFile>} fileToAdd The file object to be added
+     * @param {Array<CustomType<servoyextra-multifileupload.uploadFile>>} files The current array of file objects in the component
+     * @param {JSEvent} event The event object associated with the file addition
+     * 
+     * @return {Boolean} True if the file is accepted, false otherwise
      */
     onBeforeFileAdded: function() {},
 
     /**
-     * @param {CustomType<servoyextra-multifileupload.uploadFile>} fileRemoved
-     * @param {JSEvent} event
+     * Fired when a file is removed from the component.
+     *
+     * @param {CustomType<servoyextra-multifileupload.uploadFile>} fileRemoved The file object that was removed
+     * @param {JSEvent} event The event object associated with the removal
      */
     onFileRemoved: function() {},
 
     /**
-     * @param {Array<CustomType<servoyextra-multifileupload.uploadFile>>} successfulFiles
-     * @param {Array<CustomType<servoyextra-multifileupload.uploadFile>>} failedFiles
-     * @param {JSEvent} event
+     * Fired when all file uploads are complete.
+     *
+     * @param {Array<CustomType<servoyextra-multifileupload.uploadFile>>} successfulFiles The array of file objects that were uploaded successfully
+     * @param {Array<CustomType<servoyextra-multifileupload.uploadFile>>} failedFiles The array of file objects that failed to upload
+     * @param {JSEvent} event The event object associated with the upload completion
      */
     onUploadComplete: function() {},
 
+    /**
+     * Fired when the modal window is opened.
+     */
     onModalOpened: function() {},
 
+    /**
+     * Fired when the modal window is closed.
+     */
     onModalClosed: function() {},
 
     /**
-     * @param {CustomType<servoyextra-multifileupload.uploadFile>} file
-     * @param {String} error
-     * @param {JSEvent} event
+     * Called when a file fails to meet the specified restrictions.
+     *
+     * @param {CustomType<servoyextra-multifileupload.uploadFile>} file The file object that failed the restrictions
+     * @param {String} error The error message describing why the restriction failed
+     * @param {JSEvent} event The event object associated with the restriction failure
      */
     onRestrictionFailed: function() {}
 };
@@ -217,59 +256,123 @@ function initialize() {
 
 var svy_types = {
 
+    /**
+     * Represents the restrictions for file uploads.
+     */
     uploadRestriction: {
+        /**
+         * The maximum allowed file size in bytes.
+         */
+        maxFileSize: null,
 
-        maxFileSize : null,
+        /**
+         * The maximum number of files that can be selected.
+         */
+        maxNumberOfFiles: null,
 
-        maxNumberOfFiles : null,
+        /**
+         * The minimum number of files that must be selected.
+         */
+        minNumberOfFiles: null,
 
-        minNumberOfFiles : null,
-
-        allowedFileTypes : null,
-
+        /**
+         * An array of allowed file types (e.g. ['image/jpeg', 'image/png']).
+         */
+        allowedFileTypes: null,
     },
 
+    /**
+     * Represents a meta field used for additional file information.
+     */
     metaField: {
+        /**
+         * Unique identifier for the meta field.
+         */
+        id: null,
 
-        id : null,
+        /**
+         * The name of the meta field.
+         */
+        name: null,
 
-        name : null,
-
-        placeholder : null,
-
+        /**
+         * Placeholder text for the meta field.
+         */
+        placeholder: null,
     },
 
+    /**
+     * Represents a file uploaded via the component.
+     */
     uploadFile: {
+        /**
+         * Unique identifier for the file.
+         */
+        id: null,
 
-        id : null,
+        /**
+         * The name of the file.
+         */
+        name: null,
 
-        name : null,
+        /**
+         * The file extension (e.g. 'jpg', 'png').
+         */
+        extension: null,
 
-        extension : null,
+        /**
+         * The MIME type of the file.
+         */
+        type: null,
 
-        type : null,
+        /**
+         * The size of the file in bytes.
+         */
+        size: null,
 
-        size : null,
+        /**
+         * Meta data fields associated with the file.
+         */
+        metaFields: null,
 
-        metaFields : null,
+        /**
+         * The progress object representing the file upload progress.
+         */
+        progress: null,
 
-        progress : null,
-
-        error : null,
-
+        /**
+         * Error message if the file upload failed.
+         */
+        error: null,
     },
 
+    /**
+     * Represents the progress information for a file upload.
+     */
     progress: {
+        /**
+         * Total number of bytes to be uploaded.
+         */
+        bytesTotal: null,
 
-        bytesTotal : null,
+        /**
+         * Number of bytes uploaded so far.
+         */
+        bytesUploaded: null,
 
-        bytesUploaded : null,
+        /**
+         * Upload progress percentage.
+         */
+        percentage: null,
 
-        percentage : null,
+        /**
+         * Flag indicating whether the upload is complete.
+         */
+        uploadComplete: null,
 
-        uploadComplete : null,
-
-        uploadStarted : null,
-
+        /**
+         * Timestamp indicating when the upload started.
+         */
+        uploadStarted: null,
     }
 }

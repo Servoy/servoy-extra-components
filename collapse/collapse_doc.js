@@ -1,58 +1,89 @@
+/**
+ * A Collapse Component that groups multiple collapsible panels.
+ */
+
+/**
+ * An array of collapsible objects contained in this component.
+ */
 var collapsibles;
 
+/**
+ * Determines whether the collapse component behaves in accordion mode (only one panel open at a time).
+ */
 var accordionMode;
 
+/**
+ * An array of indices representing which collapsibles are currently expanded.
+ */
 var expandedIndices;
 
+/**
+ * CSS style classes applied to the collapse component container.
+ */
 var styleClass;
 
+/**
+ * Tab sequence order for keyboard navigation.
+ */
 var tabSeq;
 
+/**
+ * Flag indicating whether the collapse component is visible.
+ */
 var visible;
-
 
 var handlers = {
     /**
-     * @param {JSEvent} event
-     * @param {CustomType<servoyextra-collapse.collapsible>} collapsible
-     * @param {Number} collapsibleIndex
+     * Called when a collapsible is shown.
+     *
+     * @param {JSEvent} event The event object associated with the show event.
+     * @param {CustomType<servoyextra-collapse.collapsible>} collapsible The collapsible that was shown.
+     * @param {Number} collapsibleIndex The index of the shown collapsible.
      */
     onCollapsibleShown: function() {},
 
     /**
-     * @param {JSEvent} event
-     * @param {CustomType<servoyextra-collapse.collapsible>} collapsible
-     * @param {Number} collapsibleIndex
+     * Called when a collapsible is hidden.
+     *
+     * @param {JSEvent} event The event object associated with the hide event.
+     * @param {CustomType<servoyextra-collapse.collapsible>} collapsible The collapsible that was hidden.
+     * @param {Number} collapsibleIndex The index of the hidden collapsible.
      */
     onCollapsibleHidden: function() {},
 
     /**
-     * @param {JSEvent} event
-     * @param {CustomType<servoyextra-collapse.collapsible>} collapsible
-     * @param {Number} collapsibleIndex
-     * @param {String} dataTarget
+     * Called when a header of a collapsible is clicked.
      *
-     * @returns {Boolean}
+     * @param {JSEvent} event The event object associated with the header click.
+     * @param {CustomType<servoyextra-collapse.collapsible>} collapsible The collapsible whose header was clicked.
+     * @param {Number} collapsibleIndex The index of the collapsible.
+     * @param {String} dataTarget The data target identifier for the header.
+     * 
+     * @return {Boolean} True if the click is handled, false otherwise.
      */
     onHeaderClicked: function() {},
 
     /**
-     * @param {JSEvent} event
-     * @param {CustomType<servoyextra-collapse.card>} card
-     * @param {CustomType<servoyextra-collapse.collapsible>} collapsible
-     * @param {Number} cardIndex
-     * @param {Number} collapsibleIndex
-     * @param {String} dataTarget
+     * Called when a card within a collapsible is clicked.
+     *
+     * @param {JSEvent} event The event object associated with the card click.
+     * @param {CustomType<servoyextra-collapse.card>} card The card that was clicked.
+     * @param {CustomType<servoyextra-collapse.collapsible>} collapsible The collapsible containing the card.
+     * @param {Number} cardIndex The index of the clicked card.
+     * @param {Number} collapsibleIndex The index of the collapsible.
+     * @param {String} dataTarget The data target identifier for the card.
      */
     onCardClicked: function() {},
 
     /**
-     * @param {JSEvent} event
-     * @param {CustomType<servoyextra-collapse.collapsible>} collapsible
-     * @param {Number} collapsibleIndex
-     * @param {String} dataTarget
+     * Called when a header of a collapsible is double-clicked.
      *
-     * @returns {Boolean}
+     * @param {JSEvent} event The event object associated with the header double-click.
+     * @param {CustomType<servoyextra-collapse.collapsible>} collapsible The collapsible whose header was double-clicked.
+     * @param {Number} collapsibleIndex The index of the collapsible.
+     * @param {String} dataTarget The data target identifier for the header.
+     * 
+     * @return {Boolean} True if the double-click is handled, false otherwise.
      */
     onHeaderDoubleClicked: function() {}
 };
@@ -197,51 +228,113 @@ function removeAllCollapsibles() {
 
 var svy_types = {
 
+    /**
+     * Represents a card within a collapsible.
+     */
     card: {
+        /**
+         * Unique identifier for the card.
+         */
+        cardId: null,
 
-        cardId : null,
+        /**
+         * HTML content displayed inside the card.
+         */
+        contentHtml: null,
 
-        contentHtml : null,
+        /**
+         * Optional form associated with the card.
+         */
+        form: null,
 
-        form : null,
+        /**
+         * Minimum responsive height for the card.
+         */
+        minResponsiveHeight: null,
 
-        minResponsiveHeight : null,
+        /**
+         * Maximum responsive height for the card.
+         */
+        maxResponsiveHeight: null,
 
-        maxResponsiveHeight : null,
-
-        styleClass : null,
-
+        /**
+         * CSS style classes applied to the card.
+         */
+        styleClass: null,
     },
 
+    /**
+     * Represents a collapsible element within the Collapse component.
+     */
     collapsible: {
+        /**
+         * Unique identifier for the collapsible.
+         */
+        collapsibleId: null,
 
-        collapsibleId : null,
+        /**
+         * HTML content for the header of the collapsible.
+         */
+        headerHtml: null,
 
-        headerHtml : null,
+        /**
+         * CSS style classes applied to the collapsible header.
+         */
+        headerStyleClass: null,
 
-        headerStyleClass : null,
+        /**
+         * CSS style classes applied to the collapsible body.
+         */
+        bodyStyleClass: null,
 
-        bodyStyleClass : null,
+        /**
+         * HTML content for the collapsible body.
+         */
+        collapsibleHtml: null,
 
-        collapsibleHtml : null,
+        /**
+         * Optional form to be displayed within the collapsible.
+         */
+        form: null,
 
-        form : null,
+        /**
+         * Relation name used to associate the collapsible with data.
+         */
+        relationName: null,
 
-        relationName : null,
+        /**
+         * An array of card objects contained within the collapsible.
+         */
+        cards: null,
 
-        cards : null,
+        /**
+         * CSS style classes applied to the collapsible container.
+         */
+        styleClass: null,
 
-        styleClass : null,
+        /**
+         * Icon name displayed when the collapsible is collapsed.
+         */
+        collapsedIconName: null,
 
-        collapsedIconName : null,
+        /**
+         * Icon name displayed when the collapsible is expanded.
+         */
+        expandedIconName: null,
 
-        expandedIconName : null,
+        /**
+         * Location of the icon relative to the header (e.g. LEFT, RIGHT, HIDDEN).
+         */
+        iconLocation: null,
 
-        iconLocation : null,
+        /**
+         * Minimum responsive height for the collapsible.
+         */
+        minResponsiveHeight: null,
 
-        minResponsiveHeight : null,
-
-        maxResponsiveHeight : null,
-
+        /**
+         * Maximum responsive height for the collapsible.
+         */
+        maxResponsiveHeight: null,
     }
 }

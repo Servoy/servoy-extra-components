@@ -1,3 +1,10 @@
+/**
+ * A Servoy Extra Component that displays a slider for selecting numeric values, supporting both single and range selection.
+ */
+
+/**
+ * Dimensions of the slider component (width and height).
+ */
 var size;
 
 /**
@@ -10,6 +17,9 @@ var dataProvider;
  */
 var dataProviderHigh;
 
+/**
+ * Flag indicating whether the slider is enabled for user interaction.
+ */
 var enabled;
 
 /**
@@ -22,6 +32,9 @@ var ticksValuesInterval;
  */
 var ticksInterval;
 
+/**
+ * CSS style classes applied to the slider component.
+ */
 var styleClass;
 
 /**
@@ -69,6 +82,9 @@ var getLegendFunction;
  */
 var pointerColorFunction;
 
+/**
+ * Flag indicating whether the slider is in read-only mode.
+ */
 var readOnly;
 
 /**
@@ -206,6 +222,9 @@ var ticksArray;
  */
 var stepsArray;
 
+/**
+ * Flag indicating whether the slider is visible.
+ */
 var visible;
 
 /**
@@ -223,42 +242,42 @@ var handlers = {
     /**
      * Called when the dataProvider value changed
      *
-     * @param {${dataproviderType}} oldValue
-     * @param {${dataproviderType}} newValue
-     * @param {JSEvent} event
-     *
-     * @returns {Boolean}
+     * @param {dataproviderType} oldValue The previous slider value.
+     * @param {dataproviderType} newValue The new slider value.
+     * @param {JSEvent} event The event object associated with the data change.
+     * 
+     * @return {Boolean} True if the new value is accepted, false otherwise.
      */
     onDataChangeMethodID: function() {},
 
     /**
      * Called when the dataProviderHigh value changed
      *
-     * @param {${dataproviderType}} oldValue
-     * @param {${dataproviderType}} newValue
-     * @param {JSEvent} event
-     *
-     * @returns {Boolean}
+     * @param {dataproviderType} oldValue The previous high slider value.
+     * @param {dataproviderType} newValue The new high slider value.
+     * @param {JSEvent} event The event object associated with the data change.
+     * 
+     * @return {Boolean} True if the new high value is accepted, false otherwise.
      */
     onDataChangeHigh: function() {},
 
     /**
      * Called when user starts dragging the slider
      *
-     * @param {JSEvent} event
-     * @param {Object} value
-     * @param {Object} highValue
-     * @param {String} pointerType
+     * @param {JSEvent} event The event object associated with the slide start.
+     * @param {Object} value The value when the user dragged the pointer of a non-range slider or the low value in a range slider.
+     * @param {Object} highValue The high value when the user dragged the pointer in a range slider.
+     * @param {String} pointerType Either "value" or "high", indicating which pointer was dragged.
      */
     onSlideStart: function() {},
 
     /**
      * Called when user stops dragging the slider
      *
-     * @param {JSEvent} event
-     * @param {Object} value
-     * @param {Object} highValue
-     * @param {String} pointerType
+     * @param {JSEvent} event The event object associated with the slide end.
+     * @param {Object} value The value when the user stopped dragging the pointer of a non-range slider or the low value in a range slider.
+     * @param {Object} highValue The high value when the user stopped dragging the pointer in a range slider.
+     * @param {String} pointerType Either "value" or "high", indicating which pointer was used.
      */
     onSlideEnd: function() {}
 };
@@ -272,11 +291,18 @@ function refresh() {
 
 var svy_types = {
 
-    gradient: {
+   /**
+     * Represents a gradient configuration for the slider selection bar.
+     */
+   gradient: {
+    /**
+     * The starting color of the gradient.
+     */
+    from: null,
 
-        from : null,
-
-        to : null,
-
-    }
+    /**
+     * The ending color of the gradient.
+     */
+    to: null,
+}
 }

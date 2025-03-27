@@ -1,15 +1,40 @@
+/**
+ * A component that provides a side navigation menu.
+ */
+
+/**
+ * The root menu items for the sidenav.
+ */
 var menu;
 
+/**
+ * A JSMenu object representing the Servoy menu with extra properties (badgeText, badgeStyleClass, formName, relationName, etc.).
+ */
 var servoyMenu;
 
+/**
+ * Tab sequence order for keyboard navigation.
+ */
 var tabSeq;
 
+/**
+ * The form displayed within the sidenav.
+ */
 var containedForm;
 
+/**
+ * The header form of the sidenav.
+ */
 var headerForm;
 
+/**
+ * The footer form of the sidenav.
+ */
 var footerForm;
 
+/**
+ * The relation name used to link the contained form to data.
+ */
 var relationName;
 
 /**
@@ -22,60 +47,113 @@ var sidenavWidth;
  */
 var responsiveHeight;
 
+/**
+ * CSS style classes for the icon when the sidenav is open.
+ */
 var iconOpenStyleClass;
 
+/**
+ * CSS style classes for the icon when the sidenav is closed.
+ */
 var iconCloseStyleClass;
 
+/**
+ * CSS style classes for the icon used to expand a menu item.
+ */
 var iconExpandStyleClass;
 
+/**
+ * CSS style classes for the icon used to collapse a menu item.
+ */
 var iconCollapseStyleClass;
 
+/**
+ * CSS style classes applied to the sidenav container.
+ */
 var styleClass;
 
+/**
+ * Position of the sidenav slide (for example, "left", "right", or "static").
+ */
 var slidePosition;
 
+/**
+ * Animation type for the slide effect (for example, "slide-menu" or "collapse-menu").
+ */
 var slideAnimation;
 
+/**
+ * Position of the toggle button (for example, "fixed-toggle", "side-toggle", or "hide-toggle").
+ */
 var togglePosition;
 
+/**
+ * Position of the scrollbar within the sidenav (for example, "left" or "right").
+ */
 var scrollbarPosition;
 
+/**
+ * Flag indicating whether the sidenav is open.
+ */
 var open;
 
+/**
+ * Flag indicating whether the sidenav is enabled for user interaction.
+ */
 var enabled;
 
+/**
+ * Flag indicating whether animations are enabled.
+ */
 var animate;
 
+/**
+ * Dimensions (width and height) of the sidenav component.
+ */
 var size;
 
+/**
+ * The position of the sidenav on the form.
+ */
 var location;
 
+/**
+ * Flag indicating whether the sidenav is visible.
+ */
 var visible;
 
 
 var handlers = {
     /**
-     * @param {Object} menuItemId
-     * @param {JSEvent} event
+     * Called when a menu item is selected.
      *
-     * @returns {Boolean}
+     * @param {Object} menuItemId The unique identifier of the selected menu item.
+     * @param {JSEvent} event The event object associated with the selection.
+     * 
+     * @return {Boolean} True if the selection is handled successfully.
      */
     onMenuItemSelected: function() {},
 
     /**
-     * @param {Object} menuItemId
-     * @param {JSEvent} event
+     * Called when a menu item is expanded.
+     *
+     * @param {Object} menuItemId The unique identifier of the expanded menu item.
+     * @param {JSEvent} event The event object associated with the expansion.
      */
     onMenuItemExpanded: function() {},
 
     /**
-     * @param {Object} menuItemId
-     * @param {JSEvent} event
+     * Called when a menu item is collapsed.
+     *
+     * @param {Object} menuItemId The unique identifier of the collapsed menu item.
+     * @param {JSEvent} event The event object associated with the collapse.
      */
     onMenuItemCollapsed: function() {},
 
     /**
-     * @param {JSEvent} event
+     * Called when the open state of the sidenav is toggled.
+     *
+     * @param {JSEvent} event The event object associated with the toggle action.
      */
     onOpenToggled: function() {}
 };
@@ -388,33 +466,73 @@ function showForm(formToHide, formToShow, relationToShow) {
 
 var svy_types = {
 
+    /**
+     * Represents a menu item in the sidenav.
+     */
     MenuItem: {
+        /**
+         * Unique identifier of the menu item.
+         */
+        id: null,
 
-        id : null,
+        /**
+         * The text label of the menu item.
+         */
+        text: null,
 
-        text : null,
+        /**
+         * CSS style classes applied to the menu item's icon.
+         */
+        iconStyleClass: null,
 
-        iconStyleClass : null,
+        /**
+         * CSS style classes applied to the menu item.
+         */
+        styleClass: null,
 
-        styleClass : null,
+        /**
+         * Flag indicating whether the menu item is enabled.
+         */
+        enabled: null,
 
-        enabled : null,
+        /**
+         * Custom data associated with the menu item.
+         */
+        data: null,
 
-        data : null,
+        /**
+         * An array of child menu items (sub-menu items).
+         */
+        menuItems: null,
 
-        menuItems : null,
+        /**
+         * Flag indicating whether the menu item is a divider.
+         */
+        isDivider: null,
 
-        isDivider : null,
+        /**
+         * Tooltip text for the menu item.
+         */
+        tooltip: null,
 
-        tooltip : null,
+        /**
+         * Badge text displayed with the menu item.
+         */
+        badgeText: null,
 
-        badgeText : null,
+        /**
+         * CSS style classes applied to the badge.
+         */
+        badgeStyleClass: null,
 
-        badgeStyleClass : null,
+        /**
+         * The name of the form to be opened when the menu item is selected.
+         */
+        formName: null,
 
-        formName : null,
-
-        relationName : null,
-
+        /**
+         * The relation name used to link to the form.
+         */
+        relationName: null,
     }
 }

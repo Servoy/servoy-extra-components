@@ -1,45 +1,68 @@
+/**
+ * A Servoy Extra Component that displays a tree view for hierarchical data.
+ */
+
+/**
+ * JSDataSet used for the tree model.
+ */
 var jsDataSet;
 
+/**
+ * CSS style classes applied to the tree view component.
+ */
 var styleClass;
-
 
 var handlers = {
     /**
-     * @param {Object} nodeId
-     * @param {JSEvent} event
-     * @param {String} columnName
+     * Fired when a node is clicked.
+     *
+     * @param {Object} nodeId The identifier of the clicked node.
+     * @param {JSEvent} event The event object associated with the click.
+     * @param {String} columnName The name of the column where the node is displayed.
      */
     onNodeClicked: function() {},
 
     /**
-     * @param {Object} nodeId
-     * @param {JSEvent} event
+     * Fired when a node is right-clicked.
+     *
+     * @param {Object} nodeId The identifier of the node that was right-clicked.
+     * @param {JSEvent} event The event object associated with the right-click.
      */
     onNodeRightClicked: function() {},
 
     /**
-     * @param {Object} nodeId
-     * @param {JSEvent} event
+     * Fired when a node is double-clicked.
+     *
+     * @param {Object} nodeId The identifier of the node that was double-clicked.
+     * @param {JSEvent} event The event object associated with the double-click.
      */
     onNodeDoubleClicked: function() {},
 
     /**
-     * @param {Object} nodeId
+     * Fired when a node is expanded.
+     *
+     * @param {Object} nodeId The identifier of the node that was expanded.
      */
     onNodeExpanded: function() {},
 
     /**
-     * @param {Object} nodeId
+     * Fired when a node is collapsed.
+     *
+     * @param {Object} nodeId The identifier of the node that was collapsed.
      */
     onNodeCollapsed: function() {},
 
     /**
-     * @param {Object} nodeId
+     * Fired when a node is selected.
+     *
+     * @param {Object} nodeId The identifier of the node that was selected.
      */
     onNodeSelected: function() {},
 
     /**
-     * @param {JSEvent} event
+     * Fired when the tree view is ready.
+     *
+     * @param {JSEvent} event The event object associated with the tree view being ready.
      */
     onReady: function() {}
 };

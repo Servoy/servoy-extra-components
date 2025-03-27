@@ -1,38 +1,91 @@
 /**
+ * A Servoy Extra Component that displays a lightbox gallery for images with captions and thumbnails.
  * Component needs dataproviders from the foundset for the following: imageId, image, caption and thumbnail.
+ */
+
+/**
+ * The foundset containing the images and related dataproviders for image, caption, thumbnail and imageId.
  */
 var imagesFoundset;
 
+/**
+ * The maximum width for images in the gallery.
+ */
 var maxImageWidth;
 
+/**
+ * The maximum height for images in the gallery.
+ */
 var maxImageHeight;
 
+/**
+ * The label format for the album (e.g. "image %1 of %2").
+ */
 var albumLabel;
 
+/**
+ * The duration (in milliseconds) of the fade effect when transitioning images.
+ */
 var fadeDuration;
 
+/**
+ * When true, images are scaled to fit within the viewport.
+ */
 var fitImagesInViewport;
 
+/**
+ * The duration (in milliseconds) of the fade effect for image transitions.
+ */
 var imageFadeDuration;
 
+/**
+ * The vertical offset (in pixels) from the top when displaying the lightbox.
+ */
 var positionFromTop;
 
+/**
+ * The duration (in milliseconds) of the resizing animation.
+ */
 var resizeDuration;
 
+/**
+ * When true, navigating past the last image wraps around to the first image.
+ */
 var wrapAround;
 
+/**
+ * Flag indicating whether the gallery is visible.
+ */
 var galleryVisible;
 
+/**
+ * When true, captions are displayed in the gallery.
+ */
 var showCaptionInGallery;
 
+/**
+ * When true, a label showing the image number is displayed.
+ */
 var showImageNumberLabel;
 
+/**
+ * The icon displayed on the hover button (e.g. "fa fa-trash fa-lg").
+ */
 var hoverButtonIcon;
 
+/**
+ * The text displayed on the button associated with the gallery.
+ */
 var buttonText;
 
+/**
+ * CSS style classes applied to the button.
+ */
 var buttonStyleClass;
 
+/**
+ * Flag indicating whether the component is enabled for user interaction.
+ */
 var enabled;
 
 /**
@@ -48,8 +101,10 @@ var imageBatchSize;
 
 var handlers = {
     /**
-     * @param {JSEvent} event
-     * @param {String} imageId
+     * Called when the hover button is clicked.
+     *
+     * @param {JSEvent} event The event object associated with the click.
+     * @param {String} imageId The identifier of the image related to the click.
      */
     onHoverButtonClicked: function() {}
 };

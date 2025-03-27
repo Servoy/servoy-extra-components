@@ -1,7 +1,20 @@
+/**
+ * A component that displays a data grid with customizable columns, pagination, sorting, and incremental scrolling.
+ */
+
+/**
+ * An array holding the column definitions for the table.
+ */
 var columns;
 
+/**
+ * The current page number in a paginated view.
+ */
 var currentPage;
 
+/**
+ * The foundset (dataset) that provides the table data.
+ */
 var foundset;
 
 /**
@@ -9,20 +22,44 @@ var foundset;
  */
 var pageSize;
 
+/**
+ * CSS style classes applied to the table.
+ */
 var styleClass;
 
+/**
+ * CSS style classes applied to sorted columns.
+ */
 var sortStyleClass;
 
+/**
+ * CSS style classes applied to the selected row.
+ */
 var selectionClass;
 
+/**
+ * Data provider used to determine the CSS style class for each row.
+ */
 var rowStyleClassDataprovider;
 
+/**
+ * Tab sequence order for keyboard navigation.
+ */
 var tabSeq;
 
+/**
+ * Flag indicating whether the table is visible.
+ */
 var visible;
 
+/**
+ * Flag indicating whether columns can be resized.
+ */
 var enableColumnResize;
 
+/**
+ * Flag indicating whether sorting is enabled.
+ */
 var enableSort;
 
 /**
@@ -35,14 +72,29 @@ var responsiveHeight;
  */
 var responsiveDynamicHeight;
 
+/**
+ * Minimum height for each row.
+ */
 var minRowHeight;
 
+/**
+ * CSS class for indicating an ascending sort.
+ */
 var sortupClass;
 
+/**
+ * CSS class for indicating a descending sort.
+ */
 var sortdownClass;
 
+/**
+ * The index of the column used for sorting.
+ */
 var sortColumnIndex;
 
+/**
+ * The current sort direction (e.g. "asc", "desc").
+ */
 var sortDirection;
 
 /**
@@ -60,13 +112,18 @@ var keyCodeSettings;
  */
 var horizontalScrollbar;
 
+/**
+ * Flag to enable the mobile view for the table.
+ */
 var enableMobileView;
 
 
 var handlers = {
     /**
-     * @param {Number} start
-     * @param {Number} end
+     * Called when the viewport of the table changes.
+     *
+     * @param {Number} start The starting index of the visible rows.
+     * @param {Number} end The ending index of the visible rows.
      */
     onViewPortChanged: function() {},
 
@@ -74,22 +131,22 @@ var handlers = {
      * Called when the mouse is clicked on a row/cell (foundset and column indexes are given) or when the ENTER key is used (then only the selected foundset index is given).
      * Use the record to exactly match what the user clicked on.
      *
-     * @param {Number} foundsetindex
-     * @param {Number} [columnindex]
-     * @param {JSRecord} [record]
-     * @param {JSEvent} [event]
-     * @param {String} [columnid]
+     * @param {Number} foundsetindex The index of the clicked row in the foundset.
+     * @param {Number} [columnindex] The index of the clicked column.
+     * @param {JSRecord} [record] The record corresponding to the clicked row.
+     * @param {JSEvent} [event] The event object associated with the click.
+     * @param {String} [columnid] The identifier of the clicked column.
      */
     onCellClick: function() {},
 
     /**
      * Called when the mouse is double clicked on a row/cell (foundset and column indexes are given)
      *
-     * @param {Number} foundsetindex
-     * @param {Number} [columnindex]
-     * @param {JSRecord} [record]
-     * @param {JSEvent} [event]
-     * @param {String} [columnid]
+     * @param {Number} foundsetindex The index of the double-clicked row in the foundset.
+     * @param {Number} [columnindex] The index of the double-clicked column.
+     * @param {JSRecord} [record] The record corresponding to the double-clicked row.
+     * @param {JSEvent} [event] The event object associated with the double-click.
+     * @param {String} [columnid] The identifier of the double-clicked column.
      */
     onCellDoubleClick: function() {},
 
@@ -97,46 +154,57 @@ var handlers = {
      * Called when the right mouse button is clicked on a row/cell (foundset and column indexes are given).
      * Use the record to exactly match what the user clicked on.
      *
-     * @param {Number} foundsetindex
-     * @param {Number} [columnindex]
-     * @param {JSRecord} [record]
-     * @param {JSEvent} [event]
-     * @param {String} [columnid]
+     * @param {Number} foundsetindex The index of the row where the right-click occurred.
+     * @param {Number} [columnindex] The index of the clicked column.
+     * @param {JSRecord} [record] The record corresponding to the right-clicked row.
+     * @param {JSEvent} [event] The event object associated with the right-click.
+     * @param {String} [columnid] The identifier of the clicked column.
      */
     onCellRightClick: function() {},
 
     /**
-     * @param {Number} columnindex
-     * @param {String} sortdirection
-     * @param {JSEvent} [event]
-     * @param {String} [columnid]
+     * Called when a header is clicked.
      *
-     * @returns {String}
+     * @param {Number} columnindex The index of the clicked column.
+     * @param {String} sortdirection The desired sort direction.
+     * @param {JSEvent} [event] The event object associated with the click.
+     * @param {String} [columnid] The identifier of the clicked column.
+     * 
+     * @return {String} The resulting sort class.
      */
     onHeaderClick: function() {},
 
+
     /**
-     * @param {Number} columnindex
-     * @param {String} sortdirection
-     * @param {JSEvent} [event]
-     * @param {String} [columnid]
+     * Called when a header is right-clicked.
      *
-     * @returns {String}
+     * @param {Number} columnindex The index of the clicked column.
+     * @param {String} sortdirection The desired sort direction.
+     * @param {JSEvent} [event] The event object associated with the click.
+     * @param {String} [columnid] The identifier of the clicked column.
+     * 
+     * @return {String} The resulting sort class.
      */
     onHeaderRightClick: function() {},
 
     /**
-     * @param {JSEvent} [event]
+     * Called when a column is resized.
+     *
+     * @param {JSEvent} [event] The event object associated with the resize.
      */
     onColumnResize: function() {},
 
     /**
-     * @param {JSEvent} event
+     * Called when the table gains focus.
+     *
+     * @param {JSEvent} event The event object associated with the focus gain.
      */
     onFocusGainedMethodID: function() {},
 
     /**
-     * @param {JSEvent} event
+     * Called when the table loses focus.
+     *
+     * @param {JSEvent} event The event object associated with the focus loss.
      */
     onFocusLostMethodID: function() {}
 };
@@ -237,29 +305,64 @@ function getSortClass() {
 
 var svy_types = {
 
+    /**
+     * Represents a column in the table.
+     */
     column: {
+        /**
+         * The dataprovider linked to this column.
+         */
+        dataprovider: null,
 
-        dataprovider : null,
+        /**
+         * Format string for displaying the column's values.
+         */
+        format: null,
 
-        format : null,
+        /**
+         * CSS style classes applied to the column header.
+         */
+        headerStyleClass: null,
 
-        headerStyleClass : null,
+        /**
+         * The header text of the column.
+         */
+        headerText: null,
 
-        headerText : null,
+        /**
+         * CSS style classes applied to the column cells.
+         */
+        styleClass: null,
 
-        styleClass : null,
+        /**
+         * Dataprovider that defines dynamic CSS classes for cells.
+         */
+        styleClassDataprovider: null,
 
-        styleClassDataprovider : null,
+        /**
+         * The value list used to map column values.
+         */
+        valuelist: null,
 
-        valuelist : null,
+        /**
+         * The width of the column.
+         */
+        width: null,
 
-        width : null,
+        /**
+         * The initial width of the column when first rendered.
+         */
+        initialWidth: null,
 
-        initialWidth : null,
+        /**
+         * Indicates if the column should auto-resize.
+         */
+        autoResize: null,
 
-        autoResize : null,
-
-        showAs : null,
+        /**
+         * Determines how the column value is shown (text, html, etc.).
+         */
+        showAs: null,
 
         /**
          * Used to identify the column in cell event handlers, because column index can change if columns are added/removed at runtime.
@@ -268,37 +371,78 @@ var svy_types = {
 
     },
 
+    /**
+     * General settings for the table behavior.
+     */
     settings: {
+        /**
+         * Minimum number of rows to render when loading more rows.
+         */
+        minBatchSizeForRenderingMoreRows: null,
 
-        minBatchSizeForRenderingMoreRows : null,
+        /**
+         * Minimum number of rows to load when fetching additional data.
+         */
+        minBatchSizeForLoadingMoreRows: null,
 
-        minBatchSizeForLoadingMoreRows : null,
+        /**
+         * Maximum number of rows to render.
+         */
+        maxRenderedRows: null,
 
-        maxRenderedRows : null,
+        /**
+         * Maximum number of rows to load.
+         */
+        maxLoadedRows: null,
 
-        maxLoadedRows : null,
+        /**
+         * Threshold factor for fast scroll rendering.
+         */
+        fastScrollRenderThresholdFactor: null,
 
-        fastScrollRenderThresholdFactor : null,
-
-        fastScrollLoadThresholdFactor : null,
-
+        /**
+         * Threshold factor for fast scroll loading.
+         */
+        fastScrollLoadThresholdFactor: null,
     },
 
+    /**
+     * Settings for key bindings used in table navigation.
+     */
     keyCodeSettings: {
+        /**
+         * Enable Page Up key binding.
+         */
+        pageUp: null,
 
-        pageUp : null,
+        /**
+         * Enable Page Down key binding.
+         */
+        pageDown: null,
 
-        pageDown : null,
+        /**
+         * Enable Arrow Up key binding.
+         */
+        arrowUp: null,
 
-        arrowUp : null,
+        /**
+         * Enable Arrow Down key binding.
+         */
+        arrowDown: null,
 
-        arrowDown : null,
+        /**
+         * Enable Home key binding.
+         */
+        home: null,
 
-        home : null,
-
-        end : null,
-
-        enter : null,
-
+        /**
+         * Enable End key binding.
+         */
+        end: null,
+        
+        /**
+         * Enable Enter key binding.
+         */
+        enter: null,
     }
 }

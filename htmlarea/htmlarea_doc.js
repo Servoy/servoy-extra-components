@@ -1,25 +1,65 @@
+/**
+ * A Servoy Extra Component that provides a rich HTML editing area.
+ */
+
+/**
+ * Bound data provider identifier for the HTML content.
+ */
 var dataProviderID;
 
+/**
+ * Flag indicating whether HTML tags should be displayed.
+ */
 var displaysTags;
 
+/**
+ * Flag indicating whether the HTML area is editable.
+ */
 var editable;
 
+/**
+ * Flag indicating whether the HTML area is enabled for user interaction.
+ */
 var enabled;
 
+/**
+ * Placeholder text displayed when no HTML content is present.
+ */
 var placeholderText;
 
+/**
+ * Flag indicating whether the HTML area is read-only.
+ */
 var readOnly;
 
+/**
+ * Configuration for the scrollbars in the HTML area.
+ */
 var scrollbars;
 
+/**
+ * CSS style classes applied to the HTML area component.
+ */
 var styleClass;
 
+/**
+ * Tab sequence order for keyboard navigation.
+ */
 var tabSeq;
 
+/**
+ * The HTML content displayed in the editor.
+ */
 var text;
 
+/**
+ * Tooltip text displayed when hovering over the HTML area.
+ */
 var toolTipText;
 
+/**
+ * Flag indicating whether the HTML area is visible.
+ */
 var visible;
 
 /**
@@ -30,31 +70,42 @@ var responsiveHeight;
 
 var handlers = {
     /**
-     * @param {JSEvent} event
+     * Fired when an action is triggered in the HTML area.
+     *
+     * @param {JSEvent} event The event object containing details about the action event.
      */
     onActionMethodID: function() {},
 
+
     /**
-     * @param {${dataproviderType}} oldValue
-     * @param {${dataproviderType}} newValue
-     * @param {JSEvent} event
+     * Fired when the HTML content changes.
      *
-     * @returns {Boolean}
+     * @param {dataproviderType} oldValue The previous HTML content.
+     * @param {dataproviderType} newValue The new HTML content.
+     * @param {JSEvent} event The event object associated with the data change.
+     * 
+     * @return {Boolean} True if the new content is accepted, false otherwise.
      */
     onDataChangeMethodID: function() {},
 
     /**
-     * @param {JSEvent} event
+     * Fired when the HTML area gains focus.
+     *
+     * @param {JSEvent} event The event object containing details about the focus gained event.
      */
     onFocusGainedMethodID: function() {},
 
     /**
-     * @param {JSEvent} event
+     * Fired when the HTML area loses focus.
+     *
+     * @param {JSEvent} event The event object containing details about the focus lost event.
      */
     onFocusLostMethodID: function() {},
 
     /**
-     * @param {JSEvent} event
+     * Fired when the HTML area is right-clicked.
+     *
+     * @param {JSEvent} event The event object containing details about the right-click event.
      */
     onRightClickMethodID: function() {}
 };

@@ -1,4 +1,8 @@
 /**
+ * A Servoy Extra Component that displays a database tree view.
+ */
+
+/**
  * Can be used to enable dragging of nodes. Can either be a boolean value or a clientfunction that is executed in browser. Default value is false.
  */
 var allowDrag;
@@ -8,8 +12,14 @@ var allowDrag;
  */
 var allowDrop;
 
+/**
+ * Flag indicating whether the tree view is visible.
+ */
 var visible;
 
+/**
+ * Flag indicating whether the tree view is enabled for user interaction.
+ */
 var enabled;
 
 /**
@@ -22,26 +32,34 @@ var autoRefresh;
  */
 var responsiveHeight;
 
+/**
+ * Flag indicating whether a loading indicator is displayed while data is loading.
+ */
 var showLoadingIndicator;
 
+/**
+ * CSS style classes applied to the tree view component.
+ */
 var styleClass;
 
 
 var handlers = {
     /**
-     * @param {JSEvent} event
-     */
-    onReady: function() {},
-
-    /**
-     * Called when a node is dropped as a result of a drag-n-drop
+     * Fired when the tree view is ready to be displayed.
      *
-     * @param {Array<String>} sourceNodePkPath
-     * @param {Array<String>} targetNodePkPath
-     * @param {Number} indexInParent
-     * @param {JSEvent} event
+     * @param {JSEvent} event The event object associated with the ready event.
      */
-    onDrop: function() {}
+   onReady: function() {},
+
+   /**
+    * Called when a node is dropped as a result of a drag-n-drop.
+    *
+    * @param {Array<String>} sourceNodePkPath The primary key path of the source node.
+    * @param {Array<String>} targetNodePkPath The primary key path of the target node.
+    * @param {Number} indexInParent The index at which the node is dropped within its parent.
+    * @param {JSEvent} event The event object associated with the drop action.
+    */
+   onDrop: function() {}
 };
 
 /**
@@ -411,73 +429,134 @@ function getCheckBoxValues () {
 
 var svy_types = {
 
+    /**
+     * Represents callback information used in tree view operations.
+     */
     callback: {
-
-        f : null,
-
-        param : null,
-
+        /**
+         * The callback function to be executed.
+         */
+        f: null,
+        /**
+         * The parameter to be passed to the callback function.
+         */
+        param: null,
     },
 
+
+    /**
+     * Represents binding configuration for tree view nodes.
+     */
     binding: {
-
-        datasource : null,
-
-        textdataprovider : null,
-
-        nrelationname : null,
-
-        hascheckboxdataprovider : null,
-
-        checkboxvaluedataprovider : null,
-
-        tooltiptextdataprovider : null,
-
-        imageurldataprovider : null,
-
-        childsortdataprovider : null,
-
-        callbackinfo : null,
-
-        methodToCallOnCheckBoxChange : null,
-
-        methodToCallOnDoubleClick : null,
-
-        methodToCallOnRightClick : null,
-
-        nRelationInfos : null,
-
-        hasCheckboxValue : null,
-
-        initialCheckboxValues : null,
-
+        /**
+         * The datasource identifier for the foundset.
+         */
+        datasource: null,
+        /**
+         * The dataprovider for the text displayed in a node.
+         */
+        textdataprovider: null,
+        /**
+         * The relation name used for linking child nodes.
+         */
+        nrelationname: null,
+        /**
+         * The dataprovider for enabling checkboxes in nodes.
+         */
+        hascheckboxdataprovider: null,
+        /**
+         * The dataprovider for the checkbox value displayed in nodes.
+         */
+        checkboxvaluedataprovider: null,
+        /**
+         * The dataprovider for the tooltip text displayed for nodes.
+         */
+        tooltiptextdataprovider: null,
+        /**
+         * The dataprovider specifying the image URL for a node.
+         */
+        imageurldataprovider: null,
+        /**
+         * The dataprovider that defines sorting for child nodes.
+         */
+        childsortdataprovider: null,
+        /**
+         * Callback information for tree view actions.
+         */
+        callbackinfo: null,
+        /**
+         * Callback information for checkbox change events.
+         */
+        methodToCallOnCheckBoxChange: null,
+        /**
+         * Callback information for double-click events on nodes.
+         */
+        methodToCallOnDoubleClick: null,
+        /**
+         * Callback information for right-click events on nodes.
+         */
+        methodToCallOnRightClick: null,
+        /**
+         * An array of relation information objects for defining multiple child relations.
+         */
+        nRelationInfos: null,
+        /**
+         * Represents the nodes that have an associated checkbox.
+         */
+        hasCheckboxValue: null,
+        /**
+         * Represents the initial checkbox values for nodes.
+         */
+        initialCheckboxValues: null,
     },
 
+    /**
+     * Represents the visibility settings for a tree level.
+     */
     levelVisibilityType: {
-
-        level : null,
-
-        value : null,
-
+        /**
+         * The level of the tree.
+         */
+        level: null,
+        /**
+         * The visibility state for the tree level.
+         */
+        value: null,
     },
 
+    /**
+     * Represents relation information used for linking child nodes.
+     */
     relationInfo: {
-
-        label : null,
-
-        nRelationName : null,
-
+        /**
+         * The label for the relation.
+         */
+        label: null,
+        /**
+         * The name of the relation.
+         */
+        nRelationName: null,
     },
-
+    
+    /**
+     * Represents an action configuration for tree view events.
+     */
     action: {
-
-        datasource : null,
-
-        callbackfunction : null,
-
-        param : null,
-
-        name : null,
-
+        /**
+         * The datasource identifier related to the action.
+         */
+        datasource: null,
+        /**
+         * The callback function to be executed for the action.
+         */
+        callbackfunction: null,
+        /**
+         * The parameter to be passed to the callback function.
+         */
+        param: null,
+        /**
+         * The unique name identifier for the action.
+         */
+        name: null,
     }
 }
