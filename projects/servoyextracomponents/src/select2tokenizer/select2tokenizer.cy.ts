@@ -30,6 +30,7 @@ import { FormsModule } from '@angular/forms';
                 [valuelistID] = "valuelistID"
                 [format] = "format"
                 [readOnly] = "readOnly"
+                [hideSelectedItems] = "hideSelectedItems"
                 #element>
                 </servoyextra-select2tokenizer>`,
     standalone: false
@@ -59,6 +60,7 @@ class WrapperComponent {
     valuelistID: IValuelist;
     format: Format;
     readOnly: boolean;
+    hideSelectedItems: boolean;
 
     dataProviderIDChange = (newData: unknown) => { };
 
@@ -117,7 +119,8 @@ describe('ServoyExtraSelect2Tokenizer', () => {
             toolTipText: '',
             valuelistID: mockData,
             format: { "type": "TEXT" } as Format,
-            readOnly: false
+            readOnly: false,
+            hideSelectedItems: false
         };
 
         cy.mount(WrapperComponent, config);
@@ -263,6 +266,32 @@ describe('ServoyExtraSelect2Tokenizer', () => {
                         cy.get('select2 ul span').should('have.text', config.componentProperties.placeholderText);
                     });
                 });
+            });
+        });
+    });
+    
+    it('should hide selected items', () => {
+        config.componentProperties.hideSelectedItems = true;
+        config.componentProperties.selectOnClose = false;
+        cy.mount(WrapperComponent, config).then(() => {
+            cy.get('select2').click().then(() => {
+                cy.get('.select2-results ul li div').should('have.length', 3);
+                cy.get('.select2-results ul li div').eq(0).should('have.text', 'two');
+                cy.get('.select2-results ul li div').eq(1).should('have.text', 'three');
+                cy.get('.select2-results ul li div').eq(2).should('have.text', 'four');
+            });
+        });
+    });
+    
+    it('should not hide selected items', () => {
+        config.componentProperties.selectOnClose = false;
+        cy.mount(WrapperComponent, config).then(() => {
+            cy.get('select2').click().then(() => {
+                cy.get('.select2-results ul li div').should('have.length', 4);
+                cy.get('.select2-results ul li div').eq(0).should('have.text', 'one');
+                cy.get('.select2-results ul li div').eq(1).should('have.text', 'two');
+                cy.get('.select2-results ul li div').eq(2).should('have.text', 'three');
+                cy.get('.select2-results ul li div').eq(3).should('have.text', 'four');
             });
         });
     });
