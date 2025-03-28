@@ -56,7 +56,6 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	private realHeaderForm: any;
 	private realFooterForm: any;
 	private log: LoggerService;
-	private shouldCopyServoyMenu = false;
 
 	constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, private servoyPublic: ServoyPublicService, @Inject(DOCUMENT) private doc: Document, logFactory: LoggerFactory) {
 		super(renderer, cdRef);
@@ -67,10 +66,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		super.svyOnInit();
 		if (!this.selectedIndex) this.selectedIndex = {};
 		if (!this.expandedIndex) this.expandedIndex = {};
-		if (this.servoyMenu && (!this.menu || this.menu.length == 0)) {
-			this.shouldCopyServoyMenu = true;
-			this.copyServoyMenu();
-		}
+		this.copyServoyMenu();
 	}
 
 	svyOnChanges(changes: SimpleChanges) {
@@ -199,12 +195,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 						}
 						break;
 					case 'servoyMenu':
-						if (!change.firstChange) {
-							this.copyServoyMenu();
-						} else if (this.servoyMenu && (!this.menu || this.menu.length == 0)) {
-							this.shouldCopyServoyMenu = true;
-							this.copyServoyMenu();
-						}
+						this.copyServoyMenu();
 						break;
 				}
 			}
@@ -912,21 +903,21 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	};
 
 	private copyServoyMenu() {
-		if (this.shouldCopyServoyMenu) {
-			if (this.servoyMenu) {
-				this.selectedIndex = {};
-				const selectedNode = {};
-				const oldMenu = new Array();
+		if (this.servoyMenu) {
+			this.selectedIndex = {};
+			const selectedNode = {};
+			const oldMenu = new Array();
+			if (this.servoyMenu.items) {
 				for (let i = 0; i < this.servoyMenu.items.length; i++) {
 					this.copyServoyMenuItem(oldMenu, this.servoyMenu.items[i], 1, selectedNode);
 				}
-				this.menu = oldMenu;
-				const selection = Object.keys(selectedNode);
-				if (selection && selection.length == 1) {
-					this.updateSelectedNode(selectedNode[selection[0]], this.menu, parseInt(selection[0]));
-				}
-				this.selectedIndexChange.emit(JSON.stringify(this.selectedIndex));
 			}
+			this.menu = oldMenu;
+			const selection = Object.keys(selectedNode);
+			if (selection && selection.length == 1) {
+				this.updateSelectedNode(selectedNode[selection[0]], this.menu, parseInt(selection[0]));
+			}
+			this.selectedIndexChange.emit(JSON.stringify(this.selectedIndex));
 		}
 	}
 
