@@ -5,7 +5,7 @@
 			class="svyextra-lightboxgallery-image-cell">
 			<div class="svyextra-lightboxgallery-image-container">
 				<img [src]="image.thumb" [style]="getStyle()" (click)="open(i)"
-					class="svyextra-lightboxgallery-thumbnail">
+					class="svyextra-lightboxgallery-thumbnail" [attr.loading]="imagesDataset && !imagesFoundset ? 'lazy' : null">
 				<div *ngIf="this.onHoverButtonClicked && enabled"
 					class="svyextra-lightboxgallery-image-delete"
 					(click)="onHoverButtonClicked($event, image.imageId)">

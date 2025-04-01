@@ -1,5 +1,5 @@
 import { Component, ChangeDetectorRef, SimpleChanges, Renderer2, Input, ChangeDetectionStrategy, HostListener } from '@angular/core';
-import { ServoyBaseComponent, IFoundset } from '@servoy/public';
+import { ServoyBaseComponent, IFoundset, BaseCustomObject } from '@servoy/public';
 import { Lightbox, LightboxConfig } from '@servoy/ngx-lightbox';
 
 @Component({
@@ -32,6 +32,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
     @Input() enabled: boolean;
     @Input() imageBatchSize: number;
     @Input() responsiveHeight: number;
+    @Input() imagesDataset: Array<Image>;
 
     public images: Array<any> = [];
 
@@ -91,7 +92,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 
     onScroll() {
 		if (Math.abs(this.elementRef.nativeElement.scrollHeight - this.elementRef.nativeElement.clientHeight - this.elementRef.nativeElement.scrollTop) < 1) {
-			if (this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
+			if (this.imagesFoundset && this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
 				this.imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize);
 			}
 		}
@@ -99,7 +100,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 
 	loadMoreData() {
 		if (this.maxImageHeight || this.maxImageWidth) {
-			if (this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
+			if (this.imagesFoundset && this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
 				if (!(this.elementRef.nativeElement.clientHeight < this.elementRef.nativeElement.scrollHeight)) {
 					this.imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize);
 				}
@@ -108,7 +109,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 	}
 
     open(index: number): void {
-        if ((this.images && this.images.length - 1 <= index) && this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
+        if (this.imagesFoundset && (this.images && this.images.length - 1 <= index) && this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
 			this.imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize).then(() => {
 				this.open(index);
 			});
@@ -116,7 +117,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 			if (this.images && this.images.length - 1 >= index) {
 				// open lightbox
 				this._lightbox.open(this.images, index);
-				if (this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
+				if (this.imagesFoundset && this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
 					const interval = setInterval(() => {
 						if (document.querySelector('.fadeIn.lightbox')) {
 							document.querySelector('.fadeIn.lightbox').querySelector('.lb-next').addEventListener('click', this.handleClick);
@@ -247,8 +248,22 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
                 this.images.push(image);
             }
             this.checkNumber = this.images.length + this.nullImages - 1;
+        } else if (this.imagesDataset?.length) {
+            for (const { imageUrl, caption, thumbnailUrl, id } of this.imagesDataset) {
+                this.images.push({
+                    src: imageUrl ?? null,
+                    caption: caption ?? null,
+                    thumb: thumbnailUrl ?? null,
+                    imageId: id ?? null
+                });
+            }
         }
-
     };
 }
 
+export class Image extends BaseCustomObject {
+    public imageUrl: string;
+    public caption: string;
+    public thumbnailUrl: string;
+    public id: string;
+}
