@@ -4,6 +4,7 @@
 	"categoryName": "Visualization",
 	"version": 1,
 	"definition": "servoyextra/gauge/gauge.js",
+	"doc": "servoyextra/gauge/gauge_doc.js",
 	"icon": "servoyextra/gauge/gauge.png",
 	"libraries": 
 	[

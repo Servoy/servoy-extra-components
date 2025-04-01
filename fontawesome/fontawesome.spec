@@ -5,6 +5,7 @@
 	"version": 1,
 	"icon": "servoyextra/fontawesome/fontawesome.png",
 	"definition": "servoyextra/fontawesome/fontawesome.js",
+	"doc": "servoyextra/fontawesome/fontawesome_doc.js",
 	"libraries": [{"name":"fontawesome-custom.css", "version":"1.0.0", "url":"servoyextra/fontawesome/fontawesome.css", "mimetype":"text/css"}],
 	"keywords": ["style", "styling"],
 	"deprecated": "Set the 'imageStyleClass' property of the Label or DataLabel from the Boostrap Components package.",

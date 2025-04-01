@@ -3,6 +3,7 @@
 	"displayName": "Image Label",
 	"categoryName": "Media",
 	"definition": "servoyextra/imagelabel/imagelabel.js",
+	"doc": "servoyextra/imagelabel/imagelabel_doc.js",
 	"icon": "servoyextra/imagelabel/label.png",
 	"version": 1,
 	"keywords": [],

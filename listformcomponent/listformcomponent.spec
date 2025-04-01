@@ -4,6 +4,7 @@
 	"version": 1,
 	"icon": "servoyextra/listformcomponent/listformcomponent.png",
 	"definition": "servoyextra/listformcomponent/listformcomponent.js", 
+	"doc": "servoyextra/listformcomponent/listformcomponent_doc.js", 
 	"libraries": [],
 	"deprecated" : "true",
 	"replacement": "servoycore-listformcomponent",	

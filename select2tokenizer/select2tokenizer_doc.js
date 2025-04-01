@@ -112,6 +112,10 @@ var size;
  */
 var location;
 
+/**
+ * Flag indicating whether selected items should be hidden from the dropdown list after being chosen.
+ */
+var hideSelectedItems;
 
 var handlers = {
     /**
