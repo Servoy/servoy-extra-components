@@ -98,6 +98,11 @@ var responsiveHeight;
  */
 var imageBatchSize;
 
+/**
+ * Holds a collection of images to be displayed in the lightbox gallery.
+ * Each image object includes details such as the image URL, caption, thumbnail, and identifier.
+ */
+var imagesDataset;
 
 var handlers = {
     /**
@@ -123,3 +128,27 @@ function showLightbox() {
  */
 function refresh() {
 }
+
+var svy_types = {
+    /**
+     * Defines an image object for the Lightbox Gallery.
+     */
+    image: {
+        /**
+         * URL of the main image.
+         */
+        imageUrl: null,
+        /**
+         * Caption text for the image.
+         */
+        caption: null,
+        /**
+         * URL of the thumbnail image.
+         */
+        thumbnailUrl: null,
+        /**
+         * Unique identifier for the image.
+         */
+        id: null
+    }
+};

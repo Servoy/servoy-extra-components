@@ -109,7 +109,7 @@ var size;
 
 /**
  * Position of the component on the form.
- */
+ */ 
 var location;
 
 /**
