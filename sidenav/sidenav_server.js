@@ -787,7 +787,7 @@ function selectItem(level, index, item, event, preventSelectHandler, preventExpa
 
 	if (preventSelectHandler != true && $scope.handlers.onMenuItemSelected) { // change selection only if onMenuItemSelected allows it
 		try {
-			var confirm = $scope.handlers.onMenuItemSelected(item.id, event)
+			var confirm = $scope.handlers.onMenuItemSelected(item.id, event);
 			if (confirm !== false) {
 				confirmSelection();
 			} else {
@@ -802,17 +802,23 @@ function selectItem(level, index, item, event, preventSelectHandler, preventExpa
 	}
 
 	function confirmSelection() {
+        var newContainedForm = null;
 		setSelectedIndex(level, index, item);
 
 		// expand the item
 		if (item.menuItems) { // expand the node if not leaf
 			expandItem(level, index, item, event, preventExpandHandler); // TODO add collapsed argument
+            newContainedForm = item.menuItems[0].id;
 		} else { // expand the parent node if is a leaf
-			var parentNode = getParentNode(item.id);
+			var parentNode = $scope.api.getParentMenuItem(item.id);
 			if (parentNode) {
 				expandItem(level - 1, null, parentNode, event, preventExpandHandler);
 			}
+            newContainedForm = item.id;
 		}
+        if (newContainedForm && newContainedForm != $scope.model.containedForm) {
+            $scope.setters.setContainedForm(newContainedForm);
+        }      
 	}
 
 	return true;
@@ -856,6 +862,9 @@ function setSelectedIndex(level, index, item) {
 	} else {
 		newSelectedIndex[level] = item.id;
 	}
+    if (item.menuItems?.length) {
+        newSelectedIndex[level + 1] = item.menuItems[0].id; // select first child
+    }
 
 	// apply selected index
 	$scope.model.selectedIndex = JSON.stringify(newSelectedIndex);

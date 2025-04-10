@@ -679,6 +679,9 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		} else {
 			newSelectedIndex[level] = item.id;
 		}
+        if (item.menuItems?.length) {
+            newSelectedIndex[level + 1] = item.menuItems[0].id; // select first child
+        }
 		this.selectedIndex = newSelectedIndex;
 		this.selectedIndexChange.emit(JSON.stringify(this.selectedIndex));
 	}
