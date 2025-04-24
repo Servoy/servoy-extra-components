@@ -23,6 +23,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     @Input() onNodeRightClicked: any;
     @Input() onNodeSelected: any;
     @Input() onReady: (e: JSEvent) => void;
+    @Input() onRowDrop: any;
 
     isTreeReady = false;
     dblClickTimeout: any = null;
@@ -635,6 +636,29 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
                 }
             });
         }
+    }
+
+    onRowDragOverEvent($event) {
+        const dragSupported = $event.dataTransfer.types.length && $event.dataTransfer.types[0] === 'nggrids/json';
+        if (dragSupported) {
+            $event.dataTransfer.dropEffect = 'copy';
+            $event.preventDefault();
+        }
+    }
+
+    onRowDropEvent($event) {
+        $event.preventDefault();
+        if (this.onRowDrop) {
+            const targetNodeId = this.getTargetNodeId($event.target);
+            const jsonData = $event.dataTransfer.getData('nggrids/json');
+            const rowDatas = JSON.parse(jsonData);
+            this.onRowDrop(rowDatas, targetNodeId, $event);
+        }
+    }
+
+    getTargetNodeId(element): any {
+        const cell = element.closest('[cell-id]');
+        return cell ? cell.getAttribute('cell-id') : null;
     }
 }
 

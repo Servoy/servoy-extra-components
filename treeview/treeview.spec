@@ -80,7 +80,21 @@
       						"name":"event",
       						"type":"JSEvent"
       						}
-      			]}
+      			]},
+		"onRowDrop": {
+			"doc": "Called when an ng grid row is dropped as a result of a drag-n-drop",
+			"parameters": [{
+				"name": "sourceRows",
+				"type": "object[]",
+				"doc": "an Array of plain objects if dragged from a power grid, or JSRecord objects if from a data grid"
+			}, {
+				"name": "nodeId",
+				"type": "object"
+			}, {
+				"name": "event",
+				"type": "JSEvent"
+			}]
+		}
 	},
 	"api":
 	{

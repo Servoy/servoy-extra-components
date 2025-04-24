@@ -31,6 +31,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
 	@Input() styleClass: string;
     @Input() onReady: (e: JSEvent) => void;
     @Input() onDrop: (sourceNodePkPath: Array<string>, targetNodePkPath: Array<string>, indexInParent: number, e: JSEvent) => void;
+    @Input() onRowDrop: any;
 	
 	@Input() actions: Array<Action>;
 
@@ -91,8 +92,15 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
 
     svyOnInit() {
         super.svyOnInit();
-        this.options.allowDrag = this.allowDrag;
-        this.options.allowDrop = this.allowDrop;
+        if(this.onRowDrop) {
+            this.options.allowDrag = false;
+            this.options.allowDrop = false;
+            this.options.allowDragoverStyling = false;
+        } else {
+            this.options.allowDrag = this.allowDrag;
+            this.options.allowDrop = this.allowDrop;
+        }
+
         if (!this.displayNodes || this.displayNodes.length === 0) {
             this.initTree();
         }
@@ -562,10 +570,37 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
                 id = id.split(';')[0];
                 arr.push(id);
             }
-            currentNode = node.parent;
+            currentNode = currentNode === node.parent ? null : node.parent;
         }
         arr = arr.reverse();
         return arr;
+    }
+
+    onRowDragOverEvent($event) {
+        const dragSupported = $event.dataTransfer.types.length && $event.dataTransfer.types[0] === 'nggrids/json';
+        if (dragSupported) {
+            $event.dataTransfer.dropEffect = 'copy';
+            $event.preventDefault();
+        }
+    }
+
+    onRowDropEvent($event) {
+        $event.preventDefault();
+        if (this.onRowDrop) {
+            const targetNodeId = this.getTargetNodeId($event.target);
+            if(targetNodeId) {
+                const node = this.tree.treeModel.getNodeById(targetNodeId);
+                const nodePKPath = this.getNodePKPath(node);
+                const jsonData = $event.dataTransfer.getData('nggrids/json');
+                const rowDatas = JSON.parse(jsonData);
+                this.onRowDrop(rowDatas, nodePKPath, $event);
+            }
+        }
+    }
+
+    getTargetNodeId(element): any {
+        const cell = element.closest('[node-id]');
+        return cell ? cell.getAttribute('node-id') : null;
     }
 }
 

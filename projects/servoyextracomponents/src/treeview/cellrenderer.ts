@@ -3,7 +3,7 @@ import { ServoyExtraTreeview } from './treeview';
 @Component({
     selector: 'servoyextra-treeview-cell-renderer',
     template: `
-    <div [ngStyle]="setDisplay()" (contextmenu)="oncontextmenu($event)">
+    <div [ngStyle]="setDisplay()" (contextmenu)="oncontextmenu($event)" [attr.cell-id]="getCellId()">
       <img *ngIf="!isFAIcon() && getIcon()" [src]="getIcon()">
       <span *ngIf="isFAIcon() && getIcon()" [class]="getIcon()"></span>
       <span class="treeLabel" [ngStyle]="setStyle()" [class]="getFilterClass()" [innerHtml]="getLabel()"></span>
@@ -74,5 +74,9 @@ export class ServoyExtraTreeviewCellRenderer {
       return clazz;
     }
     return '';
+  }
+
+  getCellId() {
+    return this.row_data.id;    
   }
 }

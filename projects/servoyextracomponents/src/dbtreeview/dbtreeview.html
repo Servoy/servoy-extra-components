@@ -1,4 +1,4 @@
-<div [id]="servoyApi.getMarkupId()" class="dbtreeview" #element>
+<div [id]="servoyApi.getMarkupId()" class="dbtreeview" (dragover)="onRowDragOverEvent($event)" (drop)="onRowDropEvent($event)" #element>
      <tree-root #tree [nodes]="displayNodes" [options]="options" 
         (toggleExpanded)="onNodeExpanded($event)" 
         (initialized)="onTreeLoad($event)"
@@ -6,7 +6,7 @@
         (moveNode)="nodeDropped($event)"
         (click)="clickRow($event)">
         <ng-template #treeNodeTemplate let-node="node" let-index="index">
-            <div [title]="node.data.tooltip"> 
+            <div [title]="node.data.tooltip" [attr.node-id]="node.id"> 
                 <input *ngIf="node.data.hascheckbox"
                 (change)="check(node, !node.data.checked)"
                 type="checkbox"
