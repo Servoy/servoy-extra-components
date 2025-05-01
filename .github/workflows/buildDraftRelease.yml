@@ -8,10 +8,6 @@ on:
       - v20**
   workflow_dispatch:
   workflow_call:
-  create:
-    branches:
-      - 20**
-      - v20**
 
 jobs:
   build:
@@ -29,9 +25,18 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '22.x'
-        cache: 'npm'
-        cache-dependency-path: ${{ env.COMPONENT_DIR }}/package-lock.json
+          node-version: '22.x'
+
+    - name: Cache + Restore node_modules
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache
+          ${{ env.COMPONENT_DIR }}/.angular
+          ${{ env.COMPONENT_DIR }}/node_modules
+        key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}  # Cache based on package-lock.json in the root
+        restore-keys: |
+          ${{ runner.os }}-node_modules-
 
     - name: Install and build component
       working-directory: ${{ env.COMPONENT_DIR }}
@@ -62,6 +67,10 @@ jobs:
       if: env.release_exists == 'true'
       run: |
           gh release delete _${{ env.BRANCH_NAME }} --cleanup-tag --yes
+          while git fetch --tags --prune-tags; git tag -l | grep _${{ env.BRANCH_NAME }}; do
+            sleep 2;
+            printf "still waiting...\n"
+          done
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
       
