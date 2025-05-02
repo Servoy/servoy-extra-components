@@ -105,7 +105,7 @@ var uploadNotSupportedText;
 var uploadNotSupportedFileText;
 
 /**
- * Delay before displaying the upload result - in milliseconds
+ * The result of an upload will be displayed for this amount of time (in milliseconds) before being cleared. After the timeout expires, the upload component will revert to it's initial display state. If set to -1, it will not automatically clear the upload result.
  */
 var resultDisplayTimeout;
 

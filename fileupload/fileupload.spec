@@ -32,7 +32,7 @@
 			"uploadCancelText" 			: { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "Upload canceled"},  
             "uploadNotSupportedText" 	: { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "File Drag/Drop is not supported for this browser"},
             "uploadNotSupportedFileText": { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "File type is not supported for upload"},
-			"resultDisplayTimeout"		: { "type" : "int", "default": 2000, "tags": { "doc" :"Delay before displaying the upload result - in milliseconds"}  },
+			"resultDisplayTimeout"		: { "type" : "int", "default": 2000, "tags": { "doc" :"The result of an upload will be displayed for this amount of time (in milliseconds) before being cleared. After the timeout expires, the upload component will revert to it's initial display state. If set to -1, it will not automatically clear the upload result."}  },
 	        "visible" 					: { "type" : "visible" } 
 	},
 	"handlers":
