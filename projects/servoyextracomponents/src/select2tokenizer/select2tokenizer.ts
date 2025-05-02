@@ -200,6 +200,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     }
     
     setFilteredDataProviderId() {
+        this.select2.selectedOption = null;
 		if (!this.dataProviderID) {
 			this.filteredDataProviderId = [];
 		} else {
