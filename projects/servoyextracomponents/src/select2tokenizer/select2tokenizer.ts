@@ -132,6 +132,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                 });
             }
             this.data = opt;
+            this.syncSelectedOption();  
         }
     }
 
@@ -216,6 +217,17 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 			}
 		}
 	}
+
+    private syncSelectedOption(): void {
+        if (!this.select2) return;
+    
+        //Workaround for SVYX-1045
+        const selection: Select2Option[] = (this.filteredDataProviderId || [])
+            .map(val => this.data.find(opt => opt.value === val))
+            .filter((opt): opt is Select2Option => !!opt); //Double check to be sure we only have valid options
+    
+        this.select2.selectedOption = selection;
+    }
 
     removedOption(event: any) {
 		this.userChangedValue = true;
