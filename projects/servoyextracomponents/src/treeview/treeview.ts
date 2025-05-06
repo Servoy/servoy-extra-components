@@ -236,34 +236,23 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         });
     }
 
-    setColumnWidth(columnWidth: number) {
+    setColumnWidth(columnWidth: number, index?: number) {
         this.isTreeReady = false;
         const columns = this.configs.columns;
-        for (const column of columns) {
-            column.width = `${columnWidth}px`;
+    
+        if (typeof index === 'number' && columns[index]) {
+            columns[index].width = `${columnWidth}px`;
+        } else {
+            for (const column of columns) {
+                column.width = `${columnWidth}px`;
+            }
         }
+    
         this.columnWidth = `${columnWidth}px`;
-
-
-        setTimeout(() => {
-            this.isTreeReady = true;
-            this.cdRef.detectChanges();
-            const table: HTMLElement = this.elementRef.nativeElement.querySelector('table.db-tree-view');
-            table.style.display = 'unset';
-        });
-    }
-
-    setColumnWidthByIndex(index: number, columnWidth: number) {
-        if (index < 0 || index >= this.configs.columns.length) return;
-    
-        this.isTreeReady = false;
-    
-        this.configs.columns[index].width = `${columnWidth}px`;
     
         setTimeout(() => {
             this.isTreeReady = true;
             this.cdRef.detectChanges();
-    
             const table: HTMLElement = this.elementRef.nativeElement.querySelector('table.db-tree-view');
             if (table) table.style.display = 'unset';
         });

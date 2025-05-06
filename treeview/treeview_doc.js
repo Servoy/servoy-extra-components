@@ -294,26 +294,16 @@ function setDataSet(jsDataSet) {
 }
 
 /** 
- * Sets the width for all columns in the tree view.
+ * Sets the width for all columns in the tree view or just a specific column by its index
  * 
- * @param {Number} columnWidth - The desired width to apply to each column, in pixels.
+ * @param {Number} columnWidth - The desired width to apply, in pixels.
+ * @param {Number} index - The zero-based index of the column to update. If not provided, all columns will be updated.
  * 
  * @example
  * // Sets all columns to a width of 50px
  * %%prefix%%%%elementName%%.setColumnWidth(50);
- */
-function setColumnWidth(columnWidth) {
-}
-
-/** 
- * Sets the width of a specific column by its index.
- * 
- * @param {Number} index - The zero-based index of the column to update.
- * @param {Number} columnWidth - The desired width of the column in pixels.
- * 
- * @example
  * // Sets the width of the first column to 50px
- * %%prefix%%%%elementName%%.setColumnWidthByIndex(0, 50);
+ * %%prefix%%%%elementName%%.setColumnWidth(50,0);
  */
-function setColumnWidthByIndex(index, columnWidth) {
+function setColumnWidth(columnWidth, index) {
 }

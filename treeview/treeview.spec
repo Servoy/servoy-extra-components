@@ -100,21 +100,17 @@
 	{
 		"setColumnWidth" : {
 			"delayUntilFormLoads": true,
-			"parameters": [{
-				"name": "columnWidth",
-				"type": "int"
-			}]
-		},
-		"setColumnWidthByIndex" : {
-			"delayUntilFormLoads": true,
-			"parameters": [{
-				"name": "index",
-				"type": "int"
-			},
-			{
-				"name": "columnWidth",
-				"type": "int"
-			}
+			"parameters": 
+			[
+				{
+					"name": "columnWidth",
+					"type": "int"
+				},
+				{
+					"name": "index",
+					"type": "int",
+					"optional": true
+				}
 			]
 		},
         "setDataSet": {
