@@ -253,6 +253,23 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         });
     }
 
+    setColumnWidthByIndex(index: number, columnWidth: number) {
+        if (index < 0 || index >= this.configs.columns.length) return;
+    
+        this.isTreeReady = false;
+    
+        this.configs.columns[index].width = `${columnWidth}px`;
+    
+        setTimeout(() => {
+            this.isTreeReady = true;
+            this.cdRef.detectChanges();
+    
+            const table: HTMLElement = this.elementRef.nativeElement.querySelector('table.db-tree-view');
+            if (table) table.style.display = 'unset';
+        });
+    }
+    
+
     onclick(event) {
         this.rowID = event.row?.id || event.data.id;
         let originalColumnName = null;

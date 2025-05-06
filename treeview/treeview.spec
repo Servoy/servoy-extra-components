@@ -105,6 +105,18 @@
 				"type": "int"
 			}]
 		},
+		"setColumnWidthByIndex" : {
+			"delayUntilFormLoads": true,
+			"parameters": [{
+				"name": "index",
+				"type": "int"
+			},
+			{
+				"name": "columnWidth",
+				"type": "int"
+			}
+			]
+		},
         "setDataSet": {
 			"parameters":[
 							{                                                                 
