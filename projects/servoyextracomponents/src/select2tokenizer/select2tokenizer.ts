@@ -232,8 +232,18 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
             event.component.toggleOpenAndClose();
         }
     }
+    
+    handleTab = (event: KeyboardEvent) => {
+        if (event.key === 'Tab') {
+            event.stopPropagation();
+            event.preventDefault();
+            this.select2.toggleOpenAndClose();
+            (this.getNativeElement().querySelector('.selection') as HTMLElement).focus();
+        }
+    }
 
     listClosed(event: Select2) {
+        this.doc.removeEventListener('keydown', this.handleTab, true);
 		this.userChangedValue = false;
 		this.resetSearch();
         if (this.selectOnClose) {
@@ -289,6 +299,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 	}
 
     listOpened(event: Select2) {
+        this.doc.addEventListener('keydown', this.handleTab, true);
 		this.userChangedValue = true;
         if (this.allowNewEntries || this.hasKeyListenerAttribute()) {
             setTimeout(() => {
