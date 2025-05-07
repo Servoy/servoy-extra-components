@@ -862,7 +862,7 @@ function setSelectedIndex(level, index, item) {
 	} else {
 		newSelectedIndex[level] = item.id;
 	}
-    if (item.menuItems?.length) {
+    if (item.menuItems && item.menuItems.length) {
         newSelectedIndex[level + 1] = item.menuItems[0].id; // select first child
     }
 
