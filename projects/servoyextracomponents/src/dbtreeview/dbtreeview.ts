@@ -587,14 +587,15 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     onRowDropEvent($event) {
         $event.preventDefault();
         if (this.onRowDrop) {
+            const jsonData = $event.dataTransfer.getData('nggrids/json');
+            const rowDatas = JSON.parse(jsonData);
+            let nodePKPath = null;
             const targetNodeId = this.getTargetNodeId($event.target);
             if(targetNodeId) {
                 const node = this.tree.treeModel.getNodeById(targetNodeId);
-                const nodePKPath = this.getNodePKPath(node);
-                const jsonData = $event.dataTransfer.getData('nggrids/json');
-                const rowDatas = JSON.parse(jsonData);
-                this.onRowDrop(rowDatas, nodePKPath, $event);
+                if(node)  nodePKPath = this.getNodePKPath(node);
             }
+            this.onRowDrop(rowDatas, nodePKPath, $event);
         }
     }
 
