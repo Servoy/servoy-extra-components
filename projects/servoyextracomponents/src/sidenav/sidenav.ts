@@ -23,6 +23,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	@Input() iconCloseStyleClass: string;
 	@Input() iconExpandStyleClass: string;
 	@Input() iconCollapseStyleClass: string;
+    @Input() footerFormStickyBottom: boolean;
 
 	@Input() slidePosition: string;
 	@Input() slideAnimation: string;
@@ -75,6 +76,11 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 			for (const property of Object.keys(changes)) {
 				const change = changes[property];
 				switch (property) {
+                    case 'footerFormStickyBottom':
+                        setTimeout(() => {
+                            this.addRemoveStickyStyle();
+                        }, 100);
+                        break;
 					case 'enabled':
 						const nav = this.getNativeElement().querySelector('nav');
 						if (change.currentValue) {
@@ -309,6 +315,25 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 
 		return cssStyle;
 	}
+    
+    stickyBottom() {
+        return this.servoyApi.isInAbsoluteLayout() && this.footerFormStickyBottom;
+    }
+
+    addRemoveStickyStyle() {
+        const sidenavDiv: HTMLElement = this.getNativeElement().querySelector('.svy-sidenav');
+        const footerFormDiv: HTMLElement = this.getNativeElement().querySelector('#footerForm');
+        if (this.servoyApi.isInAbsoluteLayout() && this.open) {
+            if (this.footerFormStickyBottom) {
+                const sidenavDivComputedStyle = window.getComputedStyle(sidenavDiv);
+                this.renderer.setStyle(sidenavDiv, 'height', `calc(100% - ${footerFormDiv.clientHeight}px)`);
+                this.renderer.setStyle(footerFormDiv, 'background-color', sidenavDivComputedStyle.getPropertyValue('background-color'));
+                this.renderer.setStyle(footerFormDiv, 'width', sidenavDivComputedStyle.getPropertyValue('width'));
+            } else {
+                this.renderer.removeStyle(sidenavDiv, 'height');
+            }
+        }
+    }
 
 	animateSlideMenu(open: boolean) {
 		if (this.slidePosition && this.slidePosition !== 'static') {
@@ -394,6 +419,10 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	slideMenu(event: MouseEvent) {
 		const wasOpen = this.open;
 		this.open = this.open === false ? true : false;
+        
+        setTimeout(() => {
+            this.addRemoveStickyStyle();
+        }, 100);
 
 		this.animateMenuHover(this.open);
 		this.animateSlideMenu(this.open);

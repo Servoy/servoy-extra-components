@@ -33,6 +33,11 @@ var headerForm;
 var footerForm;
 
 /**
+ * Flag indicating whether the footerForm remains fixed at the bottom in CSS Potion forms.
+ */
+var footerFormStickyBottom;
+
+/**
  * The relation name used to link the contained form to data.
  */
 var relationName;

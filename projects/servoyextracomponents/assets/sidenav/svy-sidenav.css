@@ -172,6 +172,11 @@
 	cursor: default;
 }
 
+.svy-sidenav-absoluteFooter {
+    position: absolute;
+    bottom: 0;
+}
+
 /*******************************************
  * SLIDE MENU 
  *

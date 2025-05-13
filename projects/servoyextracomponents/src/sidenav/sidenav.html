@@ -99,7 +99,7 @@
                     <div *ngIf="item.isDivider" class="svy-sidenav-divider sn-level-1" [ngClass]="item.styleClass"></div> 
                     
                 </li>
-                <li *ngIf="footerForm != null && open">
+                <li *ngIf="footerForm != null && open && !stickyBottom()">
                     <div class="svy-navitem-selected" *ngIf="isDesignTime(); else footerRuntime">
                         <span class="svy-sidenav-item sn-level-1 svy-sidenav-item-text">{{footerForm}}</span>
                     </div>
@@ -116,6 +116,19 @@
         </nav> 
     </div>
 
+    <div *ngIf="footerForm != null && stickyBottom()" id="footerForm" class="svy-sidenav-absoluteFooter">
+        <div class="svy-navitem-selected" *ngIf="isDesignTime(); else footerRuntime">
+            <span class="svy-sidenav-item sn-level-1 svy-sidenav-item-text">{{footerForm}}</span>
+        </div>
+        <ng-template #footerRuntime>
+            <div class="svy-container" [ngStyle]="getFooterFormStyle()" [sabloTabseq]="tabSeq"
+                [sabloTabseqConfig]="{container: true, reservedGap: 50}">
+                <ng-template [ngTemplateOutlet]="templateRef"
+                    [ngTemplateOutletContext]="{name:getFooterForm()}"></ng-template>
+            </div>
+        </ng-template>
+    </div>
+    
     <div class="svy-navitem-selected" *ngIf="isDesignTime(); else containedFormRuntime">
         <span class="svy-sidenav-item sn-level-1 svy-sidenav-item-text">{{containedForm}}</span>
     </div>
