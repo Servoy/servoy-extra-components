@@ -177,6 +177,18 @@
 			                	}             
 							 ]
 	
+	        },
+	        "addShortCut": {
+	           "delayUntilFormLoads": true,
+	           "parameters": [
+	               {
+	                   "name":"shortCut",
+	                   "type":"string"
+	               },
+	               {
+	                   "name":"callback",
+                       "type":"function"
+                   }]
 	        }
 	}
 	 

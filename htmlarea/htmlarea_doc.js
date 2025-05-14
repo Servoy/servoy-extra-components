@@ -208,3 +208,12 @@ function getAsPlainText() {
 */
 function requestFocus(mustExecuteOnFocusGainedMethod) {
 }
+
+/**
+ * Adds a shortcut key to the HTML area. The shortcut key can be a combination of keys such as Ctrl, Alt, Shift, etc.
+ * @example %%prefix%%%%elementName%%.addShortCut('F9', callbackFunction);
+ * @param {String} shortCut The shortcut key combination to be added (e.g., 'F9').
+ * @param {Function} callback The function to be executed when the shortcut key is pressed.
+ */
+function addShortCut(shortCut, callback) {
+}

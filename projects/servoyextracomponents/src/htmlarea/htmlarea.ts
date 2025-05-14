@@ -180,6 +180,14 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
         super.svyOnChanges(changes);
     }
     
+    addShortCut(shortCut: string, callback: () => void) {
+        if (this.getEditor()) {
+            this.getEditor().addShortcut(shortCut, null, callback);
+        } else {
+            setTimeout(() => this.addShortCut(shortCut, callback), 10);
+        }
+    }
+    
     public setTabIndex(index: number) {
         this.tabIndex = index;
         this.setTabIndexOnIFrame();
