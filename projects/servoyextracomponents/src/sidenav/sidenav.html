@@ -116,7 +116,7 @@
         </nav> 
     </div>
 
-    <div *ngIf="footerForm != null && stickyBottom()" id="footerForm" class="svy-sidenav-absoluteFooter">
+    <div *ngIf="footerForm != null && open && stickyBottom()" id="footerForm" class="svy-sidenav-absoluteFooter">
         <div class="svy-navitem-selected" *ngIf="isDesignTime(); else footerRuntime">
             <span class="svy-sidenav-item sn-level-1 svy-sidenav-item-text">{{footerForm}}</span>
         </div>
