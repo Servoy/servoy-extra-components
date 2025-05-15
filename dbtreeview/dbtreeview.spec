@@ -67,7 +67,7 @@
 						"type": "string[]"
 					}, {
 						"name": "event",
-						"type": "JSEvent"
+						"type": "JSDNDEvent"
 					}]
 				}
 	},
@@ -450,6 +450,13 @@
 	  		"callbackfunction": "function",
 	  		"param": "string",
 	  		"name": "string"
+	  },
+	  "JSDNDEvent" : {
+			"extends" : "JSEvent",
+			"model":{
+				"sourceGridName": {"type" : "string"},
+				"sourceColumnId": {"type" : "string"}
+			}
 	  }
 	}
 }

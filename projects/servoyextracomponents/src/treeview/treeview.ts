@@ -645,7 +645,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     onRowDragOverEvent($event) {
-        const dragSupported = $event.dataTransfer.types.length && $event.dataTransfer.types[0] === 'nggrids/json';
+        const dragSupported = $event.dataTransfer.types.length && $event.dataTransfer.types[0] === 'nggrids-drag/json';
         if (dragSupported) {
             $event.dataTransfer.dropEffect = 'copy';
             $event.preventDefault();
@@ -656,9 +656,13 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         $event.preventDefault();
         if (this.onRowDrop) {
             const targetNodeId = this.getTargetNodeId($event.target);
-            const jsonData = $event.dataTransfer.getData('nggrids/json');
-            const rowDatas = JSON.parse(jsonData);
-            this.onRowDrop(rowDatas, targetNodeId, $event);
+            const jsonData = $event.dataTransfer.getData('nggrids-drag/json');
+            const dragTranferData = JSON.parse(jsonData) as DragTransferData;
+            const jsDropEvent = this.servoyPublicService.createJSEvent($event, 'onDrop') as JSDNDEvent;
+            jsDropEvent.sourceGridName = dragTranferData.sourceGridName;
+            jsDropEvent.sourceColumnId = dragTranferData.sourceColumnId;
+
+            this.onRowDrop(dragTranferData.records, targetNodeId, jsDropEvent);
         }
     }
 
@@ -678,4 +682,14 @@ interface IRowDataTreeColumn {
     text: string;
     icon: string;
     isFAIcon: boolean;
+}
+
+class DragTransferData {
+    constructor(public records: any, public sourceGridName: string, public sourceColumnId: string) {
+    }
+}
+
+class JSDNDEvent extends JSEvent{
+    sourceColumnId: string;
+    sourceGridName: string;
 }

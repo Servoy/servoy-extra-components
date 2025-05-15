@@ -92,7 +92,7 @@
 				"type": "object"
 			}, {
 				"name": "event",
-				"type": "JSEvent"
+				"type": "JSDNDEvent"
 			}]
 		}
 	},
@@ -237,5 +237,14 @@
       						}
       					]
       	}
+	},
+	"types": {
+	  "JSDNDEvent" : {
+			"extends" : "JSEvent",
+			"model":{
+				"sourceGridName": {"type" : "string"},
+				"sourceColumnId": {"type" : "string"}
+			}
+	  }
 	}
 }

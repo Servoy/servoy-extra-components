@@ -577,7 +577,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     }
 
     onRowDragOverEvent($event) {
-        const dragSupported = $event.dataTransfer.types.length && $event.dataTransfer.types[0] === 'nggrids/json';
+        const dragSupported = $event.dataTransfer.types.length && $event.dataTransfer.types[0] === 'nggrids-drag/json';
         if (dragSupported) {
             $event.dataTransfer.dropEffect = 'copy';
             $event.preventDefault();
@@ -587,15 +587,19 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     onRowDropEvent($event) {
         $event.preventDefault();
         if (this.onRowDrop) {
-            const jsonData = $event.dataTransfer.getData('nggrids/json');
-            const rowDatas = JSON.parse(jsonData);
+            const jsonData = $event.dataTransfer.getData('nggrids-drag/json');
+            const dragTranferData = JSON.parse(jsonData) as DragTransferData;
+            const jsDropEvent = this.servoyPublicService.createJSEvent($event, 'onDrop') as JSDNDEvent;
+            jsDropEvent.sourceGridName = dragTranferData.sourceGridName;
+            jsDropEvent.sourceColumnId = dragTranferData.sourceColumnId;
+
             let nodePKPath = null;
             const targetNodeId = this.getTargetNodeId($event.target);
             if(targetNodeId) {
                 const node = this.tree.treeModel.getNodeById(targetNodeId);
                 if(node)  nodePKPath = this.getNodePKPath(node);
             }
-            this.onRowDrop(rowDatas, nodePKPath, $event);
+            this.onRowDrop(dragTranferData.records, nodePKPath, jsDropEvent);
         }
     }
 
@@ -666,5 +670,12 @@ class ChildNode {
 	customActions?: object;
 }
 
+class DragTransferData {
+    constructor(public records: any, public sourceGridName: string, public sourceColumnId: string) {
+    }
+}
 
-
+class JSDNDEvent extends JSEvent{
+    sourceColumnId: string;
+    sourceGridName: string;
+}
