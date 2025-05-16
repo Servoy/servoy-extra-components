@@ -1,0 +1,89 @@
+name: Build and draft release Servoy Component
+
+on:
+  push:
+    branches:
+      - master
+      - 20**
+      - v20**
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Find component directory
+      id: find_component_dir
+      run: echo "COMPONENT_DIR=$(find . -type d -name 'META-INF' -exec dirname {} \;)" >> $GITHUB_ENV
+
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+          node-version: '22.x'
+
+    - name: Cache + Restore node_modules
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache
+          ${{ env.COMPONENT_DIR }}/.angular
+          ${{ env.COMPONENT_DIR }}/node_modules
+        key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}  # Cache based on package-lock.json in the root
+        restore-keys: |
+          ${{ runner.os }}-node_modules-
+
+    - name: Install and build component
+      working-directory: ${{ env.COMPONENT_DIR }}
+      run: |
+        npm install
+        npm run make_release
+
+    - name: Extract version number
+      uses: nyaa8/package-version@v1.0.3
+      with:
+        path: ${{ env.COMPONENT_DIR }}/package.json
+
+    - name: Get branch name
+      run: echo "BRANCH_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
+
+    - name: Check if release exists and is prerelease
+      id: check_release
+      run: |
+        if gh release view "_${{ env.BRANCH_NAME }}" --json isPrerelease --jq '.isPrerelease'; then
+          echo "release_exists=true" >> $GITHUB_ENV
+        else
+          echo "release_exists=false" >> $GITHUB_ENV
+        fi
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Delete Prerelease release & Tag
+      if: env.release_exists == 'true'
+      run: |
+          gh release delete _${{ env.BRANCH_NAME }} --cleanup-tag --yes
+          while git fetch --tags --prune-tags; git tag -l | grep _${{ env.BRANCH_NAME }}; do
+            sleep 2;
+            printf "still waiting...\n"
+          done
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+      
+    - name: Create release
+      run: |
+        gh release create "_${{ github.ref_name }}" --target "${{ env.BRANCH_NAME }}" --prerelease --title "Nighlty Build ${{ env.BRANCH_NAME }}" --notes "Nightly build. Branch: ${{ env.BRANCH_NAME }} Commit: ${{ github.sha }} Package Version: ${{ env.PACKAGE_VERSION }}"
+        echo "release_exists=true" >> $GITHUB_ENV
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Upload assets
+      if: env.release_exists == 'true'
+      run: |
+        gh release upload "_${{ env.BRANCH_NAME }}" ${{ env.COMPONENT_DIR }}/*.zip
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
