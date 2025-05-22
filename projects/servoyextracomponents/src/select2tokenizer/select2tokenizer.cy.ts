@@ -240,6 +240,65 @@ describe('ServoyExtraSelect2Tokenizer', () => {
         });
     });
 
+     it('should multiselect on dataprovider change', () => {
+        const dataProviderIDChange = cy.stub();
+        config.componentProperties.dataProviderIDChange = dataProviderIDChange;
+        cy.mount(WrapperComponent, config).then(wrapper => {
+
+            cy.get('select2 ul li').should('have.attr', 'title', 'one').then(() => {
+                wrapper.component.dataProviderID = '2\n3';
+                wrapper.fixture.detectChanges();
+                expect(dataProviderIDChange).not.to.have.been.called;
+                cy.get('select2 ul li').should('have.attr', 'title', 'two');
+                cy.get('select2 ul li:nth-child(3)').should('have.attr', 'title', 'three');
+            });
+        });
+    });
+
+     it('should select one not in the list', () => {
+        const dataProviderIDChange = cy.stub();
+        config.componentProperties.dataProviderIDChange = dataProviderIDChange;
+        cy.mount(WrapperComponent, config).then(wrapper => {
+
+            cy.get('select2 ul li').should('have.attr', 'title', 'one').then(() => {
+                wrapper.component.dataProviderID = '5';
+                wrapper.fixture.detectChanges();
+                expect(dataProviderIDChange).not.to.have.been.called;
+                cy.get('select2 ul li').should('have.attr', 'title', '5');
+            });
+        });
+    });
+
+    it('change valuelist and dataprovider together', () => {
+        const dataProviderIDChange = cy.stub();
+        config.componentProperties.dataProviderIDChange = dataProviderIDChange;
+        cy.mount(WrapperComponent, config).then(wrapper => {
+
+            cy.get('select2 ul li').should('have.attr', 'title', 'one').then(() => {
+                wrapper.component.valuelistID =[{
+                    "displayValue": "AAAA",
+                    "realValue": "AAAA"
+                },
+                {
+                    "displayValue": "BBBB",
+                    "realValue": "BBBB"
+                },
+                {
+                    "displayValue": "CCCC",
+                    "realValue": "CCCC"
+                },
+                {
+                    "displayValue": "DDDD",
+                    "realValue": "DDDD"
+                }] as IValuelist;
+                wrapper.component.dataProviderID = 'AAAA';
+                wrapper.fixture.detectChanges();
+                expect(dataProviderIDChange).not.to.have.been.called;
+                cy.get('select2 ul li').should('have.attr', 'title', 'AAAA');
+            });
+        });
+    });
+
     it('should select the highlighted item on close', () => {
         config.componentProperties.dataProviderID = '';
         cy.mount(WrapperComponent, config).then(() => {
