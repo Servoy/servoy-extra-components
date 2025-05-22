@@ -126,14 +126,16 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
             }
             if (this.filteredDataProviderId?.length) {
                 this.filteredDataProviderId.forEach(realValue => {
-                    const found = this.data.find(item => item.value === realValue);
-                    if (found && !opt.some(item => item.value === found.value)) {
-                        opt.push(found);
+                    const found = opt.find(item => item.value === realValue);
+                    if (!found) {
+                        opt.push({
+                            value: realValue,
+                            label: realValue
+                        });
                     }
                 });
             }
             this.data = opt;
-            this.syncSelectedOption();  
         }
     }
 
@@ -201,7 +203,6 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     }
     
     setFilteredDataProviderId() {
-        this.select2.selectedOption = null;
 		if (!this.dataProviderID) {
 			this.filteredDataProviderId = [];
 		} else {
@@ -213,17 +214,6 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 			}
 		}
 	}
-
-    private syncSelectedOption(): void {
-        if (!this.select2) return;
-    
-        //Workaround for SVYX-1045
-        const selection: Select2Option[] = (this.filteredDataProviderId || [])
-            .map(val => this.data.find(opt => opt.value === val))
-            .filter((opt): opt is Select2Option => !!opt); //Double check to be sure we only have valid options
-    
-        this.select2.selectedOption = selection;
-    }
 
     removedOption(event: any) {
 		this.userChangedValue = true;
