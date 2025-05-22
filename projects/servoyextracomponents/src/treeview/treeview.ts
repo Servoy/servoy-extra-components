@@ -246,9 +246,8 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
             for (const column of columns) {
                 column.width = `${columnWidth}px`;
             }
+			this.columnWidth = `${columnWidth}px`;
         }
-    
-        this.columnWidth = `${columnWidth}px`;
     
         setTimeout(() => {
             this.isTreeReady = true;
