@@ -25,6 +25,7 @@
 			"showFileName" 				: { "type" : "boolean", "default": true },
             "showProgress" 				: { "type" : "boolean", "default": true },
             "multiFileUpload"           : { "type" : "boolean", "default": false},
+			"maxFileSize" 				: { "type" : "long", "tags": { "doc" :"Maximum file size in bytes."} },
 			"toolTipText" 				: { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags" },
 			"uploadText" 				: { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "Drop a file here or click to upload"},  
 			"uploadProgressText" 		: { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "Uploading click to cancel"},  
@@ -33,7 +34,7 @@
             "uploadNotSupportedText" 	: { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "File Drag/Drop is not supported for this browser"},
             "uploadNotSupportedFileText": { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "default" : "File type is not supported for upload"},
 			"resultDisplayTimeout"		: { "type" : "int", "default": 2000, "tags": { "doc" :"The result of an upload will be displayed for this amount of time (in milliseconds) before being cleared. After the timeout expires, the upload component will revert to it's initial display state. If set to -1, it will not automatically clear the upload result."}  },
-	        "visible" 					: { "type" : "visible" } 
+	        "visible" 					: { "type" : "visible" }
 	},
 	"handlers":
 	{

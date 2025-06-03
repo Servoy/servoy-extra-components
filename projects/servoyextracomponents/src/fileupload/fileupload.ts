@@ -39,6 +39,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
     @Input() uploadNotSupportedText: string;
     @Input() uploadNotSupportedFileText: string;
     @Input() toolTipText: string;
+    @Input() maxFileSize: number;
 
     @ViewChild('fileInputLabel') fileInputLabel: ElementRef;
     @ViewChild('fileInputSingleUpload') fileInput: ElementRef;
@@ -118,6 +119,12 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
                     options.allowedMimeType = acceptedMimeTypes;
                 }
             }
+            
+            if (this.maxFileSize) {
+                console.log('Setting maxFileSize:', this.maxFileSize);
+                options.maxFileSize = this.maxFileSize;
+            }
+            
             if (!this.multiFileUpload) {
                 options.filters = [{
                     name: 'multi', fn: (): boolean => {
@@ -150,8 +157,15 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
         this.hideProgress();
     };
 
-    onWhenAddingFileFailed = () => {
-        this.customText = this.uploadNotSupportedFileText;
+    onWhenAddingFileFailed = (item, filter, options) => {
+        if (filter.name === 'fileSize') {
+            // File size exceeded the limit            
+            this.customText = `File size (${item.size}) exceeds the maximum allowed size (${options.maxFileSize})`;
+            this.log.warn(`File ${item.name} rejected: ${this.customText}`);
+        } else {
+            // Other validation failure
+            this.customText = this.uploadNotSupportedFileText;
+        }
         this.cdRef.detectChanges();
         this.hideProgress();
     };
