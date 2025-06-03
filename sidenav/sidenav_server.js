@@ -808,13 +808,13 @@ function selectItem(level, index, item, event, preventSelectHandler, preventExpa
 		// expand the item
 		if (item.menuItems) { // expand the node if not leaf
 			expandItem(level, index, item, event, preventExpandHandler); // TODO add collapsed argument
-            newContainedForm = item.menuItems[0].id;
+            newContainedForm = item.menuItems[0].formName;
 		} else { // expand the parent node if is a leaf
 			var parentNode = $scope.api.getParentMenuItem(item.id);
 			if (parentNode) {
 				expandItem(level - 1, null, parentNode, event, preventExpandHandler);
 			}
-            newContainedForm = item.id;
+            newContainedForm = item.formName;
 		}
         if (newContainedForm && newContainedForm != $scope.model.containedForm) {
             $scope.setters.setContainedForm(newContainedForm);
