@@ -121,7 +121,6 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
             }
             
             if (this.maxFileSize) {
-                console.log('Setting maxFileSize:', this.maxFileSize);
                 options.maxFileSize = this.maxFileSize;
             }
             
