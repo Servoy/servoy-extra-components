@@ -142,7 +142,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
                                             }
                                         }
                                     }
-                                    this.cdRef.detectChanges();
+                                    this.tree.treeModel.update();
                                 }
                             } else if (change.currentValue !== change.previousValue) {
                                 this.initTree();
