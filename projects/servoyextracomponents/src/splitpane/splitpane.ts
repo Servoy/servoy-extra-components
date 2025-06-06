@@ -142,7 +142,7 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
 	}
 }
 
-class Pane extends BaseCustomObject {
+export class Pane extends BaseCustomObject {
 	containsFormId: string;
 	relationName: string;
 }

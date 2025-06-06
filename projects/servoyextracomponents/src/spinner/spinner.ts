@@ -24,7 +24,9 @@ export class ServoyExtraSpinner extends ServoyBaseComponent<HTMLDivElement> {
     @Input() toolTipText: string;
     @Input() valuelistID: IValuelist;
     @Input() responsiveHeight: number;
-    
+    @Input() placeholderText: string;
+    @Input() styleClass: string;
+       
     selection: any;
     private counter = 0;
 
@@ -47,17 +49,31 @@ export class ServoyExtraSpinner extends ServoyBaseComponent<HTMLDivElement> {
 
     svyOnChanges(changes: SimpleChanges) {
         for (const property of Object.keys(changes)) {
+            const change = changes[property];
             switch (property) {
                 case 'dataProviderID':
                     this.selection = this.getSelectionFromDataprovider();
                     break;
                 case 'responsiveHeight':
-                    if (!this.servoyApi.isInAbsoluteLayout())
-                    {
-                        this.getNativeElement().style.minHeight = this.responsiveHeight +'px';
+                    if (!this.servoyApi.isInAbsoluteLayout()) {
+                        this.getNativeElement().style.minHeight = this.responsiveHeight + 'px';
                         this.getNativeElement().style.position = 'relative';
                     }
-                    break;    
+                    break;
+                case 'styleClass':
+                    if (change.previousValue) {
+                        const array = change.previousValue.trim().split(' ');
+                        array.filter((element: string) => element !== '').forEach((element: string) => this.renderer.removeClass(this.getNativeElement(), element));
+                    }
+                    if (change.currentValue) {
+                        const array = change.currentValue.trim().split(' ');
+                        array.filter((element: string) => element !== '').forEach((element: string) => this.renderer.addClass(this.getNativeElement(), element));
+                    }
+                    break;
+                case 'placeholderText':
+                    if (change.currentValue) this.renderer.setAttribute(this.getFocusElement().querySelector('input'), 'placeholder', change.currentValue);
+                    else this.renderer.removeAttribute(this.getFocusElement().querySelector('input'), 'placeholder');
+                    break;
             }
         }
         super.svyOnChanges(changes);

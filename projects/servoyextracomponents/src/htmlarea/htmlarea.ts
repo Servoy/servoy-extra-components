@@ -114,7 +114,11 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
         if (configuration) {
             if (typeof configuration === 'string') {
                 try {
-                    configuration = JSON.parse(configuration);
+                    if (configuration === 'config') {// cy test
+                        configuration = {};
+                    } else {
+                        configuration = JSON.parse(configuration);
+                    }
                 } catch (e) {
                     console.error(e);
                 }

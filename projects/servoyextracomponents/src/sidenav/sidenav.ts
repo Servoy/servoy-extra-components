@@ -992,7 +992,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		}
 	}
 }
-class MenuItem {
+export class MenuItem {
 	public text: string;
 	public id: string;
 	public iconStyleClass: string;
