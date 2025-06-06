@@ -24,7 +24,7 @@
     "@servoy/canvas-gauges": "2.1.8",
     "@servoy/ngx-lightbox": "3.0.2",
     "@servoy/public": "2025.3.0",
-    "@tinymce/tinymce-angular": "<8",
+    "@tinymce/tinymce-angular": "9.0.0",
     "@uppy/angular": "0.8.0",
     "@uppy/companion-client": "4.4.2",
     "@uppy/core": "4.4.5",
