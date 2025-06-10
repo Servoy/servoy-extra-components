@@ -117,6 +117,11 @@ var location;
  */
 var hideSelectedItems;
 
+/**
+ * Flag indicating whether the overlay mode will be applied when the dropdown list opens.
+ */
+var overlayMode;
+
 var handlers = {
     /**
      * Called when the value changes.

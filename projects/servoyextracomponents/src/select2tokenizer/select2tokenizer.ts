@@ -37,6 +37,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     @Input() cssPosition: { width: number; height: number };
     @Input() containSearchText: boolean;
     @Input() hideSelectedItems: boolean;
+    @Input() overlayMode: boolean;
 
     @Output() dataProviderIDChange = new EventEmitter();
 
