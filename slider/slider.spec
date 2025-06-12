@@ -105,6 +105,15 @@
 					{ "name": "highValue", "type": "object", "description": "the valueHigh when the user dragged the high value pointer in a range slider" },
 					{ "name": "pointerType", "type": "string", "description": "either \"value\" or \"high\"" }
 				]
+	        }, 
+	    "onTick" : {
+	                "doc": "Called when user clicks on a tick or drags the slider pointer to a tick",
+	                "parameters":[ 
+                        { "name": "value", "type": "object", "description": "the value when the user ticked/ dragged the pointer of a non-range slider or the low value in a range slider" }, 
+                        { "name": "highValue", "type": "object", "description": "the valueHigh when the user ticked/ dragged the high value pointer in a range slider" },
+                        { "name": "pointerType", "type": "string", "description": "either \"value\" or \"high\"" },
+                        { "name": "rightToLeft", "type": "boolean", "description": "true - if the slider is right to left, false - if the slider is left to right" }
+                    ]
 	        }
 	},
 	"types": {

@@ -16,6 +16,7 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
     @Input() onDataChangeHigh;
     @Input() onSlideStart;
     @Input() onSlideEnd;
+    @Input() onTick;
 
     @Input() dataProvider;
     @Input() dataProviderHigh;
@@ -256,6 +257,9 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     onUserChange(changeContext: ChangeContext) {
+        if (this.onTick) {
+            this.onTick(changeContext.value, changeContext.highValue, changeContext.pointerType == PointerType.Min ? "value" : "high", this.rightToLeft);
+        }
         if (!this.dataChangeOnSlideEnd) {
             this.dataProviderChange.emit(changeContext.value);
             this.dataProviderHighChange.emit(changeContext.highValue);
