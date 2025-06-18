@@ -1,8 +1,9 @@
-/*import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ServoyApi, ServoyApiTesting, ServoyPublicTestingModule } from '@servoy/public';
 import { ServoyExtraLightboxGallery, Image } from './lightboxgallery';
 import { MountConfig } from 'cypress/angular';
 import { FormsModule } from '@angular/forms';
+import { LightboxModule } from '@servoy/ngx-lightbox';
 
 @Component({
     template: `<servoyextra-lightboxgallery
@@ -30,7 +31,9 @@ import { FormsModule } from '@angular/forms';
                 (onHoverButtonClicked)="onHoverButtonClicked($event, $event.imageId)"
                 #element>
                 </servoyextra-lightboxgallery>`,
-    standalone: false
+                styleUrls: ['../../../../node_modules/@servoy/ngx-lightbox/lightbox.css'],
+                encapsulation: ViewEncapsulation.None,
+                standalone: false
 })
 class WrapperComponent {
     servoyApi: ServoyApi;
@@ -66,30 +69,34 @@ describe('ServoyExtraLightboxGallery', () => {
 
     const config: MountConfig<WrapperComponent> = {
         declarations: [ServoyExtraLightboxGallery],
-        imports: [ServoyPublicTestingModule, FormsModule]
+        imports: [ServoyPublicTestingModule, FormsModule,LightboxModule],
     };
 
-    beforeEach(() => {
-        const images = [];
-        const image1 = new Image();
-        image1.imageUrl = 'https://picsum.photos/id/1';
-        image1.thumbnailUrl = 'https://picsum.photos/id/1';
-        image1.caption = 'Image 1';
-        image1.id = '1';
-        images.push(image1);
+    const images = [];
+    const image1 = new Image();
+    image1.imageUrl = 'https://cdn.pixabay.com/photo/2014/03/06/13/08/tester-280809_1280.jpg';
+    image1.thumbnailUrl = 'https://cdn.pixabay.com/photo/2014/03/06/13/08/tester-280809_1280.jpg';
+    image1.caption = 'Image 1';
+    image1.id = '1';
+    images.push(image1);
 
-        const image2 = new Image();
-        image2.imageUrl = 'https://picsum.photos/id/2';
-        image2.thumbnailUrl = 'https://picsum.photos/id/2';
-        image2.caption = 'Image 2';
-        image2.id = '2';
-        images.push(image2);
+    const image2 = new Image();
+    image2.imageUrl = 'https://cdn.pixabay.com/photo/2023/01/20/05/23/checklist-7730756_1280.jpg';
+    image2.thumbnailUrl = 'https://cdn.pixabay.com/photo/2023/01/20/05/23/checklist-7730756_1280.jpg';
+    image2.caption = 'Image 2';
+    image2.id = '2';
+    images.push(image2);
+
+    beforeEach(() => {
+    // Set a custom viewport for all tests in this describe block
+        cy.viewport(800, 800); // Width, Height
+        
 
         config.componentProperties = {
             servoyApi: servoyApiSpy,
             enabled: true,
-            maxImageWidth: 800,
-            maxImageHeight: 600,
+            maxImageWidth: 200,
+            maxImageHeight: 200,
             albumLabel: 'Image %1 of %2',
             fadeDuration: 500,
             fitImagesInViewport: true,
@@ -114,7 +121,30 @@ describe('ServoyExtraLightboxGallery', () => {
         cy.mount(WrapperComponent, config).then(() => {
             cy.get('servoyextra-lightboxgallery').should('exist').then(() => {
                 cy.wrap(registerComponent).should('be.called');
+                cy.get(':nth-child(1) > .svyextra-lightboxgallery-image-container > .svyextra-lightboxgallery-thumbnail').should('have.attr', 'src', image1.imageUrl);
+                cy.get(':nth-child(2) > .svyextra-lightboxgallery-image-container > .svyextra-lightboxgallery-thumbnail').should('have.attr', 'src', image2.imageUrl);
+                cy.get(':nth-child(1) > .svyextra-lightboxgallery-image-caption').should('contain', 'Image 1');
+                cy.get(':nth-child(2) > .svyextra-lightboxgallery-image-caption').should('contain', 'Image 2');
             });
         });
     });
-});*/
+
+        it('click should open the image', () => {
+        cy.mount(WrapperComponent, config).then(() => {
+            cy.get('servoyextra-lightboxgallery').should('exist').then(() => {
+                cy.get(':nth-child(1) > .svyextra-lightboxgallery-image-container > .svyextra-lightboxgallery-thumbnail').click()
+                cy.get('#image').should('have.attr', 'src', image1.imageUrl).then(() => {
+                    cy.get('.lb-caption').should('contain', 'Image 1');
+                    cy.get('.lb-number').should('contain', 'Image 1 of 2');
+                    cy.get('.lb-next').click();
+                    cy.get('#image').should('have.attr', 'src', image2.imageUrl);
+                    cy.get('.lb-caption').should('contain', 'Image 2');
+                    cy.get('.lb-number').should('contain', 'Image 2 of 2');
+                    cy.get('.lb-close').click();
+                     cy.get('#image').should('not.exist');
+                })
+
+            });
+        });
+    });
+});
