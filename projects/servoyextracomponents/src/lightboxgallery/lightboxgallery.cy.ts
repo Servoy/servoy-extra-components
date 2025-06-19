@@ -28,7 +28,7 @@ import { LightboxModule } from '@servoy/ngx-lightbox';
                 [showCaptionInGallery]="showCaptionInGallery"
                 [showImageNumberLabel]="showImageNumberLabel"
                 [wrapAround]="wrapAround"
-                (onHoverButtonClicked)="onHoverButtonClicked($event, $event.imageId)"
+                [onHoverButtonClicked]="onHoverButtonClicked"
                 #element>
                 </servoyextra-lightboxgallery>`,
                 styleUrls: ['../../../../node_modules/@servoy/ngx-lightbox/lightbox.css'],
@@ -145,6 +145,42 @@ describe('ServoyExtraLightboxGallery', () => {
                 })
 
             });
+        });
+    });
+    
+    it('should button be visible and clicking on the button should open the lightbox', () => {
+        config.componentProperties.galleryVisible = false;
+        cy.mount(WrapperComponent, config).then(() => {
+            cy.get('servoyextra-lightboxgallery').should('exist').then(() => {
+                cy.get(':nth-child(1) > .svyextra-lightboxgallery-image-container > .svyextra-lightboxgallery-thumbnail').should('not.exist');
+                cy.get('.svyextra-lightboxgallery-button').should('exist').invoke('text').should('eq', ' View ');
+                cy.get('.svyextra-lightboxgallery-button').click();
+                cy.get('#image').should('have.attr', 'src', image1.imageUrl).then(() => {
+                    cy.get('.lb-caption').should('contain', 'Image 1');
+                    cy.get('.lb-number').should('contain', 'Image 1 of 2');
+                    cy.get('.lb-next').click();
+                    cy.get('#image').should('have.attr', 'src', image2.imageUrl);
+                    cy.get('.lb-caption').should('contain', 'Image 2');
+                    cy.get('.lb-number').should('contain', 'Image 2 of 2');
+                    cy.get('.lb-close').click();
+                    cy.get('#image').should('not.exist');
+                })
+
+            });
+        });
+    });
+
+    it('should handle onHoverButtonClicked', () => {
+        const onHoverButtonClicked = cy.stub();
+        config.componentProperties.onHoverButtonClicked = onHoverButtonClicked;
+        cy.mount(WrapperComponent, config).then(() => {
+            cy.get('.svyextra-lightboxgallery-image-delete')
+                .should('exist')
+                .first()
+                .click({ force: true })
+                .then(() => {
+                    cy.wrap(onHoverButtonClicked).should('be.called');
+                });
         });
     });
 });
