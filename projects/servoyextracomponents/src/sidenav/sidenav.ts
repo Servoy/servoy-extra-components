@@ -937,6 +937,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	private copyServoyMenu() {
 		if (this.servoyMenu) {
 			this.selectedIndex = {};
+			this.expandedIndex = {};
 			const selectedNode = {};
 			const oldMenu = new Array();
 			if (this.servoyMenu.items) {
