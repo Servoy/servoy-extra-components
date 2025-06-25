@@ -471,12 +471,13 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 				}
 			}
 
-			// change containedForm
-			if (item.formName && !isItemAlreadySelected) {
-				const formToHide = this.containedForm;
-				const menuIDToShow = item.id;
-				this.servoyApi.callServerSideApi('showForm', [formToHide, menuIDToShow]);
-			}
+            // change containedForm
+            const itm = item.menuItems?.length ? item.menuItems[0] : item;
+            if (itm.formName && !isItemAlreadySelected) {
+                const formToHide = this.containedForm;
+                const menuIDToShow = itm.id;
+                this.servoyApi.callServerSideApi('showForm', [formToHide, menuIDToShow]);
+            }
 		};
 
 		if (preventSelectHandler !== true && this.onMenuItemSelected) { // change selection only if onMenuItemSelected allows it
