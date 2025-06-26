@@ -418,7 +418,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                 }
                 event.preventDefault();
             } else if (event.keyCode === 13) { // ENTER KEY
-                if (!this.keyCodeSettings.enter) return;
+                if (this.keyCodeSettings && !this.keyCodeSettings.enter) return;
                 if (this.onCellClick) {
                     this.onCellClick(selection + 1, null, fs.viewPort.rows[selection]);
                 }

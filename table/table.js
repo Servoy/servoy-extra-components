@@ -1268,7 +1268,7 @@ return {
 					}
 					event.preventDefault();
 				} else if (event.keyCode == 13) { // ENTER KEY
-					if (!$scope.model.keyCodeSettings.enter) return;
+					if ($scope.model.keyCodeSettings && !$scope.model.keyCodeSettings.enter) return;
 					if ($scope.handlers.onCellClick) {
 						$scope.handlers.onCellClick(selection + 1, null, fs.viewPort.rows[selection])
 					}
