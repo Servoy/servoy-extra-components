@@ -1,6 +1,6 @@
 {
   "name": "servoyextracomponents",
-  "version": "2025.6.1",
+  "version": "2025.9.0",
   "scripts": {
     "ng": "ng",
     "build": "ng build --configuration production @servoy/servoyextracomponents",
