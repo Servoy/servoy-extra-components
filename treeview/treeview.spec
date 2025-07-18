@@ -176,6 +176,16 @@
       					]
       	},
       	
+      	"scrollToNode": {
+      	    "parameters":[
+      						{
+      						"name":"nodeId",
+      						"type":"object"
+      						}
+      					]
+      	
+      	},
+      	
      	"getSeletedNode": {
       		"returns": "object"
       	},

@@ -283,7 +283,13 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 		 *
 		 */
       	$scope.api.refresh = function(restoreExpandedNodes) {
-      		if(theTree) theTree.reload();
+      		if(theTree) {
+                if (restoreExpandedNodes) {
+                    theTree.reload(theTree.rootNode.children);
+                } else {
+                    theTree.reload();
+                }
+            }
       	}
       	
       	/**
@@ -393,6 +399,21 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 	  			}
       		}
       	}
+        
+        /** 
+         * Scrolls to a node by id.
+         *
+         * @example
+         * %%elementName%%.scrollToNode(22)
+         * 
+         * @param nodeId node id
+         */
+        $scope.api.scrollToNode = function(nodeId) {
+            var node = theTree.getNodeByKey(nodeId.toString());
+            if (node && node.span) {
+                node.span.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
 
       	/**
       	 * Get selected node id.

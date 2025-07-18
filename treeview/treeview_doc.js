@@ -153,6 +153,17 @@ function setSelectedNode(nodeId) {
 }
 
 /**
+ * Scrolls to a node by id.
+ * 
+ * @example
+ * %%elementName%%.scrollToNode(22)
+ * 
+ * @param nodeId node id
+ */
+function scrollToNode(nodeId) {
+}
+
+/**
  * Get selected node id.
  *
  * @example

@@ -318,7 +318,11 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
      */
     refresh(restoreExpandedNodes) {
         if (this.isTreeReady) {
-            this.angularGrid.store.refreshDisplayData();
+            if (restoreExpandedNodes) {
+                this.angularGrid.store.refreshDisplayData();
+            } else {
+                this.updateTreeGridData();
+            }
         }
     }
 
@@ -424,6 +428,21 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
             displayData.forEach(data => {
                 data.row_selected = data.id === nodeId;
             });
+        }
+    }
+    
+    /** 
+     * Scrolls to a node by id.
+     * 
+     * * @example
+     * %%elementName%%.scrollToNode(22)
+     * 
+     * * @param nodeId node id
+    */
+    scrollToNode(nodeId) {
+        const node = this.elementRef.nativeElement.querySelector('div[cell-id="' + nodeId + '"]');
+        if (node) {
+            node.closest('td').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     }
 
