@@ -1,7 +1,7 @@
-import { Component, SimpleChanges, Input, Renderer2, EventEmitter, Output, ChangeDetectorRef, ChangeDetectionStrategy, Inject } from '@angular/core';
+import { Component, SimpleChanges, Input, Renderer2, EventEmitter, Output, ChangeDetectorRef, ChangeDetectionStrategy, Inject, DOCUMENT } from '@angular/core';
 import { ServoyBaseComponent, PropertyUtils, ServoyPublicService } from '@servoy/public';
 import tinymce, { RawEditorOptions, Editor } from 'tinymce';
-import { DOCUMENT } from '@angular/common';
+
 
 @Component({
     selector: 'servoyextra-htmlarea',

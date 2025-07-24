@@ -1,6 +1,9 @@
-import { Component, Input, Output, OnChanges,SimpleChanges, EventEmitter, HostListener, AfterContentInit,
-                ContentChildren, QueryList, Renderer2, ViewEncapsulation, ViewChild, ElementRef, Inject } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import {
+  Component, Input, Output, OnChanges, SimpleChanges, EventEmitter, HostListener, AfterContentInit,
+  ContentChildren, QueryList, Renderer2, ViewEncapsulation, ViewChild, ElementRef, Inject,
+  DOCUMENT
+} from '@angular/core';
+
 import { BGPane } from './bg_pane.component';
 @Component( {
     selector: 'bg-splitter',

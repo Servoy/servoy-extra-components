@@ -4,11 +4,15 @@ import { ServoyExtraTreeview } from './treeview';
     selector: 'servoyextra-treeview-cell-renderer',
     template: `
     <div [ngStyle]="setDisplay()" (contextmenu)="oncontextmenu($event)" [attr.cell-id]="getCellId()">
-      <img *ngIf="!isFAIcon() && getIcon()" [src]="getIcon()">
-      <span *ngIf="isFAIcon() && getIcon()" [class]="getIcon()"></span>
+      @if (!isFAIcon() && getIcon()) {
+        <img [src]="getIcon()">
+      }
+      @if (isFAIcon() && getIcon()) {
+        <span [class]="getIcon()"></span>
+      }
       <span class="treeLabel" [ngStyle]="setStyle()" [class]="getFilterClass()" [innerHtml]="getLabel()"></span>
     </div>
-  `,
+    `,
     standalone: false
 })
 export class ServoyExtraTreeviewCellRenderer {

@@ -1,19 +1,21 @@
 <div class="input-group form-group"
-	#element>
-	<div class="input-group-prepend">
-		<span class="input-group-text" #span> <i class="{{faclass}}"></i>
-		</span>
-	</div>
-	<input class='form-control' 
-		[ngClass]="styleClass" 
-		(ngModelChange)="pushUpdate($event)"
-		[id]="servoyApi.getMarkupId()"
-		[ngModel]="dataProviderID" 
-		[svyFormat]="format"
-		[svyStartEdit]="'dataProviderID'" 
-		[hostComponent]="this"
-		[sabloTabseq]="tabSeq"
-        [readOnly]="readOnly"
-		#input />
+  #element>
+  <div class="input-group-prepend">
+    <span class="input-group-text" #span> <i class="{{faclass}}"></i>
+  </span>
 </div>
-<div *ngIf="showError" class="textfieldgroup-msg-error">{{invalidEmailMessage}}</div>
+<input class='form-control'
+  [ngClass]="styleClass"
+  (ngModelChange)="pushUpdate($event)"
+  [id]="servoyApi.getMarkupId()"
+  [ngModel]="dataProviderID"
+  [svyFormat]="format"
+  [svyStartEdit]="'dataProviderID'"
+  [hostComponent]="this"
+  [sabloTabseq]="tabSeq"
+  [readOnly]="readOnly"
+  #input />
+</div>
+@if (showError) {
+  <div class="textfieldgroup-msg-error">{{invalidEmailMessage}}</div>
+}

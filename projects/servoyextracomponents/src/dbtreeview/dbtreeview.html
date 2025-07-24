@@ -1,25 +1,28 @@
 <div [id]="servoyApi.getMarkupId()" class="dbtreeview" (dragover)="onRowDragOverEvent($event)" (drop)="onRowDropEvent($event)" #element>
-     <tree-root #tree [nodes]="displayNodes" [options]="options" 
-        (toggleExpanded)="onNodeExpanded($event)" 
-        (initialized)="onTreeLoad($event)"
-        (loadNodeChildren)="onLoadNodeChildren($event)"
-        (moveNode)="nodeDropped($event)"
-        (click)="clickRow($event)">
-        <ng-template #treeNodeTemplate let-node="node" let-index="index">
-            <div [title]="node.data.tooltip" [attr.node-id]="node.id"> 
-                <input *ngIf="node.data.hascheckbox"
-                (change)="check(node, !node.data.checked)"
-                type="checkbox"
-                [indeterminate]="node.data.indeterminate"
-                [checked]="node.data.checked">
-                <img [src]="node.data.image" [ngStyle]="{'width': '15px', 'height': '15px', 'margin-left': '5px', 'margin-bottom': '5px', 'margin-right': '5px'}">
-				<span [innerHTML]="node.data.name"></span>
-            </div>
-        </ng-template>
-		<ng-template #loadingTemplate>
-    		<div *ngIf="showLoadingIndicator">loading...</div>
-  		</ng-template>
-        </tree-root>
+  <tree-root #tree [nodes]="displayNodes" [options]="options"
+    (toggleExpanded)="onNodeExpanded($event)"
+    (initialized)="onTreeLoad($event)"
+    (loadNodeChildren)="onLoadNodeChildren($event)"
+    (moveNode)="nodeDropped($event)"
+    (click)="clickRow($event)">
+    <ng-template #treeNodeTemplate let-node="node" let-index="index">
+      <div [title]="node.data.tooltip" [attr.node-id]="node.id">
+        @if (node.data.hascheckbox) {
+          <input
+            (change)="check(node, !node.data.checked)"
+            type="checkbox"
+            [indeterminate]="node.data.indeterminate"
+            [checked]="node.data.checked">
+        }
+        <img [src]="node.data.image" [ngStyle]="{'width': '15px', 'height': '15px', 'margin-left': '5px', 'margin-bottom': '5px', 'margin-right': '5px'}">
+        <span [innerHTML]="node.data.name"></span>
+      </div>
+    </ng-template>
+    <ng-template #loadingTemplate>
+      @if (showLoadingIndicator) {
+        <div>loading...</div>
+      }
+    </ng-template>
+  </tree-root>
 </div >
 
- 

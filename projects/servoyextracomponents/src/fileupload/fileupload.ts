@@ -1,7 +1,7 @@
-import { Component, SimpleChanges, Input, Renderer2, EventEmitter, Output, ChangeDetectorRef, ChangeDetectionStrategy, Inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, SimpleChanges, Input, Renderer2, EventEmitter, Output, ChangeDetectorRef, ChangeDetectionStrategy, Inject, ViewChild, ElementRef, DOCUMENT } from '@angular/core';
 import { ServoyBaseComponent, ServoyPublicService } from '@servoy/public';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
-import { DOCUMENT } from '@angular/common';
+
 import { LoggerFactory, LoggerService } from '@servoy/public';
 import {FileTypesUtilsService} from './lib/filetypes';
 

@@ -1,34 +1,38 @@
 <div #element class="tablewrapper" [ngStyle]="getLayoutStyle()">
-    <table #table [id]="'table_'+servoyApi.getMarkupId()"
-        [ngStyle]="getTableStyle()"
-        class='svy-table'
-        [ngClass]="styleClass"
-        [sabloTabseq]="tabSeq"
-        (keydown)="keyPressed($event)">
-       <thead [ngStyle]="getTHeadStyle()">
-            <tr><th   *ngFor="let column of columns; let i = index;"  [ngStyle]="getColumnStyle(i)"
-                        [ngClass]="getSortStyleClass(i)"
-                        mwlResizable 
-						mwlResizeHandle 
-                        [enableGhostResize]="enableColumnResize"
-                        [resizeEdges]="{ bottom: false, right: enableColumnResize && i < columns.length-1, top: false, left: enableColumnResize && i > 0 }"
-                        (click)="headerClicked($event, i)"
-                        (resizing)="onResizeColumn($event,i)"
-                        (resizeEnd)="onResizeColumnEnd()"
-                        (contextmenu)="headerRightClicked($event, i)">
-                            <div style="display: table; width: 100%"><div style="display: table-row;">
-                            <div  [innerHtml]='column.headerText' class="table-servoyextra-header-label"></div>
-                            <span [ngClass]="getSortClass(i)" style="display: table-cell;vertical-align:middle;"></span>
-                        </div></div>
-                    </th>
-            </tr>
-       </thead>
-      <tbody #tbody>
-      </tbody>
-    </table>
-    <ul #pager class="svy-pagination pagination svy-nomargin" *ngIf="isPaginationVisible()">
-      <li [ngClass]="currentPage == 1 ? 'disabled' : ''" class="page-item"><a href="#" (click)="modifyPage(-1)" tabindex="-1" class="page-link">&laquo;</a></li>
-      <li class="page-item active"><span tabindex="-1" class="page-link">{{currentPage}}</span></li>
-      <li [ngClass]="hasNext() ? '' : 'disabled'" class="page-item"><a href="#" (click)="modifyPage(1)" tabindex="-1" class="page-link">&raquo;</a></li>
-    </ul>
+  <table #table [id]="'table_'+servoyApi.getMarkupId()"
+    [ngStyle]="getTableStyle()"
+    class='svy-table'
+    [ngClass]="styleClass"
+    [sabloTabseq]="tabSeq"
+    (keydown)="keyPressed($event)">
+    <thead [ngStyle]="getTHeadStyle()">
+      <tr>@for (column of columns; track column; let i = $index) {
+        <th    [ngStyle]="getColumnStyle(i)"
+          [ngClass]="getSortStyleClass(i)"
+          mwlResizable
+          mwlResizeHandle
+          [enableGhostResize]="enableColumnResize"
+          [resizeEdges]="{ bottom: false, right: enableColumnResize && i < columns.length-1, top: false, left: enableColumnResize && i > 0 }"
+          (click)="headerClicked($event, i)"
+          (resizing)="onResizeColumn($event,i)"
+          (resizeEnd)="onResizeColumnEnd()"
+          (contextmenu)="headerRightClicked($event, i)">
+          <div style="display: table; width: 100%"><div style="display: table-row;">
+            <div  [innerHtml]='column.headerText' class="table-servoyextra-header-label"></div>
+            <span [ngClass]="getSortClass(i)" style="display: table-cell;vertical-align:middle;"></span>
+          </div></div>
+        </th>
+      }
+    </tr>
+  </thead>
+  <tbody #tbody>
+  </tbody>
+</table>
+@if (isPaginationVisible()) {
+  <ul #pager class="svy-pagination pagination svy-nomargin">
+    <li [ngClass]="currentPage == 1 ? 'disabled' : ''" class="page-item"><a href="#" (click)="modifyPage(-1)" tabindex="-1" class="page-link">&laquo;</a></li>
+    <li class="page-item active"><span tabindex="-1" class="page-link">{{currentPage}}</span></li>
+    <li [ngClass]="hasNext() ? '' : 'disabled'" class="page-item"><a href="#" (click)="modifyPage(1)" tabindex="-1" class="page-link">&raquo;</a></li>
+  </ul>
+}
 </div>

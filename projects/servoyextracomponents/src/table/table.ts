@@ -1,11 +1,12 @@
 import {
-    Component, ViewChild, Input, Renderer2, ElementRef, OnDestroy, ChangeDetectorRef,
-    ChangeDetectionStrategy, Directive, Inject, HostListener, SecurityContext, SimpleChanges, CSP_NONCE
+  Component, ViewChild, Input, Renderer2, ElementRef, OnDestroy, ChangeDetectorRef,
+  ChangeDetectionStrategy, Directive, Inject, HostListener, SecurityContext, SimpleChanges, CSP_NONCE,
+  DOCUMENT
 } from '@angular/core';
 import { BaseCustomObject, Format, IFoundset, IValuelist, ServoyBaseComponent, ViewPortRow, FoundsetChangeEvent, ChangeType, FormattingService, ViewportRowUpdates, LogLevel } from '@servoy/public';
 import { LoggerFactory, LoggerService } from '@servoy/public';
 import { ResizeEvent } from 'angular-resizable-element';
-import { DOCUMENT } from '@angular/common';
+
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Directive({

@@ -1,6 +1,6 @@
-import { Component, SimpleChanges, Input, Output, Renderer2, ChangeDetectorRef, ContentChild, TemplateRef, EventEmitter, ViewChild, ElementRef, Inject } from '@angular/core';
+import { Component, SimpleChanges, Input, Output, Renderer2, ChangeDetectorRef, ContentChild, TemplateRef, EventEmitter, ViewChild, ElementRef, Inject, DOCUMENT } from '@angular/core';
 import { ServoyBaseComponent, ServoyPublicService, IJSMenu, IJSMenuItem } from '@servoy/public';
-import { DOCUMENT } from '@angular/common';
+
 import { LoggerFactory, LoggerService } from '@servoy/public';
 
 @Component({

@@ -1,7 +1,7 @@
-import { Component, Renderer2, SimpleChanges, ChangeDetectorRef, ChangeDetectionStrategy, Input, TemplateRef, Inject, ContentChild, Output, EventEmitter } from '@angular/core';
+import { Component, Renderer2, SimpleChanges, ChangeDetectorRef, ChangeDetectionStrategy, Input, TemplateRef, Inject, ContentChild, Output, EventEmitter, DOCUMENT } from '@angular/core';
 import { BaseCustomObject, ServoyBaseComponent } from '@servoy/public';
 import { ServoyPublicService } from '@servoy/public';
-import { DOCUMENT } from '@angular/common';
+
 
 @Component({
     selector: 'servoyextra-collapse',
