@@ -1,6 +1,6 @@
 import { Component, Renderer2, SimpleChanges, ChangeDetectorRef, ViewChild, Input, Output, EventEmitter, HostListener, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { Select2Option, Select2UpdateEvent, Select2, Select2RemoveEvent } from 'ng-select2-component';
-import { ServoyBaseComponent, IValuelist, Format } from '@servoy/public';
+import { ServoyBaseComponent, IValuelist, Format, PopupStateService } from '@servoy/public';
 import { DOCUMENT } from '@angular/common';
 
 @Component({
@@ -50,7 +50,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 
     userChangedValue = false;
 
-    constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, @Inject(DOCUMENT) private doc: Document) {
+    constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, @Inject(DOCUMENT) private doc: Document, protected popupStateService: PopupStateService) {
         super(renderer, cdRef);
     }
 
@@ -236,6 +236,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     }
 
     listClosed(event: Select2) {
+        this.popupStateService.deactivatePopup(this.getNativeElement().id);
         this.doc.removeEventListener('keydown', this.handleTab, true);
 		this.userChangedValue = false;
 		this.resetSearch();
@@ -292,6 +293,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 	}
 
     listOpened(event: Select2) {
+        this.popupStateService.activatePopup(this.getNativeElement().id);
         this.doc.addEventListener('keydown', this.handleTab, true);
 		this.userChangedValue = true;
         if (this.allowNewEntries || this.hasKeyListenerAttribute()) {
