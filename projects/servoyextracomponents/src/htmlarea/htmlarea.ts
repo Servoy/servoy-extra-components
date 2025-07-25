@@ -22,7 +22,6 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
     @Input() dataProviderID: any;
     @Input() enabled: boolean;
     @Input() editable: boolean;
-    @Input() placeholderText: string;
     @Input() readOnly: boolean;
     @Input() responsiveHeight: any;
     @Input() styleClass: string;

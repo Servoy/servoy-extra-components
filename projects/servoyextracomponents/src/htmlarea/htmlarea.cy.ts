@@ -98,12 +98,6 @@ describe('ServoyExtraHtmlarea', () => {
         });
     });
 
-    it('should set the placeholder text', () => {
-        config.componentProperties.placeholderText = 'Enter your name';
-        cy.mount(WrapperComponent, config).then(() => {
-            cy.get('servoyextra-htmlarea').should('have.attr', 'ng-reflect-placeholder-text', 'Enter your name');
-        });
-    });
 
     it('show a style class', () => {
         cy.mount(WrapperComponent, config).then(wrapper => {
