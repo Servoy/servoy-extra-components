@@ -40,7 +40,7 @@
     "ngx-filesaver": "^20",
     "@servoy/ngx-lightbox": "<4",
     "rx-dom-html": "<8",
-    "tinymce": "<7",
+    "tinymce": "7.0.0",
     "tinymce-i18n": ">=24",
     "tslib": "*"
   },
