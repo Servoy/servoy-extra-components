@@ -176,13 +176,13 @@ describe('ServoyExtraSelect2Tokenizer', () => {
     it('should be read-only', () => {
         config.componentProperties.readOnly = true;
         cy.mount(WrapperComponent, config).then(() => {
-            cy.get('select2').should('have.attr', 'ng-reflect-readonly', 'true');
+            cy.get('div.select2-container--readonly').should('exist');
         });
     });
 
     it('should be editable', () => {
         cy.mount(WrapperComponent, config).then(() => {
-            cy.get('select2').should('not.have.attr', 'ng-reflect-readonly', 'true');
+            cy.get('div.select2-container--readonly').should('not.exist');
         });
     });
 

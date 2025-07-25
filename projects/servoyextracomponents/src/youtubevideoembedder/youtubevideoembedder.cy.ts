@@ -126,10 +126,10 @@ describe('ServoyExtraYoutubeVideoEmbedder', () => {
 
     it('should show fullscreen', () => {
         cy.mount(WrapperComponent, config).then(wrapper => {
-            cy.get('servoyextra-youtubevideoembedder').should('have.attr', 'ng-reflect-allow-full-screen', 'false').then(() => {
+            cy.get('servoyextra-youtubevideoembedder iframe').invoke('attr', 'src').should('contain', 'fs=0').then(() => {
                 wrapper.component.allowFullScreen = true;
                 wrapper.fixture.detectChanges();
-                cy.get('servoyextra-youtubevideoembedder').should('have.attr', 'ng-reflect-allow-full-screen', 'true');
+                cy.get('servoyextra-youtubevideoembedder iframe').invoke('attr', 'src').should('not.contain', 'fs=0');
             });
         });
     });

@@ -221,21 +221,20 @@ describe('ServoyExtraSlider', () => {
         const dataProviderChange = cy.stub();
         config.componentProperties.dataProviderChange = dataProviderChange;
         cy.mount(WrapperComponent, config).then(wrapper => {
-            cy.get('.svy-slider').should('have.attr', 'ng-reflect-value', '5').then(() => {
+            cy.get('span.ngx-slider-model-value').should('have.text', '5').then(() => {
                 wrapper.component.dataProvider = 7;
                 wrapper.fixture.detectChanges();
                 expect(dataProviderChange).not.to.have.been.called;
-                cy.get('.svy-slider').should('have.attr', 'ng-reflect-value', '7');
             });
         });
     });
 
-    it('should respect minLimit and maxLimit', () => {
-        config.componentProperties.minLimit = 1;
-        config.componentProperties.maxLimit = 8;
+    it('should show floor and ceil', () => {
+        config.componentProperties.floor = 1;
+        config.componentProperties.ceil = 8;
         cy.mount(WrapperComponent, config).then(() => {
-            cy.get('servoyextra-slider').should('have.attr', 'ng-reflect-min-limit', '1');
-            cy.get('servoyextra-slider').should('have.attr', 'ng-reflect-max-limit', '8');
+            cy.get('span.ngx-slider-floor').should('have.text', '1');
+            cy.get('span.ngx-slider-ceil').should('have.text', '8');
         });
     });
 
