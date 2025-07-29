@@ -1,3 +1,4 @@
+var isShowing = false;
 /**
 * Add foundset to the list of foundsets used to create the tree's root nodes. 
 * 
@@ -229,7 +230,7 @@ $scope.getBinding = function(datasource) {
  */
 $scope.api.setSelectionPath = function(pkarray) {
 	$scope.model.foundsettree.selection = pkarray;
-	if($scope.model.isInitialized) {
+	if($scope.model.isInitialized && isShowing) {
         $scope.api.setSelectionPathClientSide($scope.model.foundsettree.getNodeIDArray(pkarray));
     } 
 }
@@ -357,4 +358,12 @@ $scope.api.setActionsCallBack = function(actions) {
 			name: name
 		});
 	}
+}
+
+$scope.onShow = function() {
+	isShowing = true;
+}
+
+$scope.onHide = function() {
+	isShowing = false;
 }

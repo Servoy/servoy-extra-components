@@ -1,3 +1,4 @@
+var isShowing = false;
 /**
 * Add foundset to the list of foundsets used to create the tree's root nodes. 
 * 
@@ -337,4 +338,12 @@ $scope.api.setActionsCallBack = function(actions) {
 			name: name
 		});
 	}
+}
+
+$scope.onShow = function() {
+	isShowing = true;
+}
+
+$scope.onHide = function() {
+	isShowing = false;
 }
