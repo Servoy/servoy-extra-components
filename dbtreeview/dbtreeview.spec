@@ -413,7 +413,9 @@
                             "type": "boolean"
                             }                               
                          ]
-        }
+        },
+        "onShow" : {},
+		"onHide" : {}
     },
 	"types": {
 	  "callback": {
