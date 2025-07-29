@@ -83,6 +83,9 @@
         },
         "removeAllRoots": {
         },
+        "getRoots": {
+        	"returns": "foundsetRef[]"
+        },
         "refresh": {
         	"delayUntilFormLoads": true
         },  

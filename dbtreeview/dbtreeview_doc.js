@@ -132,6 +132,18 @@ function addRoots(foundset) {
 function removeAllRoots() {
 }
 
+/**
+* Returns all the roots that were already added using addRoots.
+* 
+* @example
+* %%elementName%%.getRoots();
+
+* @return {Array<JSFoundSet>} All root foundsets.
+* 
+*/
+function getRoots() {
+}
+
 function getCheckBoxValues(datasource) {
 }
 

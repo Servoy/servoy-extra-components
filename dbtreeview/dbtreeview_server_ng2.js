@@ -11,6 +11,10 @@ $scope.api.addRoots = function(foundset) {
 	$scope.model.foundsettree.roots.add(foundset);
 }
 
+$scope.api.getRoots = function() {
+	return $scope.model.foundsettree.roots.toArray();
+}
+
 /**
 * Clears all foundset roots of the tree.
 * 
