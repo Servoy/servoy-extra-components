@@ -17,7 +17,6 @@ import { EditorModule } from '@tinymce/tinymce-angular';
                 [dataProviderID]="dataProviderID"
                 [editable]="editable"
                 [enabled]="enabled"
-                [placeholderText]="placeholderText"
                 [responsiveHeight]="responsiveHeight"
                 [scrollbars]="scrollbars"
                 [styleClass]="styleClass"
@@ -43,7 +42,6 @@ class WrapperComponent {
 
     editable: boolean;
     enabled: boolean;
-    placeholderText: string;
     responsiveHeight: number;
     scrollbars: any;
     styleClass: string;
@@ -76,9 +74,8 @@ describe('ServoyExtraHtmlarea', () => {
             styleClass: 'htmlarea-test',
             enabled: true,
             editable: true,
-            placeholderText: 'Enter text',
             dataProviderID: editorContent,
-            toolTipText: 'tooltip text',
+            toolTipText: 'tooltip text'
         };
     });
 
@@ -91,11 +88,11 @@ describe('ServoyExtraHtmlarea', () => {
         });
     });
 
-    it('should show the dataprovider value', () => {
-        config.componentProperties.dataProviderID = 'myvalue';
+    it('should show the new value', () => {
         cy.mount(WrapperComponent, config).then(() => {
-            // its really tricky to test this because this is really internal to tinyMCE (in its iframe,and then body and its already also more html like <p>myvalue</p>)
-          //  cy.get('editor').should('have.attr', 'ng-reflect-model', 'myvalue');
+            cy.get('textarea').type('New Value').blur().then(() => {
+                cy.get('textarea').should('have.value', 'New Value');
+            });
         });
     });
 

@@ -98,21 +98,15 @@ describe('ServoyExtraMultiFileUpload', () => {
                 "height": "450px",
                 "width": "290px"
             },
-            restrictions: {
-                minNumberOfFiles: 1,
-                maxNumberOfFiles: 10,
-                allowedFileTypes: ['.pdf', '.jpg', '.png'],
-                maxFileSize: 5000000, // 5 MB
-            } as Restrictions,
+            inline: true
         };
     });
 
     it('should mount and register the component', () => {
         const registerComponent = cy.stub(servoyApiSpy, 'registerComponent');
         cy.mount(WrapperComponent, config).then(() => {
-            cy.get('servoyextra-multifileupload').should('exist').then(() => {
-                cy.wrap(registerComponent).should('be.called');
-            });
+            cy.get('servoyextra-multifileupload').should('exist');
+            cy.wrap(registerComponent).should('be.called');
         });
     });
 
@@ -127,18 +121,22 @@ describe('ServoyExtraMultiFileUpload', () => {
     });
 
     it('show more then 1 style class', () => {
-        config.componentProperties.styleClass = 'mystyleclass';
         cy.mount(WrapperComponent, config).then(wrapper => {
-            cy.get('.svy-extra-multifileupload').should('have.class', 'mystyleclass').then(() => {
-                wrapper.component.styleClass = 'classA classB';
-                wrapper.fixture.detectChanges();
-                cy.get('.svy-extra-multifileupload').should('have.class', 'classA').should('have.class', 'classB');
-            });
+            wrapper.component.styleClass = 'classA classB';
+            wrapper.fixture.detectChanges();
+            cy.get('.svy-extra-multifileupload').should('have.class', 'classA').should('have.class', 'classB');
         });
     });
 
     it('should respect file type restrictions', () => {
-        cy.mount(WrapperComponent, config).then(() => {
+        cy.mount(WrapperComponent, config).then((wrapper) => {
+            wrapper.component.restrictions = {
+                minNumberOfFiles: 1,
+                maxNumberOfFiles: 10,
+                allowedFileTypes: ['.pdf', '.jpg', '.png'],
+                maxFileSize: 5000000, // 5 MB
+            } as Restrictions;
+            wrapper.fixture.detectChanges();
             cy.get('input[type="file"]').should('have.attr', 'accept', '.pdf, .jpg, .png');
         });
     });
@@ -151,24 +149,26 @@ describe('ServoyExtraMultiFileUpload', () => {
     });
 
     it('should handle note property', () => {
-        const testNote = 'Test upload note';
-        config.componentProperties.note = testNote;
-        cy.mount(WrapperComponent, config).then(() => {
-            cy.get('.uppy-Dashboard-note').should('contain', testNote);
+        cy.mount(WrapperComponent, config).then((wrapper) => {
+            wrapper.component.note = 'Test upload note';
+            wrapper.fixture.detectChanges();
+            cy.get('.uppy-Dashboard-note').should('contain', 'Test upload note');
         });
     });
 
     it('should handle language property', () => {
-        config.componentProperties.language = 'German';
-        cy.mount(WrapperComponent, config).then(() => {
+        cy.mount(WrapperComponent, config).then((wrapper) => {
+            wrapper.component.language = 'German';
+            wrapper.fixture.detectChanges();
             cy.get('.uppy-Dashboard-browse').should('contain', 'durchsuchen');
         });
     });
 
     it('should trigger onFileAdded event', () => {
         const onFileAdded = cy.spy();
-        config.componentProperties.onFileAdded = onFileAdded;
-        cy.mount(WrapperComponent, config).then(() => {
+        cy.mount(WrapperComponent, config).then((wrapper) => {
+            wrapper.component.onFileAdded = onFileAdded;
+            wrapper.fixture.detectChanges();
             cy.get('.uppy-Dashboard-input').first().selectFile({
                 contents: Cypress.Buffer.from('test content'),
                 fileName: 'test.pdf',
@@ -180,9 +180,10 @@ describe('ServoyExtraMultiFileUpload', () => {
 
     it('should handle autoProceed property', () => {
         const onUploadComplete = cy.spy().as('onUploadComplete');
-        config.componentProperties.autoProceed = true;
-        config.componentProperties.onUploadComplete = onUploadComplete;
-        cy.mount(WrapperComponent, config).then(() => {
+        cy.mount(WrapperComponent, config).then((wrapper) => {
+            wrapper.component.autoProceed = true;
+            wrapper.component.onUploadComplete = onUploadComplete;
+            wrapper.fixture.detectChanges();
             cy.get('.uppy-Dashboard-input').first().selectFile({
                 contents: Cypress.Buffer.from('test content'),
                 fileName: 'test.pdf',
@@ -194,9 +195,15 @@ describe('ServoyExtraMultiFileUpload', () => {
 
     it('should respect maxFileSize restriction', () => {
         const onRestrictionFailed = cy.spy().as('onRestrictionFailed');
-        config.componentProperties.onRestrictionFailed = onRestrictionFailed;
-        config.componentProperties.restrictions.maxFileSize = 10; // 10 bytes
-        cy.mount(WrapperComponent, config).then(() => {
+        cy.mount(WrapperComponent, config).then((wrapper) => {
+            wrapper.component.restrictions = {
+                minNumberOfFiles: 1,
+                maxNumberOfFiles: 10,
+                allowedFileTypes: ['.pdf', '.jpg', '.png'],
+                maxFileSize: 10,
+            } as Restrictions;
+            wrapper.component.onRestrictionFailed = onRestrictionFailed;
+            wrapper.fixture.detectChanges();
             cy.get('.uppy-Dashboard-input').first().selectFile({
                 contents: Cypress.Buffer.from('test content larger than 10 bytes'),
                 fileName: 'large.pdf',
@@ -208,8 +215,9 @@ describe('ServoyExtraMultiFileUpload', () => {
 
     it('should handle file removal', () => {
         const onFileRemoved = cy.spy().as('onFileRemoved');
-        config.componentProperties.onFileRemoved = onFileRemoved;
-        cy.mount(WrapperComponent, config).then(() => {
+        cy.mount(WrapperComponent, config).then((wrapper) => {
+            wrapper.component.onFileRemoved = onFileRemoved;
+            wrapper.fixture.detectChanges();
             cy.get('.uppy-Dashboard-input').first().selectFile({
                 contents: Cypress.Buffer.from('test content'),
                 fileName: 'test.pdf',
@@ -222,8 +230,9 @@ describe('ServoyExtraMultiFileUpload', () => {
     });
     
     it('should handle allowMultipleUploads property', () => {
-        config.componentProperties.allowMultipleUploads = false;
-        cy.mount(WrapperComponent, config).then(() => {
+        cy.mount(WrapperComponent, config).then((wrapper) => {
+            wrapper.component.allowMultipleUploads = false;
+            wrapper.fixture.detectChanges();
             cy.get('.uppy-Dashboard-input').first().selectFile([
                 {
                     contents: Cypress.Buffer.from('test1'),
@@ -249,8 +258,9 @@ describe('ServoyExtraMultiFileUpload', () => {
 
     it('should handle onBeforeFileAdded event', () => {
         const onBeforeFileAdded = cy.spy().as('onBeforeFileAdded');
-        config.componentProperties.onBeforeFileAdded = onBeforeFileAdded;
-        cy.mount(WrapperComponent, config).then(() => {
+        cy.mount(WrapperComponent, config).then((wrapper) => {
+            wrapper.component.onBeforeFileAdded = onBeforeFileAdded;
+            wrapper.fixture.detectChanges();
             cy.get('.uppy-Dashboard-input').first().selectFile({
                 contents: Cypress.Buffer.from('test'),
                 fileName: 'test.pdf',
