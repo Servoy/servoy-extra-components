@@ -1,0 +1,14 @@
+{
+"addEmptyValue":1,
+"customValues":"spinner1\r\
+spinner2\r\
+spinner3\r\
+spinner4\r\
+spinner5\r\
+spinner6",
+"displayValueType":12,
+"name":"spinnerValueList",
+"realValueType":12,
+"typeid":34,
+"uuid":"26014640-E12E-41EE-AC2A-3853BB08E00E"
+}

@@ -1,0 +1,39 @@
+{
+    "customProperties":{
+        "formComponent":false,
+        "useCssPosition":true
+    },
+    "encapsulation":108,
+    "items":[
+        {
+            "height":480,
+            "partType":5,
+            "typeid":19,
+            "uuid":"1CA59AAE-4A38-4D9C-8E80-F3EBED9B5206"
+        },
+        {
+            "cssPosition":"36,-1,-1,27,327,48",
+            "json":{
+                "cssPosition":{
+                    "bottom":"-1",
+                    "height":"48",
+                    "left":"27",
+                    "right":"-1",
+                    "top":"36",
+                    "width":"327"
+                },
+                "text":"Custom item 2",
+                "variant":"LabelH1"
+            },
+            "name":"label_2",
+            "typeName":"bootstrapcomponents-label",
+            "typeid":47,
+            "uuid":"57C2F2E9-DBED-4D37-BD64-CF8A8667A0AC"
+        }
+    ],
+    "name":"formCustomItem2",
+    "navigatorID":"-1",
+    "showInMenu":true,
+    "typeid":3,
+    "uuid":"4FB6A97A-19F0-4E3A-917E-D76CE7CFB191"
+}

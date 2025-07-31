@@ -1,0 +1,12 @@
+{
+	"name": "Servoy Web Application",
+	"short_name": "servoyExtraComponentExample",
+	"display": "standalone",
+	"orientation": "portrait",
+	"icons": [{
+		"src": "webapp144.png",
+		"sizes": "144x144",
+		"type": "image/png"
+	}],
+	"start_url": "../../../"
+}

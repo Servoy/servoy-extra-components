@@ -1,0 +1,41 @@
+{
+    "customProperties":{
+        "formComponent":false,
+        "useCssPosition":true
+    },
+    "dataSource":"db:/example_data/orders",
+    "encapsulation":108,
+    "items":[
+        {
+            "height":270,
+            "partType":5,
+            "typeid":19,
+            "uuid":"57460AF7-DBB5-43CE-B4B8-0B60DD426AE8"
+        },
+        {
+            "cssPosition":"46,-1,-1,49,183,47",
+            "json":{
+                "cssPosition":{
+                    "bottom":"-1",
+                    "height":"47",
+                    "left":"49",
+                    "right":"-1",
+                    "top":"46",
+                    "width":"183"
+                },
+                "text":"Left form",
+                "variant":"LabelH1"
+            },
+            "name":"label_7",
+            "typeName":"bootstrapcomponents-label",
+            "typeid":47,
+            "uuid":"CCDEAFC2-0655-4DDB-BE79-344557B595BB"
+        }
+    ],
+    "name":"formForSplitPaneLeftForm",
+    "navigatorID":"-1",
+    "showInMenu":true,
+    "size":"569,480",
+    "typeid":3,
+    "uuid":"F1BB159E-40D0-4216-A4C8-CBFCB57B14DC"
+}
