@@ -7,7 +7,8 @@ var selected = null;
 /**
  * @properties={typeid:35,uuid:"FDBEF466-4769-42E4-B7EE-238C400CDEE5",variableType:-4}
  */
-var userFS = databaseManager.getFoundSet('servoy_test', 'users');
+//foundset: JSFoundSet<mem:testing>
+var userFS = databaseManager.getFoundSet('mem:users');
 
 /**
  * TODO generated, please specify type and doc for the params
@@ -42,8 +43,8 @@ function onShow() {
  * @properties={typeid:24,uuid:"9E7400E2-76E6-4D3D-AE83-86F6D8873DC9"}
  */
 function addRecords() {
-	/** @type {JSFoundset<db:/servoy_test/users>} */
-	var fs = databaseManager.getFoundSet('servoy_test', 'users');
+	/** @type {JSFoundSet<mem:testing>} */
+	var fs = databaseManager.getFoundSet('mem:users');
 	fs.loadAllRecords()
 	fs.deleteAllRecords()
 	

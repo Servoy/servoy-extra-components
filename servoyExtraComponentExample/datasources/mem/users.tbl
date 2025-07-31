@@ -1,0 +1,32 @@
+{
+    "columns":{
+        "columns":[
+            {
+                "allowNull":false,
+                "creationOrderIndex":-1,
+                "dataType":4,
+                "flags":1,
+                "name":"user_id"
+            },
+            {
+                "allowNull":true,
+                "creationOrderIndex":-1,
+                "dataType":12,
+                "length":50,
+                "name":"age"
+            },
+            {
+                "allowNull":true,
+                "creationOrderIndex":-1,
+                "dataType":12,
+                "length":50,
+                "name":"firstname"
+            }
+        ],
+        "name":"users",
+        "tableType":0
+    },
+    "dataSource":"mem:users",
+    "typeid":39,
+    "uuid":"40382E52-C1A2-4369-AA4B-DE04E31245CE"
+}
