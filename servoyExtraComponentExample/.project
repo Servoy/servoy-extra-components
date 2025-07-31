@@ -8,7 +8,6 @@
 		<project>12grid</project>
 		<project>aggrid</project>
 		<project>bootstrapcomponents</project>
-		<project>bootstrapextracomponents</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
