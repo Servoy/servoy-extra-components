@@ -6,17 +6,19 @@
     "encapsulation":108,
     "items":[
         {
-            "cssPosition":"366,-1,-1,679,203,30",
+            "cssPosition":"297,-1,-1,634,246,30",
             "json":{
                 "cssPosition":{
                     "bottom":"-1",
                     "height":"30",
-                    "left":"679",
+                    "left":"634",
                     "right":"-1",
-                    "top":"366",
-                    "width":"203"
+                    "top":"297",
+                    "width":"246"
                 },
-                "text":"Button"
+                "onActionMethodID":"ED758EB9-BFAE-47D4-9CA2-631EBF8C4FB4",
+                "text":"Retry Upload",
+                "variant":"BtnPrimary"
             },
             "name":"button_2cccccccc",
             "typeName":"bootstrapcomponents-button",
@@ -24,17 +26,17 @@
             "uuid":"0064D71B-8B49-42EE-83A0-0931F7817181"
         },
         {
-            "cssPosition":"457,-1,-1,44,552,75",
+            "cssPosition":"453,-1,-1,44,552,75",
             "json":{
                 "cssPosition":{
                     "bottom":"-1",
                     "height":"75",
                     "left":"44",
                     "right":"-1",
-                    "top":"457",
+                    "top":"453",
                     "width":"552"
                 },
-                "text":"Label"
+                "text":""
             },
             "name":"label_fileUploaded",
             "typeName":"bootstrapcomponents-label",
@@ -42,17 +44,19 @@
             "uuid":"06BE0691-812C-4C07-A6AD-522D1AB1C376"
         },
         {
-            "cssPosition":"317,-1,-1,679,203,30",
+            "cssPosition":"256,-1,-1,634,246,30",
             "json":{
                 "cssPosition":{
                     "bottom":"-1",
                     "height":"30",
-                    "left":"679",
+                    "left":"634",
                     "right":"-1",
-                    "top":"317",
-                    "width":"203"
+                    "top":"256",
+                    "width":"246"
                 },
-                "text":"Button"
+                "onActionMethodID":"463BBFEF-9FDF-4258-8223-9D7B5666D47A",
+                "text":"Cancel All",
+                "variant":"BtnPrimary"
             },
             "name":"button_2cccccc",
             "typeName":"bootstrapcomponents-button",
@@ -60,17 +64,39 @@
             "uuid":"07EC48E4-A57C-4365-AAC6-FAEA56239ABD"
         },
         {
-            "cssPosition":"268,-1,-1,679,203,30",
+            "cssPosition":"375,-1,-1,634,246,30",
             "json":{
                 "cssPosition":{
                     "bottom":"-1",
                     "height":"30",
-                    "left":"679",
+                    "left":"634",
                     "right":"-1",
-                    "top":"268",
-                    "width":"203"
+                    "top":"375",
+                    "width":"246"
                 },
-                "text":"Button"
+                "onActionMethodID":"1EB0278B-1645-4DC1-90DC-DC7F1D95F0BC",
+                "text":"Get Files",
+                "variant":"BtnPrimary"
+            },
+            "name":"button_2ccccccccc",
+            "typeName":"bootstrapcomponents-button",
+            "typeid":47,
+            "uuid":"0FC2CE88-B3B3-4F05-878A-AD8E93E92091"
+        },
+        {
+            "cssPosition":"217,-1,-1,634,246,30",
+            "json":{
+                "cssPosition":{
+                    "bottom":"-1",
+                    "height":"30",
+                    "left":"634",
+                    "right":"-1",
+                    "top":"217",
+                    "width":"246"
+                },
+                "onActionMethodID":"2725298D-7420-4B8A-B830-586155A3BB22",
+                "text":"Retry all",
+                "variant":"BtnPrimary"
             },
             "name":"button_2ccccc",
             "typeName":"bootstrapcomponents-button",
@@ -78,17 +104,19 @@
             "uuid":"2784E52B-4114-4B4D-AA67-D211BFB37DF7"
         },
         {
-            "cssPosition":"72,-1,-1,679,203,30",
+            "cssPosition":"62,-1,-1,634,246,30",
             "json":{
                 "cssPosition":{
                     "bottom":"-1",
                     "height":"30",
-                    "left":"679",
+                    "left":"634",
                     "right":"-1",
-                    "top":"72",
-                    "width":"203"
+                    "top":"62",
+                    "width":"246"
                 },
-                "text":"Button"
+                "onActionMethodID":"80AED0F5-1E05-47E5-B9B3-10561FEA9552",
+                "text":"Initialize",
+                "variant":"BtnPrimary"
             },
             "name":"button_2c",
             "typeName":"bootstrapcomponents-button",
@@ -96,17 +124,19 @@
             "uuid":"35D7CA50-E5CE-450D-A181-5A470AE2B7DB"
         },
         {
-            "cssPosition":"219,-1,-1,679,203,30",
+            "cssPosition":"178,-1,-1,634,246,30",
             "json":{
                 "cssPosition":{
                     "bottom":"-1",
                     "height":"30",
-                    "left":"679",
+                    "left":"634",
                     "right":"-1",
-                    "top":"219",
-                    "width":"203"
+                    "top":"178",
+                    "width":"246"
                 },
-                "text":"Button"
+                "onActionMethodID":"86460380-9D50-4DA8-ABF4-955E171BE1A3",
+                "text":"Upload",
+                "variant":"BtnPrimary"
             },
             "name":"button_2cccc",
             "typeName":"bootstrapcomponents-button",
@@ -124,12 +154,32 @@
                     "top":"375",
                     "width":"552"
                 },
-                "text":"Label"
+                "text":""
             },
             "name":"label_fileAddedRemoved",
             "typeName":"bootstrapcomponents-label",
             "typeid":47,
             "uuid":"3B9A7CE5-25FD-4307-B7CA-9E3EAD3ED043"
+        },
+        {
+            "cssPosition":"451,-1,-1,634,246,30",
+            "json":{
+                "cssPosition":{
+                    "bottom":"-1",
+                    "height":"30",
+                    "left":"634",
+                    "right":"-1",
+                    "top":"451",
+                    "width":"246"
+                },
+                "onActionMethodID":"2C8EC604-53B6-4078-860A-991998816EA8",
+                "text":"Remove File",
+                "variant":"BtnPrimary"
+            },
+            "name":"button_2ccccccccccc",
+            "typeName":"bootstrapcomponents-button",
+            "typeid":47,
+            "uuid":"4104D8C7-433B-4EA8-84DB-07A9F964BDAA"
         },
         {
             "cssPosition":"689,-1,-1,44,552,75",
@@ -142,7 +192,7 @@
                     "top":"689",
                     "width":"552"
                 },
-                "text":"Label"
+                "text":""
             },
             "name":"label_uploadComplete",
             "typeName":"bootstrapcomponents-label",
@@ -150,17 +200,17 @@
             "uuid":"453F36AF-8F20-4A37-82F2-5825EFD6DAC2"
         },
         {
-            "cssPosition":"614,-1,-1,44,552,75",
+            "cssPosition":"610,-1,-1,44,552,75",
             "json":{
                 "cssPosition":{
                     "bottom":"-1",
                     "height":"75",
                     "left":"44",
                     "right":"-1",
-                    "top":"614",
+                    "top":"610",
                     "width":"552"
                 },
-                "text":"Label"
+                "text":""
             },
             "name":"label_restrictionFailed",
             "typeName":"bootstrapcomponents-label",
@@ -174,17 +224,17 @@
             "uuid":"67199402-D6EF-4275-A7CB-8DB78D580D9E"
         },
         {
-            "cssPosition":"299,-1,-1,44,552,75",
+            "cssPosition":"296,-1,-1,44,552,75",
             "json":{
                 "cssPosition":{
                     "bottom":"-1",
                     "height":"75",
                     "left":"44",
                     "right":"-1",
-                    "top":"299",
+                    "top":"296",
                     "width":"552"
                 },
-                "text":"Label"
+                "text":""
             },
             "name":"label_beforeFileAdded",
             "typeName":"bootstrapcomponents-label",
@@ -192,17 +242,55 @@
             "uuid":"7096493D-D90D-4D52-8893-A766EE0B3779"
         },
         {
-            "cssPosition":"170,-1,-1,679,203,30",
+            "cssPosition":"497,-1,-1,614,62,30",
             "json":{
                 "cssPosition":{
                     "bottom":"-1",
                     "height":"30",
-                    "left":"679",
+                    "left":"614",
                     "right":"-1",
-                    "top":"170",
-                    "width":"203"
+                    "top":"497",
+                    "width":"62"
                 },
-                "text":"Button"
+                "text":"File id:"
+            },
+            "name":"label_2",
+            "typeName":"bootstrapcomponents-label",
+            "typeid":47,
+            "uuid":"7253D738-9F9B-4A15-A39E-711E7B7579FB"
+        },
+        {
+            "cssPosition":"767,-1,-1,44,552,75",
+            "json":{
+                "cssPosition":{
+                    "bottom":"-1",
+                    "height":"75",
+                    "left":"44",
+                    "right":"-1",
+                    "top":"767",
+                    "width":"552"
+                },
+                "text":""
+            },
+            "name":"label_apiMethods",
+            "typeName":"bootstrapcomponents-label",
+            "typeid":47,
+            "uuid":"7EAE2116-F335-44DF-B017-43978A861C32"
+        },
+        {
+            "cssPosition":"139,-1,-1,634,246,30",
+            "json":{
+                "cssPosition":{
+                    "bottom":"-1",
+                    "height":"30",
+                    "left":"634",
+                    "right":"-1",
+                    "top":"139",
+                    "width":"246"
+                },
+                "onActionMethodID":"7A7A3C1F-AE04-4EE4-90CC-5367255164A0",
+                "text":"Close Model",
+                "variant":"BtnPrimary"
             },
             "name":"button_2ccc",
             "typeName":"bootstrapcomponents-button",
@@ -210,17 +298,19 @@
             "uuid":"947C4632-FB4B-4F46-8CF3-B76FE02D28AB"
         },
         {
-            "cssPosition":"415,-1,-1,679,203,30",
+            "cssPosition":"336,-1,-1,634,246,30",
             "json":{
                 "cssPosition":{
                     "bottom":"-1",
                     "height":"30",
-                    "left":"679",
+                    "left":"634",
                     "right":"-1",
-                    "top":"415",
-                    "width":"203"
+                    "top":"336",
+                    "width":"246"
                 },
-                "text":"Button"
+                "onActionMethodID":"DD5B3AB6-EE9C-4029-B6CA-C041097A4FF8",
+                "text":"Info",
+                "variant":"BtnPrimary"
             },
             "name":"button_2ccccccc",
             "typeName":"bootstrapcomponents-button",
@@ -228,17 +318,37 @@
             "uuid":"A19671DB-E91E-4B20-BAAB-A238E255E2AA"
         },
         {
-            "cssPosition":"121,-1,-1,679,203,30",
+            "cssPosition":"497,-1,-1,680,430,30",
             "json":{
                 "cssPosition":{
                     "bottom":"-1",
                     "height":"30",
-                    "left":"679",
+                    "left":"680",
                     "right":"-1",
-                    "top":"121",
-                    "width":"203"
+                    "top":"497",
+                    "width":"430"
                 },
-                "text":"Button"
+                "dataProviderID":"fileId"
+            },
+            "name":"textbox_3",
+            "typeName":"bootstrapcomponents-textbox",
+            "typeid":47,
+            "uuid":"AEC110A7-CE40-4259-905C-7AF7489D1DAE"
+        },
+        {
+            "cssPosition":"100,-1,-1,634,246,30",
+            "json":{
+                "cssPosition":{
+                    "bottom":"-1",
+                    "height":"30",
+                    "left":"634",
+                    "right":"-1",
+                    "top":"100",
+                    "width":"246"
+                },
+                "onActionMethodID":"B0202300-DD6F-46DD-B426-42216B199BBB",
+                "text":"Open Model",
+                "variant":"BtnPrimary"
             },
             "name":"button_2cc",
             "typeName":"bootstrapcomponents-button",
@@ -246,18 +356,19 @@
             "uuid":"B2B1AE30-BA90-459D-BBA5-9798CAD7D686"
         },
         {
-            "cssPosition":"23,-1,-1,679,203,30",
+            "cssPosition":"24,-1,-1,634,246,30",
             "json":{
                 "cssPosition":{
                     "bottom":"-1",
                     "height":"30",
-                    "left":"679",
+                    "left":"634",
                     "right":"-1",
-                    "top":"23",
-                    "width":"203"
+                    "top":"24",
+                    "width":"246"
                 },
                 "onActionMethodID":"0FCA8AC2-6745-48BB-B68E-B0D532EE4F77",
-                "text":"Reset"
+                "text":"Reset",
+                "variant":"BtnPrimary"
             },
             "name":"button_2",
             "typeName":"bootstrapcomponents-button",
@@ -307,18 +418,38 @@
                     "top":"532",
                     "width":"552"
                 },
-                "text":"Label"
+                "text":""
             },
             "name":"label_modelOpenClose",
             "typeName":"bootstrapcomponents-label",
             "typeid":47,
             "uuid":"E4F63C72-18E0-46C0-BD73-50BA0945E65D"
+        },
+        {
+            "cssPosition":"413,-1,-1,634,246,30",
+            "json":{
+                "cssPosition":{
+                    "bottom":"-1",
+                    "height":"30",
+                    "left":"634",
+                    "right":"-1",
+                    "top":"413",
+                    "width":"246"
+                },
+                "onActionMethodID":"AC5DB16E-49E8-4DCA-99A7-D4368C125811",
+                "text":"Get File",
+                "variant":"BtnPrimary"
+            },
+            "name":"button_2cccccccccc",
+            "typeName":"bootstrapcomponents-button",
+            "typeid":47,
+            "uuid":"F46A5B80-544D-4586-9B9C-E95958638DD3"
         }
     ],
     "name":"multifileuploadForm",
     "navigatorID":"-1",
     "showInMenu":true,
-    "size":"1000,1000",
+    "size":"1200,1000",
     "typeid":3,
     "uuid":"DD1C6048-D081-469E-87CE-D8EC91AC54D4"
 }
