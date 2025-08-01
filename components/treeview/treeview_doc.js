@@ -175,6 +175,17 @@ function getSelectedNode() {
 }
 
 /**
+ * Get selected node id.
+ *
+ * @example
+ * var selection = %%elementName%%.getSeletedNode()
+ * @deprecated
+ * @return {Object} Returns the selected node object, including its `id` and any other relevant properties.
+ */
+function getSeletedNode() {
+}
+
+/**
  * Get child nodes ids of a parent node.
  *
  * @example

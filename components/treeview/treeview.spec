@@ -189,6 +189,10 @@
      	"getSelectedNode": {
       		"returns": "object"
       	},
+      	"getSeletedNode": {
+      		"returns": "object",
+			"deprecated": "Should use getSelectedNode instead."
+      	},
       	
      	"getChildNodes": {
       		"parameters":[

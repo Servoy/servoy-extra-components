@@ -432,6 +432,24 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       		}
       		return null;
       	}
+      	
+      	/**
+      	 * Get selected node id.
+      	 *
+      	 * @example
+      	 * var selection = %%elementName%%.getSeletedNode()
+      	 * @deprecated
+      	 * @return {Object}
+      	 */
+      	$scope.api.getSeletedNode = function() {
+      		if(theTree) {
+	  			var nodes = theTree.getSelectedNodes();
+	  			if(nodes && nodes.length && nodes.length > 0) {
+	  				return nodes[0].key;
+	  			}
+      		}
+      		return null;
+      	}
 
       	/**
       	 * Get child nodes ids of a parent node.

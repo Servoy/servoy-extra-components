@@ -467,6 +467,28 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         }
         return selectedNodeId;
     }
+	
+	/**
+	 * Get selected node id.
+	 *
+	 * @example
+	 * var selection = %%elementName%%.getSeletedNode()
+	 * @deprecated
+	 * @return selected node
+	 */
+	getSeletedNode() {
+	    let selectedNodeId = null;
+	    if (this.isTreeReady) {
+	        const displayData = this.angularGrid.store.getDisplayData();
+	        displayData.forEach(data => {
+	            if (data.row_selected) {
+	                selectedNodeId = data.id;
+	                return;
+	            }
+	        });
+	    }
+	    return selectedNodeId;
+	}
 
     /**
      * Get child nodes ids of a parent node.
