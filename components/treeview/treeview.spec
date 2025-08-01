@@ -186,7 +186,7 @@
       	
       	},
       	
-     	"getSeletedNode": {
+     	"getSelectedNode": {
       		"returns": "object"
       	},
       	

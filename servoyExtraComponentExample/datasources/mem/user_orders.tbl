@@ -1,0 +1,31 @@
+{
+    "columns":{
+        "columns":[
+            {
+                "allowNull":false,
+                "creationOrderIndex":-1,
+                "dataType":4,
+                "flags":1,
+                "name":"order_id"
+            },
+            {
+                "allowNull":true,
+                "creationOrderIndex":-1,
+                "dataType":12,
+                "length":50,
+                "name":"description"
+            },
+            {
+                "allowNull":true,
+                "creationOrderIndex":-1,
+                "dataType":4,
+                "name":"user_id"
+            }
+        ],
+        "name":"user_orders",
+        "tableType":0
+    },
+    "dataSource":"mem:user_orders",
+    "typeid":39,
+    "uuid":"9C9B4F20-4F37-4703-99EA-85A327A5E982"
+}

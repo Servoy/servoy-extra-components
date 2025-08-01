@@ -20,7 +20,7 @@
                 "text":"Create card",
                 "variant":"BtnPrimary"
             },
-            "name":"button_3c",
+            "name":"button_createCard",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"017D7E49-7FA6-4716-BA7B-2237D4CBDC23"
@@ -36,7 +36,7 @@
                     "top":"72",
                     "width":"388"
                 },
-                "text":"Label"
+                "text":""
             },
             "name":"label_collapsible",
             "typeName":"bootstrapcomponents-label",
@@ -58,7 +58,7 @@
                 "text":"Get card",
                 "variant":"BtnPrimary"
             },
-            "name":"button_3cc",
+            "name":"button_getCard",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"1B13E7D9-DD06-43B8-9386-86D85509D5FA"
@@ -74,7 +74,7 @@
                     "top":"123",
                     "width":"388"
                 },
-                "text":"Label"
+                "text":""
             },
             "name":"label_header",
             "typeName":"bootstrapcomponents-label",
@@ -387,7 +387,7 @@
                     "top":"23",
                     "width":"388"
                 },
-                "text":"Label"
+                "text":""
             },
             "name":"label_cardClicked",
             "typeName":"bootstrapcomponents-label",

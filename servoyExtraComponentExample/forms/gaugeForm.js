@@ -12,3 +12,19 @@ var linearGaugeValue = null;
  */
 var radialGaugeValue = null;
 
+
+/**
+ * Called when the dataProvider value changed.
+ *
+ * @param oldValue
+ * @param newValue
+ * @param {JSEvent} event
+ *
+ * @return {Boolean}
+ *
+ * @properties={typeid:24,uuid:"1DB8A7FB-1253-484A-AFED-418391B90098"}
+ */
+function onDataChange(oldValue, newValue, event) {
+	// TODO Auto-generated method stub
+	return true;
+}

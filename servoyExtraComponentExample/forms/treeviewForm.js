@@ -296,7 +296,7 @@ function onFilterNodes(event) {
  * @properties={typeid:24,uuid:"84545B91-5F2A-4AAD-870D-69BD8C314592"}
  */
 function onGetSelectedNodes(event) {
-	fv_node_selection = elements.treeview_1.getSeletedNode();
+	fv_node_selection = elements.treeview_1.getSelectedNode();
 }
 
 /**

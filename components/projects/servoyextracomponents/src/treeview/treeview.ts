@@ -450,11 +450,11 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
      * Get selected node id.
      *
      * @example
-     * var selection = %%elementName%%.getSeletedNode()
+     * var selection = %%elementName%%.getSelectedNode()
      *
      * @return selected node
      */
-    getSeletedNode() {
+    getSelectedNode() {
         let selectedNodeId = null;
         if (this.isTreeReady) {
             const displayData = this.angularGrid.store.getDisplayData();

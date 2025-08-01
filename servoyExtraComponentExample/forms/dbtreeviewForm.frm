@@ -6,16 +6,37 @@
     "encapsulation":108,
     "items":[
         {
-            "cssPosition":"28,-1,-1,36,559,173",
+            "cssPosition":"412,-1,-1,36,559,30",
             "json":{
                 "cssPosition":{
                     "bottom":"-1",
-                    "height":"173",
+                    "height":"30",
+                    "left":"36",
+                    "right":"-1",
+                    "top":"412",
+                    "width":"559"
+                },
+                "text":"Label"
+            },
+            "name":"label_2",
+            "typeName":"bootstrapcomponents-label",
+            "typeid":47,
+            "uuid":"01020827-CF3F-409E-B8B0-CC02758261E8"
+        },
+        {
+            "cssPosition":"28,-1,-1,36,559,349",
+            "json":{
+                "cssPosition":{
+                    "bottom":"-1",
+                    "height":"349",
                     "left":"36",
                     "right":"-1",
                     "top":"28",
                     "width":"559"
-                }
+                },
+                "onDrop":"08E22F76-F260-43DE-A471-BCFB9D430649",
+                "onReady":"D84D3CB1-ED0A-4681-B181-8D96373CBD70",
+                "onRowDrop":"BE932C45-4C99-4B8E-916F-F9B6EC8A8B61"
             },
             "name":"dbtreeview_1",
             "typeName":"servoyextra-dbtreeview",
@@ -23,7 +44,7 @@
             "uuid":"8F9E4162-8733-4C01-8691-BC47E0640A64"
         },
         {
-            "height":480,
+            "height":1000,
             "partType":5,
             "typeid":19,
             "uuid":"E5CA444F-8767-4011-B237-9026C0765462"
@@ -33,6 +54,7 @@
     "navigatorID":"-1",
     "onShowMethodID":"A485C631-B49C-4F19-A0CC-6ED0DDF437D4",
     "showInMenu":true,
+    "size":"1000,1000",
     "typeid":3,
     "uuid":"E7EB0835-130C-4315-A0F0-EA9294D4A31C"
 }

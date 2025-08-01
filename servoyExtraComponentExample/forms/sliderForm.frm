@@ -12,7 +12,7 @@
             "uuid":"0EC86A44-0CB3-47F1-8A9D-D3F2D33E5EC9"
         },
         {
-            "cssPosition":"42,-1,-1,155,498,70",
+            "cssPosition":"20,-1,-1,155,498,70",
             "json":{
                 "ceil":100,
                 "cssPosition":{
@@ -20,7 +20,7 @@
                     "height":"70",
                     "left":"155",
                     "right":"-1",
-                    "top":"42",
+                    "top":"20",
                     "width":"498"
                 },
                 "dataProvider":"sliderDP",

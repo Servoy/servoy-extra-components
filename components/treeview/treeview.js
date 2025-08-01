@@ -419,11 +419,11 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       	 * Get selected node id.
       	 *
       	 * @example
-      	 * var selection = %%elementName%%.getSeletedNode()
+      	 * var selection = %%elementName%%.getSelectedNode()
       	 *
       	 * @return {Object}
       	 */
-      	$scope.api.getSeletedNode = function() {
+      	$scope.api.getSelectedNode = function() {
       		if(theTree) {
 	  			var nodes = theTree.getSelectedNodes();
 	  			if(nodes && nodes.length && nodes.length > 0) {

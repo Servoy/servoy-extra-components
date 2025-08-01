@@ -6,14 +6,14 @@
     "encapsulation":108,
     "items":[
         {
-            "cssPosition":"12,-1,-1,311,192,30",
+            "cssPosition":"337,-1,-1,33,192,30",
             "json":{
                 "cssPosition":{
                     "bottom":"-1",
                     "height":"30",
-                    "left":"311",
+                    "left":"33",
                     "right":"-1",
-                    "top":"12",
+                    "top":"337",
                     "width":"192"
                 },
                 "styleClass":"default-align label-blue-gradient",
@@ -26,7 +26,46 @@
             "uuid":"1F38A8FF-05E2-4193-8C1F-67DC5E09083B"
         },
         {
-            "cssPosition":"42,-1,-1,311,192,115",
+            "cssPosition":"507,-1,-1,10,446,70",
+            "json":{
+                "ceil":100,
+                "cssPosition":{
+                    "bottom":"-1",
+                    "height":"70",
+                    "left":"10",
+                    "right":"-1",
+                    "top":"507",
+                    "width":"446"
+                },
+                "dataProvider":"linearGaugeValue",
+                "onDataChangeMethodID":"1DB8A7FB-1253-484A-AFED-418391B90098"
+            },
+            "name":"slider_3",
+            "typeName":"servoyextra-slider",
+            "typeid":47,
+            "uuid":"2E996A3F-2E8B-4BAA-B54A-AF4147A432C5"
+        },
+        {
+            "cssPosition":"181,-1,-1,10,446,70",
+            "json":{
+                "ceil":100,
+                "cssPosition":{
+                    "bottom":"-1",
+                    "height":"70",
+                    "left":"10",
+                    "right":"-1",
+                    "top":"181",
+                    "width":"446"
+                },
+                "dataProvider":"radialGaugeValue"
+            },
+            "name":"slider_1",
+            "typeName":"servoyextra-slider",
+            "typeid":47,
+            "uuid":"40369C2C-360B-4B87-8D5F-866138A2A2EC"
+        },
+        {
+            "cssPosition":"367,-1,-1,33,192,115",
             "json":{
                 "animationOptions":{
                     "svyUUID":"3344E8BE-ED67-4B6D-8FDA-2D6E2E39EFD9"
@@ -40,9 +79,9 @@
                 "cssPosition":{
                     "bottom":"-1",
                     "height":"115",
-                    "left":"311",
+                    "left":"33",
                     "right":"-1",
-                    "top":"42",
+                    "top":"367",
                     "width":"192"
                 },
                 "gaugeType":"linear",
@@ -57,7 +96,7 @@
             "uuid":"45E5ABE8-8EA4-46A2-8FA1-F3A227B717B2"
         },
         {
-            "height":577,
+            "height":1000,
             "partType":5,
             "typeid":19,
             "uuid":"5CCB94F6-0F83-467F-825E-3BC60780B434"
@@ -85,15 +124,6 @@
         {
             "cssPosition":"42,-1,-1,33,192,115",
             "json":{
-                "animationOptions":{
-                    "svyUUID":"70B88F1B-D889-4B26-95ED-776619D6C832"
-                },
-                "borderOptions":{
-                    "svyUUID":"BEF2A9C7-4F84-4AAB-9580-A12F9A4F9250"
-                },
-                "colorOptions":{
-                    "svyUUID":"E0389479-7A42-4FFA-923E-F609E3CF35CE"
-                },
                 "cssPosition":{
                     "bottom":"-1",
                     "height":"115",
@@ -102,14 +132,8 @@
                     "top":"42",
                     "width":"192"
                 },
-                "fontOptions":{
-                    "svyUUID":"5E90BB3F-921D-447A-863C-824793EB1176"
-                },
-                "ticks":{
-                    "svyUUID":"BF42AFD3-E585-431B-9B7C-40CD9B856D54"
-                },
-                "title":{
-                    "svyUUID":"0542F017-68A8-485B-B226-66FF5EFCDDDC"
+                "needleOptions":{
+                    "svyUUID":"8E83488B-6CD8-45CC-82E3-1418657B6049"
                 },
                 "value":"radialGaugeValue"
             },
@@ -122,7 +146,7 @@
     "name":"gaugeForm",
     "navigatorID":"-1",
     "showInMenu":true,
-    "size":"731,480",
+    "size":"1000,1000",
     "typeid":3,
     "uuid":"DB64874C-5AF4-4623-8947-CB07356FF635"
 }

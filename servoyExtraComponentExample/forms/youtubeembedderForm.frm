@@ -1,38 +1,38 @@
 {
-"customProperties":{
-"formComponent":false,
-"useCssPosition":true
-},
-"encapsulation":108,
-"items":[
-{
-"height":480,
-"partType":5,
-"typeid":19,
-"uuid":"2A53F519-0568-475F-A789-B3DF6121512D"
-},
-{
-"cssPosition":"33,-1,-1,103,426,240",
-"json":{
-"cssPosition":{
-"bottom":"-1",
-"height":"240",
-"left":"103",
-"right":"-1",
-"top":"33",
-"width":"426"
-},
-"embeddedVideoURL":"https://youtu.be/2xYLTfDQJLw"
-},
-"name":"embeddedyoutube_10",
-"typeName":"servoyextra-youtubevideoembedder",
-"typeid":47,
-"uuid":"AC33AB66-912D-4C64-9F3B-EBD57DDC8439"
-}
-],
-"name":"youtubeembedderForm",
-"navigatorID":"-1",
-"showInMenu":true,
-"typeid":3,
-"uuid":"F8F6B7B8-4711-46E6-9381-AB4552518A71"
+    "customProperties":{
+        "formComponent":false,
+        "useCssPosition":true
+    },
+    "encapsulation":108,
+    "items":[
+        {
+            "height":480,
+            "partType":5,
+            "typeid":19,
+            "uuid":"2A53F519-0568-475F-A789-B3DF6121512D"
+        },
+        {
+            "cssPosition":"33,-1,-1,103,426,240",
+            "json":{
+                "cssPosition":{
+                    "bottom":"-1",
+                    "height":"240",
+                    "left":"103",
+                    "right":"-1",
+                    "top":"33",
+                    "width":"426"
+                },
+                "embeddedVideoURL":"https://www.youtube.com/embed/Ic3n5o7PLD0?si=mz26zqG1mEM1xdSk"
+            },
+            "name":"embeddedyoutube_10",
+            "typeName":"servoyextra-youtubevideoembedder",
+            "typeid":47,
+            "uuid":"AC33AB66-912D-4C64-9F3B-EBD57DDC8439"
+        }
+    ],
+    "name":"youtubeembedderForm",
+    "navigatorID":"-1",
+    "showInMenu":true,
+    "typeid":3,
+    "uuid":"F8F6B7B8-4711-46E6-9381-AB4552518A71"
 }

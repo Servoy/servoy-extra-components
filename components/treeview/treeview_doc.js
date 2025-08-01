@@ -167,11 +167,11 @@ function scrollToNode(nodeId) {
  * Get selected node id.
  *
  * @example
- * var selection = %%elementName%%.getSeletedNode()
+ * var selection = %%elementName%%.getSelectedNode()
  *
  * @return {Object} Returns the selected node object, including its `id` and any other relevant properties.
  */
-function getSeletedNode() {
+function getSelectedNode() {
 }
 
 /**
