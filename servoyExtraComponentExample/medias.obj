@@ -1,72 +1,79 @@
 [
 {
-"encapsulation":0,
-"mimeType":"text/css",
-"name":"custom_servoy_theme_properties.less",
-"typeid":37,
-"uuid":"3E02D832-7853-4B60-BA87-384E175BF2BC"
+    "encapsulation":0,
+    "mimeType":"text/css",
+    "name":"custom_servoy_theme_properties.less",
+    "typeid":37,
+    "uuid":"3E02D832-7853-4B60-BA87-384E175BF2BC"
 },
 {
-"encapsulation":0,
-"mimeType":"image/png",
-"name":"group.png",
-"typeid":37,
-"uuid":"3D47FB17-68D6-4A82-B558-6143AADC89F1"
+    "encapsulation":0,
+    "mimeType":"image/png",
+    "name":"group.png",
+    "typeid":37,
+    "uuid":"3D47FB17-68D6-4A82-B558-6143AADC89F1"
 },
 {
-"encapsulation":0,
-"mimeType":"image/jpeg",
-"name":"i98rzu.jpg",
-"typeid":37,
-"uuid":"6AB29C1B-D9BB-40AB-92B9-E0B682D51A2B"
+    "encapsulation":0,
+    "mimeType":"image/jpeg",
+    "name":"i98rzu.jpg",
+    "typeid":37,
+    "uuid":"6AB29C1B-D9BB-40AB-92B9-E0B682D51A2B"
 },
 {
-"encapsulation":0,
-"mimeType":"text/css",
-"name":"manifest.json",
-"typeid":37,
-"uuid":"81506222-6584-4F7B-83E3-7E216091DBB0"
+    "encapsulation":0,
+    "mimeType":"text/css",
+    "name":"manifest.json",
+    "typeid":37,
+    "uuid":"81506222-6584-4F7B-83E3-7E216091DBB0"
 },
 {
-"encapsulation":0,
-"mimeType":"image/png",
-"name":"Servoy.png",
-"typeid":37,
-"uuid":"C29D9675-ED97-4D2C-B139-07A92068362B"
+    "encapsulation":0,
+    "mimeType":"image/png",
+    "name":"Servoy.png",
+    "typeid":37,
+    "uuid":"C29D9675-ED97-4D2C-B139-07A92068362B"
 },
 {
-"encapsulation":0,
-"mimeType":"text/css",
-"name":"servoyExtraComponentExample.less",
-"typeid":37,
-"uuid":"75C9F3BA-1704-43BC-B966-ABFB4CAFA243"
+    "encapsulation":0,
+    "mimeType":"text/css",
+    "name":"servoyExtraComponentExample.less",
+    "typeid":37,
+    "uuid":"75C9F3BA-1704-43BC-B966-ABFB4CAFA243"
 },
 {
-"encapsulation":0,
-"mimeType":"image/jpeg",
-"name":"SP241Z.jpg",
-"typeid":37,
-"uuid":"B4C5E9B5-D750-482F-AA33-EE336920EDCC"
+    "encapsulation":0,
+    "mimeType":"image/jpeg",
+    "name":"SP241Z.jpg",
+    "typeid":37,
+    "uuid":"B4C5E9B5-D750-482F-AA33-EE336920EDCC"
 },
 {
-"encapsulation":0,
-"mimeType":"image/png",
-"name":"user.png",
-"typeid":37,
-"uuid":"E209DF72-943C-443D-8C10-8887E36BFEA7"
+    "encapsulation":0,
+    "mimeType":"image/png",
+    "name":"user.png",
+    "typeid":37,
+    "uuid":"E209DF72-943C-443D-8C10-8887E36BFEA7"
 },
 {
-"encapsulation":0,
-"mimeType":"text/css",
-"name":"variants.json",
-"typeid":37,
-"uuid":"4E90AEA4-D1B2-4D88-A9AF-5B54744CB55D"
+    "encapsulation":0,
+    "mimeType":"text/css",
+    "name":"variants.json",
+    "typeid":37,
+    "uuid":"4E90AEA4-D1B2-4D88-A9AF-5B54744CB55D"
 },
 {
-"encapsulation":0,
-"mimeType":"text/css",
-"name":"webapp144.png",
-"typeid":37,
-"uuid":"B4ACBBE0-5FF6-4F22-9F8A-11A93B6AB1AD"
+    "encapsulation":0,
+    "mimeType":"image/jpeg",
+    "name":"wallpaperPortrait.jpg",
+    "typeid":37,
+    "uuid":"CF56545E-FA88-49B3-BC83-C0752B3BE6EB"
+},
+{
+    "encapsulation":0,
+    "mimeType":"text/css",
+    "name":"webapp144.png",
+    "typeid":37,
+    "uuid":"B4ACBBE0-5FF6-4F22-9F8A-11A93B6AB1AD"
 }
 ]
