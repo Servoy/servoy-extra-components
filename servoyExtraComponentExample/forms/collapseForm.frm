@@ -96,7 +96,7 @@
                 "text":"Get collapsible by ID",
                 "variant":"BtnPrimary"
             },
-            "name":"button_3cccccc",
+            "name":"button_getCollapsibleByID",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"2373CE1B-E182-4241-8FD4-62C38CC7EEBE"
@@ -116,7 +116,7 @@
                 "text":"Toggle",
                 "variant":"BtnPrimary"
             },
-            "name":"button_3ccccccccccc",
+            "name":"button_toggle",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"2A2A3F7D-C339-4BB1-BF34-3D7FB82503F8"
@@ -142,7 +142,7 @@
                 "text":"Is collapsed",
                 "variant":"BtnPrimary"
             },
-            "name":"button_3ccccccccc",
+            "name":"button_isCollapsible",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"6D2E8920-5534-4D7D-A7B4-75A9054AB8A1"
@@ -162,7 +162,7 @@
                 "text":"Remove collapsible by ID",
                 "variant":"BtnPrimary"
             },
-            "name":"button_3ccccccc",
+            "name":"button_removeCollapsibleByID",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"8152EC93-8F27-403B-BFDF-5488864641DA"
@@ -182,7 +182,7 @@
                 "text":"Add collapsible",
                 "variant":"BtnPrimary"
             },
-            "name":"button_3cccc",
+            "name":"button_addCollapsible",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"A8DAE730-1C55-4623-892B-0A84263FD871"
@@ -202,7 +202,7 @@
                 "text":"Set collapsibles",
                 "variant":"BtnPrimary"
             },
-            "name":"button_3cccccccccc",
+            "name":"button_setCollapsible",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"ABDDEBE3-9A7F-466F-BE5C-BBF79F9CBB43"
@@ -222,7 +222,7 @@
                 "text":"Remove all collapsibles",
                 "variant":"BtnPrimary"
             },
-            "name":"button_3cccccccc",
+            "name":"button_removeAllCollapsibles",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"B39C820A-B1D0-4141-9BE6-C346B6769DD6"
@@ -242,7 +242,7 @@
                 "text":"Get card by ID ",
                 "variant":"BtnPrimary"
             },
-            "name":"button_3ccc",
+            "name":"button_getCardByID",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"B93E953F-4493-416F-95CC-A560A3ED3B0F"
@@ -331,7 +331,7 @@
                 "text":"Get collapsible",
                 "variant":"BtnPrimary"
             },
-            "name":"button_3ccccc",
+            "name":"button_getCollapsible",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"D0B4052F-E71C-4366-8D7D-617C49CF24F0"
@@ -351,7 +351,7 @@
                 "text":"Hide",
                 "variant":"BtnPrimary"
             },
-            "name":"button_3ccccccccccccc",
+            "name":"button_hide",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"E5E6640C-898B-4AEF-B46F-FCF85702AC99"
@@ -371,7 +371,7 @@
                 "text":"Show",
                 "variant":"BtnPrimary"
             },
-            "name":"button_3cccccccccccc",
+            "name":"button_show",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"E61A94E6-B74D-4AB2-BD80-E7FF2B58E179"
