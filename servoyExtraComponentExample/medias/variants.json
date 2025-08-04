@@ -44,6 +44,11 @@
         "displayName": "Gradient Text with Sunlight",
         "classes": [ "gradient-text-sunlight"]   
     },
+    "LabelBackground": {
+    	"category": "label", 
+        "displayName": "Label with Background",
+        "classes": [ "label-with-background"]   
+    },
     "TxtPrimaryLarge": {
         "category": "label", 
         "displayName": "Primary Large",

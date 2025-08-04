@@ -513,3 +513,61 @@ function onGetSize1(event) {
 	elements.label_customselection.text = 'size is: height: ' + size.height + ' width:' + size.width;
 }
 
+/**
+ * Fired when the button is clicked.
+ *
+ * @param {JSEvent} event
+ *
+ * @properties={typeid:24,uuid:"8D4D042D-2F61-4EB6-A84F-DC3D3F2DD45F"}
+ */
+function onSetSubMenuItems1(event) {
+	var menuItem1 = {
+		id: 1,
+		text: "Dashboard",
+		styleClass: "nav-large nav-primary", // Optional CSS classes
+		iconStyleClass: "glyphicon glyphicon-home", // Optional icon
+		data: {
+			description: "Go to Dashboard"
+		}
+	};
+	var menuItem2 = {
+		id: 1,
+		text: "Dashboard2",
+		styleClass: "nav-large nav-primary", // Optional CSS classes
+		iconStyleClass: "glyphicon glyphicon-home", // Optional icon
+		data: {
+			description: "Go to Dashboard2"
+		}
+	};
+	elements.sidenav_customMenu.setSubMenuItems('menuitem1', [menuItem1,menuItem2]);
+}
+
+/**
+ * Fired when the button is clicked.
+ *
+ * @param {JSEvent} event
+ *
+ * @properties={typeid:24,uuid:"7683EEAF-3DC8-4D5A-8112-6C92CA07A33B"}
+ */
+function onSetSubMenuItems(event) {
+
+	var menuItem1 = {
+		id: 1,
+		text: "Dashboard",
+		styleClass: "nav-large nav-primary", // Optional CSS classes
+		iconStyleClass: "glyphicon glyphicon-home", // Optional icon
+		data: {
+			description: "Go to Dashboard"
+		}
+	};
+	var menuItem2 = {
+		id: 2,
+		text: "Dashboard2",
+		styleClass: "nav-large nav-primary", // Optional CSS classes
+		iconStyleClass: "glyphicon glyphicon-home", // Optional icon
+		data: {
+			description: "Go to Dashboard2"
+		}
+	};
+	elements.sidenav_servoyMenu.setSubMenuItems('normalmenuitem1', [menuItem1,menuItem2]);
+}

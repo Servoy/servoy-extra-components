@@ -21,7 +21,7 @@
                 "text":"Request focus false",
                 "variant":"BtnPrimary"
             },
-            "name":"button_6",
+            "name":"button_requestFocusFalse",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"00D63A24-E368-4957-A53E-E6DBDE5EB306"
@@ -47,7 +47,7 @@
                 "text":"Remove column",
                 "variant":"BtnPrimary"
             },
-            "name":"button_4cccccc",
+            "name":"button_removeColumn",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"243F45F7-7278-4864-9072-57FE842F83F3"
@@ -67,7 +67,7 @@
                 "text":"Get view port position",
                 "variant":"BtnPrimary"
             },
-            "name":"button_4c",
+            "name":"button_getViewPortPosition",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"2C51232D-B0BF-43CC-AAE8-948C8FA01F96"
@@ -87,7 +87,7 @@
                 "text":"Requst focus true",
                 "variant":"BtnPrimary"
             },
-            "name":"button_6c",
+            "name":"button_requestFocusTrue",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"31DFA0CD-1D40-489A-AF6E-9DBA06109083"
@@ -121,7 +121,7 @@
                     "top":"421",
                     "width":"365"
                 },
-                "text":"Label"
+                "variant":"LabelBackground"
             },
             "name":"label_focus",
             "typeName":"bootstrapcomponents-label",
@@ -143,7 +143,7 @@
                 "text":"Set selected header",
                 "variant":"BtnPrimary"
             },
-            "name":"button_4",
+            "name":"button_setSelectedHeader",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"9767B67E-6349-4739-AF6B-6ED646CC5D34"
@@ -163,7 +163,7 @@
                 "text":"New column",
                 "variant":"BtnPrimary"
             },
-            "name":"button_4ccccc",
+            "name":"button_newColumn",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"982A0D81-E78D-4536-B189-1D61C6033F26"
@@ -184,7 +184,7 @@
                 "variant":"BtnPrimary",
                 "visible":true
             },
-            "name":"button_5",
+            "name":"button_generateRows",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"9C81C87E-3E42-4FCE-9173-AE86A0657D7D"
@@ -204,7 +204,7 @@
                 "text":"Get columns count",
                 "variant":"BtnPrimary"
             },
-            "name":"button_4ccc",
+            "name":"button_getColumnsCount",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"9EF3AEF6-BF95-4A7D-B0F5-6EEE61EAF494"
@@ -220,7 +220,7 @@
                     "top":"373",
                     "width":"365"
                 },
-                "text":"Label"
+                "variant":"LabelBackground"
             },
             "name":"label_actions",
             "typeName":"bootstrapcomponents-label",
@@ -302,7 +302,7 @@
                 "text":"Get sort class",
                 "variant":"BtnPrimary"
             },
-            "name":"button_4cc",
+            "name":"button_getSortClass",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"BC37E403-0A41-44E0-978B-3DFE0FCA71B4"
@@ -318,7 +318,7 @@
                     "top":"469",
                     "width":"365"
                 },
-                "text":"Label"
+                "variant":"LabelBackground"
             },
             "name":"label_header",
             "typeName":"bootstrapcomponents-label",
@@ -336,7 +336,7 @@
                     "top":"517",
                     "width":"365"
                 },
-                "text":"Label"
+                "variant":"LabelBackground"
             },
             "name":"label_viewport",
             "typeName":"bootstrapcomponents-label",
@@ -358,7 +358,7 @@
                 "text":"Get column",
                 "variant":"BtnPrimary"
             },
-            "name":"button_4cccc",
+            "name":"button_getColumn",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"F383B947-B854-45A4-9AA4-C17FBF7E004E"
@@ -378,7 +378,7 @@
                 "text":"Remove all columns",
                 "variant":"BtnPrimary"
             },
-            "name":"button_4ccccccc",
+            "name":"button_removeAllColumns",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"F396E629-F90E-4C5C-BEB3-2E833C1108B5"

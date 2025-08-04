@@ -52,7 +52,7 @@
                     "top":"216",
                     "width":"498"
                 },
-                "text":"Label"
+                "variant":"LabelBackground"
             },
             "name":"label_sliderEnd",
             "typeName":"bootstrapcomponents-label",
@@ -70,7 +70,7 @@
                     "top":"138",
                     "width":"498"
                 },
-                "text":"Label"
+                "variant":"LabelBackground"
             },
             "name":"label_dataChange",
             "typeName":"bootstrapcomponents-label",
@@ -119,7 +119,7 @@
                     "top":"255",
                     "width":"498"
                 },
-                "text":"Label"
+                "variant":"LabelBackground"
             },
             "name":"label_tick",
             "typeName":"bootstrapcomponents-label",
@@ -137,7 +137,7 @@
                     "top":"177",
                     "width":"498"
                 },
-                "text":"Label"
+                "variant":"LabelBackground"
             },
             "name":"label_dataChangeHigh",
             "typeName":"bootstrapcomponents-label",

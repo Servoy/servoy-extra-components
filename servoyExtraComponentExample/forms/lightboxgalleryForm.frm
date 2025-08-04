@@ -1,43 +1,63 @@
 {
-"customProperties":{
-"formComponent":false,
-"useCssPosition":true
-},
-"encapsulation":108,
-"items":[
-{
-"height":480,
-"partType":5,
-"typeid":19,
-"uuid":"EB61DF27-B72A-4D3B-8E8D-50D416ADDE0D"
-},
-{
-"cssPosition":"27,-1,-1,30,580,334",
-"json":{
-"cssPosition":{
-"bottom":"-1",
-"height":"334",
-"left":"30",
-"right":"-1",
-"top":"27",
-"width":"580"
-},
-"imagesDataset":[
-{
-"svyUUID":"898AD1BC-7FF0-40F5-BE74-BA67C6B1ABD2"
-}
-],
-"onHoverButtonClicked":"0B0E8A61-2FC5-4FC4-95F0-C7357C3F927D"
-},
-"name":"lightboxgallery_17",
-"typeName":"servoyextra-lightboxgallery",
-"typeid":47,
-"uuid":"F57011B2-1540-4118-BAEA-A8ED2FA626D8"
-}
-],
-"name":"lightboxgalleryForm",
-"navigatorID":"-1",
-"showInMenu":true,
-"typeid":3,
-"uuid":"13F83776-DCE3-4EC5-A2F5-D70EFEF300E4"
+    "customProperties":{
+        "formComponent":false,
+        "useCssPosition":true
+    },
+    "encapsulation":108,
+    "items":[
+        {
+            "cssPosition":"411,-1,-1,31,579,30",
+            "json":{
+                "cssPosition":{
+                    "bottom":"-1",
+                    "height":"30",
+                    "left":"31",
+                    "right":"-1",
+                    "top":"411",
+                    "width":"579"
+                },
+                "text":"",
+                "variant":"LabelBackground"
+            },
+            "name":"label_1",
+            "typeName":"bootstrapcomponents-label",
+            "typeid":47,
+            "uuid":"A4CF6066-A980-47D1-A4BA-247CC7A71A97"
+        },
+        {
+            "height":1000,
+            "partType":5,
+            "typeid":19,
+            "uuid":"EB61DF27-B72A-4D3B-8E8D-50D416ADDE0D"
+        },
+        {
+            "cssPosition":"27,-1,-1,30,580,334",
+            "json":{
+                "cssPosition":{
+                    "bottom":"-1",
+                    "height":"334",
+                    "left":"30",
+                    "right":"-1",
+                    "top":"27",
+                    "width":"580"
+                },
+                "imagesDataset":[
+                    {
+                        "svyUUID":"898AD1BC-7FF0-40F5-BE74-BA67C6B1ABD2"
+                    }
+                ],
+                "onHoverButtonClicked":"0B0E8A61-2FC5-4FC4-95F0-C7357C3F927D"
+            },
+            "name":"lightboxgallery_17",
+            "typeName":"servoyextra-lightboxgallery",
+            "typeid":47,
+            "uuid":"F57011B2-1540-4118-BAEA-A8ED2FA626D8"
+        }
+    ],
+    "name":"lightboxgalleryForm",
+    "navigatorID":"-1",
+    "showInMenu":true,
+    "size":"640,1000",
+    "typeid":3,
+    "uuid":"13F83776-DCE3-4EC5-A2F5-D70EFEF300E4"
 }

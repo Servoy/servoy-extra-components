@@ -46,7 +46,7 @@
                     "top":"133",
                     "width":"555"
                 },
-                "text":"Label"
+                "variant":"LabelBackground"
             },
             "name":"label_1",
             "typeName":"bootstrapcomponents-label",
@@ -64,7 +64,7 @@
                     "top":"45",
                     "width":"247"
                 },
-                "text":"Label"
+                "variant":"LabelBackground"
             },
             "name":"label_12",
             "typeName":"bootstrapcomponents-label",
@@ -85,7 +85,7 @@
                 "onActionMethodID":"A335B306-6410-4251-9BED-9EA3E884CD55",
                 "text":"Request focus false"
             },
-            "name":"button_3",
+            "name":"button_requestFocusFalse",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"C13BBBBB-02A9-4061-B628-322289A47CCE"
@@ -101,7 +101,7 @@
                     "top":"89",
                     "width":"247"
                 },
-                "text":"Label"
+                "variant":"LabelBackground"
             },
             "name":"label_13",
             "typeName":"bootstrapcomponents-label",
@@ -128,7 +128,7 @@
                 "onActionMethodID":"8E9D5A75-673F-47CE-97FD-B7143F1CA98E",
                 "text":"Request focus true"
             },
-            "name":"button_2",
+            "name":"button_requestFocusTrue",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"EF6CB9F7-2FDE-4B94-82DD-9658BAB85002"

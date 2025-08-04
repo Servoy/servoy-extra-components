@@ -102,7 +102,7 @@
                     "top":"184",
                     "width":"418"
                 },
-                "text":"Label"
+                "variant":"LabelBackground"
             },
             "name":"label_focus",
             "typeName":"bootstrapcomponents-label",
@@ -210,7 +210,8 @@
                     "top":"134",
                     "width":"418"
                 },
-                "text":"Label"
+                "text":"",
+                "variant":"LabelBackground"
             },
             "name":"label_actions",
             "typeName":"bootstrapcomponents-label",

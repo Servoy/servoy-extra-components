@@ -16,7 +16,8 @@
                     "top":"242",
                     "width":"533"
                 },
-                "text":""
+                "text":"",
+                "variant":"LabelBackground"
             },
             "name":"label_11",
             "typeName":"bootstrapcomponents-label",
@@ -58,7 +59,8 @@
                     "top":"272",
                     "width":"533"
                 },
-                "text":""
+                "text":"",
+                "variant":"LabelBackground"
             },
             "name":"label_13",
             "typeName":"bootstrapcomponents-label",

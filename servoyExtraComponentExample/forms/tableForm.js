@@ -202,7 +202,7 @@ function onRequestFocusFalse(event) {
  *
  * @properties={typeid:24,uuid:"75C8AC86-CF98-4935-B667-F79F90112A8B"}
  */
-function onGetColumnCount(event) {
+function onGetColumnsCount(event) {
 	elements.label_actions.text = elements.table_4.getColumnsCount();
 }
 

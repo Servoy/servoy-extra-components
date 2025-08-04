@@ -22,7 +22,7 @@
                 "variant":"BtnPrimary",
                 "visible":true
             },
-            "name":"button_1cccccccc",
+            "name":"button_setDividerLocation",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"0B26466D-8055-4907-B580-C1BDEF977CB6"
@@ -38,7 +38,7 @@
                     "top":"456",
                     "width":"591"
                 },
-                "text":"Label"
+                "variant":"LabelBackground"
             },
             "name":"label_onchange",
             "typeName":"bootstrapcomponents-label",
@@ -61,7 +61,7 @@
                 "variant":"BtnPrimary",
                 "visible":true
             },
-            "name":"button_1ccccc",
+            "name":"button_getResizeWeight",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"11D7C7CD-1771-4611-A2F5-505022AC4CEC"
@@ -82,7 +82,7 @@
                 "variant":"BtnPrimary",
                 "visible":true
             },
-            "name":"button_1cccc",
+            "name":"button_getLeftFormMinSize",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"1EF7D47B-9359-4A38-9C77-822F90C94094"
@@ -103,7 +103,7 @@
                 "variant":"BtnPrimary",
                 "visible":true
             },
-            "name":"button_1cccccc",
+            "name":"button_getRightForm",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"24335A50-0920-414E-935B-24CED65C76B0"
@@ -124,7 +124,7 @@
                 "variant":"BtnPrimary",
                 "visible":true
             },
-            "name":"button_1ccccccccccc",
+            "name":"button_setLeftFormMinSize",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"31C69D34-E302-4C1D-BB60-8B475154DD31"
@@ -145,7 +145,7 @@
                 "variant":"BtnPrimary",
                 "visible":true
             },
-            "name":"button_1ccccccc",
+            "name":"button_getRightFormMinSize",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"5866E702-9B8C-4E82-AD82-8405E1A683B7"
@@ -161,7 +161,7 @@
                     "top":"532",
                     "width":"591"
                 },
-                "text":"Label"
+                "variant":"LabelBackground"
             },
             "name":"label_2",
             "typeName":"bootstrapcomponents-label",
@@ -184,7 +184,7 @@
                 "variant":"BtnPrimary",
                 "visible":true
             },
-            "name":"button_1cccccccccccc",
+            "name":"button_setResizeWeight",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"6D9D234D-AFFF-443E-886C-1DC6697559CF"
@@ -205,7 +205,7 @@
                 "variant":"BtnPrimary",
                 "visible":true
             },
-            "name":"button_1cccccccccccccc",
+            "name":"button_setRightFormMinSize",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"71DE7821-FB86-4743-8459-DC11B9D9DD1E"
@@ -226,7 +226,7 @@
                 "variant":"BtnPrimary",
                 "visible":true
             },
-            "name":"button_1ccccccccc",
+            "name":"button_setDividerSize",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"7E2B513D-5066-4ADB-9A2D-8B04BD129873"
@@ -247,7 +247,7 @@
                 "variant":"BtnPrimary",
                 "visible":true
             },
-            "name":"button_1ccccccccccccc",
+            "name":"button_setRightForm",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"863BD072-AC79-44B0-BA1F-D0DD2E1B4D00"
@@ -300,7 +300,7 @@
                     "top":"494",
                     "width":"591"
                 },
-                "text":"Label"
+                "variant":"LabelBackground"
             },
             "name":"label_1",
             "typeName":"bootstrapcomponents-label",
@@ -323,7 +323,7 @@
                 "variant":"BtnPrimary",
                 "visible":true
             },
-            "name":"button_1ccc",
+            "name":"button_getLeftForm",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"CFA2A22E-79DA-407E-9207-18E0DF98EF83"
@@ -344,7 +344,7 @@
                 "variant":"BtnPrimary",
                 "visible":true
             },
-            "name":"button_1",
+            "name":"button_getDividerLocation",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"D5DEA2BD-F19E-4234-9CA4-F94D12DD3580"
@@ -365,7 +365,7 @@
                 "variant":"BtnPrimary",
                 "visible":true
             },
-            "name":"button_1cccccccccc",
+            "name":"button_setLeftForm",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"E7CD5704-AD22-4AFE-ABBD-EBD9608A5FAF"
@@ -386,7 +386,7 @@
                 "variant":"BtnPrimary",
                 "visible":true
             },
-            "name":"button_1c",
+            "name":"button_getRelativeDividerLocation",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"F56D6B58-995A-487C-845B-E42F78652905"
@@ -425,7 +425,7 @@
                 "variant":"BtnPrimary",
                 "visible":true
             },
-            "name":"button_1cc",
+            "name":"button_getDividerSize",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"F7F8FEF6-B85D-44E9-86FA-D71B7BAA5D77"

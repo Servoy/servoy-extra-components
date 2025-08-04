@@ -16,7 +16,8 @@
                     "top":"398",
                     "width":"559"
                 },
-                "text":"Label"
+                "text":"",
+                "variant":"LabelBackground"
             },
             "name":"label_2",
             "typeName":"bootstrapcomponents-label",
@@ -134,7 +135,8 @@
                     "top":"472",
                     "width":"559"
                 },
-                "text":"Label"
+                "text":"",
+                "variant":"LabelBackground"
             },
             "name":"label_2cc",
             "typeName":"bootstrapcomponents-label",
@@ -352,7 +354,8 @@
                     "top":"435",
                     "width":"559"
                 },
-                "text":"Label"
+                "text":"",
+                "variant":"LabelBackground"
             },
             "name":"label_2c",
             "typeName":"bootstrapcomponents-label",

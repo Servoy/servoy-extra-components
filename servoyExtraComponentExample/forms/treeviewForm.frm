@@ -16,7 +16,8 @@
                     "top":"250",
                     "width":"552"
                 },
-                "text":"%%fv_double_clicked%%"
+                "text":"%%fv_double_clicked%%",
+                "variant":"LabelBackground"
             },
             "name":"label_2",
             "typeName":"bootstrapcomponents-label",
@@ -60,7 +61,8 @@
                     "top":"641",
                     "width":"551"
                 },
-                "text":"Label"
+                "text":"Label",
+                "variant":"LabelBackground"
             },
             "name":"label_12",
             "typeName":"bootstrapcomponents-label",
@@ -138,7 +140,8 @@
                     "top":"280",
                     "width":"552"
                 },
-                "text":"%%fv_right_clicked%%"
+                "text":"%%fv_right_clicked%%",
+                "variant":"LabelBackground"
             },
             "name":"label_3",
             "typeName":"bootstrapcomponents-label",
@@ -156,7 +159,8 @@
                     "top":"220",
                     "width":"552"
                 },
-                "text":"%%fv_node_clicked%%"
+                "text":"%%fv_node_clicked%%",
+                "variant":"LabelBackground"
             },
             "name":"label_1",
             "typeName":"bootstrapcomponents-label",
@@ -195,7 +199,8 @@
                     "width":"551"
                 },
                 "text":"%%fv_node_selection%%\r\
-"
+",
+                "variant":"LabelBackground"
             },
             "name":"label_8",
             "typeName":"bootstrapcomponents-label",
@@ -233,7 +238,8 @@
                     "top":"312",
                     "width":"551"
                 },
-                "text":"%%fv_node_actions%%"
+                "text":"%%fv_node_actions%%",
+                "variant":"LabelBackground"
             },
             "name":"label_7",
             "typeName":"bootstrapcomponents-label",

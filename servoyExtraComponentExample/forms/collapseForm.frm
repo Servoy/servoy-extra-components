@@ -36,7 +36,8 @@
                     "top":"72",
                     "width":"388"
                 },
-                "text":""
+                "text":"",
+                "variant":"LabelBackground"
             },
             "name":"label_collapsible",
             "typeName":"bootstrapcomponents-label",
@@ -74,7 +75,8 @@
                     "top":"123",
                     "width":"388"
                 },
-                "text":""
+                "text":"",
+                "variant":"LabelBackground"
             },
             "name":"label_header",
             "typeName":"bootstrapcomponents-label",
@@ -387,7 +389,8 @@
                     "top":"23",
                     "width":"388"
                 },
-                "text":""
+                "text":"",
+                "variant":"LabelBackground"
             },
             "name":"label_cardClicked",
             "typeName":"bootstrapcomponents-label",

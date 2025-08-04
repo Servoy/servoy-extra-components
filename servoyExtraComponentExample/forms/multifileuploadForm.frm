@@ -20,7 +20,7 @@
                 "text":"Retry Upload",
                 "variant":"BtnPrimary"
             },
-            "name":"button_2cccccccc",
+            "name":"button_retryUpload",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"0064D71B-8B49-42EE-83A0-0931F7817181"
@@ -36,7 +36,8 @@
                     "top":"453",
                     "width":"552"
                 },
-                "text":""
+                "text":"",
+                "variant":"LabelBackground"
             },
             "name":"label_fileUploaded",
             "typeName":"bootstrapcomponents-label",
@@ -58,7 +59,7 @@
                 "text":"Cancel All",
                 "variant":"BtnPrimary"
             },
-            "name":"button_2cccccc",
+            "name":"button_cancelAll",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"07EC48E4-A57C-4365-AAC6-FAEA56239ABD"
@@ -78,7 +79,7 @@
                 "text":"Get Files",
                 "variant":"BtnPrimary"
             },
-            "name":"button_2ccccccccc",
+            "name":"button_getFiles",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"0FC2CE88-B3B3-4F05-878A-AD8E93E92091"
@@ -98,7 +99,7 @@
                 "text":"Retry all",
                 "variant":"BtnPrimary"
             },
-            "name":"button_2ccccc",
+            "name":"button_retryAll",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"2784E52B-4114-4B4D-AA67-D211BFB37DF7"
@@ -118,7 +119,7 @@
                 "text":"Initialize",
                 "variant":"BtnPrimary"
             },
-            "name":"button_2c",
+            "name":"button_initialize",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"35D7CA50-E5CE-450D-A181-5A470AE2B7DB"
@@ -138,7 +139,7 @@
                 "text":"Upload",
                 "variant":"BtnPrimary"
             },
-            "name":"button_2cccc",
+            "name":"button_upload",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"3AF61F36-1389-46F5-A54F-E1CD85983E11"
@@ -154,7 +155,8 @@
                     "top":"375",
                     "width":"552"
                 },
-                "text":""
+                "text":"",
+                "variant":"LabelBackground"
             },
             "name":"label_fileAddedRemoved",
             "typeName":"bootstrapcomponents-label",
@@ -176,7 +178,7 @@
                 "text":"Remove File",
                 "variant":"BtnPrimary"
             },
-            "name":"button_2ccccccccccc",
+            "name":"button_removeFile",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"4104D8C7-433B-4EA8-84DB-07A9F964BDAA"
@@ -192,7 +194,8 @@
                     "top":"689",
                     "width":"552"
                 },
-                "text":""
+                "text":"",
+                "variant":"LabelBackground"
             },
             "name":"label_uploadComplete",
             "typeName":"bootstrapcomponents-label",
@@ -210,7 +213,8 @@
                     "top":"610",
                     "width":"552"
                 },
-                "text":""
+                "text":"",
+                "variant":"LabelBackground"
             },
             "name":"label_restrictionFailed",
             "typeName":"bootstrapcomponents-label",
@@ -234,7 +238,8 @@
                     "top":"296",
                     "width":"552"
                 },
-                "text":""
+                "text":"",
+                "variant":"LabelBackground"
             },
             "name":"label_beforeFileAdded",
             "typeName":"bootstrapcomponents-label",
@@ -270,7 +275,8 @@
                     "top":"767",
                     "width":"552"
                 },
-                "text":""
+                "text":"",
+                "variant":"LabelBackground"
             },
             "name":"label_apiMethods",
             "typeName":"bootstrapcomponents-label",
@@ -292,7 +298,7 @@
                 "text":"Close Model",
                 "variant":"BtnPrimary"
             },
-            "name":"button_2ccc",
+            "name":"button_closeModel",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"947C4632-FB4B-4F46-8CF3-B76FE02D28AB"
@@ -312,7 +318,7 @@
                 "text":"Info",
                 "variant":"BtnPrimary"
             },
-            "name":"button_2ccccccc",
+            "name":"button_info",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"A19671DB-E91E-4B20-BAAB-A238E255E2AA"
@@ -350,7 +356,7 @@
                 "text":"Open Model",
                 "variant":"BtnPrimary"
             },
-            "name":"button_2cc",
+            "name":"button_openModel",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"B2B1AE30-BA90-459D-BBA5-9798CAD7D686"
@@ -370,7 +376,7 @@
                 "text":"Reset",
                 "variant":"BtnPrimary"
             },
-            "name":"button_2",
+            "name":"button_reset",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"CA950FFA-5FF2-4FEC-AF10-6791598AD4C5"
@@ -418,7 +424,8 @@
                     "top":"532",
                     "width":"552"
                 },
-                "text":""
+                "text":"",
+                "variant":"LabelBackground"
             },
             "name":"label_modelOpenClose",
             "typeName":"bootstrapcomponents-label",
@@ -440,7 +447,7 @@
                 "text":"Get File",
                 "variant":"BtnPrimary"
             },
-            "name":"button_2cccccccccc",
+            "name":"button_getFile",
             "typeName":"bootstrapcomponents-button",
             "typeid":47,
             "uuid":"F46A5B80-544D-4586-9B9C-E95958638DD3"

@@ -16,7 +16,7 @@
                     "top":"78",
                     "width":"495"
                 },
-                "text":"Label"
+                "variant":"LabelBackground"
             },
             "name":"label_ondatachange",
             "typeName":"bootstrapcomponents-label",
@@ -53,7 +53,7 @@
                     "top":"33",
                     "width":"495"
                 },
-                "text":"Label"
+                "variant":"LabelBackground"
             },
             "name":"label_focus",
             "typeName":"bootstrapcomponents-label",
