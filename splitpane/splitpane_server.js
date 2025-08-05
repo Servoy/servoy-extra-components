@@ -213,10 +213,7 @@ $scope.setters.setContainsFormId = function(pane, form) {
 		if (pane.containsFormId && !servoyApi.hideForm(pane.containsFormId)) {
 			return false;
 		}
-
-		if (!servoyApi.showForm(form, pane.relationName)) {
-			return false;
-		}
+		servoyApi.showFormDelayed(pane, 'containsFormId', 'relationName');
 	}
 	pane.containsFormId = form;
 }
