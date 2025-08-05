@@ -99,12 +99,19 @@ function onDrop(sourceNodePkPath, targetNodePkPath, indexInParent, event) {
 }
 
 /**
+ * @type {Number}
+ *
+ * @properties={typeid:35,uuid:"EF7B6923-F34C-4D10-BD5C-919425BADB08",variableType:4}
+ */
+var ready = 0;
+/**
  * @param {JSEvent} event
  *
  * @properties={typeid:24,uuid:"D84D3CB1-ED0A-4681-B181-8D96373CBD70"}
  */
 function onReady(event) {
-	elements.label_2.text = 'On ready: ';
+	elements.label_2.text = 'On ready: ' + ready;
+	ready++;
 }
 
 /**
