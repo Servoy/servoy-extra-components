@@ -1034,9 +1034,7 @@ $scope.setters.setContainedForm = function(form) {
 		return false;
 	}
 
-	if (!servoyApi.showForm(form, $scope.model.relationName)) {
-		return false;
-	}
+	servoyApi.showFormDelayed($scope.model, 'containedForm', 'relationName');
 
 	$scope.model.containedForm = form;
 }
