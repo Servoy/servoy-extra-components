@@ -117,7 +117,7 @@ function onGetCard(event) {
  * @properties={typeid:24,uuid:"E5FB0704-1F7C-4B80-8FEF-C916A3BD6C0D"}
  */
 function onGetCardByID(event) {
-	elements.label_cardClicked.text = 'Get card by Id: ' + elements.collapse_7.getCardById('card 1');
+	elements.label_cardClicked.text = 'Get card by Id: ' + elements.collapse_7.getCardById('card 1').cardId;
 
 }
 

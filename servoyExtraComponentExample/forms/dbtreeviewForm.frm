@@ -413,6 +413,7 @@
                     "top":"287",
                     "width":"298"
                 },
+                "onActionMethodID":"ECA9FF94-DBFF-4A29-8CAA-1D90F6F82839",
                 "text":"Set Checkbox Value Dataprovider",
                 "variant":"BtnPrimary"
             },

@@ -190,7 +190,7 @@ function onSetNodeLevelVisible(event) {
  * @properties={typeid:24,uuid:"1B9BEE00-DEB5-47A5-BA76-0ED7D1FCA1A5"}
  */
 function onSetHasCheckBoxDataprovider(event) {
-	elements.dbtreeview_1.setHasCheckBoxDataprovider(memOrderFS.getDataSource(), true);
+	elements.dbtreeview_1.setHasCheckBoxDataprovider(memOrderFS.getDataSource(), 'enabled');
 	// TODO: fix this call
 }
 /**
@@ -445,6 +445,16 @@ function onGetCheckBoxValues(event) {
  */
 function onSetCheckBoxAutoselectsChildren(event) {
 	elements.dbtreeview_1.setHasCheckBoxValue(memOrderFS.getDataSource(), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]);
-
 	elements.dbtreeview_1.setCheckBoxAutoselectsChildren(memOrderFS.getDataSource(), true);
+}
+
+/**
+ * Fired when the button is clicked.
+ *
+ * @param {JSEvent} event
+ *
+ * @properties={typeid:24,uuid:"ECA9FF94-DBFF-4A29-8CAA-1D90F6F82839"}
+ */
+function onSetCheckboxValueDataprovider(event) {
+	elements.dbtreeview_1.setCheckBoxValueDataprovider(memUserFS.getDataSource(), 'enabled');
 }
