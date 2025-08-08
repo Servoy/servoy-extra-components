@@ -1,64 +1,37 @@
+items:[
 {
-    "items":[
-        {
-            "customProperties":{
-                "extraProperties":{
-                    "NG-Grids":{
-                        "agGridMenuItem":"sortAscending"
-                    },
-                    "Navbar":{
-                        "isActive":false
-                    },
-                    "Sidenav":{
-                        "formName":"5EA24B4B-9EDF-425A-892C-2AF28DDE748E",
-                        "isDivider":false
-                    }
-                }
-            },
-            "iconStyleClass":"fa fa-user",
-            "items":[
-                {
-                    "name":"normalmenuitem1",
-                    "text":"Normal menu item 1 text",
-                    "typeid":53,
-                    "uuid":"CD03445A-FDFD-497B-BC9B-5188DCEE3FE0"
-                },
-                {
-                    "name":"normalmenuitem2",
-                    "text":"Normal menu item 2 text",
-                    "typeid":53,
-                    "uuid":"E01ECE65-0810-4F70-86C3-E589D7E57109"
-                }
-            ],
-            "name":"sideNavItem1",
-            "text":"Menu item 1",
-            "toolTipText":"This is the tooltip text for item 1",
-            "typeid":53,
-            "uuid":"4128EB84-C770-40D1-922C-A52EA63FE6D3"
-        },
-        {
-            "customProperties":{
-                "extraProperties":{
-                    "NG-Grids":{
-                        "agGridMenuItem":""
-                    },
-                    "Navbar":{
-                        "displayType":"MENU_ITEM"
-                    },
-                    "Sidenav":{
-                        "formName":"C984D579-3E1B-4E43-B399-A9B799057881"
-                    }
-                }
-            },
-            "iconStyleClass":"fa fa-star",
-            "name":"sideNavItem2",
-            "text":"Menu item 2",
-            "toolTipText":"This is the tooltip text for item 2",
-            "typeid":53,
-            "uuid":"8C89C142-8632-452C-B62C-CCEB640BA8DD"
-        }
-    ],
-    "name":"sideNavMenu1",
-    "typeid":52,
-    "uuid":"F7E23700-747A-4E40-A8B2-B313039A48C2"
+customProperties:"\"extraProperties\":{\"NG-Grids\":{\"agGridMenuItem\":\"sortAscending\"},\"Navbar\":{\"isActive\":false},\"Sidenav\":{\"formName\":\"5EA24B4B-9EDF-425A-892C-2AF28DDE748E\",\"isDivider\":false}}",
+iconStyleClass:"fa fa-user",
+items:[
+{
+name:"normalmenuitem1",
+text:"Normal menu item 1 text",
+typeid:53,
+uuid:"CD03445A-FDFD-497B-BC9B-5188DCEE3FE0"
+},
+{
+name:"normalmenuitem2",
+text:"Normal menu item 2 text",
+typeid:53,
+uuid:"E01ECE65-0810-4F70-86C3-E589D7E57109"
 }
+],
+name:"sideNavItem1",
+text:"Menu item 1",
+toolTipText:"This is the tooltip text for item 1",
+typeid:53,
+uuid:"4128EB84-C770-40D1-922C-A52EA63FE6D3"
+},
+{
+customProperties:"\"extraProperties\":{\"NG-Grids\":{\"agGridMenuItem\":\"\"},\"Navbar\":{\"displayType\":\"MENU_ITEM\"},\"Sidenav\":{\"formName\":\"C984D579-3E1B-4E43-B399-A9B799057881\"}}",
+iconStyleClass:"fa fa-star",
+name:"sideNavItem2",
+text:"Menu item 2",
+toolTipText:"This is the tooltip text for item 2",
+typeid:53,
+uuid:"8C89C142-8632-452C-B62C-CCEB640BA8DD"
+}
+],
+name:"sideNavMenu1",
+typeid:52,
+uuid:"F7E23700-747A-4E40-A8B2-B313039A48C2"

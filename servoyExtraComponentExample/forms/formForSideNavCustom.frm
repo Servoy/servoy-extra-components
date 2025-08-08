@@ -1,39 +1,34 @@
+customProperties:"formComponent:false,useCssPosition:true",
+encapsulation:108,
+items:[
 {
-    "customProperties":{
-        "formComponent":false,
-        "useCssPosition":true
-    },
-    "encapsulation":108,
-    "items":[
-        {
-            "cssPosition":"42,-1,-1,47,380,76",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"76",
-                    "left":"47",
-                    "right":"-1",
-                    "top":"42",
-                    "width":"380"
-                },
-                "text":"Side nav form custom",
-                "variant":"LabelH1"
-            },
-            "name":"label_4",
-            "typeName":"bootstrapcomponents-label",
-            "typeid":47,
-            "uuid":"776C48CF-54DB-489C-8F4B-551B467CA326"
-        },
-        {
-            "height":480,
-            "partType":5,
-            "typeid":19,
-            "uuid":"7DAA3511-DCDC-4A4D-A692-DF9521024533"
-        }
-    ],
-    "name":"formForSideNavCustom",
-    "navigatorID":"-1",
-    "showInMenu":true,
-    "typeid":3,
-    "uuid":"BB3BCE75-A1CA-49D2-B05D-CC0D4FF94F0A"
+cssPosition:"42,-1,-1,47,380,76",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"76",
+left:"47",
+right:"-1",
+top:"42",
+width:"380"
+},
+text:"Side nav form custom",
+variant:"LabelH1"
+},
+name:"label_4",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"776C48CF-54DB-489C-8F4B-551B467CA326"
+},
+{
+height:480,
+partType:5,
+typeid:19,
+uuid:"7DAA3511-DCDC-4A4D-A692-DF9521024533"
 }
+],
+name:"formForSideNavCustom",
+navigatorID:"-1",
+showInMenu:true,
+typeid:3,
+uuid:"BB3BCE75-A1CA-49D2-B05D-CC0D4FF94F0A"

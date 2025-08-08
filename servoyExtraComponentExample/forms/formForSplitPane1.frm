@@ -1,40 +1,35 @@
+customProperties:"formComponent:false,useCssPosition:true",
+dataSource:"db:/example_data/orders",
+encapsulation:108,
+items:[
 {
-    "customProperties":{
-        "formComponent":false,
-        "useCssPosition":true
-    },
-    "dataSource":"db:/example_data/orders",
-    "encapsulation":108,
-    "items":[
-        {
-            "cssPosition":"35,-1,-1,23,139,47",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"47",
-                    "left":"23",
-                    "right":"-1",
-                    "top":"35",
-                    "width":"139"
-                },
-                "text":"Form1",
-                "variant":"LabelH1"
-            },
-            "name":"label_9",
-            "typeName":"bootstrapcomponents-label",
-            "typeid":47,
-            "uuid":"C1935C4B-EC7D-4584-A3F5-5A5A6C79F65C"
-        },
-        {
-            "height":480,
-            "partType":5,
-            "typeid":19,
-            "uuid":"ECEFC201-666A-4B81-8440-BCFA0E5B14E6"
-        }
-    ],
-    "name":"formForSplitPane1",
-    "navigatorID":"-1",
-    "showInMenu":true,
-    "typeid":3,
-    "uuid":"6BF1406D-139C-4622-BBB4-DC13D3144C4B"
+cssPosition:"35,-1,-1,23,139,47",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"47",
+left:"23",
+right:"-1",
+top:"35",
+width:"139"
+},
+text:"Form1",
+variant:"LabelH1"
+},
+name:"label_9",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"C1935C4B-EC7D-4584-A3F5-5A5A6C79F65C"
+},
+{
+height:480,
+partType:5,
+typeid:19,
+uuid:"ECEFC201-666A-4B81-8440-BCFA0E5B14E6"
 }
+],
+name:"formForSplitPane1",
+navigatorID:"-1",
+showInMenu:true,
+typeid:3,
+uuid:"6BF1406D-139C-4622-BBB4-DC13D3144C4B"

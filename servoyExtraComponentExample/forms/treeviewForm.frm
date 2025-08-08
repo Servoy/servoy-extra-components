@@ -1,406 +1,401 @@
+customProperties:"formComponent:false,useCssPosition:true",
+encapsulation:108,
+items:[
 {
-    "customProperties":{
-        "formComponent":false,
-        "useCssPosition":true
-    },
-    "encapsulation":108,
-    "items":[
-        {
-            "cssPosition":"250,-1,-1,26,552,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"26",
-                    "right":"-1",
-                    "top":"250",
-                    "width":"552"
-                },
-                "text":"%%fv_double_clicked%%",
-                "variant":"LabelBackground"
-            },
-            "name":"label_2",
-            "typeName":"bootstrapcomponents-label",
-            "typeid":47,
-            "uuid":"0445C061-9AE9-477A-A0A4-481479DC18CD"
-        },
-        {
-            "cssPosition":"304,-1,-1,645,190,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"304",
-                    "width":"190"
-                },
-                "onActionMethodID":"3BBC2ED1-3130-4CE4-B823-1C7BCEFBE826",
-                "text":"Get parent node",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_9ccccccc",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"0552D4C2-2724-4866-8263-A83AC1D1E850"
-        },
-        {
-            "height":755,
-            "partType":5,
-            "typeid":19,
-            "uuid":"1FAB2039-4CC2-4748-B05B-EBD9CB4B5DBA"
-        },
-        {
-            "cssPosition":"641,-1,-1,26,551,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"26",
-                    "right":"-1",
-                    "top":"641",
-                    "width":"551"
-                },
-                "text":"Label",
-                "variant":"LabelBackground"
-            },
-            "name":"label_12",
-            "typeName":"bootstrapcomponents-label",
-            "typeid":47,
-            "uuid":"2F32DB44-479D-438C-BE68-857DDABB34A4"
-        },
-        {
-            "cssPosition":"244,-1,-1,645,190,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"244",
-                    "width":"190"
-                },
-                "onActionMethodID":"84545B91-5F2A-4AAD-870D-69BD8C314592",
-                "text":"Get selected node",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_9ccccc",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"3B33607C-A835-4920-A0D1-CF6DECA5DCC7"
-        },
-        {
-            "cssPosition":"524,-1,-1,645,190,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"524",
-                    "width":"190"
-                },
-                "onActionMethodID":"06B1AA83-10C0-413C-9A3F-49D5E145EB26",
-                "text":"Filter nodes",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_9cccc",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"5112BCBF-7CA0-4A6F-805B-B3D150480E07"
-        },
-        {
-            "cssPosition":"464,-1,-1,645,190,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"464",
-                    "width":"190"
-                },
-                "onActionMethodID":"391A770B-789D-4C24-9A27-83D5C20E2A29",
-                "text":"Expand node",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_9c",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"5599FCAF-96BA-43C8-976F-A81CCB56D866"
-        },
-        {
-            "cssPosition":"280,-1,-1,26,552,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"26",
-                    "right":"-1",
-                    "top":"280",
-                    "width":"552"
-                },
-                "text":"%%fv_right_clicked%%",
-                "variant":"LabelBackground"
-            },
-            "name":"label_3",
-            "typeName":"bootstrapcomponents-label",
-            "typeid":47,
-            "uuid":"57C8B3E4-24B3-4523-A7D0-3C2775ED92AB"
-        },
-        {
-            "cssPosition":"220,-1,-1,26,552,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"26",
-                    "right":"-1",
-                    "top":"220",
-                    "width":"552"
-                },
-                "text":"%%fv_node_clicked%%",
-                "variant":"LabelBackground"
-            },
-            "name":"label_1",
-            "typeName":"bootstrapcomponents-label",
-            "typeid":47,
-            "uuid":"5A4925AC-01B7-438A-B730-D82531C8BE4E"
-        },
-        {
-            "cssPosition":"404,-1,-1,645,190,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"404",
-                    "width":"190"
-                },
-                "onActionMethodID":"D629E499-1690-45EB-9F76-CE3B078ADD6A",
-                "text":"Filter",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_6",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"5FADF1F4-1F87-4121-88A3-62C66668B0F6"
-        },
-        {
-            "cssPosition":"342,-1,-1,26,551,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"26",
-                    "right":"-1",
-                    "top":"342",
-                    "width":"551"
-                },
-                "text":"%%fv_node_selection%%\r\
+cssPosition:"250,-1,-1,26,552,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"26",
+right:"-1",
+top:"250",
+width:"552"
+},
+text:"%%fv_double_clicked%%",
+variant:"LabelBackground"
+},
+name:"label_2",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"0445C061-9AE9-477A-A0A4-481479DC18CD"
+},
+{
+cssPosition:"304,-1,-1,645,190,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"304",
+width:"190"
+},
+onActionMethodID:"3BBC2ED1-3130-4CE4-B823-1C7BCEFBE826",
+text:"Get parent node",
+variant:"BtnPrimary"
+},
+name:"button_9ccccccc",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"0552D4C2-2724-4866-8263-A83AC1D1E850"
+},
+{
+height:755,
+partType:5,
+typeid:19,
+uuid:"1FAB2039-4CC2-4748-B05B-EBD9CB4B5DBA"
+},
+{
+cssPosition:"641,-1,-1,26,551,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"26",
+right:"-1",
+top:"641",
+width:"551"
+},
+text:"Label",
+variant:"LabelBackground"
+},
+name:"label_12",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"2F32DB44-479D-438C-BE68-857DDABB34A4"
+},
+{
+cssPosition:"244,-1,-1,645,190,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"244",
+width:"190"
+},
+onActionMethodID:"84545B91-5F2A-4AAD-870D-69BD8C314592",
+text:"Get selected node",
+variant:"BtnPrimary"
+},
+name:"button_9ccccc",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"3B33607C-A835-4920-A0D1-CF6DECA5DCC7"
+},
+{
+cssPosition:"524,-1,-1,645,190,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"524",
+width:"190"
+},
+onActionMethodID:"06B1AA83-10C0-413C-9A3F-49D5E145EB26",
+text:"Filter nodes",
+variant:"BtnPrimary"
+},
+name:"button_9cccc",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"5112BCBF-7CA0-4A6F-805B-B3D150480E07"
+},
+{
+cssPosition:"464,-1,-1,645,190,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"464",
+width:"190"
+},
+onActionMethodID:"391A770B-789D-4C24-9A27-83D5C20E2A29",
+text:"Expand node",
+variant:"BtnPrimary"
+},
+name:"button_9c",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"5599FCAF-96BA-43C8-976F-A81CCB56D866"
+},
+{
+cssPosition:"280,-1,-1,26,552,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"26",
+right:"-1",
+top:"280",
+width:"552"
+},
+text:"%%fv_right_clicked%%",
+variant:"LabelBackground"
+},
+name:"label_3",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"57C8B3E4-24B3-4523-A7D0-3C2775ED92AB"
+},
+{
+cssPosition:"220,-1,-1,26,552,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"26",
+right:"-1",
+top:"220",
+width:"552"
+},
+text:"%%fv_node_clicked%%",
+variant:"LabelBackground"
+},
+name:"label_1",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"5A4925AC-01B7-438A-B730-D82531C8BE4E"
+},
+{
+cssPosition:"404,-1,-1,645,190,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"404",
+width:"190"
+},
+onActionMethodID:"D629E499-1690-45EB-9F76-CE3B078ADD6A",
+text:"Filter",
+variant:"BtnPrimary"
+},
+name:"button_6",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"5FADF1F4-1F87-4121-88A3-62C66668B0F6"
+},
+{
+cssPosition:"342,-1,-1,26,551,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"26",
+right:"-1",
+top:"342",
+width:"551"
+},
+text:"%%fv_node_selection%%\r\
 ",
-                "variant":"LabelBackground"
-            },
-            "name":"label_8",
-            "typeName":"bootstrapcomponents-label",
-            "typeid":47,
-            "uuid":"81D97C10-26B4-481E-84C8-8761461B3A88"
-        },
-        {
-            "cssPosition":"554,-1,-1,645,190,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"554",
-                    "width":"190"
-                },
-                "onActionMethodID":"865ED344-F4D8-45AD-8D95-CA8631B9502B",
-                "text":"Get root nodes",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_11",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"82FA0AD6-BA48-4CC7-A769-7D927649B3FF"
-        },
-        {
-            "cssPosition":"312,-1,-1,26,551,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"26",
-                    "right":"-1",
-                    "top":"312",
-                    "width":"551"
-                },
-                "text":"%%fv_node_actions%%",
-                "variant":"LabelBackground"
-            },
-            "name":"label_7",
-            "typeName":"bootstrapcomponents-label",
-            "typeid":47,
-            "uuid":"9C4C53A2-A0E1-40B8-AA3C-BD9A4CAB01F6"
-        },
-        {
-            "cssPosition":"434,-1,-1,645,190,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"434",
-                    "width":"190"
-                },
-                "onActionMethodID":"7DA94598-4B72-485A-A2D3-23743396293D",
-                "text":"Set column width",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_9cc",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"AA7671A3-E940-4E2E-813A-6683D03D6324"
-        },
-        {
-            "cssPosition":"17,-1,-1,26,552,173",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"173",
-                    "left":"26",
-                    "right":"-1",
-                    "top":"17",
-                    "width":"552"
-                },
-                "onNodeClicked":"07CC51B1-EAD0-4F09-95B9-87E23EBECB06",
-                "onNodeCollapsed":"6E7D21C1-CBED-47A7-9AA3-2C67542A44CA",
-                "onNodeDoubleClicked":"5890D55A-1257-4B96-ADEB-8EE8D6DE06C2",
-                "onNodeExpanded":"7CAA27C7-790E-4885-B0D6-A8A808A6869E",
-                "onNodeRightClicked":"0163ADAB-8FAC-41FF-AAA7-7316CF912A50",
-                "onNodeSelected":"DC63AF3D-5F7A-4D34-B051-65147BCE4338",
-                "onReady":"E1EEAD69-2BE5-4B0A-BD54-700044F4156E",
-                "onRowDrop":"64BBB030-0B42-439A-ABC2-A4CD731D7210"
-            },
-            "name":"treeview_1",
-            "typeName":"servoyextra-treeview",
-            "typeid":47,
-            "uuid":"AAFE742D-2AE9-4BB3-9AE0-C279A9AFAC85"
-        },
-        {
-            "cssPosition":"494,-1,-1,645,190,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"494",
-                    "width":"190"
-                },
-                "onActionMethodID":"0B23AAA7-5773-4813-9981-0DA07A12B778",
-                "text":"Filter branches",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_9ccc",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"C12B3C26-8E79-4116-8927-1A48B7A8B183"
-        },
-        {
-            "cssPosition":"404,-1,-1,26,551,192",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"192",
-                    "left":"26",
-                    "right":"-1",
-                    "top":"404",
-                    "width":"551"
-                },
-                "onNodeClicked":"07CC51B1-EAD0-4F09-95B9-87E23EBECB06",
-                "onNodeCollapsed":"6E7D21C1-CBED-47A7-9AA3-2C67542A44CA",
-                "onNodeDoubleClicked":"5890D55A-1257-4B96-ADEB-8EE8D6DE06C2",
-                "onNodeExpanded":"7CAA27C7-790E-4885-B0D6-A8A808A6869E",
-                "onNodeRightClicked":"0163ADAB-8FAC-41FF-AAA7-7316CF912A50",
-                "onNodeSelected":"DC63AF3D-5F7A-4D34-B051-65147BCE4338"
-            },
-            "name":"treeview_2",
-            "typeName":"servoyextra-treeview",
-            "typeid":47,
-            "uuid":"C73C7192-A3CC-4871-8F24-BBF7E0298E2D"
-        },
-        {
-            "cssPosition":"23,-1,-1,645,190,31",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"31",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"23",
-                    "width":"190"
-                },
-                "onActionMethodID":"AD2DBA9D-D823-4E17-A31E-D72B5BE8EF2A",
-                "text":"Collapse tree",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_5",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"CEB48920-FBF8-493C-8F48-6344EDE09D4E"
-        },
-        {
-            "cssPosition":"54,-1,-1,645,190,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"54",
-                    "width":"190"
-                },
-                "onActionMethodID":"2F6C0A32-7220-4D3A-9B0C-EA7592F6A4EC",
-                "text":"Expand tree",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_9",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"F5D1C65F-7BD0-431B-9E80-7555A7CFBA76"
-        },
-        {
-            "cssPosition":"274,-1,-1,645,190,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"274",
-                    "width":"190"
-                },
-                "onActionMethodID":"369A1CE4-E8AE-4613-9F8E-26E2050A9721",
-                "text":"Get child nodes",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_9cccccc",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"F8E0E26F-3B95-4A51-8614-DDB84873686A"
-        }
-    ],
-    "name":"treeviewForm",
-    "navigatorID":"-1",
-    "onLoadMethodID":"B11411F4-F405-42BF-AC21-E9558E776760",
-    "onShowMethodID":"786363DF-2CA3-4355-8C45-261794AC15ED",
-    "showInMenu":true,
-    "size":"1028,651",
-    "typeid":3,
-    "uuid":"F89AFA79-C0B0-473B-B8E3-8EC79A1E8556"
+variant:"LabelBackground"
+},
+name:"label_8",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"81D97C10-26B4-481E-84C8-8761461B3A88"
+},
+{
+cssPosition:"554,-1,-1,645,190,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"554",
+width:"190"
+},
+onActionMethodID:"865ED344-F4D8-45AD-8D95-CA8631B9502B",
+text:"Get root nodes",
+variant:"BtnPrimary"
+},
+name:"button_11",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"82FA0AD6-BA48-4CC7-A769-7D927649B3FF"
+},
+{
+cssPosition:"312,-1,-1,26,551,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"26",
+right:"-1",
+top:"312",
+width:"551"
+},
+text:"%%fv_node_actions%%",
+variant:"LabelBackground"
+},
+name:"label_7",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"9C4C53A2-A0E1-40B8-AA3C-BD9A4CAB01F6"
+},
+{
+cssPosition:"434,-1,-1,645,190,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"434",
+width:"190"
+},
+onActionMethodID:"7DA94598-4B72-485A-A2D3-23743396293D",
+text:"Set column width",
+variant:"BtnPrimary"
+},
+name:"button_9cc",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"AA7671A3-E940-4E2E-813A-6683D03D6324"
+},
+{
+cssPosition:"17,-1,-1,26,552,173",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"173",
+left:"26",
+right:"-1",
+top:"17",
+width:"552"
+},
+onNodeClicked:"07CC51B1-EAD0-4F09-95B9-87E23EBECB06",
+onNodeCollapsed:"6E7D21C1-CBED-47A7-9AA3-2C67542A44CA",
+onNodeDoubleClicked:"5890D55A-1257-4B96-ADEB-8EE8D6DE06C2",
+onNodeExpanded:"7CAA27C7-790E-4885-B0D6-A8A808A6869E",
+onNodeRightClicked:"0163ADAB-8FAC-41FF-AAA7-7316CF912A50",
+onNodeSelected:"DC63AF3D-5F7A-4D34-B051-65147BCE4338",
+onReady:"E1EEAD69-2BE5-4B0A-BD54-700044F4156E",
+onRowDrop:"64BBB030-0B42-439A-ABC2-A4CD731D7210"
+},
+name:"treeview_1",
+typeName:"servoyextra-treeview",
+typeid:47,
+uuid:"AAFE742D-2AE9-4BB3-9AE0-C279A9AFAC85"
+},
+{
+cssPosition:"494,-1,-1,645,190,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"494",
+width:"190"
+},
+onActionMethodID:"0B23AAA7-5773-4813-9981-0DA07A12B778",
+text:"Filter branches",
+variant:"BtnPrimary"
+},
+name:"button_9ccc",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"C12B3C26-8E79-4116-8927-1A48B7A8B183"
+},
+{
+cssPosition:"404,-1,-1,26,551,192",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"192",
+left:"26",
+right:"-1",
+top:"404",
+width:"551"
+},
+onNodeClicked:"07CC51B1-EAD0-4F09-95B9-87E23EBECB06",
+onNodeCollapsed:"6E7D21C1-CBED-47A7-9AA3-2C67542A44CA",
+onNodeDoubleClicked:"5890D55A-1257-4B96-ADEB-8EE8D6DE06C2",
+onNodeExpanded:"7CAA27C7-790E-4885-B0D6-A8A808A6869E",
+onNodeRightClicked:"0163ADAB-8FAC-41FF-AAA7-7316CF912A50",
+onNodeSelected:"DC63AF3D-5F7A-4D34-B051-65147BCE4338"
+},
+name:"treeview_2",
+typeName:"servoyextra-treeview",
+typeid:47,
+uuid:"C73C7192-A3CC-4871-8F24-BBF7E0298E2D"
+},
+{
+cssPosition:"23,-1,-1,645,190,31",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"31",
+left:"645",
+right:"-1",
+top:"23",
+width:"190"
+},
+onActionMethodID:"AD2DBA9D-D823-4E17-A31E-D72B5BE8EF2A",
+text:"Collapse tree",
+variant:"BtnPrimary"
+},
+name:"button_5",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"CEB48920-FBF8-493C-8F48-6344EDE09D4E"
+},
+{
+cssPosition:"54,-1,-1,645,190,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"54",
+width:"190"
+},
+onActionMethodID:"2F6C0A32-7220-4D3A-9B0C-EA7592F6A4EC",
+text:"Expand tree",
+variant:"BtnPrimary"
+},
+name:"button_9",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"F5D1C65F-7BD0-431B-9E80-7555A7CFBA76"
+},
+{
+cssPosition:"274,-1,-1,645,190,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"274",
+width:"190"
+},
+onActionMethodID:"369A1CE4-E8AE-4613-9F8E-26E2050A9721",
+text:"Get child nodes",
+variant:"BtnPrimary"
+},
+name:"button_9cccccc",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"F8E0E26F-3B95-4A51-8614-DDB84873686A"
 }
+],
+name:"treeviewForm",
+navigatorID:"-1",
+onLoadMethodID:"B11411F4-F405-42BF-AC21-E9558E776760",
+onShowMethodID:"786363DF-2CA3-4355-8C45-261794AC15ED",
+showInMenu:true,
+size:"1028,651",
+typeid:3,
+uuid:"F89AFA79-C0B0-473B-B8E3-8EC79A1E8556"

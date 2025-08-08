@@ -1,152 +1,147 @@
+customProperties:"formComponent:false,useCssPosition:true",
+encapsulation:108,
+items:[
 {
-    "customProperties":{
-        "formComponent":false,
-        "useCssPosition":true
-    },
-    "encapsulation":108,
-    "items":[
-        {
-            "cssPosition":"337,-1,-1,33,192,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"33",
-                    "right":"-1",
-                    "top":"337",
-                    "width":"192"
-                },
-                "styleClass":"default-align label-blue-gradient",
-                "text":"Linear Gauge"
-            },
-            "name":"label_24",
-            "styleClass":"default-align label-blue-gradient",
-            "typeName":"bootstrapcomponents-label",
-            "typeid":47,
-            "uuid":"1F38A8FF-05E2-4193-8C1F-67DC5E09083B"
-        },
-        {
-            "cssPosition":"507,-1,-1,10,446,70",
-            "json":{
-                "ceil":100,
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"70",
-                    "left":"10",
-                    "right":"-1",
-                    "top":"507",
-                    "width":"446"
-                },
-                "dataProvider":"linearGaugeValue",
-                "onDataChangeMethodID":"1DB8A7FB-1253-484A-AFED-418391B90098"
-            },
-            "name":"slider_3",
-            "typeName":"servoyextra-slider",
-            "typeid":47,
-            "uuid":"2E996A3F-2E8B-4BAA-B54A-AF4147A432C5"
-        },
-        {
-            "cssPosition":"181,-1,-1,10,446,70",
-            "json":{
-                "ceil":100,
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"70",
-                    "left":"10",
-                    "right":"-1",
-                    "top":"181",
-                    "width":"446"
-                },
-                "dataProvider":"radialGaugeValue"
-            },
-            "name":"slider_1",
-            "typeName":"servoyextra-slider",
-            "typeid":47,
-            "uuid":"40369C2C-360B-4B87-8D5F-866138A2A2EC"
-        },
-        {
-            "cssPosition":"367,-1,-1,33,192,115",
-            "json":{
-                "animationOptions":{
-                    "svyUUID":"3344E8BE-ED67-4B6D-8FDA-2D6E2E39EFD9"
-                },
-                "borderOptions":{
-                    "svyUUID":"82D715BC-6FD7-4A58-AA81-7B9D9BD967E3"
-                },
-                "colorOptions":{
-                    "svyUUID":"FF5B17E3-F994-48A7-B6A7-840F0284C1FE"
-                },
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"115",
-                    "left":"33",
-                    "right":"-1",
-                    "top":"367",
-                    "width":"192"
-                },
-                "gaugeType":"linear",
-                "value":"linearGaugeValue",
-                "valueBoxOptions":{
-                    "svyUUID":"8F00AEFA-05A6-4196-B309-E76A2ECAE0B5"
-                }
-            },
-            "name":"gauge_linear",
-            "typeName":"servoyextra-gauge",
-            "typeid":47,
-            "uuid":"45E5ABE8-8EA4-46A2-8FA1-F3A227B717B2"
-        },
-        {
-            "height":1000,
-            "partType":5,
-            "typeid":19,
-            "uuid":"5CCB94F6-0F83-467F-825E-3BC60780B434"
-        },
-        {
-            "cssPosition":"12,-1,-1,33,192,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"33",
-                    "right":"-1",
-                    "top":"12",
-                    "width":"192"
-                },
-                "styleClass":"default-align label-blue-gradient",
-                "text":"Radial Gauge"
-            },
-            "name":"label_23",
-            "styleClass":"default-align label-blue-gradient",
-            "typeName":"bootstrapcomponents-label",
-            "typeid":47,
-            "uuid":"A20F1C38-B72F-42BC-AFCC-8E62F6E2018C"
-        },
-        {
-            "cssPosition":"42,-1,-1,33,192,115",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"115",
-                    "left":"33",
-                    "right":"-1",
-                    "top":"42",
-                    "width":"192"
-                },
-                "needleOptions":{
-                    "svyUUID":"8E83488B-6CD8-45CC-82E3-1418657B6049"
-                },
-                "value":"radialGaugeValue"
-            },
-            "name":"gauge_radial",
-            "typeName":"servoyextra-gauge",
-            "typeid":47,
-            "uuid":"D2556161-5097-4F38-8AF7-FC76ED2E9475"
-        }
-    ],
-    "name":"gaugeForm",
-    "navigatorID":"-1",
-    "showInMenu":true,
-    "size":"1000,1000",
-    "typeid":3,
-    "uuid":"DB64874C-5AF4-4623-8947-CB07356FF635"
+cssPosition:"337,-1,-1,33,192,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"33",
+right:"-1",
+top:"337",
+width:"192"
+},
+styleClass:"default-align label-blue-gradient",
+text:"Linear Gauge"
+},
+name:"label_24",
+styleClass:"default-align label-blue-gradient",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"1F38A8FF-05E2-4193-8C1F-67DC5E09083B"
+},
+{
+cssPosition:"507,-1,-1,10,446,70",
+json:{
+ceil:100,
+cssPosition:{
+bottom:"-1",
+height:"70",
+left:"10",
+right:"-1",
+top:"507",
+width:"446"
+},
+dataProvider:"linearGaugeValue",
+onDataChangeMethodID:"1DB8A7FB-1253-484A-AFED-418391B90098"
+},
+name:"slider_3",
+typeName:"servoyextra-slider",
+typeid:47,
+uuid:"2E996A3F-2E8B-4BAA-B54A-AF4147A432C5"
+},
+{
+cssPosition:"181,-1,-1,10,446,70",
+json:{
+ceil:100,
+cssPosition:{
+bottom:"-1",
+height:"70",
+left:"10",
+right:"-1",
+top:"181",
+width:"446"
+},
+dataProvider:"radialGaugeValue"
+},
+name:"slider_1",
+typeName:"servoyextra-slider",
+typeid:47,
+uuid:"40369C2C-360B-4B87-8D5F-866138A2A2EC"
+},
+{
+cssPosition:"367,-1,-1,33,192,115",
+json:{
+animationOptions:{
+svyUUID:"3344E8BE-ED67-4B6D-8FDA-2D6E2E39EFD9"
+},
+borderOptions:{
+svyUUID:"82D715BC-6FD7-4A58-AA81-7B9D9BD967E3"
+},
+colorOptions:{
+svyUUID:"FF5B17E3-F994-48A7-B6A7-840F0284C1FE"
+},
+cssPosition:{
+bottom:"-1",
+height:"115",
+left:"33",
+right:"-1",
+top:"367",
+width:"192"
+},
+gaugeType:"linear",
+value:"linearGaugeValue",
+valueBoxOptions:{
+svyUUID:"8F00AEFA-05A6-4196-B309-E76A2ECAE0B5"
 }
+},
+name:"gauge_linear",
+typeName:"servoyextra-gauge",
+typeid:47,
+uuid:"45E5ABE8-8EA4-46A2-8FA1-F3A227B717B2"
+},
+{
+height:1000,
+partType:5,
+typeid:19,
+uuid:"5CCB94F6-0F83-467F-825E-3BC60780B434"
+},
+{
+cssPosition:"12,-1,-1,33,192,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"33",
+right:"-1",
+top:"12",
+width:"192"
+},
+styleClass:"default-align label-blue-gradient",
+text:"Radial Gauge"
+},
+name:"label_23",
+styleClass:"default-align label-blue-gradient",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"A20F1C38-B72F-42BC-AFCC-8E62F6E2018C"
+},
+{
+cssPosition:"42,-1,-1,33,192,115",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"115",
+left:"33",
+right:"-1",
+top:"42",
+width:"192"
+},
+needleOptions:{
+svyUUID:"8E83488B-6CD8-45CC-82E3-1418657B6049"
+},
+value:"radialGaugeValue"
+},
+name:"gauge_radial",
+typeName:"servoyextra-gauge",
+typeid:47,
+uuid:"D2556161-5097-4F38-8AF7-FC76ED2E9475"
+}
+],
+name:"gaugeForm",
+navigatorID:"-1",
+showInMenu:true,
+size:"1000,1000",
+typeid:3,
+uuid:"DB64874C-5AF4-4623-8947-CB07356FF635"

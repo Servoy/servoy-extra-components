@@ -1,440 +1,435 @@
+customProperties:"formComponent:false,useCssPosition:true",
+dataSource:"db:/example_data/employees",
+encapsulation:108,
+items:[
 {
-    "customProperties":{
-        "formComponent":false,
-        "useCssPosition":true
-    },
-    "dataSource":"db:/example_data/employees",
-    "encapsulation":108,
-    "items":[
-        {
-            "cssPosition":"428,-1,-1,669,249,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"669",
-                    "right":"-1",
-                    "top":"428",
-                    "width":"249"
-                },
-                "onActionMethodID":"9A608F37-31FE-47B3-9C94-CB850D7D689F",
-                "text":"Set divider location",
-                "variant":"BtnPrimary",
-                "visible":true
-            },
-            "name":"button_setDividerLocation",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"0B26466D-8055-4907-B580-C1BDEF977CB6"
-        },
-        {
-            "cssPosition":"456,-1,-1,19,591,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"19",
-                    "right":"-1",
-                    "top":"456",
-                    "width":"591"
-                },
-                "variant":"LabelBackground"
-            },
-            "name":"label_onchange",
-            "typeName":"bootstrapcomponents-label",
-            "typeid":47,
-            "uuid":"0BC65D72-6440-4ACC-8A4A-FC5215A72048"
-        },
-        {
-            "cssPosition":"299,-1,-1,669,249,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"669",
-                    "right":"-1",
-                    "top":"299",
-                    "width":"249"
-                },
-                "onActionMethodID":"4553F47D-B3E7-4DA6-8F54-09E052E9C710",
-                "text":"Get resize weight",
-                "variant":"BtnPrimary",
-                "visible":true
-            },
-            "name":"button_getResizeWeight",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"11D7C7CD-1771-4611-A2F5-505022AC4CEC"
-        },
-        {
-            "cssPosition":"256,-1,-1,669,249,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"669",
-                    "right":"-1",
-                    "top":"256",
-                    "width":"249"
-                },
-                "onActionMethodID":"7E3E273A-ED48-4F43-83F1-C1704ED5E3D0",
-                "text":"Get left form min size",
-                "variant":"BtnPrimary",
-                "visible":true
-            },
-            "name":"button_getLeftFormMinSize",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"1EF7D47B-9359-4A38-9C77-822F90C94094"
-        },
-        {
-            "cssPosition":"342,-1,-1,669,249,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"669",
-                    "right":"-1",
-                    "top":"342",
-                    "width":"249"
-                },
-                "onActionMethodID":"2A41D0D8-8F06-426C-A0CB-4778B8E3215B",
-                "text":"Get right form",
-                "variant":"BtnPrimary",
-                "visible":true
-            },
-            "name":"button_getRightForm",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"24335A50-0920-414E-935B-24CED65C76B0"
-        },
-        {
-            "cssPosition":"557,-1,-1,669,249,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"669",
-                    "right":"-1",
-                    "top":"557",
-                    "width":"249"
-                },
-                "onActionMethodID":"38939826-BE61-46C0-862E-B99FB6ED53F7",
-                "text":"Set left form min size",
-                "variant":"BtnPrimary",
-                "visible":true
-            },
-            "name":"button_setLeftFormMinSize",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"31C69D34-E302-4C1D-BB60-8B475154DD31"
-        },
-        {
-            "cssPosition":"385,-1,-1,669,249,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"669",
-                    "right":"-1",
-                    "top":"385",
-                    "width":"249"
-                },
-                "onActionMethodID":"C8FC89AA-77A2-413F-BB23-3F77B2DB7CB7",
-                "text":"Get right form min size",
-                "variant":"BtnPrimary",
-                "visible":true
-            },
-            "name":"button_getRightFormMinSize",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"5866E702-9B8C-4E82-AD82-8405E1A683B7"
-        },
-        {
-            "cssPosition":"532,-1,-1,19,591,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"19",
-                    "right":"-1",
-                    "top":"532",
-                    "width":"591"
-                },
-                "variant":"LabelBackground"
-            },
-            "name":"label_2",
-            "typeName":"bootstrapcomponents-label",
-            "typeid":47,
-            "uuid":"6668E1C3-FC81-4B58-88D0-591A2017A4B1"
-        },
-        {
-            "cssPosition":"600,-1,-1,669,249,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"669",
-                    "right":"-1",
-                    "top":"600",
-                    "width":"249"
-                },
-                "onActionMethodID":"8EFDE4A1-5FC0-43E6-B43A-808AE10A0D7C",
-                "text":"Set resize weight ",
-                "variant":"BtnPrimary",
-                "visible":true
-            },
-            "name":"button_setResizeWeight",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"6D9D234D-AFFF-443E-886C-1DC6697559CF"
-        },
-        {
-            "cssPosition":"686,-1,-1,669,249,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"669",
-                    "right":"-1",
-                    "top":"686",
-                    "width":"249"
-                },
-                "onActionMethodID":"8FED5327-A63F-400D-A12B-AD413D78330A",
-                "text":"Set right form min size",
-                "variant":"BtnPrimary",
-                "visible":true
-            },
-            "name":"button_setRightFormMinSize",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"71DE7821-FB86-4743-8459-DC11B9D9DD1E"
-        },
-        {
-            "cssPosition":"471,-1,-1,669,249,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"669",
-                    "right":"-1",
-                    "top":"471",
-                    "width":"249"
-                },
-                "onActionMethodID":"2A7D79CE-22F6-4362-99A8-B604EC90FFF0",
-                "text":"Set divider size",
-                "variant":"BtnPrimary",
-                "visible":true
-            },
-            "name":"button_setDividerSize",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"7E2B513D-5066-4ADB-9A2D-8B04BD129873"
-        },
-        {
-            "cssPosition":"643,-1,-1,669,249,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"669",
-                    "right":"-1",
-                    "top":"643",
-                    "width":"249"
-                },
-                "onActionMethodID":"C7A4880E-8E11-4BD9-ACCC-41E90ADA9F0C",
-                "text":"Set right form",
-                "variant":"BtnPrimary",
-                "visible":true
-            },
-            "name":"button_setRightForm",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"863BD072-AC79-44B0-BA1F-D0DD2E1B4D00"
-        },
-        {
-            "height":839,
-            "partType":5,
-            "typeid":19,
-            "uuid":"A6BD89FC-C722-41D9-9193-C4E1D5BA1D3B"
-        },
-        {
-            "cssPosition":"23,-1,-1,19,591,387",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"387",
-                    "left":"19",
-                    "right":"-1",
-                    "top":"23",
-                    "width":"591"
-                },
-                "onChangeMethodID":"469B48DD-EDA1-4032-BCE1-F9862DACA376",
-                "pane1":{
-                    "containsFormId":"6BF1406D-139C-4622-BBB4-DC13D3144C4B",
-                    "relationName":"employees_to_orders",
-                    "svyUUID":"840EB1DD-0AD4-4CB0-99C0-E8BCF7DD89C2"
-                },
-                "pane1MinSize":50,
-                "pane2":{
-                    "containsFormId":"B366C078-42AA-4842-8C9B-28B6B6C719EB",
-                    "relationName":"employees_to_orders",
-                    "svyUUID":"22480188-6C59-43BE-B594-8CAFD2404F63"
-                },
-                "pane2MinSize":80,
-                "resizeWeight":100
-            },
-            "name":"splitpane_5",
-            "typeName":"servoyextra-splitpane",
-            "typeid":47,
-            "uuid":"A94E52E4-A97E-45FA-A963-A6F0088571FF"
-        },
-        {
-            "cssPosition":"494,-1,-1,19,591,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"19",
-                    "right":"-1",
-                    "top":"494",
-                    "width":"591"
-                },
-                "variant":"LabelBackground"
-            },
-            "name":"label_1",
-            "typeName":"bootstrapcomponents-label",
-            "typeid":47,
-            "uuid":"C7FAAFCF-4B5A-4CEF-8352-458D215FF436"
-        },
-        {
-            "cssPosition":"213,-1,-1,669,249,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"669",
-                    "right":"-1",
-                    "top":"213",
-                    "width":"249"
-                },
-                "onActionMethodID":"F55EC629-DDE7-45C2-AA07-3031EBCC5C25",
-                "text":"Get left form",
-                "variant":"BtnPrimary",
-                "visible":true
-            },
-            "name":"button_getLeftForm",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"CFA2A22E-79DA-407E-9207-18E0DF98EF83"
-        },
-        {
-            "cssPosition":"84,-1,-1,669,249,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"669",
-                    "right":"-1",
-                    "top":"84",
-                    "width":"249"
-                },
-                "onActionMethodID":"564D269F-7A97-42D7-A8AE-31384A554A12",
-                "text":"Get divider location",
-                "variant":"BtnPrimary",
-                "visible":true
-            },
-            "name":"button_getDividerLocation",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"D5DEA2BD-F19E-4234-9CA4-F94D12DD3580"
-        },
-        {
-            "cssPosition":"514,-1,-1,669,249,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"669",
-                    "right":"-1",
-                    "top":"514",
-                    "width":"249"
-                },
-                "onActionMethodID":"D2EB9031-1BE1-434D-A49B-110CE580388A",
-                "text":"Set left form",
-                "variant":"BtnPrimary",
-                "visible":true
-            },
-            "name":"button_setLeftForm",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"E7CD5704-AD22-4AFE-ABBD-EBD9608A5FAF"
-        },
-        {
-            "cssPosition":"127,-1,-1,669,249,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"669",
-                    "right":"-1",
-                    "top":"127",
-                    "width":"249"
-                },
-                "onActionMethodID":"1C041004-6C1A-4409-BFA1-F740A679D2B3",
-                "text":"Get relative divider location",
-                "variant":"BtnPrimary",
-                "visible":true
-            },
-            "name":"button_getRelativeDividerLocation",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"F56D6B58-995A-487C-845B-E42F78652905"
-        },
-        {
-            "cssPosition":"41,-1,-1,669,108,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"669",
-                    "right":"-1",
-                    "top":"41",
-                    "width":"108"
-                },
-                "text":"Api methods:"
-            },
-            "name":"label_6",
-            "typeName":"bootstrapcomponents-label",
-            "typeid":47,
-            "uuid":"F790CC17-6668-42A2-BCF2-18D884C8D934"
-        },
-        {
-            "cssPosition":"170,-1,-1,669,249,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"669",
-                    "right":"-1",
-                    "top":"170",
-                    "width":"249"
-                },
-                "onActionMethodID":"5512F86D-5514-4820-AD16-BB1BB45A02FB",
-                "text":"Get divider size",
-                "variant":"BtnPrimary",
-                "visible":true
-            },
-            "name":"button_getDividerSize",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"F7F8FEF6-B85D-44E9-86FA-D71B7BAA5D77"
-        }
-    ],
-    "name":"splitpaneForm",
-    "navigatorID":"-1",
-    "showInMenu":true,
-    "size":"1000,800",
-    "typeid":3,
-    "uuid":"56B6D865-2F18-461C-AA30-91A38B55425B"
+cssPosition:"428,-1,-1,669,249,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"669",
+right:"-1",
+top:"428",
+width:"249"
+},
+onActionMethodID:"9A608F37-31FE-47B3-9C94-CB850D7D689F",
+text:"Set divider location",
+variant:"BtnPrimary",
+visible:true
+},
+name:"button_setDividerLocation",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"0B26466D-8055-4907-B580-C1BDEF977CB6"
+},
+{
+cssPosition:"456,-1,-1,19,591,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"19",
+right:"-1",
+top:"456",
+width:"591"
+},
+variant:"LabelBackground"
+},
+name:"label_onchange",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"0BC65D72-6440-4ACC-8A4A-FC5215A72048"
+},
+{
+cssPosition:"299,-1,-1,669,249,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"669",
+right:"-1",
+top:"299",
+width:"249"
+},
+onActionMethodID:"4553F47D-B3E7-4DA6-8F54-09E052E9C710",
+text:"Get resize weight",
+variant:"BtnPrimary",
+visible:true
+},
+name:"button_getResizeWeight",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"11D7C7CD-1771-4611-A2F5-505022AC4CEC"
+},
+{
+cssPosition:"256,-1,-1,669,249,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"669",
+right:"-1",
+top:"256",
+width:"249"
+},
+onActionMethodID:"7E3E273A-ED48-4F43-83F1-C1704ED5E3D0",
+text:"Get left form min size",
+variant:"BtnPrimary",
+visible:true
+},
+name:"button_getLeftFormMinSize",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"1EF7D47B-9359-4A38-9C77-822F90C94094"
+},
+{
+cssPosition:"342,-1,-1,669,249,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"669",
+right:"-1",
+top:"342",
+width:"249"
+},
+onActionMethodID:"2A41D0D8-8F06-426C-A0CB-4778B8E3215B",
+text:"Get right form",
+variant:"BtnPrimary",
+visible:true
+},
+name:"button_getRightForm",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"24335A50-0920-414E-935B-24CED65C76B0"
+},
+{
+cssPosition:"557,-1,-1,669,249,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"669",
+right:"-1",
+top:"557",
+width:"249"
+},
+onActionMethodID:"38939826-BE61-46C0-862E-B99FB6ED53F7",
+text:"Set left form min size",
+variant:"BtnPrimary",
+visible:true
+},
+name:"button_setLeftFormMinSize",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"31C69D34-E302-4C1D-BB60-8B475154DD31"
+},
+{
+cssPosition:"385,-1,-1,669,249,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"669",
+right:"-1",
+top:"385",
+width:"249"
+},
+onActionMethodID:"C8FC89AA-77A2-413F-BB23-3F77B2DB7CB7",
+text:"Get right form min size",
+variant:"BtnPrimary",
+visible:true
+},
+name:"button_getRightFormMinSize",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"5866E702-9B8C-4E82-AD82-8405E1A683B7"
+},
+{
+cssPosition:"532,-1,-1,19,591,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"19",
+right:"-1",
+top:"532",
+width:"591"
+},
+variant:"LabelBackground"
+},
+name:"label_2",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"6668E1C3-FC81-4B58-88D0-591A2017A4B1"
+},
+{
+cssPosition:"600,-1,-1,669,249,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"669",
+right:"-1",
+top:"600",
+width:"249"
+},
+onActionMethodID:"8EFDE4A1-5FC0-43E6-B43A-808AE10A0D7C",
+text:"Set resize weight ",
+variant:"BtnPrimary",
+visible:true
+},
+name:"button_setResizeWeight",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"6D9D234D-AFFF-443E-886C-1DC6697559CF"
+},
+{
+cssPosition:"686,-1,-1,669,249,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"669",
+right:"-1",
+top:"686",
+width:"249"
+},
+onActionMethodID:"8FED5327-A63F-400D-A12B-AD413D78330A",
+text:"Set right form min size",
+variant:"BtnPrimary",
+visible:true
+},
+name:"button_setRightFormMinSize",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"71DE7821-FB86-4743-8459-DC11B9D9DD1E"
+},
+{
+cssPosition:"471,-1,-1,669,249,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"669",
+right:"-1",
+top:"471",
+width:"249"
+},
+onActionMethodID:"2A7D79CE-22F6-4362-99A8-B604EC90FFF0",
+text:"Set divider size",
+variant:"BtnPrimary",
+visible:true
+},
+name:"button_setDividerSize",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"7E2B513D-5066-4ADB-9A2D-8B04BD129873"
+},
+{
+cssPosition:"643,-1,-1,669,249,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"669",
+right:"-1",
+top:"643",
+width:"249"
+},
+onActionMethodID:"C7A4880E-8E11-4BD9-ACCC-41E90ADA9F0C",
+text:"Set right form",
+variant:"BtnPrimary",
+visible:true
+},
+name:"button_setRightForm",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"863BD072-AC79-44B0-BA1F-D0DD2E1B4D00"
+},
+{
+height:839,
+partType:5,
+typeid:19,
+uuid:"A6BD89FC-C722-41D9-9193-C4E1D5BA1D3B"
+},
+{
+cssPosition:"23,-1,-1,19,591,387",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"387",
+left:"19",
+right:"-1",
+top:"23",
+width:"591"
+},
+onChangeMethodID:"469B48DD-EDA1-4032-BCE1-F9862DACA376",
+pane1:{
+containsFormId:"6BF1406D-139C-4622-BBB4-DC13D3144C4B",
+relationName:"employees_to_orders",
+svyUUID:"840EB1DD-0AD4-4CB0-99C0-E8BCF7DD89C2"
+},
+pane1MinSize:50,
+pane2:{
+containsFormId:"B366C078-42AA-4842-8C9B-28B6B6C719EB",
+relationName:"employees_to_orders",
+svyUUID:"22480188-6C59-43BE-B594-8CAFD2404F63"
+},
+pane2MinSize:80,
+resizeWeight:100
+},
+name:"splitpane_5",
+typeName:"servoyextra-splitpane",
+typeid:47,
+uuid:"A94E52E4-A97E-45FA-A963-A6F0088571FF"
+},
+{
+cssPosition:"494,-1,-1,19,591,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"19",
+right:"-1",
+top:"494",
+width:"591"
+},
+variant:"LabelBackground"
+},
+name:"label_1",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"C7FAAFCF-4B5A-4CEF-8352-458D215FF436"
+},
+{
+cssPosition:"213,-1,-1,669,249,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"669",
+right:"-1",
+top:"213",
+width:"249"
+},
+onActionMethodID:"F55EC629-DDE7-45C2-AA07-3031EBCC5C25",
+text:"Get left form",
+variant:"BtnPrimary",
+visible:true
+},
+name:"button_getLeftForm",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"CFA2A22E-79DA-407E-9207-18E0DF98EF83"
+},
+{
+cssPosition:"84,-1,-1,669,249,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"669",
+right:"-1",
+top:"84",
+width:"249"
+},
+onActionMethodID:"564D269F-7A97-42D7-A8AE-31384A554A12",
+text:"Get divider location",
+variant:"BtnPrimary",
+visible:true
+},
+name:"button_getDividerLocation",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"D5DEA2BD-F19E-4234-9CA4-F94D12DD3580"
+},
+{
+cssPosition:"514,-1,-1,669,249,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"669",
+right:"-1",
+top:"514",
+width:"249"
+},
+onActionMethodID:"D2EB9031-1BE1-434D-A49B-110CE580388A",
+text:"Set left form",
+variant:"BtnPrimary",
+visible:true
+},
+name:"button_setLeftForm",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"E7CD5704-AD22-4AFE-ABBD-EBD9608A5FAF"
+},
+{
+cssPosition:"127,-1,-1,669,249,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"669",
+right:"-1",
+top:"127",
+width:"249"
+},
+onActionMethodID:"1C041004-6C1A-4409-BFA1-F740A679D2B3",
+text:"Get relative divider location",
+variant:"BtnPrimary",
+visible:true
+},
+name:"button_getRelativeDividerLocation",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"F56D6B58-995A-487C-845B-E42F78652905"
+},
+{
+cssPosition:"41,-1,-1,669,108,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"669",
+right:"-1",
+top:"41",
+width:"108"
+},
+text:"Api methods:"
+},
+name:"label_6",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"F790CC17-6668-42A2-BCF2-18D884C8D934"
+},
+{
+cssPosition:"170,-1,-1,669,249,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"669",
+right:"-1",
+top:"170",
+width:"249"
+},
+onActionMethodID:"5512F86D-5514-4820-AD16-BB1BB45A02FB",
+text:"Get divider size",
+variant:"BtnPrimary",
+visible:true
+},
+name:"button_getDividerSize",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"F7F8FEF6-B85D-44E9-86FA-D71B7BAA5D77"
 }
+],
+name:"splitpaneForm",
+navigatorID:"-1",
+showInMenu:true,
+size:"1000,800",
+typeid:3,
+uuid:"56B6D865-2F18-461C-AA30-91A38B55425B"

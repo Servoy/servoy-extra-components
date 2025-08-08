@@ -1,117 +1,112 @@
+customProperties:"formComponent:false,useCssPosition:true",
+encapsulation:108,
+items:[
 {
-    "customProperties":{
-        "formComponent":false,
-        "useCssPosition":true
-    },
-    "encapsulation":108,
-    "items":[
-        {
-            "cssPosition":"78,-1,-1,62,495,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"62",
-                    "right":"-1",
-                    "top":"78",
-                    "width":"495"
-                },
-                "variant":"LabelBackground"
-            },
-            "name":"label_ondatachange",
-            "typeName":"bootstrapcomponents-label",
-            "typeid":47,
-            "uuid":"0715E235-D221-42BD-9BBB-18E8CABD27F3"
-        },
-        {
-            "cssPosition":"145,-1,-1,319,238,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"319",
-                    "right":"-1",
-                    "top":"145",
-                    "width":"238"
-                },
-                "onActionMethodID":"BC0E86E2-5007-49FE-8771-8A944600A9A8",
-                "text":"Request focus false"
-            },
-            "name":"button_1c",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"72F40C45-08BE-47AB-9615-6514C66E5D23"
-        },
-        {
-            "cssPosition":"33,-1,-1,62,495,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"62",
-                    "right":"-1",
-                    "top":"33",
-                    "width":"495"
-                },
-                "variant":"LabelBackground"
-            },
-            "name":"label_focus",
-            "typeName":"bootstrapcomponents-label",
-            "typeid":47,
-            "uuid":"9770081A-4349-43F7-87AA-1A9AFB85EEBF"
-        },
-        {
-            "cssPosition":"145,-1,-1,62,238,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"62",
-                    "right":"-1",
-                    "top":"145",
-                    "width":"238"
-                },
-                "onActionMethodID":"9E7FD6F6-DC13-47A4-B24B-BAF107105F77",
-                "text":"Request focus true"
-            },
-            "name":"button_1",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"9992C0D9-E6FA-4BF7-BD74-AA3C0263E8B5"
-        },
-        {
-            "height":480,
-            "partType":5,
-            "typeid":19,
-            "uuid":"A52A4738-B161-46B0-892E-65E8428B50F0"
-        },
-        {
-            "cssPosition":"212,-1,-1,62,495,50",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"50",
-                    "left":"62",
-                    "right":"-1",
-                    "top":"212",
-                    "width":"495"
-                },
-                "dataProviderID":"selectDP",
-                "onDataChangeMethodID":"4AAEEBE8-C24E-44F9-95F9-420EA31A4024",
-                "onFocusGainedMethodID":"4E7411E4-C686-4CB4-A85E-B472F25CBC77",
-                "onFocusLostMethodID":"666AEE1A-9161-4EBB-B0D3-A531B004DC51",
-                "toolTipText":"Select 2 tooltip text",
-                "valuelistID":"3EFA6840-5DAD-407C-AE01-C79FE9B1AC85"
-            },
-            "name":"select2tokenizer_1",
-            "typeName":"servoyextra-select2tokenizer",
-            "typeid":47,
-            "uuid":"D37997D6-3694-48B7-A023-8A0D05FA9B35"
-        }
-    ],
-    "name":"select2tokenizerForm",
-    "navigatorID":"-1",
-    "showInMenu":true,
-    "typeid":3,
-    "uuid":"9DC83F95-2559-4035-A5BC-017C32ABCF45"
+cssPosition:"78,-1,-1,62,495,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"62",
+right:"-1",
+top:"78",
+width:"495"
+},
+variant:"LabelBackground"
+},
+name:"label_ondatachange",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"0715E235-D221-42BD-9BBB-18E8CABD27F3"
+},
+{
+cssPosition:"145,-1,-1,319,238,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"319",
+right:"-1",
+top:"145",
+width:"238"
+},
+onActionMethodID:"BC0E86E2-5007-49FE-8771-8A944600A9A8",
+text:"Request focus false"
+},
+name:"button_1c",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"72F40C45-08BE-47AB-9615-6514C66E5D23"
+},
+{
+cssPosition:"33,-1,-1,62,495,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"62",
+right:"-1",
+top:"33",
+width:"495"
+},
+variant:"LabelBackground"
+},
+name:"label_focus",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"9770081A-4349-43F7-87AA-1A9AFB85EEBF"
+},
+{
+cssPosition:"145,-1,-1,62,238,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"62",
+right:"-1",
+top:"145",
+width:"238"
+},
+onActionMethodID:"9E7FD6F6-DC13-47A4-B24B-BAF107105F77",
+text:"Request focus true"
+},
+name:"button_1",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"9992C0D9-E6FA-4BF7-BD74-AA3C0263E8B5"
+},
+{
+height:480,
+partType:5,
+typeid:19,
+uuid:"A52A4738-B161-46B0-892E-65E8428B50F0"
+},
+{
+cssPosition:"212,-1,-1,62,495,50",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"50",
+left:"62",
+right:"-1",
+top:"212",
+width:"495"
+},
+dataProviderID:"selectDP",
+onDataChangeMethodID:"4AAEEBE8-C24E-44F9-95F9-420EA31A4024",
+onFocusGainedMethodID:"4E7411E4-C686-4CB4-A85E-B472F25CBC77",
+onFocusLostMethodID:"666AEE1A-9161-4EBB-B0D3-A531B004DC51",
+toolTipText:"Select 2 tooltip text",
+valuelistID:"3EFA6840-5DAD-407C-AE01-C79FE9B1AC85"
+},
+name:"select2tokenizer_1",
+typeName:"servoyextra-select2tokenizer",
+typeid:47,
+uuid:"D37997D6-3694-48B7-A023-8A0D05FA9B35"
 }
+],
+name:"select2tokenizerForm",
+navigatorID:"-1",
+showInMenu:true,
+typeid:3,
+uuid:"9DC83F95-2559-4035-A5BC-017C32ABCF45"

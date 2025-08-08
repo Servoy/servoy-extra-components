@@ -1,112 +1,107 @@
+customProperties:"formComponent:false,useCssPosition:true",
+dataSource:"mem:pictures",
+encapsulation:108,
+items:[
 {
-    "customProperties":{
-        "formComponent":false,
-        "useCssPosition":true
-    },
-    "dataSource":"mem:pictures",
-    "encapsulation":108,
-    "items":[
-        {
-            "cssPosition":"504,-1,-1,33,238,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"33",
-                    "right":"-1",
-                    "top":"504",
-                    "width":"238"
-                },
-                "onActionMethodID":"0BFFC76E-217A-44B4-AFDB-F0E913876B92",
-                "text":"Refresh",
-                "toolTipText":"Refresh",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_refresh",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"167471BC-1312-47C6-9B22-8FCFF867F4F4"
-        },
-        {
-            "cssPosition":"469,-1,-1,33,238,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"33",
-                    "right":"-1",
-                    "top":"469",
-                    "width":"238"
-                },
-                "onActionMethodID":"EDF7A059-75A7-40E3-9C5E-967A1DA5D3B6",
-                "text":"Show Lightbox",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_showLightbox",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"1EFB9011-195C-4467-8852-1EE6D5B3361B"
-        },
-        {
-            "cssPosition":"411,-1,-1,31,579,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"31",
-                    "right":"-1",
-                    "top":"411",
-                    "width":"579"
-                },
-                "text":"",
-                "variant":"LabelBackground"
-            },
-            "name":"label_1",
-            "typeName":"bootstrapcomponents-label",
-            "typeid":47,
-            "uuid":"A4CF6066-A980-47D1-A4BA-247CC7A71A97"
-        },
-        {
-            "height":1000,
-            "partType":5,
-            "typeid":19,
-            "uuid":"EB61DF27-B72A-4D3B-8E8D-50D416ADDE0D"
-        },
-        {
-            "cssPosition":"27,-1,-1,30,580,348",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"348",
-                    "left":"30",
-                    "right":"-1",
-                    "top":"27",
-                    "width":"580"
-                },
-                "imagesDataset":[],
-                "imagesFoundset":{
-                    "dataproviders":{
-                        "caption":"name",
-                        "image":"picture",
-                        "imageId":"id",
-                        "thumbnail":"picture"
-                    },
-                    "foundsetSelector":"mem:pictures",
-                    "loadAllRecords":true
-                },
-                "onHoverButtonClicked":"0B0E8A61-2FC5-4FC4-95F0-C7357C3F927D"
-            },
-            "name":"lightboxgallery_17",
-            "typeName":"servoyextra-lightboxgallery",
-            "typeid":47,
-            "uuid":"F57011B2-1540-4118-BAEA-A8ED2FA626D8"
-        }
-    ],
-    "name":"lightboxgalleryForm",
-    "navigatorID":"-1",
-    "onShowMethodID":"EE3765D4-8B40-496D-AF30-1EC8608E85BB",
-    "showInMenu":true,
-    "size":"640,1000",
-    "typeid":3,
-    "uuid":"13F83776-DCE3-4EC5-A2F5-D70EFEF300E4"
+cssPosition:"504,-1,-1,33,238,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"33",
+right:"-1",
+top:"504",
+width:"238"
+},
+onActionMethodID:"0BFFC76E-217A-44B4-AFDB-F0E913876B92",
+text:"Refresh",
+toolTipText:"Refresh",
+variant:"BtnPrimary"
+},
+name:"button_refresh",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"167471BC-1312-47C6-9B22-8FCFF867F4F4"
+},
+{
+cssPosition:"469,-1,-1,33,238,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"33",
+right:"-1",
+top:"469",
+width:"238"
+},
+onActionMethodID:"EDF7A059-75A7-40E3-9C5E-967A1DA5D3B6",
+text:"Show Lightbox",
+variant:"BtnPrimary"
+},
+name:"button_showLightbox",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"1EFB9011-195C-4467-8852-1EE6D5B3361B"
+},
+{
+cssPosition:"411,-1,-1,31,579,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"31",
+right:"-1",
+top:"411",
+width:"579"
+},
+text:"",
+variant:"LabelBackground"
+},
+name:"label_1",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"A4CF6066-A980-47D1-A4BA-247CC7A71A97"
+},
+{
+height:1000,
+partType:5,
+typeid:19,
+uuid:"EB61DF27-B72A-4D3B-8E8D-50D416ADDE0D"
+},
+{
+cssPosition:"27,-1,-1,30,580,348",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"348",
+left:"30",
+right:"-1",
+top:"27",
+width:"580"
+},
+imagesDataset:[],
+imagesFoundset:{
+dataproviders:{
+caption:"name",
+image:"picture",
+imageId:"id",
+thumbnail:"picture"
+},
+foundsetSelector:"mem:pictures",
+loadAllRecords:true
+},
+onHoverButtonClicked:"0B0E8A61-2FC5-4FC4-95F0-C7357C3F927D"
+},
+name:"lightboxgallery_17",
+typeName:"servoyextra-lightboxgallery",
+typeid:47,
+uuid:"F57011B2-1540-4118-BAEA-A8ED2FA626D8"
 }
+],
+name:"lightboxgalleryForm",
+navigatorID:"-1",
+onShowMethodID:"EE3765D4-8B40-496D-AF30-1EC8608E85BB",
+showInMenu:true,
+size:"640,1000",
+typeid:3,
+uuid:"13F83776-DCE3-4EC5-A2F5-D70EFEF300E4"

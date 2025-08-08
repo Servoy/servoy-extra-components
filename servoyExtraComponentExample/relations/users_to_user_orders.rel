@@ -1,17 +1,10 @@
-{
-    "allowCreationRelatedRecords":true,
-    "foreignDataSource":"mem:user_orders",
-    "items":[
-        {
-            "foreignColumnName":"user_id",
-            "primaryDataProviderID":"user_id",
-            "typeid":23,
-            "uuid":"75216A4B-FAEE-420F-A801-4008E9F31986"
-        }
-    ],
-    "joinType":1,
-    "name":"users_to_user_orders",
-    "primaryDataSource":"mem:users",
-    "typeid":22,
-    "uuid":"AF14F927-4307-4A82-BCA2-EA8F2B5DD4E6"
-}
+allowCreationRelatedRecords:true,
+foreignDataSource:"mem:user_orders",
+items:[
+{foreignColumnName:"user_id",primaryDataProviderID:"user_id",typeid:23,uuid:"75216A4B-FAEE-420F-A801-4008E9F31986"}
+],
+joinType:1,
+name:"users_to_user_orders",
+primaryDataSource:"mem:users",
+typeid:22,
+uuid:"AF14F927-4307-4A82-BCA2-EA8F2B5DD4E6"

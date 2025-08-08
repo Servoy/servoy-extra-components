@@ -1,6 +1,5 @@
-{
-"addEmptyValue":1,
-"customValues":"select1\r\
+addEmptyValue:1,
+customValues:"select1\r\
 select2\r\
 select3\r\
 select4\r\
@@ -9,9 +8,8 @@ select6\r\
 select7\r\
 select8\r\
 select9",
-"displayValueType":12,
-"name":"selectValueList",
-"realValueType":12,
-"typeid":34,
-"uuid":"3EFA6840-5DAD-407C-AE01-C79FE9B1AC85"
-}
+displayValueType:12,
+name:"selectValueList",
+realValueType:12,
+typeid:34,
+uuid:"3EFA6840-5DAD-407C-AE01-C79FE9B1AC85"

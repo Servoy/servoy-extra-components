@@ -1,10 +1,6 @@
-{
-"customProperties":{
-"svygen_path":""
-},
-"firstFormID":"C45D8D17-1E8F-43E9-848E-57643018A57C",
-"styleSheetID":"75C9F3BA-1704-43BC-B966-ABFB4CAFA243",
-"typeid":43,
-"uuid":"85D7AF7D-5BEA-4716-AE77-7E8C840562B4",
-"version":"1.0"
-}
+customProperties:"svygen_path:\"\"",
+firstFormID:"C45D8D17-1E8F-43E9-848E-57643018A57C",
+styleSheetID:"75C9F3BA-1704-43BC-B966-ABFB4CAFA243",
+typeid:43,
+uuid:"85D7AF7D-5BEA-4716-AE77-7E8C840562B4",
+version:"1.0"

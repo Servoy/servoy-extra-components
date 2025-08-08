@@ -1,59 +1,54 @@
+customProperties:"formComponent:false,useCssPosition:true",
+encapsulation:108,
+items:[
 {
-    "customProperties":{
-        "formComponent":false,
-        "useCssPosition":true
-    },
-    "encapsulation":108,
-    "items":[
-        {
-            "cssPosition":"54,-1,-1,73,489,216",
-            "json":{
-                "centerImage":true,
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"216",
-                    "left":"73",
-                    "right":"-1",
-                    "top":"54",
-                    "width":"489"
-                },
-                "media":"B4C5E9B5-D750-482F-AA33-EE336920EDCC",
-                "onActionMethodID":"DA7A0C18-B418-4029-82D6-FF8D5A2F104A",
-                "onRightClickMethodID":"CCA77F90-5B58-4E0B-BA1E-34B74E6AA5D1"
-            },
-            "name":"imagelabel_10",
-            "typeName":"servoyextra-imagelabel",
-            "typeid":47,
-            "uuid":"49F4A121-798A-4E3F-B308-39FD8DAD84F1"
-        },
-        {
-            "cssPosition":"323,-1,-1,73,491,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"73",
-                    "right":"-1",
-                    "top":"323",
-                    "width":"491"
-                },
-                "variant":"LabelBackground"
-            },
-            "name":"label_15",
-            "typeName":"bootstrapcomponents-label",
-            "typeid":47,
-            "uuid":"9A307853-F732-4FCC-ABB4-4267E55E4414"
-        },
-        {
-            "height":480,
-            "partType":5,
-            "typeid":19,
-            "uuid":"A99B8E82-B8FA-4B0B-9DCA-BA589BA762DF"
-        }
-    ],
-    "name":"imagelabelForm",
-    "navigatorID":"-1",
-    "showInMenu":true,
-    "typeid":3,
-    "uuid":"CD47D2F5-5E9B-454D-8C6B-6DBD7DCA3FEA"
+cssPosition:"54,-1,-1,73,489,216",
+json:{
+centerImage:true,
+cssPosition:{
+bottom:"-1",
+height:"216",
+left:"73",
+right:"-1",
+top:"54",
+width:"489"
+},
+media:"B4C5E9B5-D750-482F-AA33-EE336920EDCC",
+onActionMethodID:"DA7A0C18-B418-4029-82D6-FF8D5A2F104A",
+onRightClickMethodID:"CCA77F90-5B58-4E0B-BA1E-34B74E6AA5D1"
+},
+name:"imagelabel_10",
+typeName:"servoyextra-imagelabel",
+typeid:47,
+uuid:"49F4A121-798A-4E3F-B308-39FD8DAD84F1"
+},
+{
+cssPosition:"323,-1,-1,73,491,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"73",
+right:"-1",
+top:"323",
+width:"491"
+},
+variant:"LabelBackground"
+},
+name:"label_15",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"9A307853-F732-4FCC-ABB4-4267E55E4414"
+},
+{
+height:480,
+partType:5,
+typeid:19,
+uuid:"A99B8E82-B8FA-4B0B-9DCA-BA589BA762DF"
 }
+],
+name:"imagelabelForm",
+navigatorID:"-1",
+showInMenu:true,
+typeid:3,
+uuid:"CD47D2F5-5E9B-454D-8C6B-6DBD7DCA3FEA"

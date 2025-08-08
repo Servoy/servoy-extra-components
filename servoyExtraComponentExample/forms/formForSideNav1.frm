@@ -1,39 +1,34 @@
+customProperties:"formComponent:false,useCssPosition:true",
+encapsulation:108,
+items:[
 {
-    "customProperties":{
-        "formComponent":false,
-        "useCssPosition":true
-    },
-    "encapsulation":108,
-    "items":[
-        {
-            "cssPosition":"51,-1,-1,44,323,38",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"38",
-                    "left":"44",
-                    "right":"-1",
-                    "top":"51",
-                    "width":"323"
-                },
-                "text":"Form for sidenav1",
-                "variant":"LabelH1"
-            },
-            "name":"label_5",
-            "typeName":"bootstrapcomponents-label",
-            "typeid":47,
-            "uuid":"56C876E3-980F-4358-B5D3-905C69228E04"
-        },
-        {
-            "height":480,
-            "partType":5,
-            "typeid":19,
-            "uuid":"D719BD4B-8761-4E5B-9580-BD1259AA858A"
-        }
-    ],
-    "name":"formForSideNav1",
-    "navigatorID":"-1",
-    "showInMenu":true,
-    "typeid":3,
-    "uuid":"3AFD901A-1552-4036-8268-AF5F1A48D859"
+cssPosition:"51,-1,-1,44,323,38",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"38",
+left:"44",
+right:"-1",
+top:"51",
+width:"323"
+},
+text:"Form for sidenav1",
+variant:"LabelH1"
+},
+name:"label_5",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"56C876E3-980F-4358-B5D3-905C69228E04"
+},
+{
+height:480,
+partType:5,
+typeid:19,
+uuid:"D719BD4B-8761-4E5B-9580-BD1259AA858A"
 }
+],
+name:"formForSideNav1",
+navigatorID:"-1",
+showInMenu:true,
+typeid:3,
+uuid:"3AFD901A-1552-4036-8268-AF5F1A48D859"

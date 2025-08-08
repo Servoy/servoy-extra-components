@@ -1,579 +1,574 @@
+customProperties:"formComponent:false,useCssPosition:true",
+encapsulation:108,
+items:[
 {
-    "customProperties":{
-        "formComponent":false,
-        "useCssPosition":true
-    },
-    "encapsulation":108,
-    "items":[
-        {
-            "cssPosition":"398,-1,-1,36,559,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"36",
-                    "right":"-1",
-                    "top":"398",
-                    "width":"559"
-                },
-                "text":"",
-                "variant":"LabelBackground"
-            },
-            "name":"label_2",
-            "typeName":"bootstrapcomponents-label",
-            "typeid":47,
-            "uuid":"01020827-CF3F-409E-B8B0-CC02758261E8"
-        },
-        {
-            "cssPosition":"509,-1,-1,645,298,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"509",
-                    "width":"298"
-                },
-                "onActionMethodID":"3A4082ED-73E5-4D02-B1E7-8C51CB626299",
-                "text":"Set Method To Call On DoubleClick",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_setMethodToCallOnDoubleClick",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"13ABC91B-E626-46B0-8CE4-FA6B8F304E32"
-        },
-        {
-            "cssPosition":"435,-1,-1,645,298,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"435",
-                    "width":"298"
-                },
-                "onActionMethodID":"4F894ACC-2E93-4B47-B78C-D12AA88DDC9A",
-                "text":"Set Image URL Dataprovider",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_setImageURLDataprovider",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"13F41FE1-5DBB-4DE7-9A49-E88231C23EFA"
-        },
-        {
-            "cssPosition":"879,-1,-1,645,298,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"879",
-                    "width":"298"
-                },
-                "onActionMethodID":"C45612BD-C0C4-4090-BA58-25F60226B706",
-                "text":"Set CheckBox Autoselects Children",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_setCheckBoxAutoselectsChildren",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"15134823-EBF0-4D6E-A69D-F287ABFB54FE"
-        },
-        {
-            "cssPosition":"324,-1,-1,645,298,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"324",
-                    "width":"298"
-                },
-                "onActionMethodID":"079C74C0-69FF-46D4-AE7A-6C0DBC60CA30",
-                "text":"Set Actions Callback",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_setActionsCallBack",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"1C5D6EBE-0EB7-468D-8FCD-E9CA290068EA"
-        },
-        {
-            "cssPosition":"805,-1,-1,645,298,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"805",
-                    "width":"298"
-                },
-                "onActionMethodID":"E33A9A43-54F1-4243-9EFF-C0322FED8615",
-                "text":"Update CheckBox Values",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_updateCheckBoxValues",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"266B3C1E-BA32-4596-B648-19E1A5C35DCB"
-        },
-        {
-            "cssPosition":"472,-1,-1,36,559,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"36",
-                    "right":"-1",
-                    "top":"472",
-                    "width":"559"
-                },
-                "text":"",
-                "variant":"LabelBackground"
-            },
-            "name":"label_2cc",
-            "typeName":"bootstrapcomponents-label",
-            "typeid":47,
-            "uuid":"28F604E2-C4A0-4DF9-95EB-EB73E5B2DBD4"
-        },
-        {
-            "cssPosition":"731,-1,-1,645,298,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"731",
-                    "width":"298"
-                },
-                "onActionMethodID":"E7D8802D-E287-4F9D-BF2C-A0808FFBF8D8",
-                "text":"Set Has CheckBoxValue",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_setHasCheckBoxValue",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"35D4E80A-E0A5-4C03-BBC4-08F5D040846C"
-        },
-        {
-            "cssPosition":"546,-1,-1,645,298,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"546",
-                    "width":"298"
-                },
-                "onActionMethodID":"86DBA958-7826-43A4-B772-88B04975E342",
-                "text":"Set Method To Call On RightClick",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_setMethodToCallOnRightClick",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"3D36074B-C84B-4ACA-B71A-2F9577E1EFF2"
-        },
-        {
-            "cssPosition":"250,-1,-1,645,298,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"250",
-                    "width":"298"
-                },
-                "onActionMethodID":"96DDB8A1-7154-4D31-8D1F-06B2DEA99774",
-                "text":"Set Callback Info",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_setCallBackInfo",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"3F3838C4-712B-4E95-8559-D0347E09DBF7"
-        },
-        {
-            "cssPosition":"583,-1,-1,645,298,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"583",
-                    "width":"298"
-                },
-                "onActionMethodID":"C7C708A2-5165-493D-9265-C89DF0637F31",
-                "text":"Set Selection Path",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_setSelectionPath",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"46F67FFF-8CFB-41B1-AB30-22D29B0B3103"
-        },
-        {
-            "cssPosition":"768,-1,-1,645,298,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"768",
-                    "width":"298"
-                },
-                "onActionMethodID":"33459BB4-DFC4-49D0-B2D4-5654CF0CF6B7",
-                "text":"Set Initial CheckBox Values",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_setInitialCheckBoxValues",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"5A13353B-AB56-47EF-AC2E-DA451BCBE338"
-        },
-        {
-            "cssPosition":"65,-1,-1,645,298,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"65",
-                    "width":"298"
-                },
-                "onActionMethodID":"07229913-EA05-48D1-A799-F41BBAD668E7",
-                "text":"Refresh",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_refresh",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"5A920F8C-7F86-4266-A13F-53FAB2F09E3E"
-        },
-        {
-            "cssPosition":"28,-1,-1,645,298,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"28",
-                    "width":"298"
-                },
-                "onActionMethodID":"A4348819-DA1A-4EE1-A246-CB227374B13B",
-                "text":"Get Roots",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_getRoots",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"620DA51C-E7D2-4652-87A3-631BD4BD3E7E"
-        },
-        {
-            "cssPosition":"657,-1,-1,645,298,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"657",
-                    "width":"298"
-                },
-                "onActionMethodID":"F5718683-AAB0-4537-8C1D-6C27D0CB4FBB",
-                "text":"Create Relation Info",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_createRelationInfo",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"77D036E7-DEEA-4B27-B6C9-752568BA5FF6"
-        },
-        {
-            "cssPosition":"620,-1,-1,645,298,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"620",
-                    "width":"298"
-                },
-                "onActionMethodID":"A11E015A-D6D3-475F-BBAD-3E5193D18873",
-                "text":"Get Selection Path",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_getSelectionPath",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"7BECA1B2-32CE-4A1D-84DB-0A9BB91D646C"
-        },
-        {
-            "cssPosition":"139,-1,-1,645,298,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"139",
-                    "width":"298"
-                },
-                "onActionMethodID":"946BE957-3C51-450A-B0C4-44D2A0E92C42",
-                "text":"Set Expand Node",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_setExpandNode",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"7BFBB678-31FF-47EF-9D3A-D7EEEBE11B6C"
-        },
-        {
-            "cssPosition":"435,-1,-1,36,559,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"36",
-                    "right":"-1",
-                    "top":"435",
-                    "width":"559"
-                },
-                "text":"",
-                "variant":"LabelBackground"
-            },
-            "name":"label_2c",
-            "typeName":"bootstrapcomponents-label",
-            "typeid":47,
-            "uuid":"7E27689F-FD6A-411C-8066-E1C13FE2ACCC"
-        },
-        {
-            "cssPosition":"28,-1,-1,36,559,349",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"349",
-                    "left":"36",
-                    "right":"-1",
-                    "top":"28",
-                    "width":"559"
-                },
-                "onDrop":"08E22F76-F260-43DE-A471-BCFB9D430649",
-                "onReady":"D84D3CB1-ED0A-4681-B181-8D96373CBD70",
-                "onRowDrop":"BE932C45-4C99-4B8E-916F-F9B6EC8A8B61"
-            },
-            "name":"dbtreeview_1",
-            "typeName":"servoyextra-dbtreeview",
-            "typeid":47,
-            "uuid":"8F9E4162-8733-4C01-8691-BC47E0640A64"
-        },
-        {
-            "cssPosition":"694,-1,-1,645,298,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"694",
-                    "width":"298"
-                },
-                "onActionMethodID":"8EDC08A1-BA29-46B9-A0A4-E86223A64E5F",
-                "text":"Set N Relation Infos",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_setNRelationInfos",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"A08E3A73-FE83-460B-AE28-15FA98590FDF"
-        },
-        {
-            "cssPosition":"287,-1,-1,645,298,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"287",
-                    "width":"298"
-                },
-                "onActionMethodID":"ECA9FF94-DBFF-4A29-8CAA-1D90F6F82839",
-                "text":"Set Checkbox Value Dataprovider",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_setCheckboxValueDataprovider",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"A0CC588B-7F38-4C8E-A5CF-60CB9C07D018"
-        },
-        {
-            "cssPosition":"102,-1,-1,645,298,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"102",
-                    "width":"298"
-                },
-                "onActionMethodID":"E9E1E85D-2E2B-4E03-861C-A6CF815B9010",
-                "text":"Is Node Expanded",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_isNodeExpanded",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"B077C4C1-E927-4E31-8099-4227EFED4BAD"
-        },
-        {
-            "cssPosition":"472,-1,-1,645,298,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"472",
-                    "width":"298"
-                },
-                "onActionMethodID":"CBF62A35-F732-4DAC-9353-448285ACA7C1",
-                "text":"Set Child Sort Dataprovider",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_setChildSortDataprovider",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"B3D0E76C-FC8D-42C7-BD0F-A94911C9909D"
-        },
-        {
-            "cssPosition":"842,-1,-1,645,298,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"842",
-                    "width":"298"
-                },
-                "onActionMethodID":"B5DF1F35-CBE9-4719-B5DA-2E60F1B39123",
-                "text":"Get CheckBoxValues",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_getCheckBoxValues",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"C19C47B8-C933-47B9-A1DB-65AC978E9303"
-        },
-        {
-            "cssPosition":"398,-1,-1,645,298,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"398",
-                    "width":"298"
-                },
-                "onActionMethodID":"ABF1376E-18F1-4FDD-BE22-E9CBAEFF6133",
-                "text":"Set ToolTip Text Dataprovider",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_setToolTipTextDataprovider",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"CA30AC4A-67AA-485D-A531-514D34643563"
-        },
-        {
-            "cssPosition":"213,-1,-1,645,298,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"213",
-                    "width":"298"
-                },
-                "onActionMethodID":"1B9BEE00-DEB5-47A5-BA76-0ED7D1FCA1A5",
-                "text":"Set Has Checkbox Dataprovider",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_setHasCheckBoxDataprovider",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"CDAC1534-AF15-4C08-93E4-44694816A144"
-        },
-        {
-            "height":1200,
-            "partType":5,
-            "typeid":19,
-            "uuid":"E5CA444F-8767-4011-B237-9026C0765462"
-        },
-        {
-            "cssPosition":"176,-1,-1,645,298,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"176",
-                    "width":"298"
-                },
-                "onActionMethodID":"2A4CE9F5-7520-4862-B906-0BDFF18E0D28",
-                "text":"Set Node Level Visible",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_setNodeLevelVisible",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"E6DF39D3-EF37-462C-97D6-A839B27E9644"
-        },
-        {
-            "cssPosition":"361,-1,-1,645,298,30",
-            "json":{
-                "cssPosition":{
-                    "bottom":"-1",
-                    "height":"30",
-                    "left":"645",
-                    "right":"-1",
-                    "top":"361",
-                    "width":"298"
-                },
-                "onActionMethodID":"0B03B346-63FF-4729-802C-7C101EE9C608",
-                "text":"Set Method To Call on Checkbox Change",
-                "variant":"BtnPrimary"
-            },
-            "name":"button_setMethodToCallOnCheckBoxChange",
-            "typeName":"bootstrapcomponents-button",
-            "typeid":47,
-            "uuid":"FF12E081-1113-4067-8CFA-47D98FCF8DEA"
-        }
-    ],
-    "name":"dbtreeviewForm",
-    "navigatorID":"-1",
-    "onShowMethodID":"A485C631-B49C-4F19-A0CC-6ED0DDF437D4",
-    "showInMenu":true,
-    "size":"1200,1200",
-    "typeid":3,
-    "uuid":"E7EB0835-130C-4315-A0F0-EA9294D4A31C"
+cssPosition:"398,-1,-1,36,559,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"36",
+right:"-1",
+top:"398",
+width:"559"
+},
+text:"",
+variant:"LabelBackground"
+},
+name:"label_2",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"01020827-CF3F-409E-B8B0-CC02758261E8"
+},
+{
+cssPosition:"509,-1,-1,645,298,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"509",
+width:"298"
+},
+onActionMethodID:"3A4082ED-73E5-4D02-B1E7-8C51CB626299",
+text:"Set Method To Call On DoubleClick",
+variant:"BtnPrimary"
+},
+name:"button_setMethodToCallOnDoubleClick",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"13ABC91B-E626-46B0-8CE4-FA6B8F304E32"
+},
+{
+cssPosition:"435,-1,-1,645,298,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"435",
+width:"298"
+},
+onActionMethodID:"4F894ACC-2E93-4B47-B78C-D12AA88DDC9A",
+text:"Set Image URL Dataprovider",
+variant:"BtnPrimary"
+},
+name:"button_setImageURLDataprovider",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"13F41FE1-5DBB-4DE7-9A49-E88231C23EFA"
+},
+{
+cssPosition:"879,-1,-1,645,298,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"879",
+width:"298"
+},
+onActionMethodID:"C45612BD-C0C4-4090-BA58-25F60226B706",
+text:"Set CheckBox Autoselects Children",
+variant:"BtnPrimary"
+},
+name:"button_setCheckBoxAutoselectsChildren",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"15134823-EBF0-4D6E-A69D-F287ABFB54FE"
+},
+{
+cssPosition:"324,-1,-1,645,298,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"324",
+width:"298"
+},
+onActionMethodID:"079C74C0-69FF-46D4-AE7A-6C0DBC60CA30",
+text:"Set Actions Callback",
+variant:"BtnPrimary"
+},
+name:"button_setActionsCallBack",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"1C5D6EBE-0EB7-468D-8FCD-E9CA290068EA"
+},
+{
+cssPosition:"805,-1,-1,645,298,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"805",
+width:"298"
+},
+onActionMethodID:"E33A9A43-54F1-4243-9EFF-C0322FED8615",
+text:"Update CheckBox Values",
+variant:"BtnPrimary"
+},
+name:"button_updateCheckBoxValues",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"266B3C1E-BA32-4596-B648-19E1A5C35DCB"
+},
+{
+cssPosition:"472,-1,-1,36,559,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"36",
+right:"-1",
+top:"472",
+width:"559"
+},
+text:"",
+variant:"LabelBackground"
+},
+name:"label_2cc",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"28F604E2-C4A0-4DF9-95EB-EB73E5B2DBD4"
+},
+{
+cssPosition:"731,-1,-1,645,298,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"731",
+width:"298"
+},
+onActionMethodID:"E7D8802D-E287-4F9D-BF2C-A0808FFBF8D8",
+text:"Set Has CheckBoxValue",
+variant:"BtnPrimary"
+},
+name:"button_setHasCheckBoxValue",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"35D4E80A-E0A5-4C03-BBC4-08F5D040846C"
+},
+{
+cssPosition:"546,-1,-1,645,298,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"546",
+width:"298"
+},
+onActionMethodID:"86DBA958-7826-43A4-B772-88B04975E342",
+text:"Set Method To Call On RightClick",
+variant:"BtnPrimary"
+},
+name:"button_setMethodToCallOnRightClick",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"3D36074B-C84B-4ACA-B71A-2F9577E1EFF2"
+},
+{
+cssPosition:"250,-1,-1,645,298,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"250",
+width:"298"
+},
+onActionMethodID:"96DDB8A1-7154-4D31-8D1F-06B2DEA99774",
+text:"Set Callback Info",
+variant:"BtnPrimary"
+},
+name:"button_setCallBackInfo",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"3F3838C4-712B-4E95-8559-D0347E09DBF7"
+},
+{
+cssPosition:"583,-1,-1,645,298,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"583",
+width:"298"
+},
+onActionMethodID:"C7C708A2-5165-493D-9265-C89DF0637F31",
+text:"Set Selection Path",
+variant:"BtnPrimary"
+},
+name:"button_setSelectionPath",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"46F67FFF-8CFB-41B1-AB30-22D29B0B3103"
+},
+{
+cssPosition:"768,-1,-1,645,298,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"768",
+width:"298"
+},
+onActionMethodID:"33459BB4-DFC4-49D0-B2D4-5654CF0CF6B7",
+text:"Set Initial CheckBox Values",
+variant:"BtnPrimary"
+},
+name:"button_setInitialCheckBoxValues",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"5A13353B-AB56-47EF-AC2E-DA451BCBE338"
+},
+{
+cssPosition:"65,-1,-1,645,298,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"65",
+width:"298"
+},
+onActionMethodID:"07229913-EA05-48D1-A799-F41BBAD668E7",
+text:"Refresh",
+variant:"BtnPrimary"
+},
+name:"button_refresh",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"5A920F8C-7F86-4266-A13F-53FAB2F09E3E"
+},
+{
+cssPosition:"28,-1,-1,645,298,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"28",
+width:"298"
+},
+onActionMethodID:"A4348819-DA1A-4EE1-A246-CB227374B13B",
+text:"Get Roots",
+variant:"BtnPrimary"
+},
+name:"button_getRoots",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"620DA51C-E7D2-4652-87A3-631BD4BD3E7E"
+},
+{
+cssPosition:"657,-1,-1,645,298,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"657",
+width:"298"
+},
+onActionMethodID:"F5718683-AAB0-4537-8C1D-6C27D0CB4FBB",
+text:"Create Relation Info",
+variant:"BtnPrimary"
+},
+name:"button_createRelationInfo",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"77D036E7-DEEA-4B27-B6C9-752568BA5FF6"
+},
+{
+cssPosition:"620,-1,-1,645,298,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"620",
+width:"298"
+},
+onActionMethodID:"A11E015A-D6D3-475F-BBAD-3E5193D18873",
+text:"Get Selection Path",
+variant:"BtnPrimary"
+},
+name:"button_getSelectionPath",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"7BECA1B2-32CE-4A1D-84DB-0A9BB91D646C"
+},
+{
+cssPosition:"139,-1,-1,645,298,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"139",
+width:"298"
+},
+onActionMethodID:"946BE957-3C51-450A-B0C4-44D2A0E92C42",
+text:"Set Expand Node",
+variant:"BtnPrimary"
+},
+name:"button_setExpandNode",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"7BFBB678-31FF-47EF-9D3A-D7EEEBE11B6C"
+},
+{
+cssPosition:"435,-1,-1,36,559,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"36",
+right:"-1",
+top:"435",
+width:"559"
+},
+text:"",
+variant:"LabelBackground"
+},
+name:"label_2c",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"7E27689F-FD6A-411C-8066-E1C13FE2ACCC"
+},
+{
+cssPosition:"28,-1,-1,36,559,349",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"349",
+left:"36",
+right:"-1",
+top:"28",
+width:"559"
+},
+onDrop:"08E22F76-F260-43DE-A471-BCFB9D430649",
+onReady:"D84D3CB1-ED0A-4681-B181-8D96373CBD70",
+onRowDrop:"BE932C45-4C99-4B8E-916F-F9B6EC8A8B61"
+},
+name:"dbtreeview_1",
+typeName:"servoyextra-dbtreeview",
+typeid:47,
+uuid:"8F9E4162-8733-4C01-8691-BC47E0640A64"
+},
+{
+cssPosition:"694,-1,-1,645,298,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"694",
+width:"298"
+},
+onActionMethodID:"8EDC08A1-BA29-46B9-A0A4-E86223A64E5F",
+text:"Set N Relation Infos",
+variant:"BtnPrimary"
+},
+name:"button_setNRelationInfos",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"A08E3A73-FE83-460B-AE28-15FA98590FDF"
+},
+{
+cssPosition:"287,-1,-1,645,298,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"287",
+width:"298"
+},
+onActionMethodID:"ECA9FF94-DBFF-4A29-8CAA-1D90F6F82839",
+text:"Set Checkbox Value Dataprovider",
+variant:"BtnPrimary"
+},
+name:"button_setCheckboxValueDataprovider",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"A0CC588B-7F38-4C8E-A5CF-60CB9C07D018"
+},
+{
+cssPosition:"102,-1,-1,645,298,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"102",
+width:"298"
+},
+onActionMethodID:"E9E1E85D-2E2B-4E03-861C-A6CF815B9010",
+text:"Is Node Expanded",
+variant:"BtnPrimary"
+},
+name:"button_isNodeExpanded",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"B077C4C1-E927-4E31-8099-4227EFED4BAD"
+},
+{
+cssPosition:"472,-1,-1,645,298,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"472",
+width:"298"
+},
+onActionMethodID:"CBF62A35-F732-4DAC-9353-448285ACA7C1",
+text:"Set Child Sort Dataprovider",
+variant:"BtnPrimary"
+},
+name:"button_setChildSortDataprovider",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"B3D0E76C-FC8D-42C7-BD0F-A94911C9909D"
+},
+{
+cssPosition:"842,-1,-1,645,298,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"842",
+width:"298"
+},
+onActionMethodID:"B5DF1F35-CBE9-4719-B5DA-2E60F1B39123",
+text:"Get CheckBoxValues",
+variant:"BtnPrimary"
+},
+name:"button_getCheckBoxValues",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"C19C47B8-C933-47B9-A1DB-65AC978E9303"
+},
+{
+cssPosition:"398,-1,-1,645,298,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"398",
+width:"298"
+},
+onActionMethodID:"ABF1376E-18F1-4FDD-BE22-E9CBAEFF6133",
+text:"Set ToolTip Text Dataprovider",
+variant:"BtnPrimary"
+},
+name:"button_setToolTipTextDataprovider",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"CA30AC4A-67AA-485D-A531-514D34643563"
+},
+{
+cssPosition:"213,-1,-1,645,298,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"213",
+width:"298"
+},
+onActionMethodID:"1B9BEE00-DEB5-47A5-BA76-0ED7D1FCA1A5",
+text:"Set Has Checkbox Dataprovider",
+variant:"BtnPrimary"
+},
+name:"button_setHasCheckBoxDataprovider",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"CDAC1534-AF15-4C08-93E4-44694816A144"
+},
+{
+height:1200,
+partType:5,
+typeid:19,
+uuid:"E5CA444F-8767-4011-B237-9026C0765462"
+},
+{
+cssPosition:"176,-1,-1,645,298,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"176",
+width:"298"
+},
+onActionMethodID:"2A4CE9F5-7520-4862-B906-0BDFF18E0D28",
+text:"Set Node Level Visible",
+variant:"BtnPrimary"
+},
+name:"button_setNodeLevelVisible",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"E6DF39D3-EF37-462C-97D6-A839B27E9644"
+},
+{
+cssPosition:"361,-1,-1,645,298,30",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"30",
+left:"645",
+right:"-1",
+top:"361",
+width:"298"
+},
+onActionMethodID:"0B03B346-63FF-4729-802C-7C101EE9C608",
+text:"Set Method To Call on Checkbox Change",
+variant:"BtnPrimary"
+},
+name:"button_setMethodToCallOnCheckBoxChange",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"FF12E081-1113-4067-8CFA-47D98FCF8DEA"
 }
+],
+name:"dbtreeviewForm",
+navigatorID:"-1",
+onShowMethodID:"A485C631-B49C-4F19-A0CC-6ED0DDF437D4",
+showInMenu:true,
+size:"1200,1200",
+typeid:3,
+uuid:"E7EB0835-130C-4315-A0F0-EA9294D4A31C"

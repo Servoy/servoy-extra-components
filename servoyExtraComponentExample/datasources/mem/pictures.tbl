@@ -1,44 +1,42 @@
+columns:{
+columns:[
 {
-    "columns":{
-        "columns":[
-            {
-                "allowNull":false,
-                "creationOrderIndex":-1,
-                "dataType":12,
-                "flags":5,
-                "length":36,
-                "name":"id"
-            },
-            {
-                "allowNull":true,
-                "creationOrderIndex":-1,
-                "dataType":12,
-                "length":50,
-                "name":"name"
-            },
-            {
-                "allowNull":true,
-                "creationOrderIndex":-1,
-                "dataType":-4,
-                "name":"picture"
-            },
-            {
-                "allowNull":true,
-                "creationOrderIndex":-1,
-                "dataType":4,
-                "name":"sort"
-            },
-            {
-                "allowNull":true,
-                "creationOrderIndex":-1,
-                "dataType":-4,
-                "name":"thumbnail"
-            }
-        ],
-        "name":"pictures",
-        "tableType":0
-    },
-    "dataSource":"mem:pictures",
-    "typeid":39,
-    "uuid":"600B823A-302A-4F96-8157-E2C8A143970A"
+allowNull:false,
+creationOrderIndex:-1,
+dataType:12,
+flags:5,
+length:36,
+name:"id"
+},
+{
+allowNull:true,
+creationOrderIndex:-1,
+dataType:12,
+length:50,
+name:"name"
+},
+{
+allowNull:true,
+creationOrderIndex:-1,
+dataType:-4,
+name:"picture"
+},
+{
+allowNull:true,
+creationOrderIndex:-1,
+dataType:4,
+name:"sort"
+},
+{
+allowNull:true,
+creationOrderIndex:-1,
+dataType:-4,
+name:"thumbnail"
 }
+],
+name:"pictures",
+tableType:0
+},
+dataSource:"mem:pictures",
+typeid:39,
+uuid:"600B823A-302A-4F96-8157-E2C8A143970A"
