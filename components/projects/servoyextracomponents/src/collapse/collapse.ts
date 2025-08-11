@@ -363,8 +363,8 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 		}
 	}
     
-    private checkIfCollapsibleHaveUniqueIds(collapsibles): boolean | undefined {
-        if (!collapsibles || collapsibles.length === 0) return;
+    private checkIfCollapsibleHaveUniqueIds(collapsibles): boolean {
+        if (!collapsibles || collapsibles.length === 0) return false;
 
         let returnValue = false;
         const ids = {};
