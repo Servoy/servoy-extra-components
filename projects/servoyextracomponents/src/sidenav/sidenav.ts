@@ -40,9 +40,9 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	@Input() menu: Array<MenuItem>;
 	@Input() servoyMenu: IJSMenu;
 
-	@Input() onMenuItemSelected: (menuItem: any, event: MouseEvent) => Promise<boolean>;
-	@Input() onMenuItemExpanded: (menuItem: any, event: MouseEvent) => Promise<boolean>;
-	@Input() onMenuItemCollapsed: (menuItem: any, event: MouseEvent) => Promise<boolean>;
+	@Input() onMenuItemSelected: (id: string, event: MouseEvent) => Promise<boolean>;
+	@Input() onMenuItemExpanded: (id: string, event: MouseEvent) => Promise<boolean>;
+	@Input() onMenuItemCollapsed: (id: string, event: MouseEvent) => Promise<boolean>;
 	@Input() onOpenToggled: (event: MouseEvent) => void;
 
 	@ContentChild(TemplateRef, { static: true }) templateRef: TemplateRef<any>;
@@ -481,7 +481,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		};
 
 		if (preventSelectHandler !== true && this.onMenuItemSelected) { // change selection only if onMenuItemSelected allows it
-			this.onMenuItemSelected(this.servoyMenu ? { svyType: 'JSMenuItem', id: item.id, menuid: this.servoyMenu.name } : item.id, event).then((result) => {
+			this.onMenuItemSelected(item.id, event).then((result) => {
 				if (result !== false) {
 					confirmSelection();
 				}
@@ -523,7 +523,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 
 		// if is expanded
 		if (preventHandler !== true && this.onMenuItemExpanded) { // change selection only if onMenuItemSelected allows it
-			this.onMenuItemExpanded(this.servoyMenu ? { svyType: 'JSMenuItem', id: item.id, menuid: this.servoyMenu.name } : item.id, event).then(() => {
+			this.onMenuItemExpanded(item.id, event).then(() => {
 				// if (result == true) {
 				this.setExpandedIndex(level, index, item);
 				// }
@@ -558,7 +558,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 
 		// call handler onMenuItemCollapsed
 		if (preventHandler !== true && this.onMenuItemCollapsed) {
-			this.onMenuItemCollapsed(this.servoyMenu ? { svyType: 'JSMenuItem', id: item.id, menuid: this.servoyMenu.name } : item.id, event).then(() => {
+			this.onMenuItemCollapsed(item.id, event).then(() => {
 				// if (result == true) {
 				this.clearExpandedIndex(level - 1);
 				this.expandedIndexChange.emit(JSON.stringify(this.expandedIndex));

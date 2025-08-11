@@ -48,20 +48,20 @@
 	{
 	        "onMenuItemSelected" 		: {
 										        "parameters" : [
-										        	{ "name" : "menuItem", "type" : "object" },
+										        	{ "name" : "menuItemId", "type" : "object" },
 										            { "name" : "event", "type" : "JSEvent" }
 										        ],
 										        "returns" : "boolean"
 										  },
 			"onMenuItemExpanded" 		: {
 										        "parameters" : [
-										        	{ "name" : "menuItem", "type" : "object" },
+										        	{ "name" : "menuItemId", "type" : "object" },
 										            { "name" : "event", "type" : "JSEvent" }
 										        ]
 										  },
 			"onMenuItemCollapsed" 		: {
 										        "parameters" : [
-										        	{ "name" : "menuItem", "type" : "object" },
+										        	{ "name" : "menuItemId", "type" : "object" },
 										            { "name" : "event", "type" : "JSEvent" }
 										        ]
 										  },
