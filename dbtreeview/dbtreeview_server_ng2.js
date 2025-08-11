@@ -22,7 +22,7 @@ $scope.api.removeAllRoots = function() {
 }
 
 $scope.api.getCheckBoxValues = function(datasource) {
-	$scope.model.foundsettree.getCheckedPks(datasource);
+	return $scope.model.foundsettree.getCheckedPks(datasource);
 }
 
 $scope.api.updateCheckBoxValues = function(datasource, pks, state) {

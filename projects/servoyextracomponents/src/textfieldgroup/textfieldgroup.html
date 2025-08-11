@@ -12,7 +12,8 @@
 		[svyFormat]="format"
 		[svyStartEdit]="'dataProviderID'" 
 		[hostComponent]="this"
-		[sabloTabseq]="tabSeq" 
+		[sabloTabseq]="tabSeq"
+        [readOnly]="readOnly"
 		#input />
 </div>
 <div *ngIf="showError" class="textfieldgroup-msg-error">{{invalidEmailMessage}}</div>

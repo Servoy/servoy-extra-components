@@ -400,7 +400,10 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
             } else if (event.keyCode === 38) { // ARROW UP KEY
                 if (this.keyCodeSettings && !this.keyCodeSettings.arrowUp) return;
                 if (selection > 0) {
-                    this.foundset.requestSelectionUpdate([selection - 1]);
+                    this.foundset.requestSelectionUpdate([selection - 1]).then(() => {
+                        this.scrollToSelectionNeeded = true;
+                        this.scrollToSelectionIfNeeded();
+                    });
                     if ((fs.viewPort.startIndex) <= selection - 1) {
                         this.toBottom = false;
                     } else this.modifyPage(-1);
@@ -410,7 +413,10 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
             } else if (event.keyCode === 40) { // ARROW DOWN KEY
                 if (this.keyCodeSettings && !this.keyCodeSettings.arrowDown) return;
                 if (selection < fs.serverSize - 1) {
-                    this.foundset.requestSelectionUpdate([selection + 1]);
+                    this.foundset.requestSelectionUpdate([selection + 1]).then (() => {
+                        this.scrollToSelectionNeeded = true;
+                        this.scrollToSelectionIfNeeded();
+                    });
                     if ((fs.viewPort.startIndex + fs.viewPort.size) > selection + 1) {
                         this.toBottom = true;
                     } else this.modifyPage(1);
@@ -418,7 +424,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                 }
                 event.preventDefault();
             } else if (event.keyCode === 13) { // ENTER KEY
-                if (!this.keyCodeSettings.enter) return;
+                if (this.keyCodeSettings && !this.keyCodeSettings.enter) return;
                 if (this.onCellClick) {
                     this.onCellClick(selection + 1, null, fs.viewPort.rows[selection]);
                 }
@@ -442,8 +448,13 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                     }
                     this.runWhenThereIsNoPendingLoadRequest(loadFirstRecordsIfNeeded);
                 } else if (allowedBounds.size > 0) {
-                    if (selection !== allowedBounds.startIdx) fs.requestSelectionUpdate([allowedBounds.startIdx]);
-                    else {
+                    if (selection !== allowedBounds.startIdx){ 
+                        fs.requestSelectionUpdate([allowedBounds.startIdx]).then(() => {
+                            // selection did not change but we still need to scroll to it
+                            this.scrollToSelectionNeeded = true;
+                            this.scrollToSelectionIfNeeded();
+                        });
+                    } else {
                         // selection did not change but we still need to scroll to it
                         this.scrollToSelectionNeeded = true;
                         this.log.debug('svy extra table * HOME key 2; scrollToSelectionNeeded = true');
@@ -475,8 +486,13 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                     };
                     this.runWhenThereIsNoPendingLoadRequest(loadLastRecordsIfNeeded);
                 } else if (allowedBounds.size > 0) {
-                    if (selection !== allowedBounds.startIdx + allowedBounds.size - 1) fs.requestSelectionUpdate([allowedBounds.startIdx + allowedBounds.size - 1]);
-                    else {
+                    if (selection !== allowedBounds.startIdx + allowedBounds.size - 1) {
+                        fs.requestSelectionUpdate([allowedBounds.startIdx + allowedBounds.size - 1]).then(() => {
+                            // selection did not change but we still need to scroll to it
+                            this.scrollToSelectionNeeded = true;
+                            this.scrollToSelectionIfNeeded();
+                        });
+                    } else {
                         // selection did not change but we still need to scroll to it
                         this.scrollToSelectionNeeded = true;
                         this.log.debug('svy extra table * END key 2; scrollToSelectionNeeded = true');

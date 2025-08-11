@@ -279,7 +279,17 @@ var handlers = {
      * @param {Object} highValue The high value when the user stopped dragging the pointer in a range slider.
      * @param {String} pointerType Either "value" or "high", indicating which pointer was used.
      */
-    onSlideEnd: function() {}
+    onSlideEnd: function() {},
+    
+    /**
+     * Called when user clicks on a tick or drags the slider pointer to a tick
+     *
+     * @param {Object} value The value when the user ticked/ dragged the pointer of a non-range slider or the low value in a range slider.
+     * @param {Object} highValue The high value when the user ticked/ dragged the pointer in a range slider.
+     * @param {String} pointerType Either "value" or "high", indicating which pointer was used.
+     * @param {Boolean} rightToLeft true - if the slider is displayed right to left, false - if the slider is displayed left to right.
+     */
+    onTick: function() {}
 };
 
 /**

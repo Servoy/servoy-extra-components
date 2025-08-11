@@ -70,7 +70,7 @@ export class ServoyExtraYoutubeVideoEmbedder extends ServoyBaseComponent<HTMLIFr
         if (!this.allowFullScreen) params += "&fs=0";
         if (!this.showControls) params += "&controls=0";
         if (this.modestBranding) params += "&modestbranding=1";
-        if (this.autoPlay) params += "&autoplay=1";
+        if (this.autoPlay) params += "&autoplay=1&mute=1"; // autoplay requires mute
         if (!this.showRelatedVideosAtEnd) params += "&rel=0";
 
         if (params.length > 0) urlWithParams += "?" + params.substr(1);

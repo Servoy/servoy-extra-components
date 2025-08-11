@@ -31,6 +31,7 @@ import { FormsModule } from '@angular/forms';
                 [format] = "format"
                 [readOnly] = "readOnly"
                 [hideSelectedItems] = "hideSelectedItems"
+                [overlayMode] = "overlayMode"
                 #element>
                 </servoyextra-select2tokenizer>`,
     standalone: false
@@ -61,6 +62,7 @@ class WrapperComponent {
     format: Format;
     readOnly: boolean;
     hideSelectedItems: boolean;
+    overlayMode: boolean;
 
     dataProviderIDChange = (newData: unknown) => { };
 
@@ -189,7 +191,7 @@ describe('ServoyExtraSelect2Tokenizer', () => {
             // you need to test if the value is there for the component to be fully initialized
             // just getting the input (of the textbox) can result in that it is not fully mounted yet (svnOnchanges not called yet)
             // and focus() will bomb out because the Format property is not yet set
-            cy.get('select2 ul li').should('have.attr', 'title', 'one').focus().then(() => {
+            cy.get('select2 ul li').first().should('have.attr', 'title', 'one').focus().then(() => {
                 // see the commands.ts file in the cypress/support folder for the have.selection example
                 cy.get('select2 ul li').should('have.attr', 'title', 'one');
             });
@@ -351,6 +353,24 @@ describe('ServoyExtraSelect2Tokenizer', () => {
                 cy.get('.select2-results ul li div').eq(1).should('have.text', 'two');
                 cy.get('.select2-results ul li div').eq(2).should('have.text', 'three');
                 cy.get('.select2-results ul li div').eq(3).should('have.text', 'four');
+            });
+        });
+    });
+    
+    it('should have ovarlay when dropdown list is open', () => {
+        config.componentProperties.overlayMode = true;
+        cy.mount(WrapperComponent, config).then(wrapper => {
+            cy.get('select2').click().then(() => {
+                cy.get('.cdk-overlay-container').should('exist');
+            });
+        });
+    });
+
+    it('should not have ovarlay when dropdown list is open', () => {
+        config.componentProperties.overlayMode = false;
+        cy.mount(WrapperComponent, config).then(wrapper => {
+            cy.get('select2').click().then(() => {
+                cy.get('.cdk-overlay-container').should('not.exist');
             });
         });
     });

@@ -37,6 +37,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     @Input() cssPosition: { width: number; height: number };
     @Input() containSearchText: boolean;
     @Input() hideSelectedItems: boolean;
+    @Input() overlayMode: boolean;
 
     @Output() dataProviderIDChange = new EventEmitter();
 
@@ -120,6 +121,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                     continue;
                 }
                 opt.push({
+                    id: value.realValue,
                     value: value.realValue,
                     label: value.displayValue
                 });
@@ -129,6 +131,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                     const found = opt.find(item => item.value === realValue);
                     if (!found) {
                         opt.push({
+                            id: realValue,
                             value: realValue,
                             label: realValue
                         });

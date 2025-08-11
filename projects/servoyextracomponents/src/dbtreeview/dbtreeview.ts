@@ -70,6 +70,8 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
             },
             contextMenu: (_tree, node, $event) => {
                 $event.preventDefault();
+                this.tree.treeModel.setActiveNode(node, true);
+                this.setSelectionFromTree(node);
                 if (node.data && node.data.methodToCallOnRightClick) {
                     const rightClick = node.data.methodToCallOnRightClick;
                     rightClick(node.data.methodToCallOnRightClickParamValue, this.servoyPublicService.createJSEvent($event, 'rightClick'));
@@ -140,7 +142,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
                                             }
                                         }
                                     }
-                                    this.cdRef.detectChanges();
+                                    this.tree.treeModel.update();
                                 }
                             } else if (change.currentValue !== change.previousValue) {
                                 this.initTree();

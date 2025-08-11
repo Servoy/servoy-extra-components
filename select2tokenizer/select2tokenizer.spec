@@ -59,7 +59,8 @@
         "valueSeparator" : {"type" :"string", "tags" : {"scope" :"private"}, "values" : [{"NEW_LINE":"new_line"}, {"COMMA": "comma"}], "default" : "new_line"},    
         "size" : {"type" :"dimension",  "default" : {"width":140, "height":32}}, 
         "location" : "point",
-        "hideSelectedItems": {"type": "boolean", "default": false}
+        "hideSelectedItems": {"type": "boolean", "default": false},
+        "overlayMode": {"type": "boolean", "default": true, "tags": {"scope" : "design"}}
 	},
 	"handlers":
 	{
