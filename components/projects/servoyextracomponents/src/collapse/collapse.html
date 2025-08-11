@@ -101,7 +101,7 @@
           <div
             class="svy-collapse-card-body {{collapsible.bodyStyleClass}}"
             id="{{servoyApi.getMarkupId()}}-{{idx}}-collapsible-body"
-            (click)="onCardClick($event, 0, idx)" >
+            (click)="onCardClick($event, -1, idx)" >
             <div
               [innerHTML]="collapsible.collapsibleHtml | htmlFilter | trustAsHtml:isTrustedHTML()"
               class="svy-collapse-card-body-container"

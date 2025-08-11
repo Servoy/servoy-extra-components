@@ -48,6 +48,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 		//get form states and fix possible accordionMode misconfiguration
 		let openedCollapseFound = false;
 		if (this.collapsibles) {
+            this.checkIfCollapsibleHaveUniqueIds(this.collapsibles);
 			for (let x = 0; x < this.collapsibles.length; x++) {
 				const collapsible = this.collapsibles[x];
 
@@ -71,6 +72,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 	svyOnChanges(changes: SimpleChanges) {
 		super.svyOnChanges(changes);
 		if (this.collapsibles) {
+            this.checkIfCollapsibleHaveUniqueIds(this.collapsibles);
 			for (const collapsible of this.collapsibles) {
 				if (collapsible.form) {
 					this.getFormState(collapsible.form, collapsible, !collapsible.isCollapsed);
@@ -91,21 +93,21 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 			index = 0;
 		}
 		const collapsible = this.getCollapsible(index);
-		this.setCollapsedState(index, !collapsible.isCollapsed);
+        this.closeOrOpenCollapsiblesAfterClick(null, index, collapsible, collapsible.isCollapsed);
 	}
 
 	show(index: number) {
 		if (!index) {
 			index = 0;
 		}
-		this.setCollapsedState(index, false);
+        this.closeOrOpenCollapsiblesAfterClick(null, index, this.collapsibles[index], true);
 	}
 
 	hide(index: number) {
 		if (!index) {
 			index = 0;
 		}
-		this.setCollapsedState(index, true);
+        this.closeOrOpenCollapsiblesAfterClick(null, index, this.collapsibles[index], false);
 	}
 
 	/**
@@ -274,19 +276,26 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 					this.notifyChange(index);
 				});
 			}
+            if (collapsibleToChange.cards) {
+                this.toggleFormVisibilityOnCards(collapsibleToChange.cards, state, index);
+            }
 		} else if (collapsibleToChange.cards) {
-			//toggle form visibility on cards
-			this.toggleCardVisibility(collapsibleToChange.cards, state).then(() => {
-				this.collapsibles[index].isCollapsed = state;
-				this.cdRef.detectChanges();
-				this.notifyChange(index);
-			});
+			this.toggleFormVisibilityOnCards(collapsibleToChange.cards, state, index);
 		} else {
 			this.collapsibles[index].isCollapsed = state;
 			this.notifyChange(index);
 		}
 		return accordionClosedCollapsible;
 	}
+    
+    private toggleFormVisibilityOnCards(cards: Card[], state: boolean, index: number) {
+        //toggle form visibility on cards
+        this.toggleCardVisibility(cards, state).then(() => {
+            this.collapsibles[index].isCollapsed = state;
+            this.cdRef.detectChanges();
+            this.notifyChange(index);
+        }); 
+    }
 
 	/**
 	 * Returns the collapsible at the given index
@@ -348,10 +357,36 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 				if (formCache && formCache.absolute) {
 					collapsibleOrCard.minResponsiveHeight = formCache.size.height;
 					collapsibleOrCard.maxResponsiveHeight = formCache.size.height;
+                    this.cdRef.detectChanges();
 				}
 			});
 		}
 	}
+    
+    private checkIfCollapsibleHaveUniqueIds(collapsibles) {
+        if (!collapsibles || collapsibles.length === 0) return;
+
+        let returnValue = false;
+        const ids = {};
+        for (let i = 0; i < collapsibles.length; i++) {
+            if (collapsibles[i].collapsibleId) {
+                if (ids[collapsibles[i].collapsibleId]) {
+                    ids[collapsibles[i].collapsibleId] = false;
+                } else {
+                    ids[collapsibles[i].collapsibleId] = true;
+                }
+            }
+        }
+
+        for (const id in ids) {
+            if (ids[id] === false) {
+                console.warn('Collapsible with ID "' + id + '" is not unique. Please ensure all IDs are unique.');
+                returnValue = true;
+            }
+        }
+
+        return returnValue;
+    }
 }
 
 export class Collapsible extends BaseCustomObject {

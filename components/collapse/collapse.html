@@ -102,7 +102,7 @@
 		    <div 
 				class="svy-collapse-card-body {{collapsible.bodyStyleClass}}"
 				id="{{::model.svyMarkupId}}-{{collapsibleIndex}}-collapsible-body" 
-				ng-click="onCardClick($event, 0, collapsibleIndex)" >
+				ng-click="onCardClick($event, -1, collapsibleIndex)" >
 				<div 
 					ng-bind-html="trustAsHtml(collapsible.collapsibleHtml)" 
 					class="svy-collapse-card-body-container" 

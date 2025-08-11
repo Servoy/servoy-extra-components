@@ -7,6 +7,10 @@
  * @return {svy-collapse.collapsible}
  */
 $scope.api.createCollapsible = function(headerHtml, collapsibleId) {
+    if ($scope.api.getCollapsibleById(collapsibleId)) {
+        console.warn('A collapsible with the ID "' + collapsibleId + '" already exists. Please ensure all IDs are unique.');
+        return null;
+    }
 	return {
 		headerHtml: headerHtml || null,
 		collapsibleId: collapsibleId || Math.ceil(Math.random() * 10000000) + '',
@@ -44,6 +48,34 @@ $scope.api.createCard = function(textOrHtml, cardId, styleClass) {
 }
 
 /**
+ * Adds a new card to the list of cards of this collapsibleId
+ * 
+ * @param {svy-collapse.card} card the card to add to the collapsible
+ * @param {String} collapsibleId the ID of the collapsible to add the card
+ * @param {Number} [index] the index to insert the new card at
+ */
+$scope.api.addCard = function(card, collapsibleId, index) {
+    var collapsible = $scope.api.getCollapsibleById(collapsibleId);
+    if (!collapsible) {
+        console.warn('A collapsible with the ID "' + collapsibleId + '" doesn\'t exists.');
+        return;
+    }
+    if ($scope.api.getCardById(card.cardId)) {
+        console.warn('A card with the ID "' + card.cardId + '" already exists. No changes were made. Please ensure all IDs are unique.');
+        return;
+    }
+    
+    if (!collapsible.cards || collapsible.cards.length == 0) {
+        collapsible.cards = [];
+    }  
+    if (index >= 0) {
+        collapsible.cards.splice(index, 0, card);
+    } else {
+        collapsible.cards.push(card);
+    }
+}
+
+/**
  * Adds a new collapsible to the list of collapsibles of this Collapse component
  * 
  * @param {svy-collapse.collapsible} collapsible
@@ -53,11 +85,15 @@ $scope.api.addCollapsible = function(collapsible, index) {
 	if (!$scope.model.collapsibles || $scope.model.collapsibles.length == 0) {
 		$scope.model.collapsibles = [];
 	}
-	if (index >= 0) {
-		$scope.model.collapsibles.splice(index, 0, collapsible);
-	} else {
-		$scope.model.collapsibles.push(collapsible);
-	}
+    if ($scope.api.getCollapsibleById(collapsible.collapsibleId)) {
+        console.warn('A collapsible with the ID "' + collapsible.collapsibleId + '" already exists. No changes were made. Please ensure all IDs are unique.');
+        return;
+    }
+    if (index >= 0) {
+        $scope.model.collapsibles.splice(index, 0, collapsible);
+    } else {
+        $scope.model.collapsibles.push(collapsible);
+    }
 }
 
 /**
@@ -66,11 +102,41 @@ $scope.api.addCollapsible = function(collapsible, index) {
  * @param {Array<svy-collapse.collapsible>} collapsibles
  */
 $scope.api.setCollapsibles = function(collapsibles) {
+    if (_checkIfCollapsiblesHaveUniqueIds(collapsibles)) {
+        console.warn('Collapsibles were not set because some collapsibles have non-unique IDs. Please ensure all IDs are unique.');
+        return;
+    }
+    
 	if ($scope.model.collapsibles !== collapsibles) {
 		$scope.api.removeAllCollapsibles();
 	}
 	
 	$scope.model.collapsibles = collapsibles;
+}
+
+function _checkIfCollapsiblesHaveUniqueIds(collapsibles) {
+    if (!collapsibles || collapsibles.length === 0) return;
+    
+    var returnValue = false;
+    var ids = {};
+    for (var i = 0; i < collapsibles.length; i++) {
+        if (collapsibles[i].collapsibleId) {
+            if (ids[collapsibles[i].collapsibleId]) {
+                ids[collapsibles[i].collapsibleId] = false;
+            } else {
+                ids[collapsibles[i].collapsibleId] = true;
+            }
+        }
+    }
+    
+    for (var id in ids) {
+        if (ids[id] === false) {
+            console.warn('Collapsible with ID "' + id + '" is not unique. Please ensure all IDs are unique.');
+            returnValue = true;
+        }
+    }
+    
+    return returnValue;
 }
 
 /**

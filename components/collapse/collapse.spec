@@ -57,6 +57,13 @@
 				{ "name": "index", "type": "int", "optional": true }
 			] 
 		},
+		"addCard"            : {
+		    "parameters": [ 
+                { "name": "card", "type": "card" }, 
+                { "name": "collapsibleId", "type": "string" },
+                { "name": "index", "type": "int", "optional": true }
+            ]   
+		},
 		"getCollapsible"	: { 
 			"returns"		: "collapsible",
 			"parameters": [ 

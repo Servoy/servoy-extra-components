@@ -141,10 +141,12 @@ function onGetCollapsible(event) {
  */
 function onAddCollapsible(event) {
 	var collapsible = elements.collapse_7.createCollapsible("Created collapsible!", "id1");
-	collapsible.form = forms.formForCollapse1;
-	collapsible.iconLocation = 'LEFT';
+	if (collapsible) {
+		collapsible.form = forms.formForCollapse1;
+		collapsible.iconLocation = 'LEFT';
 
-	elements.collapse_7.addCollapsible(collapsible);
+		elements.collapse_7.addCollapsible(collapsible);
+	}
 }
 
 /**
@@ -239,4 +241,19 @@ function onShow(event) {
  */
 function onHide(event) {
 	elements.collapse_7.hide(1);
+}
+
+/**
+ * Fired when the button is clicked.
+ *
+ * @param {JSEvent} event
+ *
+ * @private
+ *
+ * @properties={typeid:24,uuid:"B8F08448-0B46-4ACF-9701-B5C1ED8F428A"}
+ */
+function onAddCard(event) {
+	var card = elements.collapse_7.createCard("test add card", "card test");
+	
+	elements.collapse_7.addCard(card,"collapsible 1");
 }
