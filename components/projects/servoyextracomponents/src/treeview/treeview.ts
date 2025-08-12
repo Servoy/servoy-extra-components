@@ -428,6 +428,10 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
             displayData.forEach(data => {
                 data.row_selected = data.id === nodeId;
             });
+            if (!this.isNodeExpanded(nodeId)) {
+                this.expandNode(nodeId);
+            }
+            this.refresh(true);
         }
     }
     
