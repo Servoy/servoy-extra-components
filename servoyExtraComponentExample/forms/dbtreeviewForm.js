@@ -69,14 +69,16 @@ function addRecords() {
 		var userId = i + 1;
 		var recUsers = usersFS.getRecord(usersFS.newRecord());
 		recUsers.user_id = userId;
-		recUsers.firstname = names[i];
+		recUsers.firstname = names[i] + '<i class="fa-solid fa-user"></i>';
 		recUsers.age = i * 10;
+		recUsers.img = 'media:///folder.png';
 		for (var j = 0; j < 5; j++) {
 			var recUserOrder = userOrdersFS.getRecord(userOrdersFS.newRecord());
 			recUserOrder.order_id = orderIdCounter;
 			orderIdCounter++;
 			recUserOrder.user_id = userId;
 			recUserOrder.description = 'Order: ' + recUserOrder.order_id + ' for User ' + recUserOrder.user_id;
+			recUserOrder.img = 'media:///document.png'
 		}
 
 	}
@@ -201,21 +203,14 @@ function onSetHasCheckBoxDataprovider(event) {
  * @properties={typeid:24,uuid:"96DDB8A1-7154-4D31-8D1F-06B2DEA99774"}
  */
 function onSetCallBackInfo(event) {
-	elements.dbtreeview_1.setCallBackInfo(memOrderFS.getDataSource(), callbackfunction1, null)
+	elements.dbtreeview_1.setCallBackInfo(memOrderFS.getDataSource(), callbackfunction1, 'order_id')
 }
 
 /**
- * @type {Number}
- *
- * @properties={typeid:35,uuid:"2E358944-88AB-47EF-A4F0-1CA5B37CC317",variableType:4}
- */
-var call1 = 0;
-/**
  * @properties={typeid:24,uuid:"C0AF26D1-F1CD-4705-AABB-49E79474A938"}
  */
-function callbackfunction1() {
-	elements.label_2cc.text = 'Callback function1 executed! ' + call1;
-	call1++;
+function callbackfunction1(order_id) {
+	elements.label_2cc.text = 'Callback function1 executed! Clicked on order ID ' + order_id;
 }
 
 /**
@@ -226,23 +221,16 @@ function callbackfunction1() {
  * @properties={typeid:24,uuid:"079C74C0-69FF-46D4-AE7A-6C0DBC60CA30"}
  */
 function onSetActionsCallBack(event) {
-	elements.dbtreeview_1.setActionsCallBack([[memUserFS.getDataSource(), callbackfunction2, 'param1', 'dbtreeview_1']]);
+	elements.dbtreeview_1.setActionsCallBack([[memUserFS.getDataSource(), callbackfunction2, 'firstname', '.fa-user']]);
 }
 
-/**
- * @type {Number}
- *
- * @properties={typeid:35,uuid:"269498FD-EBD7-465C-918F-A9A9914C545F",variableType:4}
- */
-var call2 = 0;
 /**
  * @param param1
  *
  * @properties={typeid:24,uuid:"80A5A16A-1D33-45D1-9B85-AD4AF1994D8F"}
  */
-function callbackfunction2(param1) {
-	elements.label_2cc.text = 'Callback function3 executed! ' + param1 + '    ' + call2;
-	call2++;
+function callbackfunction2(firstname) {
+	elements.label_2cc.text = 'Callback function3 executed! You clicked on '+ firstname.split('<i')[0] +' user icon';
 }
 
 /**
@@ -253,23 +241,16 @@ function callbackfunction2(param1) {
  * @properties={typeid:24,uuid:"0B03B346-63FF-4729-802C-7C101EE9C608"}
  */
 function onSetMethodToCallOnCheckBoxChange(event) {
-	elements.dbtreeview_1.setMethodToCallOnCheckBoxChange(memUserFS.getDataSource(), callbackfunction3, 'arg1')
+	elements.dbtreeview_1.setMethodToCallOnCheckBoxChange(memUserFS.getDataSource(), callbackfunction3, 'user_id')
 }
 
-/**
- * @type {Number}
- *
- * @properties={typeid:35,uuid:"536D7BB5-DB5A-4334-B253-AF9BBB83911B",variableType:4}
- */
-var call3 = 0;
 /**
  * @param param1
  *
  * @properties={typeid:24,uuid:"E16052FE-3E01-4778-998F-FC7E0C2FDADB"}
  */
-function callbackfunction3(param1) {
-	elements.label_2cc.text = 'Callback function3 executed! ' + param1 + '    ' + call3;
-	call3++;
+function callbackfunction3(user_id) {
+	elements.label_2cc.text = 'Callback function3 executed! Checkbox for user ID ' + user_id + ' changed.';
 }
 
 /**
@@ -280,8 +261,8 @@ function callbackfunction3(param1) {
  * @properties={typeid:24,uuid:"ABF1376E-18F1-4FDD-BE22-E9CBAEFF6133"}
  */
 function onSetToolTipTextDataprovider(event) {
-	elements.dbtreeview_1.setToolTipTextDataprovider(memUserFS.getDataSource(), 'Tooltip for mem users');
-	elements.dbtreeview_1.setToolTipTextDataprovider(memOrderFS.getDataSource(), 'Tooltip for mem user orders');
+	elements.dbtreeview_1.setToolTipTextDataprovider(memUserFS.getDataSource(), 'user_id');
+	elements.dbtreeview_1.setToolTipTextDataprovider(memOrderFS.getDataSource(), 'order_id');
 }
 
 /**
@@ -292,8 +273,8 @@ function onSetToolTipTextDataprovider(event) {
  * @properties={typeid:24,uuid:"4F894ACC-2E93-4B47-B78C-D12AA88DDC9A"}
  */
 function onSetImageURLDataprovider(event) {
-	// TODO Auto-generated method stub
-
+	elements.dbtreeview_1.setImageURLDataprovider(memUserFS.getDataSource(),'img');
+	elements.dbtreeview_1.setImageURLDataprovider(memOrderFS.getDataSource(),'img');
 }
 
 /**
@@ -315,14 +296,14 @@ function onSetChildSortDataprovider(event) {
  * @properties={typeid:24,uuid:"3A4082ED-73E5-4D02-B1E7-8C51CB626299"}
  */
 function onSetMethodToCallOnDoubleClick(event) {
-	elements.dbtreeview_1.setMethodToCallOnDoubleClick(memUserFS.getDataSource(), onDoubleClickCallback, null);
+	elements.dbtreeview_1.setMethodToCallOnDoubleClick(memUserFS.getDataSource(), onDoubleClickCallback, 'firstname');
 }
 
 /**
  * @properties={typeid:24,uuid:"7F112870-CCC1-4A03-A21C-7DB44C3500E6"}
  */
-function onDoubleClickCallback() {
-	elements.label_2c.text = 'On double click on: ' + memUserFS.getDataSource();
+function onDoubleClickCallback(firstname) {
+	elements.label_2c.text = 'On double click on: ' + firstname.split('<i')[0];
 }
 
 /**
@@ -333,14 +314,14 @@ function onDoubleClickCallback() {
  * @properties={typeid:24,uuid:"86DBA958-7826-43A4-B772-88B04975E342"}
  */
 function onSetMethodToCallOnRightClick(event) {
-	elements.dbtreeview_1.setMethodToCallOnRightClick(memUserFS.getDataSource(), onRightClickCallback, null);
+	elements.dbtreeview_1.setMethodToCallOnRightClick(memOrderFS.getDataSource(), onRightClickCallback, 'order_id');
 }
 
 /**
  * @properties={typeid:24,uuid:"B7BB67CA-06B0-4570-898F-97D6F7C8C2DA"}
  */
-function onRightClickCallback() {
-	elements.label_2c.text = 'On right click on: ' + memUserFS.getDataSource();
+function onRightClickCallback(order_id) {
+	elements.label_2c.text = 'On right click on order ID: ' + order_id;
 }
 
 /**

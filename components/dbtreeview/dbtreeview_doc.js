@@ -202,11 +202,11 @@ function setCheckBoxAutoselectsChildren(datasource, autoselect) {
 * Set callback info for a datasource foundset display. 
 * 
 * @example
-* %%elementName%%.setCallBackInfo(databaseManager.getDataSource('example_data', 'categories'),'myfunction','arg');
+* %%elementName%%.setCallBackInfo(databaseManager.getDataSource('example_data', 'categories'),'myfunction','categ_id');
 * 
 * @param {String} datasource The datasource identifier, representing the foundset to be displayed.
 * @param {Function} callbackfunction Callback function name
-* @param {String} param The parameter to pass to the callback function when it is invoked.
+* @param {String} param The parameter should be a field from the datasource whose value is passed to the callback function when it is invoked.
 */
 function setCallBackInfo(datasource, callbackfunction, param) {
 }   
@@ -227,11 +227,11 @@ function setCheckBoxValueDataprovider(datasource, checkboxvaluedataprovider) {
 * Set callback info for a datasource foundset checkbox display. 
 * 
 * @example
-* %%elementName%%.setMethodToCallOnCheckBoxChange(databaseManager.getDataSource('example_data', 'categories'),'myfunction','arg');
+* %%elementName%%.setMethodToCallOnCheckBoxChange(databaseManager.getDataSource('example_data', 'categories'),'myfunction','categ_id');
 * 
 * @param {String} datasource The datasource identifier, representing the foundset for which the checkbox change callback is being set.
 * @param {Function} callbackfunction Callback function name
-* @param {String} param A parameter to be passed to the callback function when the checkbox state changes.
+* @param {String} param The parameter should be a field from the datasource whose value is passed to the callback function when the checkbox state changes.
 */
 function setMethodToCallOnCheckBoxChange(datasource, callbackfunction, param) {
 }
@@ -276,11 +276,11 @@ function setChildSortDataprovider(datasource, childsortdataprovider) {
 * Set callback info for a datasource foundset doubleclick event. 
 * 
 * @example
-* %%elementName%%.setMethodToCallOnDoubleClick(databaseManager.getDataSource('example_data', 'categories'),'myfunction','arg');
+* %%elementName%%.setMethodToCallOnDoubleClick(databaseManager.getDataSource('example_data', 'categories'),'myfunction','categ_id');
 * 
 * @param {String} datasource The datasource identifier, representing the foundset for which the double-click callback is being set.
 * @param {Function} callbackfunction The name of the function to be invoked when a double-click event occurs on a node.
-* @param {String} param A parameter to be passed to the callback function during invocation.
+* @param {String} param The parameter should be a field from the datasource whose value is passed to the callback function during invocation.
 */
 function setMethodToCallOnDoubleClick(datasource, callbackfunction, param) {
 }   
@@ -289,11 +289,11 @@ function setMethodToCallOnDoubleClick(datasource, callbackfunction, param) {
 * Set callback info for a datasource foundset right click event. 
 * 
 * @example
-* %%elementName%%.setMethodToCallOnRightClick(databaseManager.getDataSource('example_data', 'categories'),'myfunction','arg');
+* %%elementName%%.setMethodToCallOnRightClick(databaseManager.getDataSource('example_data', 'categories'),'myfunction','categ_id');
 * 
 * @param {String} datasource The datasource identifier, representing the foundset for which the right-click callback is being set.
 * @param {Function} callbackfunction Callback function name
- * @param {String} param A parameter to be passed to the callback function during invocation.
+ * @param {String} param The parameter should be a field from the datasource whose value is passed to the callback function during invocation.
 */
 function setMethodToCallOnRightClick(datasource, callbackfunction, param) {
 }
@@ -406,9 +406,9 @@ function setHasCheckBoxValue(datasource, hasCheckboxValue) {
 * Set callback info for specific actions. 
 * 
 * @example
-* %%elementName%%.setActionsCallBack([[datasource, function1, arg1, element1], [datasource, function2, arg2, element2]]);
+* %%elementName%%.setActionsCallBack([[databaseManager.getDataSource('example_data', 'categories'), 'myfunction1', 'categ_id', 'div.myclass1'], [databaseManager.getDataSource('example_data', 'categories'), 'myfunction2', 'categ_name', '.myclass2']]);
 * 
-* @param {Array<CustomType<servoyextra-dbtreeview.action>>} actions An array of action objects, each defining a datasource, a callback function, its arguments, and the associated tree element for which the action should be triggered.
+* @param {Array<CustomType<servoyextra-dbtreeview.action>>} actions An array of action objects, each defining a datasource, a callback function, a field from datasource, and the associated DOM element for which the action should be triggered.
 */
 function setActionsCallBack(actions) {
 }

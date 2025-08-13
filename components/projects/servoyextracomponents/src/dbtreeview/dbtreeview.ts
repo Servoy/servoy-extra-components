@@ -462,7 +462,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
         child.active = dataNode.active;
 
         if (dataNode.children && dataNode.children.length > 0) {
-            child.image = this.folderImgPath;
+            //child.image = this.folderImgPath; no need to do this, because it is already set above - line 448
             child.children = new Array();
             for (const info of dataNode.children) {
                 child.children.push(this.buildChild(info));
