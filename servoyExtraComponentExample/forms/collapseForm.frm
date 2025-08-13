@@ -6,15 +6,15 @@ cssPosition:"227,-1,-1,563,224,34",
 json:{
 cssPosition:{
 bottom:"-1",
-height: "34",
-left: "563",
-right: "-1",
-top: "227",
-width: "224"
+height:"34",
+left:"563",
+right:"-1",
+top:"227",
+width:"224"
 },
-onActionMethodID: "8D7F88A4-EFEC-4F64-B3B9-9ADC1DB8BF0D",
-text: "Create card",
-variant: "BtnPrimary"
+onActionMethodID:"8D7F88A4-EFEC-4F64-B3B9-9ADC1DB8BF0D",
+text:"Create card",
+variant:"BtnPrimary"
 },
 name:"button_createCard",
 typeName:"bootstrapcomponents-button",
@@ -22,15 +22,15 @@ typeid:47,
 uuid:"017D7E49-7FA6-4716-BA7B-2237D4CBDC23"
 },
 {
-cssPosition: "72,-1,-1,485,388,42",
-json: {
-cssPosition: {
-bottom: "-1",
-height: "42",
-left: "485",
-right: "-1",
-top: "72",
-width: "388"
+cssPosition:"72,-1,-1,485,388,42",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"42",
+left:"485",
+right:"-1",
+top:"72",
+width:"388"
 },
 text:"",
 variant:"LabelBackground"
@@ -41,26 +41,26 @@ typeid:47,
 uuid:"0EB79B98-AFAD-4AB1-A9B9-03E6E0063192"
 },
 {
-cssPosition: "269,-1,-1,563,224,34",
-json: {
-cssPosition: {
-            bottom: "-1",
-            height: "34",
-            left: "563",
-            right: "-1",
-            top: "269",
-            width: "224"
-}               
-onActionMethodID: "48986B82-343A-45AE-BE10-56BE06C8C078",
-text: "Get card",
-variant: "BtnPrimary"
+cssPosition:"269,-1,-1,563,224,34",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"34",
+left:"563",
+right:"-1",
+top:"269",
+width:"224"
+},
+onActionMethodID:"48986B82-343A-45AE-BE10-56BE06C8C078",
+text:"Get card",
+variant:"BtnPrimary"
 },
 name:"button_getCard",
 typeName:"bootstrapcomponents-button",
 typeid:47,
 uuid:"1B13E7D9-DD06-43B8-9386-86D85509D5FA"
-        },
-        {
+},
+{
 cssPosition:"123,-1,-1,485,388,42",
 json:{
 cssPosition:{
@@ -70,26 +70,26 @@ left:"485",
 right:"-1",
 top:"123",
 width:"388"
-                },
+},
 text:"",
 variant:"LabelBackground"
-            },
+},
 name:"label_header",
 typeName:"bootstrapcomponents-label",
 typeid:47,
 uuid:"1B4C51AF-556A-44B8-827C-57F127AF77D1"
-        },
-       {
-    cssPosition: "435,-1,-1,563,224,34",
-    json: {
-        cssPosition: {
-            bottom: "-1",
-            height: "34",
-            left: "563",
-            right: "-1",
-            top: "435",
-            width: "224"
-        },
+},
+{
+cssPosition:"435,-1,-1,563,224,34",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"34",
+left:"563",
+right:"-1",
+top:"435",
+width:"224"
+},
 onActionMethodID:"6A3CB04A-D4C6-4959-82DC-A406EE19CAAA",
 text:"Get collapsible by ID",
 variant:"BtnPrimary"
@@ -98,18 +98,18 @@ name:"button_getCollapsibleByID",
 typeName:"bootstrapcomponents-button",
 typeid:47,
 uuid:"2373CE1B-E182-4241-8FD4-62C38CC7EEBE"
-        },
-       {
-    cssPosition: "559,-1,-1,563,224,34",
-    json: {
-        cssPosition: {
-            bottom: "-1",
-            height: "34",
-            left: "563",
-            right: "-1",
-            top: "559",
-            width: "224"
-        },
+},
+{
+cssPosition:"559,-1,-1,563,224,34",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"34",
+left: "563",
+right: "-1",
+top:"559",
+width: "224"
+},
 onActionMethodID:"9CBEBD2E-02A7-49C2-9F9B-BC1F3EA6472B",
 text:"Toggle",
 variant:"BtnPrimary"
@@ -118,9 +118,9 @@ name:"button_toggle",
 typeName:"bootstrapcomponents-button",
 typeid:47,
 uuid:"2A2A3F7D-C339-4BB1-BF34-3D7FB82503F8"
-        },
-     {
-    cssPosition: "185,-1,-1,563,224,34",
+},
+{
+ cssPosition: "185,-1,-1,563,224,34",
     json: {
         cssPosition: {
             bottom: "-1",
@@ -138,15 +138,15 @@ uuid:"2A2A3F7D-C339-4BB1-BF34-3D7FB82503F8"
     typeName: "bootstrapcomponents-button",
     typeid: 47,
     uuid: "30116283-9206-4926-8C01-F3B21B0B2A0C"},
- {
-    height: 1000,
-    partType: 5,
-    typeid: 19,
-    uuid: "6BD6F64E-74C3-48A1-A575-99BC1C35C800"
+{
+height:1000,
+partType:5,
+typeid:19,
+uuid:"6BD6F64E-74C3-48A1-A575-99BC1C35C800"
 },
 {
-    cssPosition: "476,-1,-1,563,224,34",
-    json: {
+cssPosition:"476,-1,-1,563,224,34",
+json: {
         cssPosition: {
             bottom: "-1",
             height: "34",
@@ -163,38 +163,38 @@ uuid:"2A2A3F7D-C339-4BB1-BF34-3D7FB82503F8"
     typeName: "bootstrapcomponents-button",
     typeid: 47,
     uuid: "6D2E8920-5534-4D7D-A7B4-75A9054AB8A1"
-        },
-        {
-    cssPosition: "682,-1,-1,563,224,34",
-    json: {
-        cssPosition: {
-            bottom: "-1",
-            height: "34",
-            left: "563",
-            right: "-1",
-            top: "682",
-            width: "224"
-        },
-        onActionMethodID: "C238294E-8A15-49F7-B99B-DF995BFF7F22",
-        text: "Remove collapsible by ID",
-        variant: "BtnPrimary"
-    },
-    name: "button_removeCollapsibleByID",
-    typeName: "bootstrapcomponents-button",
-    typeid: 47,
-    uuid: "8152EC93-8F27-403B-BFDF-5488864641DA"
 },
-      {
-    cssPosition: "351,-1,-1,563,224,34",
-    json: {
-        cssPosition: {
-            bottom: "-1",
-            height: "34",
-            left: "563",
-            right: "-1",
-            top: "351",
-            width: "224"
-        },
+{
+cssPosition:"682,-1,-1,563,224,34",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"34",
+left:"563",
+right:"-1",
+top:"682",
+width:"224"
+},
+onActionMethodID:"C238294E-8A15-49F7-B99B-DF995BFF7F22",
+text:"Remove collapsible by ID",
+variant:"BtnPrimary"
+},
+name:"button_removeCollapsibleByID",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"8152EC93-8F27-403B-BFDF-5488864641DA"
+},
+{
+cssPosition:"351,-1,-1,563,224,34",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"34",
+left:"563",
+right:"-1",
+top:"351",
+width:"224"
+},
 onActionMethodID:"CF342D68-A0B3-4958-AD1C-26DC2088E7D6",
 text:"Add collapsible",
 variant:"BtnPrimary"
@@ -203,17 +203,17 @@ name:"button_addCollapsible",
 typeName:"bootstrapcomponents-button",
 typeid:47,
 uuid:"A8DAE730-1C55-4623-892B-0A84263FD871"
-        },
-        {cssPosition: "517,-1,-1,563,224,34",
-    json: {
-        cssPosition: {
-            bottom: "-1",
-            height: "34",
-            left: "563",
-            right: "-1",
-            top: "517",
-            width: "224"
-      },
+},
+{cssPosition:"517,-1,-1,563,224,34",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"34",
+left:"563",
+right:"-1",
+top:"517",
+width:"224"
+},
 onActionMethodID:"3367360F-93D4-41BE-AB61-8076DA40446E",
 text:"Set collapsibles",
 variant:"BtnPrimary"
@@ -222,18 +222,18 @@ name:"button_setCollapsible",
 typeName:"bootstrapcomponents-button",
 typeid:47,
 uuid:"ABDDEBE3-9A7F-466F-BE5C-BBF79F9CBB43"
-        },
-        {
-    cssPosition: "724,-1,-1,563,224,34",
-    json: {
-        cssPosition: {
-            bottom: "-1",
-            height: "34",
-            left: "563",
-            right: "-1",
-            top: "724",
-            width: "224"
-                },
+},
+{
+cssPosition:"724,-1,-1,563,224,34",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"34",
+left:"563",
+right:"-1",
+top:"724",
+width:"224"
+},
 onActionMethodID:"6FD03E9E-3D7F-430F-B692-12D14107819F",
 text:"Remove all collapsibles",
 variant:"BtnPrimary"
@@ -244,15 +244,15 @@ typeid:47,
 uuid:"B39C820A-B1D0-4141-9BE6-C346B6769DD6"
 },
 {
-    cssPosition: "309,-1,-1,563,224,34",
-    json: {
-        cssPosition: {
-            bottom: "-1",
-            height: "34",
-            left: "563",
-            right: "-1",
-            top: "309",
-            width: "224"
+cssPosition:"309,-1,-1,563,224,34",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"34",
+left:"563",
+right:"-1",
+top:"309",
+width: "224"
 },
 onActionMethodID:"E5FB0704-1F7C-4B80-8FEF-C916A3BD6C0D",
 text:"Get card by ID ",
@@ -284,30 +284,30 @@ contentHtml:"<span class=\"label-blue-gradient\">This is card 2 of collapsible 1
 svyUUID:"6D96DB31-9F30-420D-A953-BB5BD0213CE8"
 }
 ],
-collapsibleHtml: "<span class=\"label-blue-gradient\" data-target=\"abc\">This is collapsiblehtml for collapsible 1</span>",
-collapsibleId: "collapsible 1",
-form: "594E0585-1017-4070-90E1-419A62D3BED5",
-headerHtml: "<span>Header Collapsible1</span>",
-headerStyleClass: "bg-danger text-success",
-iconLocation: "LEFT",
-relationName: null,
-svyUUID: "B4F90365-59E4-47D9-9BAA-288C1D0F309E"
+collapsibleHtml:"<span class=\"label-blue-gradient\" data-target=\"abc\">This is collapsiblehtml for collapsible 1</span>",
+collapsibleId:"collapsible 1",
+form:"594E0585-1017-4070-90E1-419A62D3BED5",
+headerHtml:"<span>Header Collapsible1</span>",
+headerStyleClass:"bg-danger text-success",
+iconLocation:"LEFT",
+relationName:null,
+svyUUID:"B4F90365-59E4-47D9-9BAA-288C1D0F309E"
 },
 {
-collapsibleHtml: "<span class=\"label-blue-gradient\">This is collapsiblehtml for collapsible 2</span>",
-collapsibleId: "collapsible 2",
-form: "AB60A7F1-4166-4463-BEF5-B49EFFEC0C31",
-headerHtml: "<span>Header Collapsible2</span>",
-headerStyleClass: "text-gray-800 text-3xl font-semibold tracking-tight",
-svyUUID: "65825CE9-4E38-44A8-B2F2-DF16E6028DF4"
+collapsibleHtml:"<span class=\"label-blue-gradient\">This is collapsiblehtml for collapsible 2</span>",
+collapsibleId:"collapsible 2",
+form:"AB60A7F1-4166-4463-BEF5-B49EFFEC0C31",
+headerHtml:"<span>Header Collapsible2</span>",
+headerStyleClass:"text-gray-800 text-3xl font-semibold tracking-tight",
+svyUUID:"65825CE9-4E38-44A8-B2F2-DF16E6028DF4"
 },
 {
-collapsibleHtml: "<span class=\"label-blue-gradient\">This is collapsiblehtml for collapsible 3</span>",
-collapsibleId: "collapsible 3",
-form: "C48B6033-6D5E-437B-A733-E25B7591BA6B",
-headerHtml: "<span>Header Collapsible3</span>",
-iconLocation: "HIDDEN",
-svyUUID: "9907CFC7-3222-4296-8429-A2141B4FD2B4"
+collapsibleHtml:"<span class=\"label-blue-gradient\">This is collapsiblehtml for collapsible 3</span>",
+collapsibleId:"collapsible 3",
+form:"C48B6033-6D5E-437B-A733-E25B7591BA6B",
+headerHtml:"<span>Header Collapsible3</span>",
+iconLocation:"HIDDEN",
+svyUUID:"9907CFC7-3222-4296-8429-A2141B4FD2B4"
 }
 ],
 cssPosition:{
@@ -332,17 +332,17 @@ typeName:"servoyextra-collapse",
 typeid:47,
 uuid:"BE62F798-D84E-423B-964E-6F161A0D2CBB"
 },
- {
-    cssPosition: "393,-1,-1,563,224,34",
-    json: {
-        cssPosition: {
-            bottom: "-1",
-            height: "34",
-            left: "563",
-            right: "-1",
-            top: "393",
-            width: "224"
-        },
+{
+cssPosition:"393,-1,-1,563,224,34",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"34",
+left:"563",
+right:"-1",
+top:"393",
+width:"224"
+},
 onActionMethodID:"0E622868-0583-477D-9349-0E3537567FDA",
 text:"Get collapsible",
 variant:"BtnPrimary"
@@ -351,18 +351,18 @@ name:"button_getCollapsible",
 typeName:"bootstrapcomponents-button",
 typeid:47,
 uuid:"D0B4052F-E71C-4366-8D7D-617C49CF24F0"
-        },
-       {
-    cssPosition: "641,-1,-1,563,224,34",
-    json: {
-        cssPosition: {
-            bottom: "-1",
-            height: "34",
-            left: "563",
-            right: "-1",
-            top: "641",
-            width: "224"
-        },
+},
+{
+cssPosition:"641,-1,-1,563,224,34",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"34",
+left:"563",
+right:"-1",
+top:"641",
+width:"224"
+},
 onActionMethodID:"6296DB4C-4D04-4EA6-9334-1DBC50C315AE",
 text:"Hide",
 variant:"BtnPrimary"
@@ -371,18 +371,18 @@ name:"button_hide",
 typeName:"bootstrapcomponents-button",
 typeid:47,
 uuid:"E5E6640C-898B-4AEF-B46F-FCF85702AC99"
-        },
-       {
-    cssPosition: "601,-1,-1,563,224,34",
-    json: {
-        cssPosition: {
-            bottom: "-1",
-            height: "34",
-            left: "563",
-            right: "-1",
-            top: "601",
-            width: "224"
-        },
+},
+{
+cssPosition:"601,-1,-1,563,224,34",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"34",
+left:"563",
+right:"-1",
+top:"601",
+width:"224"
+},
 onActionMethodID:"79E13854-94D3-452D-97A5-6F86C8B0F819",
 text:"Show",
 variant:"BtnPrimary"
