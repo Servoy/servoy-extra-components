@@ -2,14 +2,14 @@ customProperties:"formComponent:false,useCssPosition:true",
 encapsulation:108,
 items:[
 {
-cssPosition:"227,-1,-1,563,224,34",
+cssPosition:"238,-1,-1,736,224,34",
 json:{
 cssPosition:{
 bottom:"-1",
 height:"34",
-left:"563",
+left:"736",
 right:"-1",
-top:"227",
+top:"238",
 width:"224"
 },
 onActionMethodID:"8D7F88A4-EFEC-4F64-B3B9-9ADC1DB8BF0D",
@@ -22,15 +22,35 @@ typeid:47,
 uuid:"017D7E49-7FA6-4716-BA7B-2237D4CBDC23"
 },
 {
-cssPosition:"72,-1,-1,485,388,42",
+cssPosition:"621,-1,-1,486,191,24",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"24",
+left:"486",
+right:"-1",
+top:"621",
+width:"191"
+},
+styleClass:"label-blue-gradient",
+text:"Remove"
+},
+name:"label_1ccc",
+styleClass:"label-blue-gradient",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"04BAB121-F0D1-456C-83BD-A4B7C664D9AC"
+},
+{
+cssPosition:"74,-1,-1,488,480,42",
 json:{
 cssPosition:{
 bottom:"-1",
 height:"42",
-left:"485",
+left:"488",
 right:"-1",
-top:"72",
-width:"388"
+top:"74",
+width:"480"
 },
 text:"",
 variant:"LabelBackground"
@@ -41,14 +61,14 @@ typeid:47,
 uuid:"0EB79B98-AFAD-4AB1-A9B9-03E6E0063192"
 },
 {
-cssPosition:"269,-1,-1,563,224,34",
+cssPosition:"277,-1,-1,486,224,34",
 json:{
 cssPosition:{
 bottom:"-1",
 height:"34",
-left:"563",
+left:"486",
 right:"-1",
-top:"269",
+top:"277",
 width:"224"
 },
 onActionMethodID:"48986B82-343A-45AE-BE10-56BE06C8C078",
@@ -61,15 +81,15 @@ typeid:47,
 uuid:"1B13E7D9-DD06-43B8-9386-86D85509D5FA"
 },
 {
-cssPosition:"123,-1,-1,485,388,42",
+cssPosition:"125,-1,-1,488,480,42",
 json:{
 cssPosition:{
 bottom:"-1",
 height:"42",
-left:"485",
+left:"488",
 right:"-1",
-top:"123",
-width:"388"
+top:"125",
+width:"480"
 },
 text:"",
 variant:"LabelBackground"
@@ -80,14 +100,34 @@ typeid:47,
 uuid:"1B4C51AF-556A-44B8-827C-57F127AF77D1"
 },
 {
-cssPosition:"435,-1,-1,563,224,34",
+cssPosition:"203,-1,-1,486,191,24",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"24",
+left:"486",
+right:"-1",
+top:"203",
+width:"191"
+},
+styleClass:"label-blue-gradient",
+text:"Cards"
+},
+name:"label_1",
+styleClass:"label-blue-gradient",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"20D674AC-B331-4158-A3E6-D8AD529D3116"
+},
+{
+cssPosition:"408,-1,-1,736,224,34",
 json:{
 cssPosition:{
 bottom:"-1",
 height:"34",
-left:"563",
+left:"736",
 right:"-1",
-top:"435",
+top:"408",
 width:"224"
 },
 onActionMethodID:"6A3CB04A-D4C6-4959-82DC-A406EE19CAAA",
@@ -100,15 +140,15 @@ typeid:47,
 uuid:"2373CE1B-E182-4241-8FD4-62C38CC7EEBE"
 },
 {
-cssPosition:"559,-1,-1,563,224,34",
+cssPosition:"516,-1,-1,736,224,34",
 json:{
 cssPosition:{
 bottom:"-1",
 height:"34",
-left: "563",
-right: "-1",
-top:"559",
-width: "224"
+left:"736",
+right:"-1",
+top:"516",
+width:"224"
 },
 onActionMethodID:"9CBEBD2E-02A7-49C2-9F9B-BC1F3EA6472B",
 text:"Toggle",
@@ -120,24 +160,25 @@ typeid:47,
 uuid:"2A2A3F7D-C339-4BB1-BF34-3D7FB82503F8"
 },
 {
- cssPosition: "185,-1,-1,563,224,34",
-    json: {
-        cssPosition: {
-            bottom: "-1",
-            height: "34",
-            left: "563",
-            right: "-1",
-            top: "185",
-            width: "224"
-        },
-        onActionMethodID: "B8F08448-0B46-4ACF-9701-B5C1ED8F428A",
-        text: "Add card",
-        variant: "BtnPrimary"
-    },
-    name: "button_removeAllCollapsiblesc",
-    typeName: "bootstrapcomponents-button",
-    typeid: 47,
-    uuid: "30116283-9206-4926-8C01-F3B21B0B2A0C"},
+cssPosition:"238,-1,-1,486,224,34",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"34",
+left:"486",
+right:"-1",
+top:"238",
+width:"224"
+},
+onActionMethodID:"B8F08448-0B46-4ACF-9701-B5C1ED8F428A",
+text:"Add card",
+variant:"BtnPrimary"
+},
+name:"button_removeAllCollapsiblesc",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"30116283-9206-4926-8C01-F3B21B0B2A0C"
+},
 {
 height:1000,
 partType:5,
@@ -145,34 +186,34 @@ typeid:19,
 uuid:"6BD6F64E-74C3-48A1-A575-99BC1C35C800"
 },
 {
-cssPosition:"476,-1,-1,563,224,34",
-json: {
-        cssPosition: {
-            bottom: "-1",
-            height: "34",
-            left: "563",
-            right: "-1",
-            top: "476",
-            width: "224"
-        },
-        onActionMethodID: "F7DD9948-6E52-4B40-871C-02E529BD76BB",
-        text: "Is collapsed",
-        variant: "BtnPrimary"
-    },
-   name: "button_isCollapsible",
-    typeName: "bootstrapcomponents-button",
-    typeid: 47,
-    uuid: "6D2E8920-5534-4D7D-A7B4-75A9054AB8A1"
-},
-{
-cssPosition:"682,-1,-1,563,224,34",
+cssPosition:"516,-1,-1,486,224,34",
 json:{
 cssPosition:{
 bottom:"-1",
 height:"34",
-left:"563",
+left:"486",
 right:"-1",
-top:"682",
+top:"516",
+width:"224"
+},
+onActionMethodID:"F7DD9948-6E52-4B40-871C-02E529BD76BB",
+text:"Is collapsed",
+variant:"BtnPrimary"
+},
+name:"button_isCollapsible",
+typeName:"bootstrapcomponents-button",
+typeid:47,
+uuid:"6D2E8920-5534-4D7D-A7B4-75A9054AB8A1"
+},
+{
+cssPosition:"649,-1,-1,486,224,34",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"34",
+left:"486",
+right:"-1",
+top:"649",
 width:"224"
 },
 onActionMethodID:"C238294E-8A15-49F7-B99B-DF995BFF7F22",
@@ -185,14 +226,14 @@ typeid:47,
 uuid:"8152EC93-8F27-403B-BFDF-5488864641DA"
 },
 {
-cssPosition:"351,-1,-1,563,224,34",
+cssPosition:"369,-1,-1,486,224,34",
 json:{
 cssPosition:{
 bottom:"-1",
 height:"34",
-left:"563",
+left:"486",
 right:"-1",
-top:"351",
+top:"369",
 width:"224"
 },
 onActionMethodID:"CF342D68-A0B3-4958-AD1C-26DC2088E7D6",
@@ -204,14 +245,15 @@ typeName:"bootstrapcomponents-button",
 typeid:47,
 uuid:"A8DAE730-1C55-4623-892B-0A84263FD871"
 },
-{cssPosition:"517,-1,-1,563,224,34",
+{
+cssPosition:"369,-1,-1,736,224,34",
 json:{
 cssPosition:{
 bottom:"-1",
 height:"34",
-left:"563",
+left:"736",
 right:"-1",
-top:"517",
+top:"369",
 width:"224"
 },
 onActionMethodID:"3367360F-93D4-41BE-AB61-8076DA40446E",
@@ -224,14 +266,14 @@ typeid:47,
 uuid:"ABDDEBE3-9A7F-466F-BE5C-BBF79F9CBB43"
 },
 {
-cssPosition:"724,-1,-1,563,224,34",
+cssPosition:"649,-1,-1,736,224,34",
 json:{
 cssPosition:{
 bottom:"-1",
 height:"34",
-left:"563",
+left:"736",
 right:"-1",
-top:"724",
+top:"649",
 width:"224"
 },
 onActionMethodID:"6FD03E9E-3D7F-430F-B692-12D14107819F",
@@ -244,15 +286,15 @@ typeid:47,
 uuid:"B39C820A-B1D0-4141-9BE6-C346B6769DD6"
 },
 {
-cssPosition:"309,-1,-1,563,224,34",
+cssPosition:"277,-1,-1,736,224,34",
 json:{
 cssPosition:{
 bottom:"-1",
 height:"34",
-left:"563",
+left:"736",
 right:"-1",
-top:"309",
-width: "224"
+top:"277",
+width:"224"
 },
 onActionMethodID:"E5FB0704-1F7C-4B80-8FEF-C916A3BD6C0D",
 text:"Get card by ID ",
@@ -264,7 +306,7 @@ typeid:47,
 uuid:"B93E953F-4493-416F-95CC-A560A3ED3B0F"
 },
 {
-cssPosition:"22,-1,-1,16,444,310",
+cssPosition:"22,-1,-1,16,443,447",
 json:{
 accordionMode:false,
 collapsibles:[
@@ -284,39 +326,39 @@ contentHtml:"<span class=\"label-blue-gradient\">This is card 2 of collapsible 1
 svyUUID:"6D96DB31-9F30-420D-A953-BB5BD0213CE8"
 }
 ],
-collapsibleHtml:"<span class=\"label-blue-gradient\" data-target=\"abc\">This is collapsiblehtml for collapsible 1</span>",
+collapsibleHtml:"<span class=\"label-blue-gradient\" data-target=\"abc\">This is collapsiblehtml for collapsible 1<\/span>",
 collapsibleId:"collapsible 1",
 form:"594E0585-1017-4070-90E1-419A62D3BED5",
-headerHtml:"<span>Header Collapsible1</span>",
+headerHtml:"<span>Header Collapsible1<\/span>",
 headerStyleClass:"bg-danger text-success",
 iconLocation:"LEFT",
 relationName:null,
 svyUUID:"B4F90365-59E4-47D9-9BAA-288C1D0F309E"
 },
 {
-collapsibleHtml:"<span class=\"label-blue-gradient\">This is collapsiblehtml for collapsible 2</span>",
+collapsibleHtml:"<span class=\"label-blue-gradient\">This is collapsiblehtml for collapsible 2<\/span>",
 collapsibleId:"collapsible 2",
 form:"AB60A7F1-4166-4463-BEF5-B49EFFEC0C31",
-headerHtml:"<span>Header Collapsible2</span>",
+headerHtml:"<span>Header Collapsible2<\/span>",
 headerStyleClass:"text-gray-800 text-3xl font-semibold tracking-tight",
 svyUUID:"65825CE9-4E38-44A8-B2F2-DF16E6028DF4"
 },
 {
-collapsibleHtml:"<span class=\"label-blue-gradient\">This is collapsiblehtml for collapsible 3</span>",
+collapsibleHtml:"<span class=\"label-blue-gradient\">This is collapsiblehtml for collapsible 3<\/span>",
 collapsibleId:"collapsible 3",
 form:"C48B6033-6D5E-437B-A733-E25B7591BA6B",
-headerHtml:"<span>Header Collapsible3</span>",
+headerHtml:"<span>Header Collapsible3<\/span>",
 iconLocation:"HIDDEN",
 svyUUID:"9907CFC7-3222-4296-8429-A2141B4FD2B4"
 }
 ],
 cssPosition:{
 bottom:"-1",
-height:"310",
+height:"447",
 left:"16",
 right:"-1",
 top:"22",
-width:"444"
+width:"443"
 },
 expandedIndices:[
 2
@@ -333,14 +375,34 @@ typeid:47,
 uuid:"BE62F798-D84E-423B-964E-6F161A0D2CBB"
 },
 {
-cssPosition:"393,-1,-1,563,224,34",
+cssPosition:"335,-1,-1,486,191,24",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"24",
+left:"486",
+right:"-1",
+top:"335",
+width:"191"
+},
+styleClass:"label-blue-gradient",
+text:"Collapsibles"
+},
+name:"label_1c",
+styleClass:"label-blue-gradient",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"CD622B4C-9300-4E61-843B-C63CEF918CB6"
+},
+{
+cssPosition:"408,-1,-1,486,224,34",
 json:{
 cssPosition:{
 bottom:"-1",
 height:"34",
-left:"563",
+left:"486",
 right:"-1",
-top:"393",
+top:"408",
 width:"224"
 },
 onActionMethodID:"0E622868-0583-477D-9349-0E3537567FDA",
@@ -353,14 +415,14 @@ typeid:47,
 uuid:"D0B4052F-E71C-4366-8D7D-617C49CF24F0"
 },
 {
-cssPosition:"641,-1,-1,563,224,34",
+cssPosition:"555,-1,-1,736,224,34",
 json:{
 cssPosition:{
 bottom:"-1",
 height:"34",
-left:"563",
+left:"736",
 right:"-1",
-top:"641",
+top:"555",
 width:"224"
 },
 onActionMethodID:"6296DB4C-4D04-4EA6-9334-1DBC50C315AE",
@@ -373,14 +435,14 @@ typeid:47,
 uuid:"E5E6640C-898B-4AEF-B46F-FCF85702AC99"
 },
 {
-cssPosition:"601,-1,-1,563,224,34",
+cssPosition:"555,-1,-1,486,224,34",
 json:{
 cssPosition:{
 bottom:"-1",
 height:"34",
-left:"563",
+left:"486",
 right:"-1",
-top:"601",
+top:"555",
 width:"224"
 },
 onActionMethodID:"79E13854-94D3-452D-97A5-6F86C8B0F819",
@@ -393,15 +455,35 @@ typeid:47,
 uuid:"E61A94E6-B74D-4AB2-BD80-E7FF2B58E179"
 },
 {
-cssPosition:"23,-1,-1,485,388,40",
+cssPosition:"487,-1,-1,486,191,24",
+json:{
+cssPosition:{
+bottom:"-1",
+height:"24",
+left:"486",
+right:"-1",
+top:"487",
+width:"191"
+},
+styleClass:"label-blue-gradient",
+text:"Visibility / State"
+},
+name:"label_1cc",
+styleClass:"label-blue-gradient",
+typeName:"bootstrapcomponents-label",
+typeid:47,
+uuid:"EC0CCCE5-4E2A-4F6A-A0A7-B220B81715CF"
+},
+{
+cssPosition:"25,-1,-1,488,480,40",
 json:{
 cssPosition:{
 bottom:"-1",
 height:"40",
-left:"485",
+left:"488",
 right:"-1",
-top:"23",
-width:"388"
+top:"25",
+width:"480"
 },
 text:"",
 variant:"LabelBackground"
