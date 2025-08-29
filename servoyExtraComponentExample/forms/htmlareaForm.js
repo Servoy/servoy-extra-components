@@ -1,6 +1,55 @@
 /**
  * @type {String}
  *
+ * @properties={typeid:35,uuid:"5901A918-9D82-4EB5-9546-C4D4A6B9ED9A"}
+ */
+var tooltipTextDP = 'This is the tooltip text.';
+
+/**
+ * @type {String}
+ *
+ * @properties={typeid:35,uuid:"857CC88F-6672-42A7-9DF7-0CBA23B91E7E"}
+ */
+var textDP = 'This is the text from properties.';
+
+/**
+ * @type {String}
+ *
+ * @properties={typeid:35,uuid:"3A61E16D-9A0B-47E8-BEBC-A6D39AD2C052"}
+ */
+var placeholderTextDP = 'This is the placeholder text.';
+
+/**
+ * @type {Number}
+ *
+ * @properties={typeid:35,uuid:"679D1FC1-F1D0-4549-B11E-618A2E43386C",variableType:8}
+ */
+var scrollYDP = null;
+
+/**
+ * @type {Number}
+ *
+ * @properties={typeid:35,uuid:"F969894E-895F-43AD-8408-C3BD990D3F8E",variableType:8}
+ */
+var scrollXDP = null;
+
+/**
+ * @type {Number}
+ *
+ * @properties={typeid:35,uuid:"F8F33355-3D4E-420D-83DE-75D07F679CD6",variableType:4}
+ */
+var responsiveHeightDP = null;
+
+/**
+ * @type {String}
+ *
+ * @properties={typeid:35,uuid:"FDB425C8-74E5-478F-AD5A-4E8AB2AA2539"}
+ */
+var styleClassDP = null;
+
+/**
+ * @type {String}
+ *
  * @properties={typeid:35,uuid:"C3D034C5-4363-4BF4-A600-D873969C31B1"}
  */
 var textboxDP = null;
@@ -118,8 +167,8 @@ function callback() {
  */
 function onSetScroll(event) {
 	elements.label_action.text = "Scroll set";
-	var x = elements.htmlarea_9.getScrollX();
-	var y = elements.htmlarea_9.getScrollY();
+	var x = scrollXDP ? scrollXDP : elements.htmlarea_9.getScrollX();
+	var y = scrollYDP ? scrollYDP : elements.htmlarea_9.getScrollY();
 	elements.htmlarea_9.setScroll(x + 10, y + 10);
 }
 
@@ -174,7 +223,7 @@ function onGetSelectedText(event) {
  * @properties={typeid:24,uuid:"A6E3EFE5-9A58-4ECD-8A5C-1B687DF41002"}
  */
 function onGetScrollY(event) {
-	textboxDP = elements.htmlarea_9.getScrollY();	
+	textboxDP = elements.htmlarea_9.getScrollY();
 }
 
 /**
@@ -197,4 +246,86 @@ function onGetScrollX(event) {
  */
 function onSelectAll(event) {
 	elements.htmlarea_9.selectAll();
+}
+
+/**
+ * Click event. dataTarget parameter is used to identify inner html elements (by their data-target attribute).
+ *
+ * @param {JSEvent} event
+ * @param {String} dataTarget
+ *
+ * @properties={typeid:24,uuid:"21C661C4-2588-44B2-B8AA-079927506783"}
+ */
+function onAction_displayTags(event, dataTarget) {
+	elements.htmlarea_9.displaysTags = !elements.htmlarea_9.displaysTags;
+}
+
+/**
+ * Click event. dataTarget parameter is used to identify inner html elements (by their data-target attribute).
+ *
+ * @param {JSEvent} event
+ * @param {String} dataTarget
+ *
+ * @properties={typeid:24,uuid:"E8BE95CB-C84B-4590-ABA6-04B7FC4441B8"}
+ */
+function onAction_visible(event, dataTarget) {
+	elements.htmlarea_9.visible = !elements.htmlarea_9.visible;
+}
+
+/**
+ * Click event. dataTarget parameter is used to identify inner html elements (by their data-target attribute).
+ *
+ * @param {JSEvent} event
+ * @param {String} dataTarget
+ *
+ * @properties={typeid:24,uuid:"DC2036AA-07DC-4B8B-828E-0400D0AB7152"}
+ */
+function onAction_enabled(event, dataTarget) {
+	elements.htmlarea_9.enabled = !elements.htmlarea_9.enabled;
+}
+
+/**
+ * Click event. dataTarget parameter is used to identify inner html elements (by their data-target attribute).
+ *
+ * @param {JSEvent} event
+ * @param {String} dataTarget
+ *
+ * @properties={typeid:24,uuid:"915FDA04-6F9F-4412-A327-2972FC7EFFC4"}
+ */
+function onAction_editable(event, dataTarget) {
+	elements.htmlarea_9.editable = !elements.htmlarea_9.editable;
+}
+
+/**
+ * Handle changed data, return false if the value should not be accepted.
+ * JSEvent.data will contain extra information about dataproviderid, its scope and the scope id (record datasource or form/global variable scope)
+ *
+ * @param oldValue
+ * @param newValue
+ * @param {JSEvent} event
+ *
+ * @return {Boolean}
+ *
+ * @properties={typeid:24,uuid:"A01C244E-C3CE-4804-96E3-004D2CB31C8B"}
+ */
+function onDataChange_styleClass(oldValue, newValue, event) {
+	elements.htmlarea_9.styleClass = styleClassDP;
+	return true
+}
+
+/**
+ * Handle changed data, return false if the value should not be accepted.
+ * JSEvent.data will contain extra information about dataproviderid, its scope and the scope id (record datasource or form/global variable scope)
+ *
+ * @param oldValue
+ * @param newValue
+ * @param {JSEvent} event
+ *
+ * @return {Boolean}
+ *
+ * @properties={typeid:24,uuid:"D84730C9-9121-46CB-A00F-068DBEF9C95A"}
+ */
+function onDataChange_responsiveHeight(oldValue, newValue, event) {
+	elements.htmlarea_9.responsiveHeight = responsiveHeightDP;
+	return true
 }
