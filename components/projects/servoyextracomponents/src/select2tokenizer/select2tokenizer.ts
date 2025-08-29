@@ -130,10 +130,17 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                 this.filteredDataProviderId.forEach(realValue => {
                     const found = opt.find(item => item.value === realValue);
                     if (!found) {
-                        opt.push({
+                        const option: Select2Option = {
                             id: realValue,
                             value: realValue,
-                            label: realValue
+                            label: realValue + '' // convert to string  
+                        }
+                        opt.push(option);
+                        this.valuelistID.getDisplayValue(realValue).subscribe((val) => {
+                            if (val) {
+                                option.label = val;
+                                this.cdRef.detectChanges();
+                            }
                         });
                     }
                 });
@@ -256,6 +263,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                 }
                 if (found && this.filteredDataProviderId.indexOf(realValue) < 0) {
                     event.select({
+                        id: realValue,
                         value: realValue,
                         label: realValue
                     });
@@ -309,6 +317,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 								const newValue = inputTextfield.value;
                             	if (prevValue != newValue) {
                                 	const option: Select2Option = {
+                                        id: newValue,
                                     	value: newValue,
                                     	label: newValue
                                 	};
