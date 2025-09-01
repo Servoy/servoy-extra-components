@@ -47,8 +47,19 @@ var clearGroups;
   elements.sideNavigation.setRootMenuItems(menu);
  * */
 $scope.api.setRootMenuItems = function(menuItems) {
-	$scope.model.menu = menuItems;
-	menuItems = $scope.model.menu;
+	if ($scope.model.servoyMenu) {
+		var servoyMenuItems = $scope.model.servoyMenu.getMenuItems();
+		for (var i = 0; i < servoyMenuItems.length; i++) {
+			$scope.model.servoyMenu.removeMenuItem(servoyMenuItems[i]);
+		}
+		for (var i = 0; i < menuItems.length; i++) {
+			addMenuItemToServoyMenu($scope.model.servoyMenu, menuItems[i]);
+		}
+	}
+	else {
+		$scope.model.menu = menuItems;
+		menuItems = $scope.model.menu;
+	}
 }
 
 /**
@@ -99,6 +110,13 @@ $scope.api.getParentMenuItem = function(menuItemId) {
  * @return {Boolean}
  * */
 $scope.api.setMenuItemEnabled = function(menuItemId, enabled) {
+	if ($scope.model.servoyMenu) {
+		var menuItem = $scope.model.servoyMenu.getMenuItem(menuItemId);
+		if (menuItem) {
+			menuItem.enabled = enabled;
+			return true;
+		}
+	}
 	var node = getNodeById(menuItemId, $scope.model.menu);
 	if (node) {
 		node.enabled = enabled;
@@ -137,6 +155,9 @@ $scope.api.setMenuItemEnabled = function(menuItemId, enabled) {
 $scope.api.addMenuItem = function(menuItem, menuItemId, index) {
 	var nodes;
 
+	if ($scope.model.servoyMenu) {
+		return addMenuItemToServoyMenu(menuItemId ? $scope.model.servoyMenu.getMenuItem(menuItemId) : $scope.model.servoyMenu, menuItem, index);
+	}
 	// find the nodes
 	if (menuItemId) { // add to node
 		var node = getNodeById(menuItemId, $scope.model.menu);
@@ -187,7 +208,9 @@ $scope.api.addMenuItem = function(menuItem, menuItemId, index) {
 $scope.api.removeMenuItem = function(menuItemId) {
 	var nodes;
 	var index;
-
+	if ($scope.model.servoyMenu) {
+		return $scope.model.servoyMenu.removeMenuItem(menuItemId);
+	}
 	// find path to node;
 	var pathIndex = getPathToNode(menuItemId, $scope.model.menu);
 	if (pathIndex && pathIndex.length) {
@@ -269,11 +292,27 @@ $scope.api.getSubMenuItems = function(menuItemId) {
  * @return {Boolean}
  * */
 $scope.api.setSubMenuItems = function(menuItemId, menuItems) {
-	var tree = $scope.model.menu;
-	var node = getNodeById(menuItemId, tree);
-	if (node) {
-		node.menuItems = menuItems;
-		return true;
+	if ($scope.model.servoyMenu) {
+		var menuItem = $scope.model.servoyMenu.getMenuItem(menuItemId);
+		if (menuItem) {
+			var servoyMenuItems = menuItem.getMenuItems();
+			for (var i = 0; i < servoyMenuItems.length; i++) {
+				menuItem.removeMenuItem(servoyMenuItems[i]);
+			}
+			for (var i = 0; i < menuItems.length; i++) {
+				addMenuItemToServoyMenu(menuItem, menuItems[i]);
+			}
+			return true;
+		}
+		return false;
+	}
+	else {
+		var tree = $scope.model.menu;
+		var node = getNodeById(menuItemId, tree);
+		if (node) {
+			node.menuItems = menuItems;
+			return true;
+		}
 	}
 	return false;
 }
@@ -288,6 +327,16 @@ $scope.api.setSubMenuItems = function(menuItemId, menuItems) {
  * @return {Boolean}
  * */
 $scope.api.removeSubMenuItems = function(menuItemId) {
+	if ($scope.model.servoyMenu) {
+		var menuItem = $scope.model.servoyMenu.getMenuItem(menuItemId);
+		if (menuItem) {
+			for (var i = 0; i < servoyMenuItems.length; i++) {
+				menuItem.removeMenuItem(servoyMenuItems[i]);
+			}
+			return true;
+		}
+		return false;
+	}
 	var node = getNodeById(menuItemId, $scope.model.menu);
 	if (node) {
 		delete node.menuItems;
@@ -315,12 +364,26 @@ $scope.api.removeSubMenuItems = function(menuItemId) {
  *  */
 $scope.api.clearMenuItems = function(depth) {
 	if (!depth) depth = 1;
-	if (depth === 1) { // if level is one remove the root
-		$scope.model.menu = [];
-	} else { // remove all subnodes at level
-		var nodes = $scope.model.menu;
-		clearGroups(depth, nodes, 2);
+	if ($scope.model.servoyMenu) {
+		var servoyMenuItems = $scope.model.servoyMenu.getMenuItems();
+		for (var i = 0; i < servoyMenuItems.length; i++) {
+			if (depth === 1) {
+				$scope.model.servoyMenu.removeMenuItem(servoyMenuItems[i]);
+			}
+			else {
+                clearMenuItemGroup(servoyMenuItems[i],depth,2);
+			}
+		}
 	}
+	else {
+		if (depth === 1) { // if level is one remove the root
+			$scope.model.menu = [];
+		} else { // remove all subnodes at level
+			var nodes = $scope.model.menu;
+			clearGroups(depth, nodes, 2);
+		}
+	}
+
 
 	// TODO call update menu items
 	// clear indexes at deeper level
@@ -802,23 +865,23 @@ function selectItem(level, index, item, event, preventSelectHandler, preventExpa
 	}
 
 	function confirmSelection() {
-        var newContainedForm = null;
+		var newContainedForm = null;
 		setSelectedIndex(level, index, item);
 
 		// expand the item
 		if (item.menuItems) { // expand the node if not leaf
 			expandItem(level, index, item, event, preventExpandHandler); // TODO add collapsed argument
-            newContainedForm = item.menuItems[0].formName;
+			newContainedForm = item.menuItems[0].formName;
 		} else { // expand the parent node if is a leaf
 			var parentNode = $scope.api.getParentMenuItem(item.id);
 			if (parentNode) {
 				expandItem(level - 1, null, parentNode, event, preventExpandHandler);
 			}
-            newContainedForm = item.formName;
+			newContainedForm = item.formName;
 		}
-        if (newContainedForm && newContainedForm != $scope.model.containedForm) {
-            $scope.setters.setContainedForm(newContainedForm);
-        }      
+		if (newContainedForm && newContainedForm != $scope.model.containedForm) {
+			$scope.setters.setContainedForm(newContainedForm);
+		}
 	}
 
 	return true;
@@ -862,9 +925,9 @@ function setSelectedIndex(level, index, item) {
 	} else {
 		newSelectedIndex[level] = item.id;
 	}
-    if (item.menuItems && item.menuItems.length) {
-        newSelectedIndex[level + 1] = item.menuItems[0].id; // select first child
-    }
+	if (item.menuItems && item.menuItems.length) {
+		newSelectedIndex[level + 1] = item.menuItems[0].id; // select first child
+	}
 
 	// apply selected index
 	$scope.model.selectedIndex = JSON.stringify(newSelectedIndex);
@@ -990,6 +1053,37 @@ function createJSEvent() {
 	return event;
 }
 
+function addMenuItemToServoyMenu(menu, item, id) {
+	var menuItem = null;
+	if (menu && item) {
+		if (id >= 0) {
+			menuItem = menu.addMenuItemAt(item.itemId, id);
+		}
+		else {
+			menuItem = menu.addMenuItem(item.itemId);
+		}
+		menuItem.menuText = item.text;
+		menuItem.enabled = item.enabled != undefined ? item.enabled : true;
+		menuItem.tooltipText = item.tooltip;
+		menuItem.iconStyleClass = item.iconStyleClass;
+		menuItem.styleClass = item.styleClass;
+	}
+	return menuItem != null;
+}
+
+function clearMenuItemGroup(menuItem, level, currentLevel) {
+	if (menuItem) {
+		var subMenuItems = menuItem.getMenuItems();
+		for (var i = 0; i < subMenuItems.length; i++) { // go one level deeper
+			if (level === currentLevel) { // delete all subgroups
+				menuItem.removeMenuItem(subMenuItems[i]);
+			} else {
+				clearMenuItemGroup(subMenuItems[i], level, currentLevel + 1);
+			}
+		}
+	}
+
+}
 /**
  * @private 
  * @return {Boolean}
@@ -1040,7 +1134,7 @@ $scope.setters.setContainedForm = function(form) {
 }
 
 $scope.onShow = function() {
-	if ($scope.model.containedForm){
+	if ($scope.model.containedForm) {
 		servoyApi.showForm($scope.model.containedForm, $scope.model.relationName);
-	} 
+	}
 }

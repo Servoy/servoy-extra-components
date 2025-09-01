@@ -12,7 +12,7 @@
 	"keywords": ["left", "right", "navigation"],
 	"model":
 	{
-		"menu"							: {"type" :"MenuItem[]", "default" : [], "pushToServer": "reject"},
+		"menu"							: {"type" :"MenuItem[]", "default" : [], "pushToServer": "deep"},
 		"servoyMenu"                    : {"type" :"JSMenu", "pushToServer" : "allow", "extraPropertiesCategory" : "Sidenav","extraProperties": { "badgeText": "tagstring","badgeStyleClass": {"type" : "styleclass", "default": "badge text-bg-secondary"}, "formName": "form", "relationName": "relation", "isDivider": "boolean","data" : "object" }},
 		"selectedIndex"					: {"type" :"string", "tags": { "scope" :"private" }, "pushToServer" : "deep"},
 		"expandedIndex"					: {"type" :"string", "tags": { "scope" :"private" }, "pushToServer" : "deep"},
