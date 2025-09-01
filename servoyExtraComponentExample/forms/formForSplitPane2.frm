@@ -3,7 +3,7 @@ dataSource:"db:/example_data/orders",
 encapsulation:108,
 items:[
 {
-height:480,
+height:393,
 partType:5,
 typeid:19,
 uuid:"96F11E8E-206A-4479-A41F-A0E4FF16FC2C"
@@ -31,5 +31,6 @@ uuid:"E1BF6966-E3AB-4101-A5FB-726250C9C85F"
 name:"formForSplitPane2",
 navigatorID:"-1",
 showInMenu:true,
+size:"447,480",
 typeid:3,
 uuid:"B366C078-42AA-4842-8C9B-28B6B6C719EB"

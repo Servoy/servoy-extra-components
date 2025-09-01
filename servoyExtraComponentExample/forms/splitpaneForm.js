@@ -1,4 +1,14 @@
 /**
+ * @properties={typeid:35,uuid:"B0F36237-C448-4A38-8FAA-9AB8BCC992F5",variableType:-4}
+ */
+var visibleDP = true;
+
+/**
+ * @properties={typeid:35,uuid:"8F3CE6C0-F0BF-4734-BB22-81AFBB4B63A3",variableType:-4}
+ */
+var enabledDP = true;
+
+/**
  * @param {Number} previousIndex
  * @param {JSEvent} event
  *
@@ -172,4 +182,40 @@ function onSetRightForm(event) {
  */
 function onSetRightFormMinSize(event) {
 	elements.splitpane_5.setRightFormMinSize(60);
+}
+
+/**
+ * Click event. dataTarget parameter is used to identify inner html elements (by their data-target attribute).
+ *
+ * @param {JSEvent} event
+ * @param {String} dataTarget
+ *
+ * @properties={typeid:24,uuid:"642B1FFD-191F-49C5-A64B-B7B9D661EC51"}
+ */
+function onAction_enabled(event, dataTarget) {
+	elements.splitpane_5.enabled = !elements.splitpane_5.enabled;
+}
+
+/**
+ * Click event. dataTarget parameter is used to identify inner html elements (by their data-target attribute).
+ *
+ * @param {JSEvent} event
+ * @param {String} dataTarget
+ *
+ * @properties={typeid:24,uuid:"8F592965-B5B6-43B6-A78A-6642A600E3E2"}
+ */
+function onAction_readOnly(event, dataTarget) {
+	elements.splitpane_5.readOnly = !elements.splitpane_5.readOnly;
+}
+
+/**
+ * Click event. dataTarget parameter is used to identify inner html elements (by their data-target attribute).
+ *
+ * @param {JSEvent} event
+ * @param {String} dataTarget
+ *
+ * @properties={typeid:24,uuid:"B31CC30E-BC51-4B16-AC07-DCC0A27AB255"}
+ */
+function onAction_visible(event, dataTarget) {
+	elements.splitpane_5.visible = !elements.splitpane_5.visible;
 }

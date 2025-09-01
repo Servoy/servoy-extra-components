@@ -1,4 +1,14 @@
 /**
+ * @properties={typeid:35,uuid:"A0320C95-9B39-4108-91F4-F165CE3E22EF",variableType:-4}
+ */
+var visibleDP = true;
+
+/**
+ * @properties={typeid:35,uuid:"1B7F71EA-EFFF-409F-A5C5-C5A35F49D710",variableType:-4}
+ */
+var enableSortDP = true;
+
+/**
  * @type {String}
  *
  * @properties={typeid:35,uuid:"8774A436-5F17-4FC0-A3C2-4ED10CF090A1"}
@@ -248,4 +258,52 @@ function onRemoveColumn(event) {
  */
 function onRemoveAllColumns(event) {
 	elements.table_4.removeAllColumns();
+}
+
+/**
+ * Click event. dataTarget parameter is used to identify inner html elements (by their data-target attribute).
+ *
+ * @param {JSEvent} event
+ * @param {String} dataTarget
+ *
+ * @properties={typeid:24,uuid:"1D49ACAA-20A2-4148-A11A-D3AD7EA07492"}
+ */
+function onAction_enableColumnResize(event, dataTarget) {
+	elements.table_4.enableColumnResize = !elements.table_4.enableColumnResize;
+}
+
+/**
+ * Click event. dataTarget parameter is used to identify inner html elements (by their data-target attribute).
+ *
+ * @param {JSEvent} event
+ * @param {String} dataTarget
+ *
+ * @properties={typeid:24,uuid:"3400C459-08AE-40A1-995A-1019DDD8B56C"}
+ */
+function onAction_enableMobileView(event, dataTarget) {
+	elements.table_4.enableMobileView = !elements.table_4.enableMobileView;
+}
+
+/**
+ * Click event. dataTarget parameter is used to identify inner html elements (by their data-target attribute).
+ *
+ * @param {JSEvent} event
+ * @param {String} dataTarget
+ *
+ * @properties={typeid:24,uuid:"DB164205-5724-49E0-8399-EA8C9F1B52C8"}
+ */
+function onAction_enableSort(event, dataTarget) {
+	elements.table_4.enableSort = !elements.table_4.enableSort;
+}
+
+/**
+ * Click event. dataTarget parameter is used to identify inner html elements (by their data-target attribute).
+ *
+ * @param {JSEvent} event
+ * @param {String} dataTarget
+ *
+ * @properties={typeid:24,uuid:"86D22D39-0565-4570-8CA1-E1171FC7CCAE"}
+ */
+function onAction_visible(event, dataTarget) {
+	elements.table_4.visible = !elements.table_4.visible;
 }

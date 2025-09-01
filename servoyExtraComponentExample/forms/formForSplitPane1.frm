@@ -22,7 +22,7 @@ typeid:47,
 uuid:"C1935C4B-EC7D-4584-A3F5-5A5A6C79F65C"
 },
 {
-height:480,
+height:406,
 partType:5,
 typeid:19,
 uuid:"ECEFC201-666A-4B81-8440-BCFA0E5B14E6"
@@ -31,5 +31,6 @@ uuid:"ECEFC201-666A-4B81-8440-BCFA0E5B14E6"
 name:"formForSplitPane1",
 navigatorID:"-1",
 showInMenu:true,
+size:"430,406",
 typeid:3,
 uuid:"6BF1406D-139C-4622-BBB4-DC13D3144C4B"

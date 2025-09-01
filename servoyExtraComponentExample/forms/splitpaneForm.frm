@@ -154,7 +154,7 @@ top:"713",
 width:"21"
 },
 dataProviderID:"visibleDP",
-onActionMethodID:"E8BE95CB-C84B-4590-ABA6-04B7FC4441B8",
+onActionMethodID:"B31CC30E-BC51-4B16-AC07-DCC0A27AB255",
 text:null
 },
 name:"checkbox_visible",
@@ -294,10 +294,10 @@ top:"679",
 width:"21"
 },
 dataProviderID:"editableDP",
-onActionMethodID:"915FDA04-6F9F-4412-A327-2972FC7EFFC4",
+onActionMethodID:"8F592965-B5B6-43B6-A78A-6642A600E3E2",
 text:null
 },
-name:"checkbox_editable",
+name:"checkbox_readOnly",
 typeName:"bootstrapcomponents-checkbox",
 typeid:47,
 uuid:"85D1F710-4DF7-4AAA-8F10-5F3C59E75A54"
@@ -408,7 +408,7 @@ top:"644",
 width:"21"
 },
 dataProviderID:"enabledDP",
-onActionMethodID:"DC2036AA-07DC-4B8B-828E-0400D0AB7152",
+onActionMethodID:"642B1FFD-191F-49C5-A64B-B7B9D661EC51",
 text:null
 },
 name:"checkbox_enabled",
