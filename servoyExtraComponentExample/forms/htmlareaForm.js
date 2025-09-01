@@ -1,4 +1,19 @@
 /**
+ * @properties={typeid:35,uuid:"793FB07D-4D4E-47DA-A2C0-2AAF87080884",variableType:-4}
+ */
+var visibleDP = true;
+
+/**
+ * @properties={typeid:35,uuid:"F7CF65C8-0AA1-4AF7-BDD2-8D19530B7C22",variableType:-4}
+ */
+var enabledDP = true;
+
+/**
+ * @properties={typeid:35,uuid:"4EDD69CB-6189-49D3-A858-2439A162770B",variableType:-4}
+ */
+var editableDP = true;
+
+/**
  * @type {String}
  *
  * @properties={typeid:35,uuid:"5901A918-9D82-4EB5-9546-C4D4A6B9ED9A"}
@@ -269,7 +284,9 @@ function onAction_displayTags(event, dataTarget) {
  * @properties={typeid:24,uuid:"E8BE95CB-C84B-4590-ABA6-04B7FC4441B8"}
  */
 function onAction_visible(event, dataTarget) {
-	elements.htmlarea_9.visible = !elements.htmlarea_9.visible;
+	var visible = !elements.htmlarea_9.visible
+	elements.htmlarea_9.visible = visible;
+	visibleDP = visible
 }
 
 /**
@@ -281,7 +298,9 @@ function onAction_visible(event, dataTarget) {
  * @properties={typeid:24,uuid:"DC2036AA-07DC-4B8B-828E-0400D0AB7152"}
  */
 function onAction_enabled(event, dataTarget) {
-	elements.htmlarea_9.enabled = !elements.htmlarea_9.enabled;
+	var enabled = !elements.htmlarea_9.enabled
+	elements.htmlarea_9.enabled = enabled;
+	enabledDP = enabled
 }
 
 /**
@@ -293,7 +312,9 @@ function onAction_enabled(event, dataTarget) {
  * @properties={typeid:24,uuid:"915FDA04-6F9F-4412-A327-2972FC7EFFC4"}
  */
 function onAction_editable(event, dataTarget) {
-	elements.htmlarea_9.editable = !elements.htmlarea_9.editable;
+	var editable = !elements.htmlarea_9.editable;
+	elements.htmlarea_9.editable = editable;
+	editableDP = editable;
 }
 
 /**

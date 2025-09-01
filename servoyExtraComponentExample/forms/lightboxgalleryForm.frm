@@ -13,6 +13,7 @@ right:"-1",
 top:"764",
 width:"21"
 },
+dataProviderID:"enabledDP",
 onActionMethodID:"9D6D2DAE-98EE-4695-B201-3B61D18B1AFD",
 text:null
 },
@@ -32,6 +33,7 @@ right:"-1",
 top:"907",
 width:"21"
 },
+dataProviderID:"showImageNumberLabel",
 onActionMethodID:"CD8A7A3E-191A-4BEA-A6F1-A0F711AD3A43",
 text:null
 },
@@ -490,6 +492,7 @@ right:"-1",
 top:"835",
 width:"21"
 },
+dataProviderID:"fitImagesInView",
 onActionMethodID:"B29CE728-1813-4311-8F71-2554B196ABBA",
 text:null
 },
@@ -718,10 +721,11 @@ right:"-1",
 top:"799",
 width:"21"
 },
+dataProviderID:"galleryVisible",
 onActionMethodID:"42C88724-15EB-4045-B1BF-7B2E58AD4B34",
 text:null
 },
-name:"checkbox_visible",
+name:"checkbox_galleryVisible",
 typeName:"bootstrapcomponents-checkbox",
 typeid:47,
 uuid:"E9625F3C-897F-41BB-8D8F-306E8ED0A876"

@@ -12,6 +12,7 @@ right:"-1",
 top:"441",
 width:"19"
 },
+dataProviderID:"centerImage",
 onActionMethodID:"0C504E09-0C00-4280-B8F3-5CEFE3310091",
 text:null
 },
@@ -59,16 +60,17 @@ typeid:47,
 uuid:"3B629D53-0207-45D2-BE9E-4992BC683BA8"
 },
 {
-cssPosition:"477,-1,-1,203,21,22",
+cssPosition:"477,-1,-1,202,21,22",
 json:{
 cssPosition:{
 bottom:"-1",
 height:"22",
-left:"203",
+left:"202",
 right:"-1",
 top:"477",
 width:"21"
 },
+dataProviderID:"enabledDP",
 onActionMethodID:"679A5709-2CD9-4C65-9080-AA37B5C98462",
 text:null
 },
@@ -109,6 +111,7 @@ right:"-1",
 top:"511",
 width:"21"
 },
+dataProviderID:"visibleDP",
 onActionMethodID:"DCF37455-1547-4870-BE2C-91CD14BA74F8",
 text:null
 },

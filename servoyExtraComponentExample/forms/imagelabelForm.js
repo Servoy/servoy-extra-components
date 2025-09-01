@@ -1,4 +1,19 @@
 /**
+ * @properties={typeid:35,uuid:"D9479956-0640-42C3-8BC8-2883F8B73039",variableType:-4}
+ */
+var visibleDP = true;
+
+/**
+ * @properties={typeid:35,uuid:"4F142CD5-FB8E-4847-9DD6-06082FBC823F",variableType:-4}
+ */
+var enabledDP = true;
+
+/**
+ * @properties={typeid:35,uuid:"4F54FFAF-5750-48BD-8AB5-2A4C2CF87814",variableType:-4}
+ */
+var centerImage = true;
+
+/**
  * @param {JSEvent} event
  *
  * @properties={typeid:24,uuid:"DA7A0C18-B418-4029-82D6-FF8D5A2F104A"}

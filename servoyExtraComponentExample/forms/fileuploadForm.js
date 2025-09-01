@@ -1,4 +1,39 @@
 /**
+ * @type {String}
+ *
+ * @properties={typeid:35,uuid:"6DD9C17D-AB02-4846-8AA2-7CDE9722D158",variableType:-4}
+ */
+var showProgressDP = true;
+
+/**
+ * @type {String}
+ *
+ * @properties={typeid:35,uuid:"59C4149D-93C8-4849-ACB5-5E9C441A5CEE",variableType:-4}
+ */
+var showFileNameDP = true;
+
+/**
+ * @type {String}
+ *
+ * @properties={typeid:35,uuid:"9AD7BEAE-258B-4330-B7AF-F8353B19FA25",variableType:-4}
+ */
+var visibleDP = true;
+
+/**
+ * @type {Boolean}
+ *
+ * @properties={typeid:35,uuid:"4989005B-7DB1-4D12-87A7-148038FD4A04",variableType:-4}
+ */
+var displayTagsDP = true;
+
+/**
+ * @type {Boolean}
+ *
+ * @properties={typeid:35,uuid:"9FB6DF45-806D-456B-8F1D-B455BB419AC0",variableType:-4}
+ */
+var enabledDP = true;
+
+/**
  * @type {Number}
  *
  * @properties={typeid:35,uuid:"1D662093-EFE1-4336-B38C-C60882D5581E",variableType:4}
@@ -53,7 +88,6 @@ var uploadTextDataprovider = null;
  * @properties={typeid:35,uuid:"95F35E16-1D5F-4338-A676-6AF5E279C38C"}
  */
 var tooltipTextDataprovider = null;
-
 
 /**
  * @type {Number}
@@ -143,7 +177,9 @@ function onFileUploaded(jsUpload) {
  * @properties={typeid:24,uuid:"93219D89-1C13-4246-81A5-DFDFCFFB1A9C"}
  */
 function onAction_enabled(event, dataTarget) {
-	elements.fileupload_20.enabled = !elements.fileupload_20.enabled;
+	var enabled = !elements.fileupload_20.enabled;
+	elements.fileupload_20.enabled = enabled;
+	enabledDP = enabled;
 }
 
 /**
@@ -155,7 +191,9 @@ function onAction_enabled(event, dataTarget) {
  * @properties={typeid:24,uuid:"39592EC5-ABB0-46A0-8230-73F071D63C55"}
  */
 function onAction_displayTags(event, dataTarget) {
-	elements.fileupload_20.displaysTags = !elements.fileupload_20.displaysTags;
+	var displayTags = !elements.fileupload_20.displaysTags;
+	elements.fileupload_20.displaysTags = displayTags;
+	displayTagsDP = displayTags;
 }
 
 /**
@@ -167,7 +205,9 @@ function onAction_displayTags(event, dataTarget) {
  * @properties={typeid:24,uuid:"2B8A90CA-4733-403E-B754-DEEDA72A05DE"}
  */
 function onAction_visible(event, dataTarget) {
-	elements.fileupload_20.visible = !elements.fileupload_20.visible;
+	var visible = !elements.fileupload_20.visible;
+	elements.fileupload_20.visible = visible;
+	visibleDP = visible;
 }
 
 /**
@@ -293,7 +333,9 @@ function onDataChange_successIconStyleClass(oldValue, newValue, event) {
  * @properties={typeid:24,uuid:"755FC584-4019-45C1-8759-C2B1B67BA1CA"}
  */
 function onAction_showFileName(event, dataTarget) {
-	elements.fileupload_20.showFileName = !elements.fileupload_20.showFileName
+	var showFileName = !elements.fileupload_20.showFileName
+	elements.fileupload_20.showFileName = showFileName
+	showFileNameDP = showFileName;
 }
 
 /**
@@ -305,7 +347,9 @@ function onAction_showFileName(event, dataTarget) {
  * @properties={typeid:24,uuid:"7DE8CC93-A04A-47FC-A134-E2D0EFE0AA7A"}
  */
 function onAction_showProgress(event, dataTarget) {
-	elements.fileupload_20.showProgress = !elements.fileupload_20.showProgress
+	var showProgress = !elements.fileupload_20.showProgress
+	elements.fileupload_20.showProgress = showProgress
+	showProgressDP = showProgress;
 }
 
 /**

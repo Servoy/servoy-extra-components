@@ -120,6 +120,12 @@ uuid:"A20F1C38-B72F-42BC-AFCC-8E62F6E2018C"
 {
 cssPosition:"42,-1,-1,33,192,115",
 json:{
+animationOptions:{
+svyUUID:"BEED5E04-6D24-4AE8-9265-4253027780C1"
+},
+borderOptions:{
+svyUUID:"CCB94BA1-A24B-4CF9-8DCB-21D5FD6ED4DC"
+},
 cssPosition:{
 bottom:"-1",
 height:"115",
@@ -130,6 +136,9 @@ width:"192"
 },
 needleOptions:{
 svyUUID:"8E83488B-6CD8-45CC-82E3-1418657B6049"
+},
+ticks:{
+svyUUID:"6C00107F-8B36-4B7A-8351-0C383DC200B0"
 },
 value:"radialGaugeValue"
 },

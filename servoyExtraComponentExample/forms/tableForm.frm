@@ -276,7 +276,10 @@ onFocusLostMethodID:"726CB088-427C-4A2E-B4A0-35149D552210",
 onHeaderClick:"3BD0BFFB-D868-493B-8E45-2E55632A60E5",
 onHeaderRightClick:"BAE2B484-9316-4101-8619-D36298FA3D71",
 onViewPortChanged:"CDC23F77-A2A1-45AB-A5A2-FBAE23703485",
-pageSize:50
+pageSize:50,
+performanceSettings:{
+svyUUID:"49D6375A-1B14-49E2-9608-40EECB688414"
+}
 },
 name:"table_4",
 typeName:"servoyextra-table",

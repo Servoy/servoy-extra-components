@@ -1,6 +1,46 @@
 /**
  * @type {String}
  *
+ * @properties={typeid:35,uuid:"CC12C452-D729-4E74-903A-AA9226694545",variableType:-4}
+ */
+var overlayMode = true;
+
+/**
+ * @type {String}
+ *
+ * @properties={typeid:35,uuid:"AC2B7D7E-C011-4F6A-8408-9ED72A3189B8",variableType:-4}
+ */
+var openOnUnselect = true;
+
+/**
+ * @type {String}
+ *
+ * @properties={typeid:35,uuid:"6187F3A1-FA6F-4C68-837B-F431990A1019",variableType:-4}
+ */
+var closeOnSelect = true;
+
+/**
+ * @type {String}
+ *
+ * @properties={typeid:35,uuid:"91CE5C1F-7427-4287-8C01-C5618EEC41D2",variableType:-4}
+ */
+var visibleDP = true;
+
+/**
+ * @type {String}
+ *
+ * @properties={typeid:35,uuid:"FD00D63B-2B8E-472F-9C47-D2DCCD6BE572",variableType:-4}
+ */
+var enabledDP = true;
+
+/**
+ * @properties={typeid:35,uuid:"77B564D7-983A-4D6E-A1AE-190377825E30",variableType:-4}
+ */
+var editableDP = true;
+
+/**
+ * @type {String}
+ *
  * @properties={typeid:35,uuid:"959F92C8-4C96-479A-ADF1-B67B022BE239"}
  */
 var styleClassDP = null;

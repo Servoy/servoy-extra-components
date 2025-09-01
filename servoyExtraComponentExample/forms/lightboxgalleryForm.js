@@ -1,6 +1,34 @@
 /**
  * @type {String}
  *
+ * @properties={typeid:35,uuid:"1E302FD8-551F-415D-8472-58556E84166F",variableType:-4}
+ */
+var showImageNumberLabel = true;
+
+/**
+ * @type {String}
+ *
+ * @properties={typeid:35,uuid:"463A88EE-22E5-43CE-84C5-DBEE5A1465DA",variableType:-4}
+ */
+var fitImagesInView = true;
+
+/**
+ * @type {String}
+ *
+ * @properties={typeid:35,uuid:"282F7621-8F60-47F7-B9B6-1EAE0FC00901",variableType:-4}
+ */
+var galleryVisible = true;
+
+/**
+ * @type {String}
+ *
+ * @properties={typeid:35,uuid:"1A6B8132-E8F9-478D-A71E-3F1A35183AA5",variableType:-4}
+ */
+var enabledDP = true;
+
+/**
+ * @type {String}
+ *
  * @properties={typeid:35,uuid:"B6B22F16-BFC6-4498-8AA1-39659E566D11"}
  */
 var hoverButtonIconDP = 'fa fa-trash fa-lg';
