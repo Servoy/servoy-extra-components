@@ -1,0 +1,9 @@
+addEmptyValue:1,
+customValues:"LEFT\r\
+RIGHT\r\
+STATIC",
+displayValueType:12,
+name:"slidePositionValuelist",
+realValueType:12,
+typeid:34,
+uuid:"8DD0D834-8629-4E62-9670-B483BA5AC581"

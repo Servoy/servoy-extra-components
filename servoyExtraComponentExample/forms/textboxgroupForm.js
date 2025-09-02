@@ -1,6 +1,4 @@
 /**
- * @type {String}
- *
  * @properties={typeid:35,uuid:"453E4BBE-2169-4AD7-87E1-BB641F884FEA",variableType:-4}
  */
 var visibleEmailDP = true;
@@ -13,15 +11,11 @@ var visibleEmailDP = true;
 var readOnlyEmailDP = null;
 
 /**
- * @type {String}
- *
  * @properties={typeid:35,uuid:"956350BA-FD42-4FFC-8D17-E4052D3B55DB",variableType:-4}
  */
 var enabledEmailDP = true;
 
 /**
- * @type {String}
- *
  * @properties={typeid:35,uuid:"056F53AF-C78A-40FD-B101-E0F2FF586BF5",variableType:-4}
  */
 var visibleDP = true;
@@ -336,23 +330,6 @@ function onAction_visible(event, dataTarget) {
 }
 
 /**
- * Handle changed data, return false if the value should not be accepted.
- * JSEvent.data will contain extra information about dataproviderid, its scope and the scope id (record datasource or form/global variable scope)
- *
- * @param oldValue
- * @param newValue
- * @param {JSEvent} event
- *
- * @return {Boolean}
- *
- * @properties={typeid:24,uuid:"190659A7-111B-4C9A-A548-1E4EE5B77F40"}
- */
-function onDataChange_enabledEmail(oldValue, newValue, event) {
-	elements.textboxgroup_email.enabled = !elements.textboxgroup_email.enabled;
-	return true
-}
-
-/**
  * Click event. dataTarget parameter is used to identify inner html elements (by their data-target attribute).
  *
  * @param {JSEvent} event
@@ -374,4 +351,16 @@ function onAction_readOnlyEmail(event, dataTarget) {
  */
 function onAction_visibleEmail(event, dataTarget) {
 	elements.textboxgroup_email.visible = !elements.textboxgroup_email.visible;
+}
+
+/**
+ * Click event. dataTarget parameter is used to identify inner html elements (by their data-target attribute).
+ *
+ * @param {JSEvent} event
+ * @param {String} dataTarget
+ *
+ * @properties={typeid:24,uuid:"18CC0F55-1CAE-4059-BDA8-8671B9DF8270"}
+ */
+function onAction_enabledEmail(event, dataTarget) {
+	elements.textboxgroup_email.enabled = !elements.textboxgroup_email.enabled;	
 }

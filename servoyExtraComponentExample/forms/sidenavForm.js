@@ -1,4 +1,80 @@
 /**
+ * @type {String}
+ *
+ * @properties={typeid:35,uuid:"95007895-E46E-4B0E-8249-C0D1E01EFF35"}
+ */
+var scrollbarPositionDP = null;
+
+/**
+ * @type {String}
+ *
+ * @properties={typeid:35,uuid:"B67152D6-FD11-4B9B-94E9-9069653C3497"}
+ */
+var togglePositionDP = null;
+
+/**
+ * @type {String}
+ *
+ * @properties={typeid:35,uuid:"614B6583-B07E-4DD6-A173-9BD8349CB1D2"}
+ */
+var slidePositionDP = null;
+
+/**
+ * @type {String}
+ *
+ * @properties={typeid:35,uuid:"0BC02BDF-768B-401A-8FA5-509DC87F9C66"}
+ */
+var slideAnimationDP = null;
+
+/**
+ * @type {String}
+ *
+ * @properties={typeid:35,uuid:"AB62E325-F751-4893-B698-68838EE0F816"}
+ */
+var iconOpenStyleClassDP = null;
+
+/**
+ * @type {String}
+ *
+ * @properties={typeid:35,uuid:"55E2E046-49A2-45E0-AD9A-B8C8730AD878"}
+ */
+var iconExpandStyleClassDP = null;
+
+/**
+ * @type {String}
+ *
+ * @properties={typeid:35,uuid:"AF1A0DB7-43C7-42EF-B0DD-6299C4516362"}
+ */
+var iconCollapseStyleClassDP = null;
+
+/**
+ * @type {String}
+ *
+ * @properties={typeid:35,uuid:"CD95DCAA-9795-4142-B2E4-0D697711E9F7"}
+ */
+var iconCloseStyleClassDP = null;
+
+/**
+ * @properties={typeid:35,uuid:"80B6E65B-0A92-47C5-BB7F-677385B03D7E",variableType:-4}
+ */
+var visibleDP = true;
+
+/**
+ * @properties={typeid:35,uuid:"7CC44ACC-EDF4-46A7-AD64-81FBFFE90E7E",variableType:-4}
+ */
+var openDP = true;
+
+/**
+ * @properties={typeid:35,uuid:"79A8403F-73D8-4BEA-A22F-D2F7D0689186",variableType:-4}
+ */
+var enabledDP = true;
+
+/**
+ * @properties={typeid:35,uuid:"1C63BD53-DE40-4C83-A3CF-9A61F3911FE4",variableType:-4}
+ */
+var animateDP = true;
+
+/**
  * @param menuItem
  * @param {JSEvent} event
  *
@@ -539,7 +615,7 @@ function onSetSubMenuItems1(event) {
 			description: "Go to Dashboard2"
 		}
 	};
-	elements.sidenav_customMenu.setSubMenuItems('menuitem1', [menuItem1,menuItem2]);
+	elements.sidenav_customMenu.setSubMenuItems('menuitem1', [menuItem1, menuItem2]);
 }
 
 /**
@@ -569,5 +645,189 @@ function onSetSubMenuItems(event) {
 			description: "Go to Dashboard2"
 		}
 	};
-	elements.sidenav_servoyMenu.setSubMenuItems('normalmenuitem1', [menuItem1,menuItem2]);
+	elements.sidenav_servoyMenu.setSubMenuItems('normalmenuitem1', [menuItem1, menuItem2]);
+}
+
+/**
+ * Click event. dataTarget parameter is used to identify inner html elements (by their data-target attribute).
+ *
+ * @param {JSEvent} event
+ * @param {String} dataTarget
+ *
+ * @properties={typeid:24,uuid:"63E13474-DAB6-48BC-B25D-627C2F486260"}
+ */
+function onAction_animate(event, dataTarget) {
+	elements.sidenav_servoyMenu.animate = !elements.sidenav_servoyMenu.animate;
+}
+
+/**
+ * Click event. dataTarget parameter is used to identify inner html elements (by their data-target attribute).
+ *
+ * @param {JSEvent} event
+ * @param {String} dataTarget
+ *
+ * @properties={typeid:24,uuid:"4BCCF990-BFFF-4D07-A25C-0F4EFC53A0A9"}
+ */
+function onAction_enabled(event, dataTarget) {
+	elements.sidenav_servoyMenu.enabled = !elements.sidenav_servoyMenu.enabled;
+}
+
+/**
+ * Click event. dataTarget parameter is used to identify inner html elements (by their data-target attribute).
+ *
+ * @param {JSEvent} event
+ * @param {String} dataTarget
+ *
+ * @properties={typeid:24,uuid:"64E7D09C-6E96-45A8-A4C9-9463574E6117"}
+ */
+function onAction_open(event, dataTarget) {
+	elements.sidenav_servoyMenu.open = !elements.sidenav_servoyMenu.open;
+}
+
+/**
+ * Click event. dataTarget parameter is used to identify inner html elements (by their data-target attribute).
+ *
+ * @param {JSEvent} event
+ * @param {String} dataTarget
+ *
+ * @properties={typeid:24,uuid:"3D4699CD-9A75-4CA6-8FD5-29FD80C06D85"}
+ */
+function onAction_visible(event, dataTarget) {
+	elements.sidenav_servoyMenu.visible = !elements.sidenav_servoyMenu.visible;
+}
+
+/**
+ * Handle changed data, return false if the value should not be accepted.
+ * JSEvent.data will contain extra information about dataproviderid, its scope and the scope id (record datasource or form/global variable scope)
+ *
+ * @param oldValue
+ * @param newValue
+ * @param {JSEvent} event
+ *
+ * @return {Boolean}
+ *
+ * @properties={typeid:24,uuid:"CF3D581E-1AF6-48EE-97CF-1E44097DAFF8"}
+ */
+function onDataChange_iconCloseStyleClass(oldValue, newValue, event) {
+	elements.sidenav_servoyMenu.iconCloseStyleClass = iconCloseStyleClassDP;
+	return true
+}
+
+/**
+ * Handle changed data, return false if the value should not be accepted.
+ * JSEvent.data will contain extra information about dataproviderid, its scope and the scope id (record datasource or form/global variable scope)
+ *
+ * @param oldValue
+ * @param newValue
+ * @param {JSEvent} event
+ *
+ * @return {Boolean}
+ *
+ * @properties={typeid:24,uuid:"DD3E29EE-0C49-417F-9387-B14EF76E9CBF"}
+ */
+function onDataChange_iconCollapseStyleClass(oldValue, newValue, event) {
+	elements.sidenav_servoyMenu.iconCollapseStyleClass = iconCollapseStyleClassDP;
+	return true
+}
+
+/**
+ * Handle changed data, return false if the value should not be accepted.
+ * JSEvent.data will contain extra information about dataproviderid, its scope and the scope id (record datasource or form/global variable scope)
+ *
+ * @param oldValue
+ * @param newValue
+ * @param {JSEvent} event
+ *
+ * @return {Boolean}
+ *
+ * @properties={typeid:24,uuid:"37A38A2A-0BC7-45AC-A79C-6A935B3A9898"}
+ */
+function onDataChange_iconExpandStyleClass(oldValue, newValue, event) {
+	elements.sidenav_servoyMenu.iconExpandStyleClass = iconExpandStyleClassDP;
+	return true
+}
+
+/**
+ * Handle changed data, return false if the value should not be accepted.
+ * JSEvent.data will contain extra information about dataproviderid, its scope and the scope id (record datasource or form/global variable scope)
+ *
+ * @param oldValue
+ * @param newValue
+ * @param {JSEvent} event
+ *
+ * @return {Boolean}
+ *
+ * @properties={typeid:24,uuid:"47C1E07A-F385-4D18-BDDE-FA1627A496F1"}
+ */
+function onDataChange_iconOpenStyleClass(oldValue, newValue, event) {
+	elements.sidenav_servoyMenu.iconOpenStyleClass = iconOpenStyleClassDP;
+	return true
+}
+
+/**
+ * Handle changed data, return false if the value should not be accepted.
+ * JSEvent.data will contain extra information about dataproviderid, its scope and the scope id (record datasource or form/global variable scope)
+ *
+ * @param oldValue
+ * @param newValue
+ * @param {JSEvent} event
+ *
+ * @return {Boolean}
+ *
+ * @properties={typeid:24,uuid:"F139C3FA-F7EA-491B-B556-57E4860BE5DB"}
+ */
+function onDataChange_slideAnimation(oldValue, newValue, event) {
+	elements.sidenav_servoyMenu.slideAnimation = slideAnimationDP;
+	return true
+}
+
+/**
+ * Handle changed data, return false if the value should not be accepted.
+ * JSEvent.data will contain extra information about dataproviderid, its scope and the scope id (record datasource or form/global variable scope)
+ *
+ * @param oldValue
+ * @param newValue
+ * @param {JSEvent} event
+ *
+ * @return {Boolean}
+ *
+ * @properties={typeid:24,uuid:"F1572859-B32B-4377-9F9D-AE6E7106D575"}
+ */
+function onDataChange_slidePosition(oldValue, newValue, event) {
+	elements.sidenav_servoyMenu.slidePosition = slidePositionDP;
+	return true
+}
+
+/**
+ * Handle changed data, return false if the value should not be accepted.
+ * JSEvent.data will contain extra information about dataproviderid, its scope and the scope id (record datasource or form/global variable scope)
+ *
+ * @param oldValue
+ * @param newValue
+ * @param {JSEvent} event
+ *
+ * @return {Boolean}
+ *
+ * @properties={typeid:24,uuid:"A4C6B2A7-2A19-49B3-A4D1-A24CD79BEA14"}
+ */
+function onDataChange_togglePosition(oldValue, newValue, event) {
+	elements.sidenav_servoyMenu.togglePosition = togglePositionDP;
+	return true
+}
+
+/**
+ * Handle changed data, return false if the value should not be accepted.
+ * JSEvent.data will contain extra information about dataproviderid, its scope and the scope id (record datasource or form/global variable scope)
+ *
+ * @param oldValue
+ * @param newValue
+ * @param {JSEvent} event
+ *
+ * @return {Boolean}
+ *
+ * @properties={typeid:24,uuid:"6C943F30-15D6-4A5C-AEB6-FC20CD2FFA77"}
+ */
+function onDataChange_scrollbarPosition(oldValue, newValue, event) {
+	elements.sidenav_servoyMenu.scrollbarPosition = scrollbarPositionDP;
+	return true
 }

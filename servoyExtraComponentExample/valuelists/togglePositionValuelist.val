@@ -1,0 +1,9 @@
+addEmptyValue:1,
+customValues:"FIXED-TOGGLE\r\
+SIDE-TOGGLE\r\
+HIDE-TOGGLE",
+displayValueType:12,
+name:"togglePositionValuelist",
+realValueType:12,
+typeid:34,
+uuid:"AE16C675-CD60-4F19-A982-09D1BA5AFAFD"
