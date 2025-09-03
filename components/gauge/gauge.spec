@@ -24,7 +24,8 @@
 			"default": "radial",
 			"tags": 
 			{
-				"doc": "The type of gauge to display. A linear gauge is similar to a thermometer and a radial gauge is like a speedometer"
+				"doc": "The type of gauge to display. A linear gauge is similar to a thermometer and a radial gauge is like a speedometer",
+				"basic": true
 			},
 
 			"values": 
@@ -40,7 +41,8 @@
 			"default": 0,
 			"tags": 
 			{
-				"doc": "The minimum value for the gauge"
+				"doc": "The minimum value for the gauge",
+				"basic": true
 			}
 		},
 
@@ -50,7 +52,8 @@
 			"default": 100,
 			"tags": 
 			{
-				"doc": "The maximum value for the gauge"
+				"doc": "The maximum value for the gauge",
+				"basic": true
 			}
 		},
 
@@ -72,7 +75,11 @@
 
 		"value": 
 		{
-			"type": "dataprovider"
+			"type": "dataprovider",
+			"tags": 
+			{
+				"basic": true
+			}
 		},
 
 		"ticks": 

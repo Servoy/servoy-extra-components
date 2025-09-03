@@ -9,12 +9,12 @@
 	"libraries": [{"name":"svy-spinner", "version":"1", "url":"servoyextra/spinner/spinner.css", "mimetype":"text/css"}],
 	"model":
 	{
-	        "dataProviderID" : { "type":"dataprovider", "pushToServer": "allow", "tags": { "wizard": true, "scope": "design" }, "ondatachange": { "onchange":"onDataChangeMethodID"}, "displayTagsPropertyName" : "displaysTags"}, 
+	        "dataProviderID" : { "type":"dataprovider", "pushToServer": "allow", "tags": { "wizard": true, "scope": "design", "basic": true }, "ondatachange": { "onchange":"onDataChangeMethodID"}, "displayTagsPropertyName" : "displaysTags"}, 
 	        "displaysTags" : { "type" : "boolean", "tags": { "scope" : "design" } }, 
 	        "editable" : { "type": "protected", "blockingOn": false, "default": true,"for": ["dataProviderID","onDataChangeMethodID"] }, 
 	        "enabled" : { "type": "enabled", "blockingOn": false, "default": true, "for": ["dataProviderID","onActionMethodID","onDataChangeMethodID","onFocusGainedMethodID","onFocusLostMethodID","onRightClickMethodID"] }, 
 	        "findmode" : { "type":"findmode", "tags":{"scope":"private"}, "for" : {"editable":true}}, 
-	        "format" : {"for":["valuelistID","dataProviderID"] , "type" :"format"},
+	        "format" : {"for":["valuelistID","dataProviderID"] , "type" :"format", "tags": { "basic": true }},
 	        "placeholderText" : { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags" }, 
 	        "readOnly" : { "type" : "readOnly", "oppositeOf" : "editable"}, 
 	        "styleClass" : { "type" :"styleclass", "tags": { "scope" :"design" }, "values" :[]},
@@ -22,7 +22,7 @@
 	        "tabSeq" : {"type" :"tabseq", "tags": { "scope" :"design" }}, 
 	        "text" : { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags" }, 
 	        "toolTipText" : { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags" },
-	        "valuelistID" : { "type" : "valuelist",  "for": "dataProviderID"}, 
+	        "valuelistID" : { "type" : "valuelist",  "for": "dataProviderID", "tags": { "basic": true }}, 
 	        "visible" : "visible",
 			"responsiveHeight": { "type": "int", "default": 30 , "tags": { "doc" :"Minimum height of the spinner, set only in responsive forms."}}
 	},

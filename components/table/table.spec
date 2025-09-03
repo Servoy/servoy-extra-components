@@ -11,10 +11,10 @@
 	{ "name": "servoyextra-table-mobileview-css", "version": "1.0", "url": "servoyextra/table/mobileview.css", "mimetype": "text/css" }],
 	"keywords": ["row", "column"],
 	"model": {
-		"columns": { "type": "column[]", "droppable": true, "pushToServer": "shallow", "elementConfig": { "pushToServer": "shallow" }, "tags": { "wizard": "autoshow","allowaccess": "visible" } },
+		"columns": { "type": "column[]", "droppable": true, "pushToServer": "shallow", "elementConfig": { "pushToServer": "shallow" }, "tags": { "wizard": "autoshow","allowaccess": "visible", "basic": true } },
 		"currentPage": { "type": "int", "default": 1, "tags": { "scope": "runtime" }, "pushToServer": "shallow" },
-		"foundset": { "type": "foundset", "default" : {"foundsetSelector":""}, "pushToServer": "allow", "initialPreferredViewPortSize": 130, "sendSelectionViewportInitially": true },
-		"pageSize": { "type": "foundsetInitialPageSize", "for": "foundset", "default": 20, "tags": { "doc" :"Number of rows per page, 0 means infinite scrolling mode." } },
+		"foundset": { "type": "foundset", "default" : {"foundsetSelector":""}, "pushToServer": "allow", "initialPreferredViewPortSize": 130, "sendSelectionViewportInitially": true, "tags": { "basic": true } },
+		"pageSize": { "type": "foundsetInitialPageSize", "for": "foundset", "default": 20, "tags": { "doc" :"Number of rows per page, 0 means infinite scrolling mode.", "basic": true } },
 		"styleClass": { "type": "styleclass", "tags": { "scope": "design" }, "default": "table", "values": ["table", "table-striped", "table-bordered", "table-hover", "table-condensed"] },
 		"sortStyleClass": { "type": "styleclass", "default": "selected-column " },
 		"selectionClass": { "type": "styleclass", "default": "table-servoyextra-selected " },

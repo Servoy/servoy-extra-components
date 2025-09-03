@@ -14,7 +14,7 @@
 	"keywords": [],
 	"model":
 	{
-		"collapsibles"			: { "type": "collapsible[]", "droppable": true, "pushToServer": "shallow", "tags": {"wizard": "autoshow"} },
+		"collapsibles"			: { "type": "collapsible[]", "droppable": true, "pushToServer": "shallow", "tags": {"wizard": "autoshow", "basic": true} },
 		"accordionMode"			: { "type": "boolean", "default": true },
 		"expandedIndices"		: { "type": "int[]", "tags": { "scope": "design" } },
 		"styleClass"			: { "type": "styleclass" },

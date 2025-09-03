@@ -13,7 +13,7 @@
 	"model":
 	{
 		"enabled" : { "type": "enabled", "blockingOn": false, "default": true, "for": ["onActionMethodID","onRightClickMethodID"] },
-	    "media" : { "type" :"media", "tags": { "scope" :"design" }},
+	    "media" : { "type" :"media", "tags": { "scope" :"design", "basic": true }},
 	    "styleClass" : { "type" :"styleclass", "tags": { "scope" :"design" } },
 	    "tabSeq" : {"type" :"tabseq", "tags": { "scope" :"design" }}, 
 	    "visible" : "visible",

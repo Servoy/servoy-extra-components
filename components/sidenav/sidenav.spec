@@ -12,12 +12,12 @@
 	"keywords": ["left", "right", "navigation"],
 	"model":
 	{
-		"menu"							: {"type" :"MenuItem[]", "default" : [], "pushToServer": "deep"},
-		"servoyMenu"                    : {"type" :"JSMenu", "pushToServer" : "allow", "extraPropertiesCategory" : "Sidenav","extraProperties": { "badgeText": "tagstring","badgeStyleClass": {"type" : "styleclass", "default": "badge text-bg-secondary"}, "formName": "form", "relationName": "relation", "isDivider": "boolean","data" : "object" }},
+		"menu"							: {"type" :"MenuItem[]", "default" : [], "pushToServer": "deep","tags": { "basic": true }},
+		"servoyMenu"                    : {"type" :"JSMenu", "pushToServer" : "allow","tags": { "basic": true }, "extraPropertiesCategory" : "Sidenav","extraProperties": { "badgeText": "tagstring","badgeStyleClass": {"type" : "styleclass", "default": "badge text-bg-secondary"}, "formName": "form", "relationName": "relation", "isDivider": "boolean","data" : "object" }},
 		"selectedIndex"					: {"type" :"string", "tags": { "scope" :"private" }, "pushToServer" : "deep"},
 		"expandedIndex"					: {"type" :"string", "tags": { "scope" :"private" }, "pushToServer" : "deep"},
 		"tabSeq"						: { "type": "tabseq", "tags": { "scope": "design" } },
-		"containedForm"					: {"type" :"form"},
+		"containedForm"					: {"type" :"form", "tags": { "basic": true }},
 		"headerForm"					: {"type" :"form"},
 		"footerForm"					: {"type" :"form"},
 		"relationName"					: "relation",
