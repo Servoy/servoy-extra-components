@@ -1,0 +1,17 @@
+addEmptyValue:1,
+customValues:"quad\r\
+quint\r\
+cycle\r\
+bounce\r\
+elastic\r\
+delinear\r\
+dequad\r\
+dequint\r\
+decycle\r\
+debounce\r\
+delastic",
+displayValueType:12,
+name:"animationRuleValuelist",
+realValueType:12,
+typeid:34,
+uuid:"529F0969-F2D9-4120-A5B3-281B87F204DB"
