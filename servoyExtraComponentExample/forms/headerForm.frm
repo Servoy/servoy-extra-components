@@ -37,7 +37,7 @@ top:"11",
 width:"620"
 },
 text:"Servoy Extra Components package demo",
-variant:"GradientFormLabel",
+variant:"GradientTextSunlight",
 visible:true
 },
 name:"example_label",
