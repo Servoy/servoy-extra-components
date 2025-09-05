@@ -202,7 +202,7 @@ function setCheckBoxAutoselectsChildren(datasource, autoselect) {
 * Set callback info for a datasource foundset display. 
 * 
 * @example
-* %%elementName%%.setCallBackInfo(databaseManager.getDataSource('example_data', 'categories'),'myfunction','categ_id');
+* %%elementName%%.setCallBackInfo(databaseManager.getDataSource('example_data', 'categories'),myfunction,'categ_id');
 * 
 * @param {String} datasource The datasource identifier, representing the foundset to be displayed.
 * @param {Function} callbackfunction Callback function name
@@ -227,7 +227,7 @@ function setCheckBoxValueDataprovider(datasource, checkboxvaluedataprovider) {
 * Set callback info for a datasource foundset checkbox display. 
 * 
 * @example
-* %%elementName%%.setMethodToCallOnCheckBoxChange(databaseManager.getDataSource('example_data', 'categories'),'myfunction','categ_id');
+* %%elementName%%.setMethodToCallOnCheckBoxChange(databaseManager.getDataSource('example_data', 'categories'),myfunction,'categ_id');
 * 
 * @param {String} datasource The datasource identifier, representing the foundset for which the checkbox change callback is being set.
 * @param {Function} callbackfunction Callback function name
@@ -276,7 +276,7 @@ function setChildSortDataprovider(datasource, childsortdataprovider) {
 * Set callback info for a datasource foundset doubleclick event. 
 * 
 * @example
-* %%elementName%%.setMethodToCallOnDoubleClick(databaseManager.getDataSource('example_data', 'categories'),'myfunction','categ_id');
+* %%elementName%%.setMethodToCallOnDoubleClick(databaseManager.getDataSource('example_data', 'categories'),myfunction,'categ_id');
 * 
 * @param {String} datasource The datasource identifier, representing the foundset for which the double-click callback is being set.
 * @param {Function} callbackfunction The name of the function to be invoked when a double-click event occurs on a node.
@@ -289,7 +289,7 @@ function setMethodToCallOnDoubleClick(datasource, callbackfunction, param) {
 * Set callback info for a datasource foundset right click event. 
 * 
 * @example
-* %%elementName%%.setMethodToCallOnRightClick(databaseManager.getDataSource('example_data', 'categories'),'myfunction','categ_id');
+* %%elementName%%.setMethodToCallOnRightClick(databaseManager.getDataSource('example_data', 'categories'),myfunction,'categ_id');
 * 
 * @param {String} datasource The datasource identifier, representing the foundset for which the right-click callback is being set.
 * @param {Function} callbackfunction Callback function name
