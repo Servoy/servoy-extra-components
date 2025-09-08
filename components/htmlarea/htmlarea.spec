@@ -62,7 +62,7 @@
 	        "styleClass" : { "type" :"styleclass", "tags": { "scope" :"design" }, "values" :[]}, 
 	        "tabSeq" : {"type" :"tabseq", "tags": { "scope" :"design" }}, 
 	        "text" : { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags" }, 
-	        "toolTipText" : { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags" }, 
+	        "toolTipText" : { "type" : "tagstring" }, 
 	        "visible" : "visible",
 			"responsiveHeight": { "type": "int", "default": 300, "tags": { "doc" :"Min height of the html editor, set only in responsive forms."} }
 	},

@@ -304,7 +304,7 @@ top:"32",
 width:"333"
 },
 dataProviderID:"htmlAreaDP",
-displaysTags:true,
+displaysTags:false,
 onActionMethodID:"09785FB9-A5B9-41DB-89D4-C89E31626F87",
 onDataChangeMethodID:"D8A09DB9-C3B4-4376-B4A4-B230C338202A",
 onFocusGainedMethodID:"862F90D9-C591-4AF2-B86F-BA569BAC1809",
