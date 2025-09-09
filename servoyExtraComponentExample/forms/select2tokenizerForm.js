@@ -1,34 +1,24 @@
 /**
- * @type {String}
- *
  * @properties={typeid:35,uuid:"CC12C452-D729-4E74-903A-AA9226694545",variableType:-4}
  */
 var overlayMode = true;
 
 /**
- * @type {String}
- *
  * @properties={typeid:35,uuid:"AC2B7D7E-C011-4F6A-8408-9ED72A3189B8",variableType:-4}
  */
 var openOnUnselect = true;
 
 /**
- * @type {String}
- *
  * @properties={typeid:35,uuid:"6187F3A1-FA6F-4C68-837B-F431990A1019",variableType:-4}
  */
 var closeOnSelect = true;
 
 /**
- * @type {String}
- *
  * @properties={typeid:35,uuid:"91CE5C1F-7427-4287-8C01-C5618EEC41D2",variableType:-4}
  */
 var visibleDP = true;
 
 /**
- * @type {String}
- *
  * @properties={typeid:35,uuid:"FD00D63B-2B8E-472F-9C47-D2DCCD6BE572",variableType:-4}
  */
 var enabledDP = true;
@@ -287,5 +277,21 @@ function onDataChange_maximumSelectionSize(oldValue, newValue, event) {
  */
 function onDataChange_valueSeparator(oldValue, newValue, event) {
 	elements.select2tokenizer_1.valueSeparator = valueSeparatorDP;
+	return true
+}
+/**
+ * Handle changed data, return false if the value should not be accepted.
+ * JSEvent.data will contain extra information about dataproviderid, its scope and the scope id (record datasource or form/global variable scope)
+ *
+ * @param oldValue
+ * @param newValue
+ * @param {JSEvent} event
+ *
+ * @return {Boolean}
+ *
+ * @properties={typeid:24,uuid:"B75F2FC7-380A-4C51-BF43-F6FBD4346E1D"}
+ */
+function onDataChange_styleClass(oldValue, newValue, event) {
+	elements.select2tokenizer_1.styleClass = styleClassDP
 	return true
 }

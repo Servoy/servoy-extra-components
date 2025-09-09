@@ -2,12 +2,12 @@ customProperties:"formComponent:false,useCssPosition:true",
 encapsulation:108,
 items:[
 {
-cssPosition:"441,-1,-1,201,19,26",
+cssPosition:"441,-1,-1,173,19,26",
 json:{
 cssPosition:{
 bottom:"-1",
 height:"26",
-left:"201",
+left:"173",
 right:"-1",
 top:"441",
 width:"19"
@@ -42,7 +42,7 @@ typeid:47,
 uuid:"2EFA355A-9B99-4D2F-81DF-1DBDE426E99A"
 },
 {
-cssPosition:"436,-1,-1,74,118,30",
+cssPosition:"436,-1,-1,74,92,30",
 json:{
 cssPosition:{
 bottom:"-1",
@@ -50,7 +50,7 @@ height:"30",
 left:"74",
 right:"-1",
 top:"436",
-width:"118"
+width:"92"
 },
 text:"Center Image"
 },
@@ -60,12 +60,12 @@ typeid:47,
 uuid:"3B629D53-0207-45D2-BE9E-4992BC683BA8"
 },
 {
-cssPosition:"477,-1,-1,202,21,22",
+cssPosition:"477,-1,-1,174,21,22",
 json:{
 cssPosition:{
 bottom:"-1",
 height:"22",
-left:"202",
+left:"174",
 right:"-1",
 top:"477",
 width:"21"
@@ -101,12 +101,12 @@ typeid:47,
 uuid:"49F4A121-798A-4E3F-B308-39FD8DAD84F1"
 },
 {
-cssPosition:"511,-1,-1,202,21,22",
+cssPosition:"511,-1,-1,174,21,22",
 json:{
 cssPosition:{
 bottom:"-1",
 height:"22",
-left:"202",
+left:"174",
 right:"-1",
 top:"511",
 width:"21"
@@ -121,7 +121,7 @@ typeid:47,
 uuid:"59727C9F-F9F0-4FB4-8008-8605DDD8E816"
 },
 {
-cssPosition:"471,-1,-1,74,118,30",
+cssPosition:"471,-1,-1,74,92,30",
 json:{
 cssPosition:{
 bottom:"-1",
@@ -129,7 +129,7 @@ height:"30",
 left:"74",
 right:"-1",
 top:"471",
-width:"118"
+width:"92"
 },
 text:"Enabled"
 },
@@ -163,7 +163,7 @@ typeid:19,
 uuid:"A99B8E82-B8FA-4B0B-9DCA-BA589BA762DF"
 },
 {
-cssPosition:"505,-1,-1,74,118,30",
+cssPosition:"505,-1,-1,74,92,30",
 json:{
 cssPosition:{
 bottom:"-1",
@@ -171,7 +171,7 @@ height:"30",
 left:"74",
 right:"-1",
 top:"505",
-width:"118"
+width:"92"
 },
 text:"Visible"
 },

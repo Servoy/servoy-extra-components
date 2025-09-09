@@ -327,23 +327,6 @@ function onAction_editable(event, dataTarget) {
  *
  * @return {Boolean}
  *
- * @properties={typeid:24,uuid:"A01C244E-C3CE-4804-96E3-004D2CB31C8B"}
- */
-function onDataChange_styleClass(oldValue, newValue, event) {
-	elements.htmlarea_9.styleClass = styleClassDP;
-	return true
-}
-
-/**
- * Handle changed data, return false if the value should not be accepted.
- * JSEvent.data will contain extra information about dataproviderid, its scope and the scope id (record datasource or form/global variable scope)
- *
- * @param oldValue
- * @param newValue
- * @param {JSEvent} event
- *
- * @return {Boolean}
- *
  * @properties={typeid:24,uuid:"D84730C9-9121-46CB-A00F-068DBEF9C95A"}
  */
 function onDataChange_responsiveHeight(oldValue, newValue, event) {
