@@ -38,7 +38,6 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	@Input() expandedIndex: any;
 	@Output() expandedIndexChange = new EventEmitter();
 	@Input() menu: Array<MenuItem>;
-	@Output() menuChange = new EventEmitter();
 	@Input() servoyMenu: IJSMenu;
 
 	@Input() onMenuItemSelected: (menuItem: any, event: MouseEvent) => Promise<boolean>;
@@ -950,7 +949,6 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 				}
 			}
 			this.menu = oldMenu;
-			this.menuChange.emit(this.menu);
 			const selection = Object.keys(selectedNode);
 			if (selection && selection.length == 1) {
 				this.updateSelectedNode(selectedNode[selection[0]], this.menu, parseInt(selection[0]));

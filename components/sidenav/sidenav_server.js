@@ -69,8 +69,18 @@ $scope.api.setRootMenuItems = function(menuItems) {
  * @return {Array<CustomType<servoyextra-sidenav.MenuItem>>}
  * */
 $scope.api.getRootMenuItems = function() {
-	var menuItems = $scope.model.menu;
-	return menuItems;
+	if ($scope.model.servoyMenu) {
+		var menuItems = new Array();
+		var servoyMenuItems = $scope.model.servoyMenu.getMenuItems();
+		for (var i = 0; i < servoyMenuItems.length; i++) {
+			menuItems.push(getMenuItemFromServoyMenuItem(servoyMenuItems[i]));
+		}
+		return menuItems;
+	}
+	else {
+		var menuItems = $scope.model.menu;
+		return menuItems;
+	}
 }
 
 /**
@@ -82,6 +92,12 @@ $scope.api.getRootMenuItems = function() {
  * @return {CustomType<servoyextra-sidenav.MenuItem>}
  * */
 $scope.api.getMenuItem = function(menuItemId) {
+	if ($scope.model.servoyMenu) {
+		var menuItem = $scope.model.servoyMenu.getMenuItem(menuItemId);
+		if (menuItem) {
+			return getMenuItemFromServoyMenuItem(menuItem);
+		}
+	}
 	return getNodeById(menuItemId, $scope.model.menu);
 }
 
@@ -94,6 +110,13 @@ $scope.api.getMenuItem = function(menuItemId) {
  * @return {CustomType<servoyextra-sidenav.MenuItem>}
  * */
 $scope.api.getParentMenuItem = function(menuItemId) {
+	if ($scope.model.servoyMenu) {
+		var menuItem = getServoyMenuParentMenuItem($scope.model.servoyMenu.getMenuItems(), menuItemId);
+		if (menuItem) {
+			menuItem = getMenuItemFromServoyMenuItem(menuItem);
+		}
+		return menuItem;
+	}
 	/** @type {CustomType<servoyextra-sidenav.MenuItem>} */
 	var parent = getParentNode(menuItemId, $scope.model.menu);
 	return parent;
@@ -243,14 +266,27 @@ $scope.api.removeMenuItem = function(menuItemId) {
 * @return {Array<CustomType<servoyextra-sidenav.MenuItem>>} 
 */
 $scope.api.getSubMenuItems = function(menuItemId) {
-	/** @type {Array<CustomType<servoyextra-sidenav.MenuItem>>} */
-	var menuItems;
-	var tree = $scope.model.menu;
-	var node = getNodeById(menuItemId, tree);
-	if (node) {
-		menuItems = node.menuItems;
+	if ($scope.model.servoyMenu) {
+		var menuItems = new Array();
+		var menuItem = $scope.model.servoyMenu.findMenuItem(menuItemId);
+		if (menuItem) {
+			var servoyMenuItems = menuItem.getMenuItems();
+			for (var i = 0; i < servoyMenuItems.length; i++) {
+				menuItems.push(getMenuItemFromServoyMenuItem(servoyMenuItems[i]));
+			}
+		}
+		return menuItems;
 	}
-	return menuItems;
+	else {
+		/** @type {Array<CustomType<servoyextra-sidenav.MenuItem>>} */
+		var menuItems;
+		var tree = $scope.model.menu;
+		var node = getNodeById(menuItemId, tree);
+		if (node) {
+			menuItems = node.menuItems;
+		}
+		return menuItems;
+	}
 }
 
 /**
@@ -371,7 +407,7 @@ $scope.api.clearMenuItems = function(depth) {
 				$scope.model.servoyMenu.removeMenuItem(servoyMenuItems[i]);
 			}
 			else {
-                clearMenuItemGroup(servoyMenuItems[i],depth,2);
+				clearMenuItemGroup(servoyMenuItems[i], depth, 2);
 			}
 		}
 	}
@@ -521,7 +557,7 @@ getParentNodeByIndexPath = function(indexPath, nodes) {
  * @return Array
  * */
 getNodeLevel = function(nodeId) {
-	var path = getPathToNode(nodeId, $scope.model.menu);
+	var path = getPathToNode(nodeId, $scope.api.getRootMenuItems());
 	if (path) {
 		return path.length;
 	} else {
@@ -560,7 +596,7 @@ clearGroups = function(level, nodes, deep) {
  * */
 getSelectedIndexPath = function(level) {
 	var selectedNode = getSelectedNode(level);
-	var path = getPathToNode(selectedNode.id, $scope.model.menu);
+	var path = getPathToNode(selectedNode.id, $scope.api.getRootMenuItems());
 	return path;
 }
 
@@ -583,7 +619,7 @@ function getSelectedNode(level) {
 	}
 
 	var nodeId = levels[maxLevel];
-	return getNodeById(nodeId, $scope.model.menu);
+	return getNodeById(nodeId, $scope.api.getRootMenuItems());
 }
 
 /**
@@ -626,13 +662,13 @@ $scope.api.setSelectedMenuItem = function(id, mustExecuteOnMenuItemSelect, mustE
 	// if level is provided search only in the selected node
 	if (level && level > 1) { // search in selected node only
 		levelPath = getSelectedIndexPath(level - 1);
-		var parentNode = getNodeByIndexPath(levelPath, $scope.model.menu); // retrieve the selected node at level
+		var parentNode = getNodeByIndexPath(levelPath, $scope.api.getRootMenuItems()); // retrieve the selected node at level
 		if (parentNode) nodes = parentNode.menuItems;
 	} else if (level === 1) { // search in root
 		// FIXME it searches in the whole tree
-		nodes = $scope.model.menu;
+		nodes = $scope.api.getRootMenuItems();
 	} else {
-		nodes = $scope.model.menu;
+		nodes = $scope.api.getRootMenuItems();
 	}
 
 	// search path to node
@@ -673,7 +709,7 @@ $scope.api.setSelectedMenuItem = function(id, mustExecuteOnMenuItemSelect, mustE
  * @return {Boolean}
  *  */
 $scope.api.setMenuItemExpanded = function(menuItemId, expanded, mustExecuteOnMenuItemExpand) {
-	var node = getNodeById(menuItemId, $scope.model.menu);
+	var node = getNodeById(menuItemId, $scope.api.getRootMenuItems());
 
 	if (!node) {
 		return false;
@@ -999,7 +1035,7 @@ function getNodeAnchestors(nodeId) {
  * @return Array
  * */
 function getAllNodesToNodeId(nodeId) {
-	var nodes = $scope.model.menu;
+	var nodes = $scope.api.getRootMenuItems();
 	var pathIndex = getPathToNode(nodeId, nodes);
 	var anchestors = [];
 	var node;
@@ -1028,8 +1064,8 @@ function isDisabled(nodeId) {
 	}
 
 	// TODO refactor: use getNodeAnchestors
-	var indexPath = getPathToNode(nodeId, $scope.model.menu);
-	var tree = $scope.model.menu;
+	var indexPath = getPathToNode(nodeId, $scope.api.getRootMenuItems());
+	var tree = $scope.api.getRootMenuItems();
 	/** @type {CustomType<servoyextra-sidenav.MenuItem>} */
 	var node;
 
@@ -1084,6 +1120,46 @@ function clearMenuItemGroup(menuItem, level, currentLevel) {
 	}
 
 }
+
+function getMenuItemFromServoyMenuItem(jsMenuItem) {
+	var menuItem = {};
+	menuItem.text = jsMenuItem.menuText;
+	menuItem.id = jsMenuItem.getName();
+	menuItem.iconStyleClass = jsMenuItem.iconStyleClass;
+	menuItem.styleClass = jsMenuItem.styleClass;
+	menuItem.enabled = jsMenuItem.enabled;
+	menuItem.data = jsMenuItem.getExtraProperty('Sidenav', 'data');
+	menuItem.isDivider = jsMenuItem.getExtraProperty('Sidenav', 'isDivider');
+	menuItem.tooltip = jsMenuItem.tooltipText;
+	menuItem.badgeText = jsMenuItem.getExtraProperty('Sidenav', 'badgeText');
+	menuItem.badgeStyleClass = jsMenuItem.getExtraProperty('Sidenav', 'badgeStyleClass');
+	menuItem.formName = jsMenuItem.getExtraProperty('Sidenav', 'formName');
+	menuItem.relationName = jsMenuItem.getExtraProperty('Sidenav', 'relationName');
+	var menuItems = new Array();
+	var servoyMenuItems = jsMenuItem.getMenuItems();
+	for (var i = 0; i < servoyMenuItems.length; i++) {
+		menuItems.push(getMenuItemFromServoyMenuItem(servoyMenuItems[i]));
+	}
+	menuItem.menuItems = menuItems;
+	return menuItem;
+}
+
+function getServoyMenuParentMenuItem(menuItems, menuItemId) {
+	if (menuItems) {
+		for (var i = 0; i < menuItems.length; i++) {
+			var menuItem = menuItems[i];
+			if (menuItem.getMenuItem(menuItemId) != null) {
+				return menuItem;
+			}
+			var node = getServoyMenuParentMenuItem(menuItem.getMenuItems(), menuItemId);
+			if (node) {
+				return node;
+			}
+		}
+	}
+	return null;
+}
+
 /**
  * @private 
  * @return {Boolean}
