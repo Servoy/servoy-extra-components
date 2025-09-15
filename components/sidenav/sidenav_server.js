@@ -905,7 +905,7 @@ function selectItem(level, index, item, event, preventSelectHandler, preventExpa
 		setSelectedIndex(level, index, item);
 
 		// expand the item
-		if (item.menuItems) { // expand the node if not leaf
+		if (item.menuItems && item.menuItems.length > 0 ) { // expand the node if not leaf
 			expandItem(level, index, item, event, preventExpandHandler); // TODO add collapsed argument
 			newContainedForm = item.menuItems[0].formName;
 		} else { // expand the parent node if is a leaf
