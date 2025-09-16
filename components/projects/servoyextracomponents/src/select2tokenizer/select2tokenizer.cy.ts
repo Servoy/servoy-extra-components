@@ -5,6 +5,7 @@ import { ServoyExtraSelect2Tokenizer } from './select2tokenizer';
 import { Select2 } from 'ng-select2-component';
 import { MountConfig } from 'cypress/angular';
 import { FormsModule } from '@angular/forms';
+import { of } from 'rxjs';
 
 @Component({
     template: `<servoyextra-select2tokenizer [servoyApi]="servoyApi"
@@ -100,11 +101,15 @@ describe('ServoyExtraSelect2Tokenizer', () => {
         }] as IValuelist;
         mockData.hasRealValues = () => { return true; };
         mockData.filterList = (value) => { return mockData.filter(item => item.displayValue.includes(value)); };
-        mockData.getDisplayValue = (value) => { return mockData.filter(item => item.realValue === value)[0].displayValue; };
+        mockData.getDisplayValue = (value) => {
+            const item = mockData.find(({ realValue }) => realValue === value);
+            if (item) return of(item.displayValue);
+            return of(value + '');
+        };
 
         config.componentProperties = {
             servoyApi: servoyApiSpy,
-            allowNewEntries: false,
+            allowNewEntries: true,
             clearSearchTextOnSelect: false,
             closeOnSelect: true,
             containSearchText: true,
@@ -260,15 +265,22 @@ describe('ServoyExtraSelect2Tokenizer', () => {
         });
     });
 
-     it('should select one not in the list', () => {
+    it('should select one not in the list', () => {
         const dataProviderIDChange = cy.stub();
         config.componentProperties.dataProviderIDChange = dataProviderIDChange;
         cy.mount(WrapperComponent, config).then(wrapper => {
-
+            
             cy.get('select2 ul li').should('have.attr', 'title', 'one').then(() => {
                 wrapper.component.dataProviderID = '5';
                 wrapper.fixture.detectChanges();
                 expect(dataProviderIDChange).not.to.have.been.called;
+                wrapper.component.valuelistID = [...mockData, {displayValue: '5', realValue: 5}] as IValuelist;
+                wrapper.fixture.detectChanges();
+            }).then(() => {
+                wrapper.component.dataProviderID = '4';
+                wrapper.fixture.detectChanges();
+                wrapper.component.dataProviderID = '5';
+                wrapper.fixture.detectChanges();
                 cy.get('select2 ul li').should('have.attr', 'title', '5');
             });
         });
@@ -296,6 +308,12 @@ describe('ServoyExtraSelect2Tokenizer', () => {
                     "displayValue": "DDDD",
                     "realValue": "DDDD"
                 }] as IValuelist;
+                wrapper.component.valuelistID.getDisplayValue = (value) => {
+                    const item = mockData.find(({ realValue }) => realValue === value);
+                    if (item) return of(item.displayValue);
+                    return of(value);
+                };
+                wrapper.fixture.detectChanges();
                 wrapper.component.dataProviderID = 'AAAA';
                 wrapper.fixture.detectChanges();
                 expect(dataProviderIDChange).not.to.have.been.called;
