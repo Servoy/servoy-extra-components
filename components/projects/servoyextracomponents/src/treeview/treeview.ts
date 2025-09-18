@@ -205,7 +205,76 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
             });
         }
     }
+    
+    addOrUpdateRowData(rowArray: Array<any>) {
+        if (!this.jsDataSet || rowArray.length !== this.jsDataSet[0].length) {
+            console.warn(`Either jsDataSet is missing or the row data provided doesn't align with the component's dataset structure. No changes were made.`);
+            return;
+        }
+        const headerRow = this.jsDataSet[0];
+        const idIdx = headerRow.indexOf('id');
+        const pidIdx = headerRow.indexOf('pid');
+        const treeColumnIdx = headerRow.indexOf('treeColumn');
+        let isFAIcon = false;
+        let iconIdx = this.jsDataSet[0].indexOf('icon');
+        if (iconIdx === -1) {
+            iconIdx = this.jsDataSet[0].indexOf('fa-icon');
+            isFAIcon = iconIdx !== -1;
+        }
+        const rowId = rowArray[idIdx];
+        const parentId = rowArray[pidIdx];
+        const expandedPaths = Object.keys(this.angularGrid.expand_tracker).filter(path => this.angularGrid.expand_tracker[path]);
+        const displayDataBefore = this.angularGrid.store.getDisplayData();
+        const selectedNode = displayDataBefore.find(data => data.row_selected);
+        const selectedId = selectedNode ? selectedNode.id : null;
+        const existingIndex = this.data.findIndex(row => row.id === rowId);
+        const mappedRow: any = {
+            id: rowId,
+            pid: parentId,
+            treeColumn: {
+                text: rowArray[treeColumnIdx],
+                icon: rowArray[iconIdx] || '',
+                isFAIcon
+            }
+        };
 
+        for (let i = 0; i < headerRow.length; i++) {
+            const colName = headerRow[i];
+            if (colName.startsWith('column')) {
+                mappedRow[colName] = rowArray[i];
+            }
+        }
+
+        if (existingIndex !== -1) {
+            this.data[existingIndex] = mappedRow;
+        } else {
+            this.data.push(mappedRow);
+        }
+
+        this.data = [...this.data];
+
+        const ids = this.data.map(item => item.id);
+        const pids = this.data.map(item => item.pid);
+        this.checkIfAllParentsExist(this.data, ids);
+        this.addDefaultIconsIfNeeded(this.data, ids, pids);
+
+        this.cdRef.detectChanges();
+
+        setTimeout(() => {
+            const displayData = this.angularGrid.store.getDisplayData();
+
+            displayData.forEach(data => {
+                if (expandedPaths.includes(data.pathx)) {
+                    this.angularGrid.expand_tracker[data.pathx] = true;
+                }
+                data.row_selected = selectedId !== null && data.id === selectedId;
+            });
+
+            this.angularGrid.store.refreshDisplayData();
+            this.cdRef.detectChanges();
+        }, 0);
+    }
+    
     checkIfAllParentsExist(data: Array<IRowData>, ids: Array<number | string>) {
         const itemsToRemove: Array<IRowData> = [];
         for (let i = 0; i < data.length; i++) {
@@ -359,6 +428,14 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         }
         return false;
     }
+    
+    nodeExist(nodeId) {
+        if (this.isTreeReady) {
+            const displayData = this.angularGrid.store.getDisplayData();
+            return displayData.some(data => data.id === nodeId);
+        }
+        return false;
+    }
 
     /**
      * Expand a node by id.
@@ -371,7 +448,8 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
      */
     expandNode(nodeId) {
         if (this.isTreeReady) {
-            this.angularGrid.expandRow(isNaN(nodeId) ? nodeId.toString() : nodeId);
+            this.nodeExist(nodeId) && this.angularGrid.expandRow(isNaN(nodeId) ? nodeId.toString() : nodeId);
+            !this.nodeExist(nodeId) && this.log.warn(`You have used a node id "${nodeId}" that doesn't exist!`);
         }
     }
 
@@ -444,6 +522,9 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
      * * @param nodeId node id
     */
     scrollToNode(nodeId) {
+        if (!this.isNodeExpanded(nodeId)) {
+            this.expandNode(nodeId);
+        }
         const node = this.elementRef.nativeElement.querySelector('div[cell-id="' + nodeId + '"]');
         if (node) {
             node.closest('td').scrollIntoView({ behavior: 'smooth', block: 'start' });

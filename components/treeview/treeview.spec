@@ -113,6 +113,16 @@
 				}
 			]
 		},
+		
+		"addOrUpdateRowData": {
+		    "parameters": [
+                {
+                    "name": "data",
+                    "type": "object"
+                }
+            ]
+        },
+
         "setDataSet": {
 			"parameters":[
 							{                                                                 

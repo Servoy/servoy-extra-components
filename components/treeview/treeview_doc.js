@@ -315,6 +315,27 @@ function filterBranches(text, options) {
 function setDataSet(jsDataSet) {
 }
 
+/**
+ * Adds or updates a row in the treeview.
+ *
+ * This function checks if a row with the same unique identifier already exists in the dataset.
+ * If it does, the existing row is removed and replaced with the new data.
+ * If it doesn't, the new data is simply added as a new row.
+ *
+ * @param {Array} data - An array representing the row to be added or updated.
+ *
+ * @example
+ * // Adds a new row with ID 6
+ * %%prefix%%%%elementName%%.addOrUpdateRowData([6, null, 'Special group', 'media:///group.png']);
+ * %%prefix%%%%elementName%%.addOrUpdateRowData([6, null, 'Special group', 'media:///group.png', 'This is a Special group', 'Has (0) child']);
+ *
+ * // Updates the row with ID 6
+ * %%prefix%%%%elementName%%.addOrUpdateRowData([6, null, 'The Special Group', 'media:///group.png']);
+ * %%prefix%%%%elementName%%.addOrUpdateRowData([6, null, 'The Special Group', 'media:///group.png', 'This is The Special Group', 'Has (0) child']);
+ */
+function addOrUpdateRowData(data) {
+}
+
 /** 
  * Sets the width for all columns in the tree view or just a specific column by its index
  * 
