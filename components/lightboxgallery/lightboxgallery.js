@@ -52,6 +52,16 @@ angular.module('servoyextraLightboxgallery', ['servoy']).directive('servoyextraL
 						});
 					} else {
 						if ($scope.images && $scope.images.length - 1 >= index) {
+							$window.lightbox.option({
+								'albumLabel': $scope.model.albumLabel,
+								'fadeDuration': $scope.model.fadeDuration,
+								'fitImagesInViewport': $scope.model.fitImagesInViewport,
+								'imageFadeDuration': $scope.model.imageFadeDuration,
+								'positionFromTop': $scope.model.positionFromTop,
+								'resizeDuration': $scope.model.resizeDuration,
+								'wrapAround': $scope.model.wrapAround,
+								'showImageNumberLabel': $scope.model.showImageNumberLabel
+							});
 							$window.lightbox.start(angular.element($element[0].querySelectorAll('a')[index]));
 							if ($scope.model.imagesFoundset.serverSize > $scope.model.imagesFoundset.viewPort.size) {
 								if ($('#lightbox')) {

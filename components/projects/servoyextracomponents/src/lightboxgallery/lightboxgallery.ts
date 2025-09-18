@@ -45,18 +45,6 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 
     svyOnInit() {
         super.svyOnInit();
-        this._lightboxConfig.albumLabel = this.albumLabel;
-        if (this.fadeDuration) {
-            this._lightboxConfig.fadeDuration = this.fadeDuration / 1000;
-        }
-        this._lightboxConfig.fitImageInViewPort = this.fitImagesInViewport;
-        this._lightboxConfig.positionFromTop = this.positionFromTop;
-        if (this.resizeDuration) {
-            this._lightboxConfig.resizeDuration = this.resizeDuration / 1000;
-        }
-        this._lightboxConfig.wrapAround = this.wrapAround;
-        this._lightboxConfig.showImageNumberLabel = this.showImageNumberLabel;
-		this._lightboxConfig.disableKeyboardNav = true;
 		setTimeout(() => {
 			this.loadMoreData();
 		}, 50);
@@ -116,6 +104,15 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 		} else {
 			if (this.images && this.images.length - 1 >= index) {
 				// open lightbox
+				this._lightboxConfig.albumLabel = this.albumLabel;
+				this._lightboxConfig.fitImageInViewPort = this.fitImagesInViewport;
+				this._lightboxConfig.positionFromTop = this.positionFromTop;
+				this._lightboxConfig.wrapAround = this.wrapAround;
+				this._lightboxConfig.showImageNumberLabel = this.showImageNumberLabel;
+				this._lightboxConfig.disableKeyboardNav = true;
+				if (this.fadeDuration) this._lightboxConfig.fadeDuration = this.fadeDuration / 1000;
+				if (this.resizeDuration) this._lightboxConfig.resizeDuration = this.resizeDuration / 1000;
+
 				this._lightbox.open(this.images, index);
 				if (this.imagesFoundset && this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
 					const interval = setInterval(() => {
