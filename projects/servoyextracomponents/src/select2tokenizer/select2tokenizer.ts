@@ -127,9 +127,16 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                 this.filteredDataProviderId.forEach(realValue => {
                     const found = opt.find(item => item.value === realValue);
                     if (!found) {
-                        opt.push({
+                        const option: Select2Option = {
                             value: realValue,
                             label: realValue
+                        };
+                        opt.push(option);
+                        this.valuelistID.getDisplayValue(realValue).subscribe((val) => {
+                            if (val) {
+                                option.label = val;
+                                this.cdRef.detectChanges();
+                            }
                         });
                     }
                 });
