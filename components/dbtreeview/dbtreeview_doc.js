@@ -59,7 +59,16 @@ var handlers = {
     * @param {Number} indexInParent The index at which the node is dropped within its parent.
     * @param {JSEvent} event The event object associated with the drop action.
     */
-   onDrop: function() {}
+   onDrop: function() {},
+   
+   /**
+    * Called when an ng grid row is dropped as a result of a drag-n-drop.
+    *
+    * @param {Array<Object>} sourceRows An array of plain objects if dragged from a power grid, or JSRecord objects if from a data grid
+    * @param {Array<String>} targetNodePkPath The primary key path of the target node.
+    * @param {JSEvent} event The event object associated with the drop action.
+    */
+    onRowDrop: function() {},
 };
 
 /**
@@ -178,10 +187,10 @@ function setNRelationName(datasource, nrelationname) {
 * Set relation for displaying a datasource foundset. 
 * 
 * @example
-* %%elementName%%.setNRelationName(databaseManager.getDataSource('example_data', 'categories'),'companies_to_categories');
+* %%elementName%%.setHasCheckBoxDataprovider(databaseManager.getDataSource('example_data', 'categories'),'has_checkbox');
 * 
 * @param {String} datasource The datasource identifier, representing the foundset for which the checkbox dataprovider is being set.
-* @param {String} hascheckboxdataprovider Relation name
+* @param {String} hascheckboxdataprovider has checkbox dataprovider, whose value will determine if a checkbox is shown for the node.
 */
 function setHasCheckBoxDataprovider(datasource, hascheckboxdataprovider) {
 }   
