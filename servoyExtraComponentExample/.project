@@ -4,8 +4,6 @@
 	<comment></comment>
 	<projects>
 		<project>resources</project>
-		<project>bootstrapcomponents</project>
-		<project>servoy-extra-components</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

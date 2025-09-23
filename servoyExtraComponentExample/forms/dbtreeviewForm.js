@@ -225,7 +225,6 @@ function onSetActionsCallBack(event) {
 }
 
 /**
- * @param param1
  *
  * @properties={typeid:24,uuid:"80A5A16A-1D33-45D1-9B85-AD4AF1994D8F"}
  */
@@ -245,7 +244,6 @@ function onSetMethodToCallOnCheckBoxChange(event) {
 }
 
 /**
- * @param param1
  *
  * @properties={typeid:24,uuid:"E16052FE-3E01-4778-998F-FC7E0C2FDADB"}
  */
