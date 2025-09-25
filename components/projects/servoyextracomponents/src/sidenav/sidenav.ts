@@ -324,7 +324,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         const sidenavDiv: HTMLElement = this.getNativeElement().querySelector('.svy-sidenav');
         const footerFormDiv: HTMLElement = this.getNativeElement().querySelector('#footerForm');
         if (this.servoyApi.isInAbsoluteLayout() && this.open) {
-            if (this.footerFormStickyBottom) {
+            if (this.footerFormStickyBottom && footerFormDiv) {
                 const sidenavDivComputedStyle = window.getComputedStyle(sidenavDiv);
                 this.renderer.setStyle(sidenavDiv, 'height', `calc(100% - ${footerFormDiv.clientHeight}px)`);
                 this.renderer.setStyle(footerFormDiv, 'background-color', sidenavDivComputedStyle.getPropertyValue('background-color'));
