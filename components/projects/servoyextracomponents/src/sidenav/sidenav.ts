@@ -165,6 +165,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 								this.servoyApi.formWillShow(this.footerForm, this.relationName).then(() => {
 									this.realFooterForm = this.footerForm;
 								}).finally(() => this.cdRef.detectChanges());
+                                this.addRemoveStickyStyle();
 							}
 							if (this.headerForm) {
 								this.servoyApi.formWillShow(this.headerForm, this.relationName).then(() => {
