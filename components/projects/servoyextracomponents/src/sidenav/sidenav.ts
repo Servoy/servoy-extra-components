@@ -151,6 +151,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 								this.realFooterForm = this.footerForm;
 							}).finally(() => this.cdRef.detectChanges());
 						}
+                        this.addRemoveStickyStyle();
 						break;
 					case 'sidenavWidth':
 					case 'responsiveHeight':
