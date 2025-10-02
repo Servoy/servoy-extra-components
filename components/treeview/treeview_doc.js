@@ -158,7 +158,7 @@ function setSelectedNode(nodeId) {
  * @example
  * %%elementName%%.scrollToNode(22)
  * 
- * @param nodeId node id
+ * @param {Object} nodeId node id
  */
 function scrollToNode(nodeId) {
 }
@@ -340,7 +340,7 @@ function addOrUpdateRowData(data) {
  * Sets the width for all columns in the tree view or just a specific column by its index
  * 
  * @param {Number} columnWidth - The desired width to apply, in pixels.
- * @param {Number} index - The zero-based index of the column to update. If not provided, all columns will be updated.
+ * @param {Number} [index] - The zero-based index of the column to update. If not provided, all columns will be updated.
  * 
  * @example
  * // Sets all columns to a width of 50px
@@ -349,4 +349,17 @@ function addOrUpdateRowData(data) {
  * %%prefix%%%%elementName%%.setColumnWidth(50,0);
  */
 function setColumnWidth(columnWidth, index) {
+}
+
+var svy_types = {
+    JSDNDEvent: {
+        /**
+         * The name of the source grid from which the drag originated.
+         */
+        sourceGridName: null,
+        /**
+         * The identifier of the source column from which the drag originated.
+         */
+        sourceColumnId: null
+    }
 }

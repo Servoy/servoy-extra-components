@@ -147,7 +147,7 @@ function addCollapsible(collapsible, index) {
 /**
  * Adds a new card to the list of cards of this collapsibleId
  * 
- * @param {svy-collapse.card} card the card to add to the collapsible
+ * @param {CustomType<servoyextra-collapse.card>} card the card to add to the collapsible
  * @param {String} collapsibleId the ID of the collapsible to add the card
  * @param {Number} [index] the index to insert the new card at
  */

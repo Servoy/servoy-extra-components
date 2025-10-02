@@ -66,7 +66,7 @@ var handlers = {
     *
     * @param {Array<Object>} sourceRows An array of plain objects if dragged from a power grid, or JSRecord objects if from a data grid
     * @param {Array<String>} targetNodePkPath The primary key path of the target node.
-    * @param {JSEvent} event The event object associated with the drop action.
+    * @param {CustomType<servoyextra-dbtreeview.JSDNDEvent>} event The event object associated with the drop action.
     */
     onRowDrop: function() {},
 };
@@ -579,5 +579,15 @@ var svy_types = {
          * The unique name identifier for the action.
          */
         name: null,
+    },
+    JSDNDEvent: {
+        /**
+         * The name of the source grid from which the drag originated.
+         */
+        sourceGridName: null,
+        /**
+         * The identifier of the source column from which the drag originated.
+         */
+        sourceColumnId: null
     }
 }

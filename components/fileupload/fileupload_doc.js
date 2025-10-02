@@ -65,6 +65,11 @@ var showFileName;
 var showProgress;
 
 /**
+ * The max file size allowed for upload in bytes. Default is no limit.
+ */
+var maxFileSize;
+
+/**
  * Flag indicating whether multiple file uploads are allowed.
  */
 var multiFileUpload;

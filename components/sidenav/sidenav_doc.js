@@ -132,7 +132,7 @@ var handlers = {
     /**
      * Called when a menu item is selected.
      *
-     * @param {Object} menuItemId The unique identifier of the selected menu item.
+     * @param {Object} menuItem The unique identifier of the selected menu item.
      * @param {JSEvent} event The event object associated with the selection.
      * 
      * @return {Boolean} True if the selection is handled successfully.
@@ -142,7 +142,7 @@ var handlers = {
     /**
      * Called when a menu item is expanded.
      *
-     * @param {Object} menuItemId The unique identifier of the expanded menu item.
+     * @param {Object} menuItem The unique identifier of the expanded menu item.
      * @param {JSEvent} event The event object associated with the expansion.
      */
     onMenuItemExpanded: function() {},
@@ -150,7 +150,7 @@ var handlers = {
     /**
      * Called when a menu item is collapsed.
      *
-     * @param {Object} menuItemId The unique identifier of the collapsed menu item.
+     * @param {Object} menuItem The unique identifier of the collapsed menu item.
      * @param {JSEvent} event The event object associated with the collapse.
      */
     onMenuItemCollapsed: function() {},
