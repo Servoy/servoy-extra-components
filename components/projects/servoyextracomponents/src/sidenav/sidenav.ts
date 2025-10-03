@@ -77,9 +77,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 				const change = changes[property];
 				switch (property) {
                     case 'footerFormStickyBottom':
-                        setTimeout(() => {
-                            this.addRemoveStickyStyle();
-                        }, 100);
+                        this.addRemoveStickyStyle();
                         break;
 					case 'enabled':
 						const nav = this.getNativeElement().querySelector('nav');
@@ -323,18 +321,20 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     addRemoveStickyStyle() {
-        const sidenavDiv: HTMLElement = this.getNativeElement().querySelector('.svy-sidenav');
-        const footerFormDiv: HTMLElement = this.getNativeElement().querySelector('#footerForm');
-        if (this.servoyApi.isInAbsoluteLayout() && this.open) {
-            if (this.footerFormStickyBottom && footerFormDiv) {
-                const sidenavDivComputedStyle = window.getComputedStyle(sidenavDiv);
-                this.renderer.setStyle(sidenavDiv, 'height', `calc(100% - ${footerFormDiv.clientHeight}px)`);
-                this.renderer.setStyle(footerFormDiv, 'background-color', sidenavDivComputedStyle.getPropertyValue('background-color'));
-                this.renderer.setStyle(footerFormDiv, 'width', sidenavDivComputedStyle.getPropertyValue('width'));
-            } else {
-                this.renderer.removeStyle(sidenavDiv, 'height');
+        setTimeout(() => {
+            const sidenavDiv: HTMLElement = this.getNativeElement().querySelector('.svy-sidenav');
+            const footerFormDiv: HTMLElement = this.getNativeElement().querySelector('#footerForm');
+            if (this.servoyApi.isInAbsoluteLayout() && this.open) {
+                if (this.footerFormStickyBottom && footerFormDiv) {
+                    const sidenavDivComputedStyle = window.getComputedStyle(sidenavDiv);
+                    this.renderer.setStyle(sidenavDiv, 'height', `calc(100% - ${footerFormDiv.clientHeight}px)`);
+                    this.renderer.setStyle(footerFormDiv, 'background-color', sidenavDivComputedStyle.getPropertyValue('background-color'));
+                    this.renderer.setStyle(footerFormDiv, 'width', sidenavDivComputedStyle.getPropertyValue('width'));
+                } else {
+                    this.renderer.removeStyle(sidenavDiv, 'height');
+                }
             }
-        }
+        }, 100);
     }
 
 	animateSlideMenu(open: boolean) {
@@ -422,9 +422,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		const wasOpen = this.open;
 		this.open = this.open === false ? true : false;
         
-        setTimeout(() => {
-            this.addRemoveStickyStyle();
-        }, 100);
+        this.addRemoveStickyStyle();
 
 		this.animateMenuHover(this.open);
 		this.animateSlideMenu(this.open);
