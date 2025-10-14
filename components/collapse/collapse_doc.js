@@ -184,6 +184,7 @@ function getCard(cardIndex, collapsibleIndex) {
 
 /**
  * Returns the collapsible with the given index (0 based)
+ * 
  * @param {Number} index if not given, the first collapsible is used
  * 
  * @return {CustomType<servoyextra-collapse.collapsible>} the collapsible or null when not found
