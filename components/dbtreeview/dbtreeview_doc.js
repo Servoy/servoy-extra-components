@@ -146,7 +146,7 @@ function removeAllRoots() {
 * 
 * @example
 * %%elementName%%.getRoots();
-
+*
 * @return {Array<JSFoundSet>} All root foundsets.
 * 
 */
@@ -302,7 +302,7 @@ function setMethodToCallOnDoubleClick(datasource, callbackfunction, param) {
 * 
 * @param {String} datasource The datasource identifier, representing the foundset for which the right-click callback is being set.
 * @param {Function} callbackfunction Callback function name
- * @param {String} param The parameter should be a field from the datasource whose value is passed to the callback function during invocation.
+* @param {String} param The parameter should be a field from the datasource whose value is passed to the callback function during invocation.
 */
 function setMethodToCallOnRightClick(datasource, callbackfunction, param) {
 }
@@ -326,7 +326,7 @@ function setSelectionPath(pkarray) {
 *
 * @param {Array<Object>} pk Array of each level id
 * 
- * @return {Boolean} True if the specified node is expanded, false if it is collapsed.
+* @return {Boolean} True if the specified node is expanded, false if it is collapsed.
 */
 function isNodeExpanded(pkarray) {
 }
@@ -373,6 +373,7 @@ function setNodeLevelVisible(level, state) {
  * 
  * @param {String} label The label for the relation, typically used as the display name for the tree node.
  * @param {String} nRelationName The name of the relation used to define the child relations for the tree node.
+ * 
  * @return {CustomType<servoyextra-dbtreeview.relationInfo>} An object containing the relation information for setting child relations in the tree structure.
  */
 function createRelationInfo(label, nRelationName) {
@@ -443,6 +444,7 @@ function updateCheckBoxValues(){
  * var arrayPkChecked = %%elementName%%.getCheckBoxValues(databaseManager.getDataSource('example_data', 'categories'));
  *
  * @param {String} datasource The datasource identifier, representing the foundset for which the checked nodes' primary keys are retrieved.
+ * 
  * @return {Array<String>} An array of primary keys of the nodes that are checked for the specified datasource.
  */
 function getCheckBoxValues () {
