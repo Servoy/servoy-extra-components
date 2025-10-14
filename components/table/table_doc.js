@@ -211,7 +211,9 @@ var handlers = {
 
 /**
  * Request the focus to the table html element.
+ * 
  * @example %%prefix%%%%elementName%%.requestFocus();
+ * 
  * @param {Boolean} [mustExecuteOnFocusGainedMethod] If false will not execute the onFocusGained method; the default value is true
  */
 function requestFocus(mustExecuteOnFocusGainedMethod) {
@@ -219,6 +221,7 @@ function requestFocus(mustExecuteOnFocusGainedMethod) {
 
 /**
  * Gets the start and end positions of the visible area in the viewport.
+ * 
  * @return {Array<Number>} An array containing two elements: the start position and the end position of the visible area.
  */
 function getViewPortPosition(){            
@@ -231,6 +234,7 @@ function setSelectedHeader(columnIndex) {
  * 
  * @example
  *	%%prefix%%%%elementName%%.getColumnsCount()
+ *
  * @return {Number} Returns the total number of columns currently present in the table.
  */ 
 function getColumnsCount() {
@@ -289,6 +293,7 @@ function removeAllColumns() {
 
 /**
  * Sets the selected header column by triggering a header click event for the specified column index.
+ * 
  * @param {Number} columnIndex The index of the column to set as selected.
  */
 function setSelectedHeader() {
@@ -298,6 +303,7 @@ function setSelectedHeader() {
  * Determines the CSS class for the sorting indicator of a given column.
  * 
  * @param {Number} columnIndex The index of the column for which to retrieve the sort class.
+ * 
  * @return {String} The CSS class representing the sort direction (ascending, descending, or hidden) for the specified column.
  */
 function getSortClass() {

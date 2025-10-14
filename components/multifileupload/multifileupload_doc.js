@@ -210,6 +210,7 @@ function retryAll() {
 
 /**
  * Retry an upload (after an error, for example).
+ * 
  * @param {String} fileID The unique identifier of the file to retry uploading.
  */
 function retryUpload(fileID) {
@@ -217,6 +218,7 @@ function retryUpload(fileID) {
 
 /**
  * Get an array of all file objects in the component
+ * 
  * @return {Array<CustomType<servoyextra-multifileupload.uploadFile>>} An array of all file objects currently in the component.
  */
 function getFiles() {
@@ -224,6 +226,7 @@ function getFiles() {
 
 /**
  * Remove a file from the component
+ * 
  * @param {String} fileID The unique identifier of the file to be removed from the component.
  */
 function removeFile(fileID) {
@@ -231,7 +234,9 @@ function removeFile(fileID) {
 
 /**
  * Get a specific file object by its ID
+ * 
  * @param {String} fileID The unique identifier of the file to retrieve.
+ * 
  * @return {CustomType<servoyextra-multifileupload.uploadFile>} The file object corresponding to the given file ID, or null if no such file exists.
  */
 function getFile(fileID) {

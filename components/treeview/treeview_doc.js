@@ -87,7 +87,7 @@ function refresh(restoreExpandedNodes) {
  * @example
  * %%elementName%%.expandAll
  * 
-* @return {Boolean} Returns `true` if all nodes were successfully expanded, otherwise `false`.
+ * @return {Boolean} Returns `true` if all nodes were successfully expanded, otherwise `false`.
  *
  */
 function expandAll() {
@@ -135,7 +135,7 @@ function isNodeExpanded(nodeId) {
  * @example
  * %%elementName%%.collapseNode(22)
  *
-  * @param {Object} nodeId The identifier of the node to collapse.
+ * @param {Object} nodeId The identifier of the node to collapse.
  * 
  */
 function collapseNode(nodeId) {
@@ -176,10 +176,10 @@ function getSelectedNode() {
 
 /**
  * Get selected node id.
- *
+ * @deprecated
  * @example
  * var selection = %%elementName%%.getSeletedNode()
- * @deprecated
+ *
  * @return {Object} Returns the selected node object, including its `id` and any other relevant properties.
  */
 function getSeletedNode() {
@@ -192,6 +192,7 @@ function getSeletedNode() {
  * var childNodes = %%elementName%%.getChildNodes()
  *
  * @param {Object} nodeId The identifier of the parent node whose child node IDs are to be retrieved.
+ * 
  * @return {Array<Object>} Returns an array of objects representing the IDs of the child nodes for the specified parent node.
  */
 function getChildNodes(nodeId) {
@@ -217,6 +218,7 @@ function getParentNode(nodeId) {
  * var nodeLevel = %%elementName%%.getNodeLevel()
  *
  * @param {Object} nodeId The identifier of the node whose level is to be determined.
+ * 
  * @return {Number} Returns the level of the specified node within the tree structure, where the root level is typically 0.
  */
 function getNodeLevel(nodeId) {
@@ -228,7 +230,7 @@ function getNodeLevel(nodeId) {
  * @example
  * var rootNodes = %%elementName%%.getRootNodes()
  *
-  * @return {Array<Object>} Returns an array of objects representing the IDs of the root nodes in the tree structure.
+ * @return {Array<Object>} Returns an array of objects representing the IDs of the root nodes in the tree structure.
  */
 function getRootNodes() {
 }
@@ -236,14 +238,10 @@ function getRootNodes() {
 /**
  * Dimm or hide unmatched nodes.
  * 
- * <br>
  * <b>NOTE</b>: This function might not work as expected if the node titles contain HTML markup.
- * 
  * 
  * @param {String} text filter nodes matching the given text
  * @param {Object} [options] filter options
- * 
- * <br>
  * <br>
  * List of options:
  * <br>
@@ -268,9 +266,8 @@ function getRootNodes() {
  *  <b>nodata</b>, type: {boolean|string|object|function}, default: true
  *  Display the string 'No data' if the filtered tree would be empty.
  *
- * @example <pre>
+ * @example
  * elements.tree.filterNodes(searchFilter, {mode: 'hide', autoExpand: true, leavesOnly: true});
- * </pre>
  * 
  */
 function filterNodes(text, options) {
@@ -288,6 +285,7 @@ function filterBranches(text, options) {
 /**
  * Sets the tree data
  * @param {JSDataset} jsDataSet  the JSDataSet used for the tree model
+ * 
  * @example
  *  var treeviewDataSet = databaseManager.createEmptyDataSet( 0,  ['id', 'pid', 'treeColumn', 'icon']);
  * 

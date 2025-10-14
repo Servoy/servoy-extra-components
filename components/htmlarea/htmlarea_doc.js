@@ -170,6 +170,7 @@ function getScrollY() {
 
 /**
  * Replaces the selected text; if no text has been selected, the replaced value will be inserted at the last cursor position.
+ * 
  * @example %%prefix%%%%elementName%%.replaceSelectedText('John');
  * @param {String} selectedText The replacement text
  * 
@@ -179,6 +180,7 @@ function replaceSelectedText (){
 }
 /**
  * Selects all the contents of the Html Area.
+ * 
  * @example %%prefix%%%%elementName%%.selectAll();
  */
 function selectAll () {
@@ -186,6 +188,7 @@ function selectAll () {
 
  /**
  * Returns the currently selected text in the specified Html Area. 
+ * 
  * @example var my_text = %%prefix%%%%elementName%%.getSelectedText();
  * @return {String} The selected text in the Html Area.
  */
@@ -194,6 +197,7 @@ function getSelectedText() {
 
 /**
  * Gets the plain text for the formatted Html Area.
+ * 
  * @example var my_text = %%prefix%%%%elementName%%.getAsPlainText();
  * 
  * @return {String} The plain text

@@ -151,6 +151,7 @@ function setRightFormMinSize(minSize) {
 /**
  * Gets the divider size in pixels.
  * @example var dividerSize = %%prefix%%%%elementName%%.dividerSize
+ * 
  * @return {Number} The size in pixels
  */
 function getDividerSize() {
@@ -167,6 +168,7 @@ function setDividerSize(size) {
 /**
  * Gets the divider location in pixels.
  * @example var dividerSize = %%prefix%%%%elementName%%.dividerSize
+ * 
  * @return {Number} The size in pixels
  */
 function getDividerLocation() {
@@ -175,6 +177,7 @@ function getDividerLocation() {
 /**
  * Gets the divider location in percentage when the component is visible.
  * @example var divRelativeLocation = %%prefix%%%%elementName%%.getRelativeDividerLocation()
+ * 
  * @return {Number} The location in percentage
  */
 function getRelativeDividerLocation() {
@@ -195,6 +198,7 @@ function setDividerLocation(location) {
  * @example %%prefix%%%%elementName%%.setLeftForm(forms.orders);
  * @param {Object} form The specified form or form name you wish to add as left panel
  * @param {Object} [relation] The relation object used to link the left panel form to the main datasource, or null for a relationless form.
+ * 
  * @return {Boolean} Value indicating if pane was successfully added
  */
 function setLeftForm(form, relation) {
@@ -205,6 +209,7 @@ function setLeftForm(form, relation) {
  * @example %%prefix%%%%elementName%%.setRightForm(forms.orders);
  * @param {Object} form The specified form or form name you wish to add as right panel
  * @param {Object} [relation] The relation object used to link the right panel form to the main datasource, or null for a relationless form.
+ * 
  * @return {Boolean} value indicating if pane was successfully added
  */
 function setRightForm(form, relation) {
@@ -213,6 +218,7 @@ function setRightForm(form, relation) {
 /**
  * Returns the left form of the split pane.
  * @example var leftForm = %%prefix%%%%elementName%%.getLeftForm();
+ * 
  * @return {FormScope} left form of the split pane
  */
 function getLeftForm() {
@@ -221,6 +227,7 @@ function getLeftForm() {
 /**
  * Returns the right form of the split pane.
  * @example var rightForm = %%prefix%%%%elementName%%.getRightForm();
+ * 
  * @return {FormScope} right form of the split pane
  */
 function getRightForm() {

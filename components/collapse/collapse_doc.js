@@ -130,6 +130,7 @@ function createCollapsible(headerHtml, collapsibleId) {
  * @param {String} [textOrHtml] The text or HTML content to be displayed inside the card.
  * @param {String} [cardId] The unique identifier for the card. If not provided, an ID may be generated automatically.
  * @param {String} [styleClass] A custom style class to apply to the card for styling purposes.
+ * 
  * @return {CustomType<servoyextra-collapse.card>} Returns a newly created card object with the specified content, ID, and style class.
  */
 function createCard(textOrHtml, cardId, styleClass) {
@@ -165,6 +166,7 @@ function setCollapsibles(collapsibles) {
 /**
  * Returns the card with the given ID
  * @param {String} cardId The unique identifier of the card to retrieve.
+ * 
  * @return {CustomType<servoyextra-collapse.card>} Returns the card object with the specified ID, or `null` if the card is not found.
  */
 function getCardById(cardId) {
@@ -192,7 +194,8 @@ function getCollapsible(index) {
 /**
  * Returns whether the collapsible at the given index (or the first one if no index is provided) is collapsed
  * 
-  * @param {Number} [index] The 0-based index of the collapsible to check. If omitted, the method checks the first collapsible.
+ * @param {Number} [index] The 0-based index of the collapsible to check. If omitted, the method checks the first collapsible.
+ * 
  * @return {Boolean} Returns `true` if the specified collapsible (or the first one by default) is collapsed, otherwise `false`.
  */
 function isCollapsed(index) {

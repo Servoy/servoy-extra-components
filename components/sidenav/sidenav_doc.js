@@ -185,6 +185,7 @@ function setSelectedMenuItemAsync(id) {
  * @public
  *
  * @param {String|Number} menuItemId The unique identifier of the menu item to check.
+ * 
  * @return {Boolean} Returns `true` if the specified menu item is currently expanded, otherwise `false`.
  */
 function isMenuItemExpanded(menuItemId) {
@@ -197,6 +198,7 @@ function isMenuItemExpanded(menuItemId) {
  * @public
  *
  * @param {String|Number} menuItemId The unique identifier of the menu item to check.
+ * 
  * @return {Boolean} Returns `true` if the specified menu item and all its ancestors are enabled. Returns `false` if the `menuItemId` cannot be found or if any ancestor of the menu item is not enabled.
  */
 function isMenuItemEnabled(menuItemId) {
@@ -206,6 +208,7 @@ function isMenuItemEnabled(menuItemId) {
  * Retrieves the screen location of a specific menu item. Returns the location as point (object with x and y properties).
  * 
  * @param {Object} menuItemId The node to retrieve location for.
+ * 
  * @return {Point} the location of the menu item.
  */
 function getLocation(nodeId) {
@@ -215,6 +218,7 @@ function getLocation(nodeId) {
  * Retrieves the size of a specific menu item. Returns the size as dimension (object with width and height properties).
  * 
  * @param {Object} menuItemId the id to retrieve size for.
+ * 
  * @return {Dimension} the size of the menu item.
  */
 function getSize(menuItemId) {
@@ -270,7 +274,8 @@ function getRootMenuItems() {
  * Returns the menuItem object
  * @public
  *
-  * @param {String|Number} menuItemId The unique identifier of the menu item to retrieve.
+ * @param {String|Number} menuItemId The unique identifier of the menu item to retrieve.
+ * 
  * @return {CustomType<servoyextra-sidenav.MenuItem>} The menu item object corresponding to the specified `menuItemId`.
  */
 function getMenuItem(menuItemId) {
@@ -281,6 +286,7 @@ function getMenuItem(menuItemId) {
  * @public
  *
  * @param {String|Number} menuItemId The unique identifier of the menu item whose parent menu item is to be retrieved.
+ *
  * @return {CustomType<servoyextra-sidenav.MenuItem>} The parent menu item object of the specified `menuItemId`. 
  */
 function getParentMenuItem(menuItemId) {
@@ -346,6 +352,7 @@ function removeMenuItem(menuItemId) {
 * @public
 *
 * @param {String|Number} menuItemId The unique identifier of the menu item whose sub-menu items are to be retrieved.
+* 
 * @return {Array<CustomType<servoyextra-sidenav.MenuItem>>} An array of sub-menu items for the specified menu item.
 */
 function getSubMenuItems(menuItemId) {
@@ -441,7 +448,6 @@ function getSelectedMenuItem(level) {
  * @param {Number} [level] reduce the search to the selected menuItem at level, if any menuItem is selected at level.
  *
  * @return {Boolean} Returns `true` if the menu item is successfully selected, otherwise `false` if the `id` cannot be found or the menu item is disabled.
- *
  */
 function setSelectedMenuItem(menuItemId, mustExecuteOnMenuItemSelected, mustExecuteOnMenuItemExpand, level) {
 }
