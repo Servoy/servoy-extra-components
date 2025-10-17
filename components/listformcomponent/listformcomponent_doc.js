@@ -1,8 +1,7 @@
-/**
+/*
  * Servoy Extra Component for displaying list form components with integrated foundset and contained form.
  * DEPRECATED: Use servoycore-listformcomponent component instead
  */
-
 
 /**
  * Reference to the foundset used for data binding.

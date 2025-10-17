@@ -1,5 +1,8 @@
-/**
- * A component that displays a data grid with customizable columns, pagination, sorting, and incremental scrolling.
+/*
+ * A component that displays a data grid with customizable columns, pagination, sorting, and incremental scrolling/loading.<br/>
+ * It is meant to be light-weight and fast, reducing network traffic as well.
+ * 
+ * For more advanced grids that need grouping, filtering, pivoting and so on try the NGGrids - Data Grid and Power Grid.
  */
 
 /**

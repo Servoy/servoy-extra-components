@@ -1,4 +1,4 @@
-/**
+/*
  * A Servoy Extra Component that displays a lightbox gallery for images with captions and thumbnails.
  * Component needs dataproviders from the foundset for the following: imageId, image, caption and thumbnail.
  */

@@ -1,5 +1,5 @@
-/**
- * A Servoy Extra Component that displays a tree view for hierarchical data.
+/*
+ * A Servoy Extra Component that displays a dataset based tree view for hierarchical data.
  */
 
 /**

@@ -1,4 +1,4 @@
-/**
+/*
  * A Servoy Extra Component for displaying images with customizable styling and events.
  */
 

@@ -1,4 +1,4 @@
-/**
+/*
  * A component that provides a split pane container for displaying two forms side by side or one on top of the other.
  */
 

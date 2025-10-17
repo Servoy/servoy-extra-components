@@ -1,4 +1,4 @@
-/**
+/*
  * A Servoy Extra Component that groups one or more text fields, allowing for combined data input and validation.
  */
 

@@ -1,4 +1,4 @@
-/**
+/*
  * Servoy Extra Component for rendering a label with dynamic styling based on expressions.
  * 
  * DEPRECATED: Use DataLabel from the Bootstrap Components package.

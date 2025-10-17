@@ -1,4 +1,4 @@
-/**
+/*
  * DEPRECATED: Set the 'imageStyleClass' property of the Label or DataLabel from the Boostrap Components package.
  */
 

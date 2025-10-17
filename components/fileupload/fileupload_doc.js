@@ -1,5 +1,6 @@
-/**
+/*
  * A Servoy Extra Component that allows users to upload files.
+ * 
  * It supports multi-file uploads, displays file names, shows upload progress,
  * and provides customizable texts for various upload statuses.
  */

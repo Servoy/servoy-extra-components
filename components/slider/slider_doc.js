@@ -1,4 +1,4 @@
-/**
+/*
  * A Servoy Extra Component that displays a slider for selecting numeric values, supporting both single and range selection.
  */
 

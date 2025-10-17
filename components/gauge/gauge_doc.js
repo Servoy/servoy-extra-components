@@ -1,3 +1,7 @@
+/*
+ * A Servoy Extra Component for displaying a linear or radial gauge with various options.
+ */
+
 /**
  * The type of gauge to display. A linear gauge is similar to a thermometer and a radial gauge is like a speedometer
  */

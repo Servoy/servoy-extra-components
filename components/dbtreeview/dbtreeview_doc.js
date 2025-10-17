@@ -1,5 +1,5 @@
-/**
- * A Servoy Extra Component that displays a database tree view.
+/*
+ * A Servoy Extra Component that displays a database (so a foundset based) tree view.
  */
 
 /**

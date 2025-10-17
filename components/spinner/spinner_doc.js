@@ -1,4 +1,4 @@
-/**
+/*
  * A component that provides a spinner input for numeric values.
  */
 

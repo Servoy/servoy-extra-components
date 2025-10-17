@@ -1,4 +1,4 @@
-/**
+/*
  * A component that provides a side navigation menu.
  */
 

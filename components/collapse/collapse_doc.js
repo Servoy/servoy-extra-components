@@ -1,4 +1,4 @@
-/**
+/*
  * A Collapse Component that groups multiple collapsible panels.
  */
 

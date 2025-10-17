@@ -1,4 +1,4 @@
-/**
+/*
  * Servoy Extra Component for embedding YouTube videos.
  * Provides options to configure video dimensions, playback behavior, and display settings.
  */

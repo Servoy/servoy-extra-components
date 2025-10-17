@@ -1,4 +1,4 @@
-/**
+/*
  * A Servoy Extra Component that provides a tokenized select input field with auto-complete and multi-selection capabilities.
  */
 

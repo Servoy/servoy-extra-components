@@ -1,4 +1,4 @@
-/**
+/*
  * A Servoy Extra Component that supports multi-file upload functionality.
  */
 
