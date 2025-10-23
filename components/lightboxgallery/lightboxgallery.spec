@@ -27,7 +27,7 @@
 		"galleryVisible"			: { "type": "boolean", "default": true },
 		"showCaptionInGallery" 		: { "type" : "boolean", "default": false },
 		"showImageNumberLabel"		: { "type": "boolean", "default": true },
-		"hoverButtonIcon"			: { "type": "string", "default": "fa fa-trash fa-lg" },
+		"hoverButtonIcon"			: { "type": "string", "default": "fa fa-width-auto fa-trash fa-lg" },
 		"buttonText"				: { "type": "tagstring" },
 		"buttonStyleClass"			: { "type": "styleclass" },
 		"enabled"					: { "type": "boolean", "default": "false" },
