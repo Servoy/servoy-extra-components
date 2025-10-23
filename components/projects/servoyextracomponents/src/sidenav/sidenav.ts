@@ -68,6 +68,9 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		if (!this.selectedIndex) this.selectedIndex = {};
 		if (!this.expandedIndex) this.expandedIndex = {};
 		this.copyServoyMenu();
+        if (this.menu && this.menu.length > 0 && !this.servoyMenu) {
+            this.hasUniqueIds(this.menu);
+        }
 	}
 
 	svyOnChanges(changes: SimpleChanges) {
@@ -112,7 +115,6 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 					case 'relationName':
 						// if only relationName is changed while containeForm remain the same, call a formWillShow with the new relation.
 						if (!changes.containedForm && this.containedForm) {
-							console.log('FormWillShow: ' + this.containedForm + ' relation: ' + this.relationName)
 							this.servoyApi.formWillShow(this.containedForm, this.relationName).then(() => {
 								this.realContainedForm = this.containedForm;
 							}).finally(() => this.cdRef.detectChanges());
@@ -995,6 +997,37 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 			}
 		}
 	}
+    
+    hasUniqueIds(menu: MenuItem[]): boolean {
+        const duplicateIds = this.findDuplicateIds(menu);
+        if (duplicateIds.length > 0) {
+            const formName = this.servoyApi.getFormName();
+            console.warn("In form " + String(formName) + ", the sidenav component contains duplicate IDs: " + duplicateIds.join(', ') + ". IDs must be unique for proper functioning of the component.");
+            return false;
+        }
+        return true;
+    }
+
+    private findDuplicateIds(menuItems: MenuItem[]): string[] {
+        const allIds = new Set<string>();
+        const duplicates = new Set<string>();
+        const checkItems = (menuItems: MenuItem[]): void => {
+            for (const item of menuItems) {
+                if (item.id) {
+                    if (allIds.has(item.id)) {
+                        duplicates.add(item.id);
+                    } else {
+                        allIds.add(item.id);
+                    }
+                }
+                if (item.menuItems?.length) {
+                    checkItems(item.menuItems);
+                }
+            }
+        };
+        checkItems(menuItems);
+        return Array.from(duplicates);
+    }
 }
 export class MenuItem {
 	public text: string;
