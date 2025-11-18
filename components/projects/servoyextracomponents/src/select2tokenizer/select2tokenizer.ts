@@ -127,6 +127,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                 });
             }
             if (this.filteredDataProviderId?.length) {
+                let counter = this.filteredDataProviderId.length;
                 this.filteredDataProviderId.forEach(realValue => {
                     const found = opt.find(item => item.value === realValue);
                     if (!found) {
@@ -139,9 +140,18 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                         this.valuelistID.getDisplayValue(realValue).subscribe((val) => {
                             if (val) {
                                 option.label = val;
+                            }
+                            // decrement counter
+                            counter--;
+                            // only refresh once, after the last one resolves
+                            if (counter === 0) {
+                                this.data = [...opt];
                                 this.cdRef.detectChanges();
                             }
                         });
+                    } else {
+                        // if already found, decrement immediately
+                        counter--;
                     }
                 });
             }
@@ -195,13 +205,14 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     }
 
     svyOnChanges(changes: SimpleChanges) {
-        if (changes['valuelistID']) {
+        if (changes['dataProviderID']) {
+            this.setFilteredDataProviderId();
             this.setData();
         }
-        if (changes['dataProviderID']) {
-			this.setFilteredDataProviderId();
-			this.setData();
-		}
+        if (changes['valuelistID']) {
+            this.setData();
+            this.setFilteredDataProviderId();
+        }
         if (changes['cssPosition']) {
 			const currentValue = changes['cssPosition'].currentValue;
 			const listContainer = this.doc.querySelector('.cdk-overlay-pane') as HTMLElement;
@@ -213,15 +224,27 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     }
     
     setFilteredDataProviderId() {
-		if (!this.dataProviderID) {
-			this.filteredDataProviderId = [];
-		} else {
-			this.filteredDataProviderId = this.isTypeString() && typeof this.dataProviderID === 'string' ? this.dataProviderID.split('\n') : [this.dataProviderID];
+        this.filteredDataProviderId = [];
+        this.cdRef.detectChanges();
+		if (this.dataProviderID) {
+			const helper = this.isTypeString() && typeof this.dataProviderID === 'string' ? this.dataProviderID.split('\n') : [this.dataProviderID];
 			if (this.valuelistID.length && typeof this.valuelistID[this.valuelistID.length-1].realValue === 'number') {
-				this.filteredDataProviderId.forEach((item,index) => {
-					!isNaN(item) && (this.filteredDataProviderId[index] = Number(item));
+                // convert items to numbers if valuelistID and valuelistID ends with a numeric realValue
+				helper.forEach((item,index) => {
+					!isNaN(item) && (helper[index] = Number(item));
 				});
-			}
+			} else if (this.data?.length) {
+                // otherwise, check against data options and convert matching strings to numbers
+                this.data.forEach(option => {
+                    helper.forEach((item, index) => {
+                        if (typeof option.value === 'number' && !isNaN(item) && Number(item) === option.value) {
+                            helper[index] = option.value;
+                        }
+                    });
+                });
+            }
+            this.filteredDataProviderId = helper;
+            this.cdRef.detectChanges();
 		}
 	}
 
