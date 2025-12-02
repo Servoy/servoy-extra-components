@@ -123,15 +123,26 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
             if (this.maxFileSize) {
                 options.maxFileSize = this.maxFileSize;
             }
+
+            options.filters = [{
+                name: 'emptyType', fn: (item: any, options: any): boolean => {
+                    if (!item.type) {
+                        const fileExtension = item.name.split('.').at(-1).toLowerCase();
+                        const allowedExtensions = options.allowedMimeType.map(mime => mime.split('/').at(-1).toLowerCase());
+                        return allowedExtensions.includes(fileExtension);
+                    }
+                    return true;
+                }
+            }];
             
             if (!this.multiFileUpload) {
-                options.filters = [{
+                options.filters.push({
                     name: 'multi', fn: (): boolean => {
                         const retValue = this.ready;
                         this.ready = false;
                         return retValue;
                     }
-                }];
+                });
                 this.uploader = new FileUploader(options);
             }
             else this.uploader = new FileUploader(options);
