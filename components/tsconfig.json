@@ -18,9 +18,7 @@
     "lib": [
       "dom",
       "dom.Iterable",
-      "es2020",
-      "es2021.Promise",
-      "es2022.Error"
+      "es2022"
     ],
     "useDefineForClassFields": false
   },

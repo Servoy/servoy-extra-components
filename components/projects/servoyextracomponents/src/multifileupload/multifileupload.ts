@@ -1,13 +1,12 @@
 import { Component, ViewChild, SimpleChanges, Input, Renderer2, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { JSEvent, LoggerFactory, LoggerService, ServoyBaseComponent, ServoyPublicService } from '@servoy/public';
-import { Uppy, UppyFile, UppyOptions } from '@uppy/core';
+import { Uppy, UppyFile, UppyOptions,Restrictions } from '@uppy/core';
+import { FileProgress } from '@uppy/utils';
+import { DashboardComponent } from '@uppy/angular';
 import Dashboard from '@uppy/dashboard';
 import Tus, { TusOpts } from '@uppy/tus';
 import type { DashboardOptions } from '@uppy/dashboard';
 import type { WebcamOptions } from '@uppy/webcam';
-import { DashboardComponent } from '@uppy/angular';
-import { Restrictions } from '@uppy/core/lib/Restricter';
-import { FileProgress } from '@uppy/utils/lib/FileProgress';
 
 @Component({
     selector: 'servoyextra-multifileupload',
