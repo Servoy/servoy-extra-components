@@ -6,10 +6,10 @@
 @import "select2tokenizer/select2tokenizer.css";
 @import "collapse/collapse.css";
 @import "@servoy/ngx-lightbox/lightbox.css";
-@import "@uppy/core/dist/style.css";
-@import "@uppy/dashboard/dist/style.css";
-@import "@uppy/screen-capture/dist/style.css";
-@import "@uppy/webcam/dist/style.css";
+@import "@uppy/core/css/style.css";
+@import "@uppy/dashboard/css/style.css";
+@import "@uppy/screen-capture/css/style.css";
+@import "@uppy/webcam/css/style.css";
 @import "@angular/cdk/overlay-prebuilt.css";
 
 .svy-wrapper > * > .svy-slider-container {
