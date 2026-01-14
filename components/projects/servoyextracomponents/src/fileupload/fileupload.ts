@@ -126,7 +126,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
 
             options.filters = [{
                 name: 'emptyType', fn: (item: any, options: any): boolean => {
-                    if (!item.type) {
+                    if (!item.type && options.allowedMimeType) {
                         const fileExtension = item.name.split('.').at(-1).toLowerCase();
                         const allowedExtensions = options.allowedMimeType.map(mime => mime.split('/').at(-1).toLowerCase());
                         return allowedExtensions.includes(fileExtension);
