@@ -15,11 +15,6 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "es2020",
-    "lib": [
-      "dom",
-      "dom.Iterable",
-      "es2022"
-    ],
     "useDefineForClassFields": false
   },
   "angularCompilerOptions": {

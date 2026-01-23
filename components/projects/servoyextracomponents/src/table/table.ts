@@ -129,7 +129,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 //        this.log.logLevel = this.log.logLevel = LogLevel.DEBUG;
     }
 
-    @HostListener('window:resize', ['$event'])
+    @HostListener('window:resize')
     windowResizeHandler() {
         if (this.resizeTimeout) clearTimeout(this.resizeTimeout);
         this.resizeTimeout = setTimeout(() => {
