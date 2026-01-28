@@ -63,7 +63,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 					}
 				}
 				if (collapsible.form) {
-					this.getFormState(collapsible.form, collapsible, !collapsible.isCollapsed);
+					this.getFormState(collapsible.form, collapsible, !collapsible.isCollapsed,true);
 				}
 			}
 		}
@@ -75,12 +75,12 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
             this.checkIfCollapsibleHaveUniqueIds(this.collapsibles);
 			for (const collapsible of this.collapsibles) {
 				if (collapsible.form) {
-					this.getFormState(collapsible.form, collapsible, !collapsible.isCollapsed);
+					this.getFormState(collapsible.form, collapsible, !collapsible.isCollapsed,true);
 				}
 				if (collapsible.cards) {
 					for (const card of collapsible.cards) {
 						if (card.form) {
-							this.getFormState(card.form, card, !collapsible.isCollapsed);
+							this.getFormState(card.form, card, !collapsible.isCollapsed,false);
 						}
 					}
 				}
@@ -186,7 +186,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 	}
 
 	getFormIfVisible(collapse: Collapsible) {
-		if (collapse && collapse.form && !collapse.isCollapsed) {
+		if (collapse && collapse.form && !collapse.isCollapsed && collapse.formIsVisibleServerSide) {
 			return collapse.form;
 		} else {
 			return '';
@@ -194,7 +194,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 	}
 
 	getCardFormIfVisible(collapse: Collapsible, card: Card) {
-		if (collapse && card.form && !collapse.isCollapsed) {
+		if (collapse && card.form && !collapse.isCollapsed && collapse.formIsVisibleServerSide) {
 			return card.form;
 		} else {
 			return '';
@@ -266,12 +266,14 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 			if (state === false) {
 				this.servoyApi.formWillShow(collapsibleToChange.form, collapsibleToChange.relationName).then(() => {
 					this.collapsibles[index].isCollapsed = state;
+					this.collapsibles[index].formIsVisibleServerSide = true;
 					this.cdRef.detectChanges();
 					this.notifyChange(index);
 				});
 			} else if (state === true) {
 				this.servoyApi.hideForm(collapsibleToChange.form, collapsibleToChange.relationName).then(() => {
 					this.collapsibles[index].isCollapsed = state;
+					this.collapsibles[index].formIsVisibleServerSide = false;
 					this.cdRef.detectChanges();
 					this.notifyChange(index);
 				});
@@ -292,6 +294,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
         //toggle form visibility on cards
         this.toggleCardVisibility(cards, state).then(() => {
             this.collapsibles[index].isCollapsed = state;
+			this.collapsibles[index].formIsVisibleServerSide = !state;
             this.cdRef.detectChanges();
             this.notifyChange(index);
         }); 
@@ -350,15 +353,23 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 	/**
 	 * Loads a form's absoluteLayout property and its properties to be able to obtain the design size
 	 */
-	private getFormState(form: string, collapsibleOrCard: Collapsible | Card, formWillShow: boolean) {
+	private getFormState(form: string, collapsibleOrCard: Collapsible | Card, formWillShow: boolean,setFormVisibleServerSide? : boolean) {
 		if (formWillShow) {
 			this.servoyApi.formWillShow(form, ('relationName' in collapsibleOrCard) ? collapsibleOrCard.relationName : null).then(() => {
+				let changed = false;
+				if (setFormVisibleServerSide) {
+				    (collapsibleOrCard as Collapsible).formIsVisibleServerSide = true;
+					changed = true;
+				}
 				const formCache = this.servoyPublic.getFormCacheByName(form);
 				if (formCache && formCache.absolute) {
 					collapsibleOrCard.minResponsiveHeight = formCache.size.height;
 					collapsibleOrCard.maxResponsiveHeight = formCache.size.height;
-                    this.cdRef.detectChanges();
+					changed = true;
 				}
+				if (changed){
+					this.cdRef.detectChanges();
+				} 
 			});
 		}
 	}
@@ -392,6 +403,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 export class Collapsible extends BaseCustomObject {
 	collapsibleId: string;
 	isCollapsed: boolean;
+	formIsVisibleServerSide: boolean;
 	headerHtml: string;
 	headerStyleClass: string;
 	bodyStyleClass: string;
