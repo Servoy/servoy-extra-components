@@ -124,6 +124,9 @@
 			] 
 		}
 	},
+	"internalApi":{
+		"onShow" : {}
+	},
 	"handlers": 
 	{
 		"onCollapsibleShown"	: 
@@ -182,6 +185,7 @@
 		"collapsible" : {
 			"collapsibleId"					: { "type": "string" },
 			"isCollapsed" 					: { "type": "boolean", "tags": { "scope": "private" }, "default": true },
+			"formIsVisibleServerSide" 		: { "type": "boolean", "tags": { "scope": "private" }, "default": false },
 			"headerHtml" 					: { "type": "tagstring", "default": "" },
 			"headerStyleClass" 				: { "type": "styleclass", "default": "" },
 			"bodyStyleClass"				: { "type": "styleclass" },
