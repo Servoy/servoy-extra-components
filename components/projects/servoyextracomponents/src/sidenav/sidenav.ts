@@ -1,4 +1,4 @@
-import { Component, SimpleChanges, Input, Output, Renderer2, ChangeDetectorRef, ContentChild, TemplateRef, EventEmitter, ViewChild, ElementRef, Inject, DOCUMENT } from '@angular/core';
+import { Component, SimpleChanges, Renderer2, ChangeDetectorRef, TemplateRef, ElementRef, Inject, DOCUMENT, input, output, contentChild, viewChild, effect, signal } from '@angular/core';
 import { ServoyBaseComponent, ServoyPublicService, IJSMenu, IJSMenuItem } from '@servoy/public';
 
 import { LoggerFactory, LoggerService } from '@servoy/public';
@@ -10,44 +10,50 @@ import { LoggerFactory, LoggerService } from '@servoy/public';
 })
 export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 
-	@Input() enabled: boolean;
-	@Input() styleClass: string;
-	@Input() tabSeq: number;
-	@Input() sidenavWidth: number;
-	@Input() responsiveHeight: number;
-	@Input() containedForm: string;
-	@Input() headerForm: string;
-	@Input() footerForm: string;
-	@Input() relationName: string;
-	@Input() iconOpenStyleClass: string;
-	@Input() iconCloseStyleClass: string;
-	@Input() iconExpandStyleClass: string;
-	@Input() iconCollapseStyleClass: string;
-    @Input() footerFormStickyBottom: boolean;
+	readonly enabled = input<boolean>(undefined);
+	readonly styleClass = input<string>(undefined);
+	readonly tabSeq = input<number>(undefined);
+	readonly sidenavWidth = input<number>(undefined);
+	readonly responsiveHeight = input<number>(undefined);
+	readonly containedForm = input<string>(undefined);
+	readonly headerForm = input<string>(undefined);
+	readonly footerForm = input<string>(undefined);
+	readonly relationName = input<string>(undefined);
+	readonly iconOpenStyleClass = input<string>(undefined);
+	readonly iconCloseStyleClass = input<string>(undefined);
+	readonly iconExpandStyleClass = input<string>(undefined);
+	readonly iconCollapseStyleClass = input<string>(undefined);
+    readonly footerFormStickyBottom = input<boolean>(undefined);
 
-	@Input() slidePosition: string;
-	@Input() slideAnimation: string;
-	@Input() togglePosition: string;
-	@Input() scrollbarPosition: string;
-	@Input() open: boolean;
-	@Output() openChange = new EventEmitter();
-	@Input() animate: boolean;
+	readonly slidePosition = input<string>(undefined);
+	readonly slideAnimation = input<string>(undefined);
+	readonly togglePosition = input<string>(undefined);
+	readonly scrollbarPosition = input<string>(undefined);
+	readonly open = input<boolean>(undefined);
+	readonly openChange = output<boolean>();
+	readonly animate = input<boolean>(undefined);
 
-	@Input() selectedIndex: any;
-	@Output() selectedIndexChange = new EventEmitter();
-	@Input() expandedIndex: any;
-	@Output() expandedIndexChange = new EventEmitter();
-	@Input() menu: Array<MenuItem>;
-	@Input() servoyMenu: IJSMenu;
+	readonly selectedIndex = input<any>(undefined);
+	readonly selectedIndexChange = output<any>();
+	readonly expandedIndex = input<any>(undefined);
+	readonly expandedIndexChange = output<any>();
+	readonly menu = input<Array<MenuItem>>(undefined);
+	readonly servoyMenu = input<IJSMenu>(undefined);
 
-	@Input() onMenuItemSelected: (menuItem: any, event: MouseEvent) => Promise<boolean>;
-	@Input() onMenuItemExpanded: (menuItem: any, event: MouseEvent) => Promise<boolean>;
-	@Input() onMenuItemCollapsed: (menuItem: any, event: MouseEvent) => Promise<boolean>;
-	@Input() onOpenToggled: (event: MouseEvent) => void;
+	readonly onMenuItemSelected = input<(menuItem: any, event: MouseEvent) => Promise<boolean>>(undefined);
+	readonly onMenuItemExpanded = input<(menuItem: any, event: MouseEvent) => Promise<boolean>>(undefined);
+	readonly onMenuItemCollapsed = input<(menuItem: any, event: MouseEvent) => Promise<boolean>>(undefined);
+	readonly onOpenToggled = input<(event: MouseEvent) => void>(undefined);
 
-	@ContentChild(TemplateRef, { static: true }) templateRef: TemplateRef<any>;
+	readonly templateRef = contentChild(TemplateRef);
 
-	@ViewChild('element', { static: true }) elementRef: ElementRef;
+    elementRef: ElementRef<HTMLDivElement>;
+    readonly elementRefSignal = viewChild<ElementRef<HTMLDivElement>>('element');
+    
+    _selectedIndex = signal<any>(undefined);
+    _expandedIndex = signal<any>(undefined);
+    _open = signal<boolean>(undefined);
+    _menu = signal<Array<MenuItem>>(undefined);
 
 	animateSlideMenuTimeout: number;
 	mouseEnterTimeout: number;
@@ -61,24 +67,42 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, private servoyPublic: ServoyPublicService, @Inject(DOCUMENT) private doc: Document, logFactory: LoggerFactory) {
 		super(renderer, cdRef);
 		this.log = logFactory.getLogger('SideNav');
+        effect(() => {
+            const el = this.elementRefSignal();
+            if (el) {
+                this.elementRef = el;
+            }
+        });
 	}
 
 	svyOnInit() {
 		super.svyOnInit();
-		if (!this.selectedIndex) this.selectedIndex = {};
-		if (!this.expandedIndex) this.expandedIndex = {};
+        this._selectedIndex.set(this.selectedIndex()??{});
+        this._expandedIndex.set(this.expandedIndex()??{});
+        this._open.set(this.open());
+        this._menu.set(this.menu());
 		this.copyServoyMenu();
-        if (this.menu && this.menu.length > 0 && !this.servoyMenu) {
-            this.hasUniqueIds(this.menu);
+        const menu = this._menu();
+        if (menu && menu.length > 0 && !this.servoyMenu()) {
+            this.hasUniqueIds(menu);
         }
 	}
 
 	svyOnChanges(changes: SimpleChanges) {
 		super.svyOnChanges(changes);
 		if (changes) {
-			for (const property of Object.keys(changes)) {
-				const change = changes[property];
-				switch (property) {
+            for (const property of Object.keys(changes)) {
+                const change = changes[property];
+                if (changes.selectedIndex) this._selectedIndex.set(this.selectedIndex()??{});
+                if (changes.expandedIndex) this._expandedIndex.set(this.expandedIndex()??{});
+                if (changes.open) this._open.set(this.open());
+                const selectedIndex = this._selectedIndex();
+                const expandedIndex = this._expandedIndex();
+                const containedForm = this.containedForm();
+                const headerForm = this.headerForm();
+                const footerForm = this.footerForm();
+                const open = this._open();
+                switch (property) {
                     case 'footerFormStickyBottom':
                         this.addRemoveStickyStyle();
                         break;
@@ -114,41 +138,41 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 						break;
 					case 'relationName':
 						// if only relationName is changed while containeForm remain the same, call a formWillShow with the new relation.
-						if (!changes.containedForm && this.containedForm) {
-							this.servoyApi.formWillShow(this.containedForm, this.relationName).then(() => {
-								this.realContainedForm = this.containedForm;
+						if (!changes.containedForm && containedForm) {
+							this.servoyApi.formWillShow(containedForm, this.relationName()).then(() => {
+								this.realContainedForm = this.containedForm();
 							}).finally(() => this.cdRef.detectChanges());
 						}
-						if (!changes.headerForm && this.headerForm) {
-							this.servoyApi.formWillShow(this.headerForm, this.relationName).then(() => {
-								this.realHeaderForm = this.headerForm;
+						if (!changes.headerForm && headerForm) {
+							this.servoyApi.formWillShow(headerForm, this.relationName()).then(() => {
+								this.realHeaderForm = this.headerForm();
 							}).finally(() => this.cdRef.detectChanges());
 						}
-						if (!changes.footerForm && this.footerForm) {
-							this.servoyApi.formWillShow(this.footerForm, this.relationName).then(() => {
-								this.realFooterForm = this.footerForm;
+						if (!changes.footerForm && footerForm) {
+							this.servoyApi.formWillShow(footerForm, this.relationName()).then(() => {
+								this.realFooterForm = this.footerForm();
 							}).finally(() => this.cdRef.detectChanges());
 						}
 						break; break;
 					case 'headerForm':
 						if (change.previousValue) {
-							this.servoyApi.hideForm(change.previousValue, null, null, this.headerForm, this.relationName).then(() => {
-								this.realHeaderForm = this.headerForm;
+							this.servoyApi.hideForm(change.previousValue, null, null, this.headerForm(), this.relationName()).then(() => {
+								this.realHeaderForm = this.headerForm();
 							}).finally(() => this.cdRef.detectChanges());
 						} else if (change.currentValue) {
-							this.servoyApi.formWillShow(this.headerForm, this.relationName).then(() => {
-								this.realHeaderForm = this.headerForm;
+							this.servoyApi.formWillShow(this.headerForm(), this.relationName()).then(() => {
+								this.realHeaderForm = this.headerForm();
 							}).finally(() => this.cdRef.detectChanges());
 						}
 						break;
 					case 'footerForm':
 						if (change.previousValue) {
-							this.servoyApi.hideForm(change.previousValue, null, null, this.footerForm, this.relationName).then(() => {
-								this.realFooterForm = this.footerForm;
+							this.servoyApi.hideForm(change.previousValue, null, null, this.footerForm(), this.relationName()).then(() => {
+								this.realFooterForm = this.footerForm();
 							}).finally(() => this.cdRef.detectChanges());
 						} else if (change.currentValue) {
-							this.servoyApi.formWillShow(this.footerForm, this.relationName).then(() => {
-								this.realFooterForm = this.footerForm;
+							this.servoyApi.formWillShow(this.footerForm(), this.relationName()).then(() => {
+								this.realFooterForm = this.footerForm();
 							}).finally(() => this.cdRef.detectChanges());
 						}
                         this.addRemoveStickyStyle();
@@ -158,48 +182,52 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 						this.updateSidenavStyle();
 						break;
 					case 'open':
-						this.animateMenuHover(this.open);
-						this.animateSlideMenu(this.open);
+						this.animateMenuHover(open);
+						this.animateSlideMenu(open);
 
-						if (this.open) {
-							if (this.footerForm) {
-								this.servoyApi.formWillShow(this.footerForm, this.relationName).then(() => {
-									this.realFooterForm = this.footerForm;
+						if (open) {
+							const footerFormValue = this.footerForm();
+                            if (footerFormValue) {
+								this.servoyApi.formWillShow(footerFormValue, this.relationName()).then(() => {
+									this.realFooterForm = this.footerForm();
 								}).finally(() => this.cdRef.detectChanges());
                                 this.addRemoveStickyStyle();
 							}
-							if (this.headerForm) {
-								this.servoyApi.formWillShow(this.headerForm, this.relationName).then(() => {
-									this.realHeaderForm = this.headerForm;
+							const headerFormValue = this.headerForm();
+                            if (headerFormValue) {
+								this.servoyApi.formWillShow(headerFormValue, this.relationName()).then(() => {
+									this.realHeaderForm = this.headerForm();
 								}).finally(() => this.cdRef.detectChanges());
 							}
 						} else {
-							if (this.footerForm) {
-								this.servoyApi.hideForm(this.footerForm, null, null, null, this.relationName).then(() => {
-									this.realFooterForm = this.footerForm;
+							const footerFormValue = this.footerForm();
+                            if (footerFormValue) {
+								this.servoyApi.hideForm(footerFormValue, null, null, null, this.relationName()).then(() => {
+									this.realFooterForm = this.footerForm();
 								}).finally(() => this.cdRef.detectChanges());
 							}
-							if (this.headerForm) {
-								this.servoyApi.hideForm(this.headerForm, null, null, null, this.relationName).then(() => {
-									this.realHeaderForm = this.headerForm;
+							const headerFormValue = this.headerForm();
+                            if (headerFormValue) {
+								this.servoyApi.hideForm(headerFormValue, null, null, null, this.relationName()).then(() => {
+									this.realHeaderForm = this.headerForm();
 								}).finally(() => this.cdRef.detectChanges());
 							}
 						}
 						break;
 					case 'expandedIndex':
 						if (!change.currentValue) {
-							this.expandedIndex = {};
+							this._expandedIndex.set({});
 						}
-						else if (typeof this.expandedIndex == 'string') {
-							this.expandedIndex = JSON.parse(this.expandedIndex);
+						else if (typeof expandedIndex == 'string') {
+							this._expandedIndex.set(JSON.parse(expandedIndex));
 						}
 						break;
 					case 'selectedIndex':
 						if (!change.currentValue) {
-							this.selectedIndex = {}
+							this._selectedIndex.set({});
 						}
-						else if (typeof this.selectedIndex == 'string') {
-							this.selectedIndex = JSON.parse(this.selectedIndex);
+						else if (typeof selectedIndex == 'string') {
+							this._selectedIndex.set(JSON.parse(selectedIndex));
 						}
 						break;
 					case 'servoyMenu':
@@ -230,11 +258,13 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	getResponsiveHeight() {
 		let height = 0;
 		if (!this.servoyApi.isInAbsoluteLayout()) {
-			if (this.responsiveHeight) {
-				height = this.responsiveHeight;
-			} else if (this.containedForm) {
+			const containedForm = this.containedForm();
+            const responsiveHeight = this.responsiveHeight();
+            if (responsiveHeight) {
+				height = responsiveHeight;
+			} else if (containedForm) {
 				// for absolute form default height is design height, for responsive form default height is 0
-				const formCache = this.servoyPublic.getFormCacheByName(this.containedForm);
+				const formCache = this.servoyPublic.getFormCacheByName(containedForm);
 				if (formCache && formCache.absolute) {
 					height = formCache.size.height;
 				}
@@ -248,7 +278,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		let height = 0;
 
 		// for absolute form default height is design height, for responsive form default height is 0
-		const formCache = this.servoyPublic.getFormCacheByName(this.headerForm);
+		const formCache = this.servoyPublic.getFormCacheByName(this.headerForm());
 		if (formCache && formCache.absolute) {
 			height = formCache.size.height;
 		}
@@ -263,7 +293,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		let height = 0;
 
 		// for absolute form default height is design height, for responsive form default height is 0
-		const formCache = this.servoyPublic.getFormCacheByName(this.footerForm);
+		const formCache = this.servoyPublic.getFormCacheByName(this.footerForm());
 		if (formCache && formCache.absolute) {
 			height = formCache.size.height;
 		}
@@ -274,10 +304,11 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	}
 
 	getSidenavWidth() {
-		if (this.sidenavWidth) {
+		const sidenavWidth = this.sidenavWidth();
+        if (sidenavWidth) {
 			// if value is set and there is a responsiveForm or a containedForm. Note should react also if containeForm is set later
-			if (!this.servoyApi.isInAbsoluteLayout() || this.containedForm) {
-				return this.sidenavWidth;
+			if (!this.servoyApi.isInAbsoluteLayout() || this.containedForm()) {
+				return sidenavWidth;
 			}
 		}
 		return 0;
@@ -304,7 +335,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 			position: 'relative',
 			'min-height': height + 'px'
 		};
-		switch (this.slidePosition) {
+		switch (this.slidePosition()) {
 			case 'left':
 				cssStyle['marginLeft'] = width + 'px';
 				break;
@@ -319,15 +350,15 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	}
     
     stickyBottom() {
-        return this.servoyApi.isInAbsoluteLayout() && this.footerFormStickyBottom;
+        return this.servoyApi.isInAbsoluteLayout() && this.footerFormStickyBottom();
     }
 
     addRemoveStickyStyle() {
         setTimeout(() => {
             const sidenavDiv: HTMLElement = this.getNativeElement().querySelector('.svy-sidenav');
             const footerFormDiv: HTMLElement = this.getNativeElement().querySelector('#footerForm');
-            if (this.servoyApi.isInAbsoluteLayout() && this.open) {
-                if (this.footerFormStickyBottom && footerFormDiv) {
+            if (this.servoyApi.isInAbsoluteLayout() && this._open()) {
+                if (this.footerFormStickyBottom() && footerFormDiv) {
                     const sidenavDivComputedStyle = window.getComputedStyle(sidenavDiv);
                     this.renderer.setStyle(sidenavDiv, 'height', `calc(100% - ${footerFormDiv.clientHeight}px)`);
                     this.renderer.setStyle(footerFormDiv, 'background-color', sidenavDivComputedStyle.getPropertyValue('background-color'));
@@ -340,7 +371,8 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
     }
 
 	animateSlideMenu(open: boolean) {
-		if (this.slidePosition && this.slidePosition !== 'static') {
+		const slidePosition = this.slidePosition();
+        if (slidePosition && slidePosition !== 'static') {
 			const iconOpen = this.getNativeElement().querySelector('.svy-sidenav-action-open');
 			const sidenav = this.getNativeElement().querySelector('.svy-sidenav');
 			const svyextracontainer = this.getNativeElement();
@@ -357,7 +389,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 					this.renderer.removeClass(sidenav, 'svy-slide-out');
 
 					// used to slide in the panel if. Use only if menu slides
-					if (this.slideAnimation === 'slide-menu') {
+					if (this.slideAnimation() === 'slide-menu') {
 						this.renderer.addClass(svyextracontainer, 'svy-slide-out-remove-delay');
 
 						// stop remove animation clearing previous timeout
@@ -376,19 +408,19 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 					}
 
 				}
-				this.iconCloseStyleClass.split(' ').forEach(element => this.renderer.removeClass(iconOpen, element));
-				this.iconOpenStyleClass.split(' ').forEach(element => this.renderer.addClass(iconOpen, element));
+				this.iconCloseStyleClass().split(' ').forEach(element => this.renderer.removeClass(iconOpen, element));
+				this.iconOpenStyleClass().split(' ').forEach(element => this.renderer.addClass(iconOpen, element));
 			} else {
 				if (!svyextracontainer.classList.contains('svy-slide-out')) {
 					this.renderer.addClass(sidenav, 'svy-slide-out');
 					this.renderer.addClass(svyextracontainer, 'svy-slide-out');
 				}
-				this.iconOpenStyleClass.split(' ').forEach(element => this.renderer.removeClass(iconOpen, element));
-				this.iconCloseStyleClass.split(' ').forEach(element => this.renderer.addClass(iconOpen, element));
+				this.iconOpenStyleClass().split(' ').forEach(element => this.renderer.removeClass(iconOpen, element));
+				this.iconCloseStyleClass().split(' ').forEach(element => this.renderer.addClass(iconOpen, element));
 			}
 		} else {
-			this.open = true;
-			this.openChange.emit(this.open);
+			this._open.set(true);
+			this.openChange.emit(this._open());
 		}
 	}
 
@@ -404,7 +436,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 
 	bindOnHover() {
 		// register on mouse hover
-		if (this.slideAnimation === 'collapse-menu') {
+		if (this.slideAnimation() === 'collapse-menu') {
 			const sidenav = this.getNativeElement().querySelector('.svy-sidenav');
 			const nav = this.getNativeElement().querySelector('nav');
 			nav.addEventListener('mouseenter', this.onMouseEnter);
@@ -421,18 +453,20 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	}
 
 	slideMenu(event: MouseEvent) {
-		const wasOpen = this.open;
-		this.open = this.open === false ? true : false;
+		const wasOpen = this._open();
+		this._open.set(this._open() === false ? true : false);
         
         this.addRemoveStickyStyle();
 
-		this.animateMenuHover(this.open);
-		this.animateSlideMenu(this.open);
-		this.openChange.emit(this.open);
+		const open = this._open();
+        this.animateMenuHover(open);
+		this.animateSlideMenu(open);
+		this.openChange.emit(open);
 
 		// event on menu open
-		if (this.onOpenToggled && wasOpen !== this.open) {
-			this.onOpenToggled(event);
+		const onOpenToggled = this.onOpenToggled();
+        if (onOpenToggled && wasOpen !== open) {
+			onOpenToggled(event);
 		}
 	}
 
@@ -450,12 +484,14 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		}
 
 		// checking if the item was selected twice in a row, return true or false
-		const isItemAlreadySelected = this.selectedIndex[level] === item.id && !this.selectedIndex[level + 1];
+		const selectedIndex = this._selectedIndex();
+        const isItemAlreadySelected = selectedIndex[level] === item.id && !selectedIndex[level + 1];
 
 		const confirmSelection = () => {
 			this.setSelectedIndex(level, index, item);
-			if (this.servoyMenu) {
-				this.servoyMenu.setSelectedItem(item.id);
+			const servoyMenu = this.servoyMenu();
+            if (servoyMenu) {
+				servoyMenu.setSelectedItem(item.id);
 			}
 			// expand the item
 			if (item.menuItems) { // expand the node if not leaf
@@ -476,14 +512,16 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
             // change containedForm
             const itm = item.menuItems?.length ? item.menuItems[0] : item;
             if (itm.formName && !isItemAlreadySelected) {
-                const formToHide = this.containedForm;
+                const formToHide = this.containedForm();
                 const menuIDToShow = itm.id;
                 this.servoyApi.callServerSideApi('showForm', [formToHide, menuIDToShow]);
             }
 		};
 
-		if (preventSelectHandler !== true && this.onMenuItemSelected) { // change selection only if onMenuItemSelected allows it
-			this.onMenuItemSelected(this.servoyMenu ? { svyType: 'JSMenuItem', id: item.id, menuid: this.servoyMenu.name } : item.id, event).then((result) => {
+		const onMenuItemSelected = this.onMenuItemSelected();
+        if (preventSelectHandler !== true && onMenuItemSelected) { // change selection only if onMenuItemSelected allows it
+            const servoyMenu = this.servoyMenu();
+			onMenuItemSelected(servoyMenu ? { svyType: 'JSMenuItem', id: item.id, menuid: servoyMenu.name } : item.id, event).then((result) => {
 				if (result !== false) {
 					confirmSelection();
 				}
@@ -524,8 +562,10 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		}
 
 		// if is expanded
-		if (preventHandler !== true && this.onMenuItemExpanded) { // change selection only if onMenuItemSelected allows it
-			this.onMenuItemExpanded(this.servoyMenu ? { svyType: 'JSMenuItem', id: item.id, menuid: this.servoyMenu.name } : item.id, event).then(() => {
+		const onMenuItemExpanded = this.onMenuItemExpanded();
+        if (preventHandler !== true && onMenuItemExpanded) { // change selection only if onMenuItemSelected allows it
+            const servoyMenu = this.servoyMenu();
+			onMenuItemExpanded(servoyMenu ? { svyType: 'JSMenuItem', id: item.id, menuid: servoyMenu.name } : item.id, event).then(() => {
 				// if (result == true) {
 				this.setExpandedIndex(level, index, item);
 				// }
@@ -559,11 +599,13 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		}
 
 		// call handler onMenuItemCollapsed
-		if (preventHandler !== true && this.onMenuItemCollapsed) {
-			this.onMenuItemCollapsed(this.servoyMenu ? { svyType: 'JSMenuItem', id: item.id, menuid: this.servoyMenu.name } : item.id, event).then(() => {
+		const onMenuItemCollapsed = this.onMenuItemCollapsed();
+        if (preventHandler !== true && onMenuItemCollapsed) {
+            const servoyMenu = this.servoyMenu();
+			onMenuItemCollapsed(servoyMenu ? { svyType: 'JSMenuItem', id: item.id, menuid: servoyMenu.name } : item.id, event).then(() => {
 				// if (result == true) {
 				this.clearExpandedIndex(level - 1);
-				this.expandedIndexChange.emit(JSON.stringify(this.expandedIndex));
+				this.expandedIndexChange.emit(JSON.stringify(this._expandedIndex()));
 				// }
 			}, (err) => { // Error: "Oops something went wrong"
 				// TODO use logging instead
@@ -571,7 +613,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 			});
 		} else {
 			this.clearExpandedIndex(level - 1);
-			this.expandedIndexChange.emit(JSON.stringify(this.expandedIndex));
+			this.expandedIndexChange.emit(JSON.stringify(this._expandedIndex()));
 		}
 
 		return true;
@@ -630,7 +672,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	}
 
 	getAllNodesToNodeId(nodeId: string | number): Array<MenuItem> {
-		let nodes = this.menu;
+		let nodes = this._menu();
 		const pathIndex = this.getPathToNode(nodeId, nodes);
 		const anchestors = [];
 
@@ -658,7 +700,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	}
 
 	getNodeLevel(nodeId: string | number): number {
-		const path = this.getPathToNode(nodeId, this.menu);
+		const path = this.getPathToNode(nodeId, this._menu());
 		if (path) {
 			return path.length;
 		} else {
@@ -667,7 +709,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	}
 
 	getSelectedNode(level: number): MenuItem {
-		const levels = this.selectedIndex;
+		const levels = this._selectedIndex();
 		let maxLevel = -1;
 
 		// get the node at deeper level
@@ -678,18 +720,19 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		}
 
 		const nodeId = levels[maxLevel];
-		return this.getNodeById(nodeId, this.menu);
+		return this.getNodeById(nodeId, this._menu());
 	}
 
 	getSelectedIndexPath(level: number): Array<number> {
 		const selectedNode = this.getSelectedNode(level);
-		const path = this.getPathToNode(selectedNode.id, this.menu);
+		const path = this.getPathToNode(selectedNode.id, this._menu());
 		return path;
 	}
 
 	setSelectedIndex(level: number, _index: number, item: MenuItem) {
-		if (!this.selectedIndex) this.selectedIndex = {};
-		const levels = this.selectedIndex;
+		const selectedIndex = this._selectedIndex();
+        if (!selectedIndex) this._selectedIndex.set({});
+		const levels = selectedIndex;
 
 		// clear level below selection
 		this.clearSelectedIndex(level);
@@ -714,12 +757,12 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         if (item.menuItems?.length) {
             newSelectedIndex[level + 1] = item.menuItems[0].id; // select first child
         }
-		this.selectedIndex = newSelectedIndex;
-		this.selectedIndexChange.emit(JSON.stringify(this.selectedIndex));
+		this._selectedIndex.set(newSelectedIndex);
+		this.selectedIndexChange.emit(JSON.stringify(newSelectedIndex));
 	}
 
 	clearSelectedIndex(level: number) {
-		const levels = this.selectedIndex;
+		const levels = this._selectedIndex();
 		// reset all sub levels
 		for (const lvl in levels) {
 			if (Number(lvl) > level) { // reset the next levels
@@ -729,8 +772,9 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	}
 
 	setExpandedIndex(level: number, _index: number, item: MenuItem) {
-		if (!this.expandedIndex) this.expandedIndex = {};
-		const levels = this.expandedIndex;
+		const expandedIndex = this._expandedIndex();
+        if (!expandedIndex) this._expandedIndex.set({});
+		const levels = expandedIndex;
 
 		// clear sub levels
 		this.clearExpandedIndex(level);
@@ -749,13 +793,13 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		if (levels[level] !== item.id) { // collapse the selected menu
 			newExpandedIndex[level] = item.id;
 		}
-		this.expandedIndex = newExpandedIndex;
-		this.expandedIndexChange.emit(JSON.stringify(this.expandedIndex));
+		this._expandedIndex.set(newExpandedIndex);
+		this.expandedIndexChange.emit(JSON.stringify(newExpandedIndex));
 	}
 
 
 	clearExpandedIndex(level: number) {
-		const levels = this.expandedIndex;
+		const levels = this._expandedIndex();
 
 		// reset all sub levels
 		for (const lvl in levels) {
@@ -767,13 +811,13 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 
 	isDisabled = (nodeId: string | number): boolean => {
 		// check if menu itself is disable
-		if (this.enabled === false) {
+		if (this.enabled() === false) {
 			return true;
 		}
 
 		// TODO refactor: use getNodeAnchestors
-		const indexPath = this.getPathToNode(nodeId, this.menu);
-		let tree = this.menu;
+		const indexPath = this.getPathToNode(nodeId, this._menu());
+		let tree = this._menu();
 
 		if (!indexPath || !indexPath.length) {
 			return null;
@@ -790,7 +834,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	};
 
 	isNodeSelected(nodeId: string | number, level: number): boolean {
-		const levels = this.selectedIndex;
+		const levels = this._selectedIndex();
 		if (level) {
 			return levels[level] === nodeId;
 		} else {
@@ -804,7 +848,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	}
 
 	isNodeExpanded(nodeId: string | number, level?: number): boolean {
-		const levels = this.expandedIndex;
+		const levels = this._expandedIndex();
 		if (level) {
 			return levels[level] === nodeId;
 		} else {
@@ -827,7 +871,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	}
 
 	getDOMElementByID(nodeId: string | number): Element {
-		const indexPath = this.getPathToNode(nodeId, this.menu);
+		const indexPath = this.getPathToNode(nodeId, this._menu());
 		if (indexPath) {
 			let foundElement: Element = this.getNativeElement();
 			for (let i = 0; i < indexPath.length; i++) {
@@ -847,7 +891,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	public setSelectedByIndexPath(path: Array<number>, mustExecuteOnSelectNode: boolean) {
 
 		// search node in tree
-		const node = this.getNodeByIndexPath(path, this.menu);
+		const node = this.getNodeByIndexPath(path, this._menu());
 		const preventSelectHandler = mustExecuteOnSelectNode === true ? false : true;
 		this.selectItem(path.length, path[path.length - 1], node, null, preventSelectHandler);
 		return;
@@ -886,7 +930,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 
 	private onMouseEnter = () => {
 		// only if the menu is collapsed, use the mouseover
-		if (this.slideAnimation === 'collapse-menu') {
+		if (this.slideAnimation() === 'collapse-menu') {
 			const sidenav = this.getNativeElement().querySelector('.svy-sidenav');
 			// stop remove animation clearing previous timeout
 			if (this.mouseLeaveTimeout) {
@@ -915,7 +959,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 
 	private onMouseLeave = () => {
 		// only if the menu is collapsed, use the mouseover
-		if (this.slideAnimation === 'collapse-menu') {
+		if (this.slideAnimation() === 'collapse-menu') {
 			const sidenav = this.getNativeElement().querySelector('.svy-sidenav');
 			// stop add animation
 			if (this.mouseEnterTimeout) {
@@ -938,24 +982,26 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	};
 
 	private copyServoyMenu() {
-		if (this.servoyMenu) {
-			this.selectedIndex = {};
-            if (this.expandedIndex && typeof this.expandedIndex == 'string') {
-                this.expandedIndex = JSON.parse(this.expandedIndex);
+		const servoyMenu = this.servoyMenu();
+        if (servoyMenu) {
+			this._selectedIndex.set({});
+            const expandedIndex = this._expandedIndex();
+            if (expandedIndex && typeof expandedIndex == 'string') {
+                this._expandedIndex.set(JSON.parse(expandedIndex));
             }
 			const selectedNode = {};
 			const oldMenu = new Array();
-			if (this.servoyMenu.items) {
-				for (let i = 0; i < this.servoyMenu.items.length; i++) {
-					this.copyServoyMenuItem(oldMenu, this.servoyMenu.items[i], 1, selectedNode);
+			if (servoyMenu.items) {
+				for (let i = 0; i < servoyMenu.items.length; i++) {
+					this.copyServoyMenuItem(oldMenu, servoyMenu.items[i], 1, selectedNode);
 				}
 			}
-			this.menu = oldMenu;
+			this._menu.set(oldMenu);
 			const selection = Object.keys(selectedNode);
 			if (selection && selection.length == 1) {
-				this.updateSelectedNode(selectedNode[selection[0]], this.menu, parseInt(selection[0]));
+				this.updateSelectedNode(selectedNode[selection[0]], this._menu(), parseInt(selection[0]));
 			}
-			this.selectedIndexChange.emit(JSON.stringify(this.selectedIndex));
+			this.selectedIndexChange.emit(JSON.stringify(this._selectedIndex()));
 		}
 	}
 

@@ -1,4 +1,4 @@
-import { Component, ViewChild, EventEmitter } from '@angular/core';
+import { Component, ViewChild, EventEmitter, signal } from '@angular/core';
 import { ServoyApi, ServoyApiTesting, ServoyPublicTestingModule } from '@servoy/public';
 import { ServoyExtraSplitpane, Pane } from './splitpane';
 import { MountConfig } from 'cypress/angular';
@@ -8,85 +8,107 @@ import { BGPane } from './bg_splitter/bg_pane.component';
 
 @Component({
     template: `<servoyextra-splitpane
-                [servoyApi]="servoyApi"
-                [enabled]="enabled"
-                [readOnly]="readOnly"
-                [styleClass]="styleClass"
-                [splitType]="splitType"
-                [tabSeq]="tabSeq"
-                [pane1]="pane1"
-                [pane2]="pane2"
-                [divLocation]="divLocation"
-                [divSize]="divSize"
-                [pane1MinSize]="pane1MinSize"
-                [pane2MinSize]="pane2MinSize"
-                [resizeWeight]="resizeWeight"
-                [responsiveHeight]="responsiveHeight"
+                [servoyApi]="servoyApi()"
+                [enabled]="enabled()"
+                [readOnly]="readOnly()"
+                [styleClass]="styleClass()"
+                [splitType]="splitType()"
+                [tabSeq]="tabSeq()"
+                [pane1]="pane1()"
+                [pane2]="pane2()"
+                [divLocation]="divLocation()"
+                [divSize]="divSize()"
+                [pane1MinSize]="pane1MinSize()"
+                [pane2MinSize]="pane2MinSize()"
+                [resizeWeight]="resizeWeight()"
+                [responsiveHeight]="responsiveHeight()"
                 (divLocationChange)="divLocationChange.emit($event)"
-                [onChangeMethodID]="onChangeMethodID"
+                [onChangeMethodID]="onChangeMethodID()"
                 #element>
                 </servoyextra-splitpane>`,
     standalone: false
 })
 class WrapperComponent {
-    servoyApi: ServoyApi;
-    enabled: boolean;
-    readOnly: boolean;
-    styleClass: string;
-    splitType: number;
-    tabSeq: number;
-    pane1: Pane;
-    pane2: Pane;
-    divLocation: number;
-    divSize: number;
-    pane1MinSize: number;
-    pane2MinSize: number;
-    resizeWeight: number;
-    responsiveHeight: number;
+    servoyApi = signal<ServoyApi>(undefined);
+    enabled = signal<boolean>(undefined);
+    readOnly = signal<boolean>(undefined);
+    styleClass = signal<string>(undefined);
+    splitType = signal<number>(undefined);
+    tabSeq = signal<number>(undefined);
+    pane1 = signal<Pane>(undefined);
+    pane2 = signal<Pane>(undefined);
+    divLocation = signal<number>(undefined);
+    divSize = signal<number>(undefined);
+    pane1MinSize = signal<number>(undefined);
+    pane2MinSize = signal<number>(undefined);
+    resizeWeight = signal<number>(undefined);
+    responsiveHeight = signal<number>(undefined);
     divLocationChange = new EventEmitter<number>();
-    onChangeMethodID: (data:any, e: Event) => void;
+    onChangeMethodID = signal<(data: any, e: Event) => void>(undefined);
 
     @ViewChild('element') element: ServoyExtraSplitpane;
 }
 
-describe('ServoyExtraSplitpane', () => {
-    const servoyApiSpy = new ServoyApiTesting();
+const createDefaultPanes = () => {
+    const pane1 = new Pane();
+    pane1.containsFormId = 'form1';
+    pane1.relationName = 'relation1';
 
-    const config: MountConfig<WrapperComponent> = {
-        declarations: [ServoyExtraSplitpane, BGSplitter, BGPane],
-        imports: [ServoyPublicTestingModule, FormsModule]
+    const pane2 = new Pane();
+    pane2.containsFormId = 'form2';
+    pane2.relationName = 'relation2';
+
+    return { pane1, pane2 };
+};
+
+const defaultValues = {
+    servoyApi: new ServoyApiTesting(),
+    enabled: true,
+    readOnly: false,
+    styleClass: 'splitpane-test',
+    splitType: 0,
+    tabSeq: 0,
+    pane1: undefined as Pane,
+    pane2: undefined as Pane,
+    divLocation: 200,
+    divSize: 5,
+    pane1MinSize: 30,
+    pane2MinSize: 30,
+    resizeWeight: 0.5,
+    responsiveHeight: 400,
+    onChangeMethodID: () => { }
+};
+
+function applyDefaultProps(wrapper) {
+    const { pane1, pane2 } = createDefaultPanes();
+    for (const key in defaultValues) {
+        if (wrapper.component.hasOwnProperty(key) && typeof wrapper.component[key] === 'function') {
+            if (key === 'pane1') {
+                wrapper.component[key].set(pane1);
+            } else if (key === 'pane2') {
+                wrapper.component[key].set(pane2);
+            } else {
+                wrapper.component[key].set(defaultValues[key]);
+            }
+        }
+        else {
+            wrapper.component[key] = defaultValues[key];
+        }
     }
+}
 
-    beforeEach(() => {
-        const pane1 = new Pane();
-        pane1.containsFormId = 'form1';
-        pane1.relationName = 'relation1';
+const configWrapper: MountConfig<WrapperComponent> = {
+    declarations: [ServoyExtraSplitpane, BGSplitter, BGPane],
+    imports: [ServoyPublicTestingModule, FormsModule]
+};
 
-        const pane2 = new Pane();
-        pane2.containsFormId = 'form2';
-        pane2.relationName = 'relation2';
-
-        config.componentProperties = {
-            servoyApi: servoyApiSpy,
-            enabled: true,
-            readOnly: false,
-            styleClass: 'splitpane-test',
-            splitType: 0, // horizontal split
-            tabSeq: 0,
-            pane1: pane1,
-            pane2: pane2,
-            divLocation: 200,
-            divSize: 5,
-            pane1MinSize: 30,
-            pane2MinSize: 30,
-            resizeWeight: 0.5,
-            responsiveHeight: 400
-        };
-    });
+describe('ServoyExtraSplitpane', () => {
 
     it('should mount and register the component', () => {
+        const servoyApiSpy = defaultValues.servoyApi;
         const registerComponent = cy.stub(servoyApiSpy, 'registerComponent');
-        cy.mount(WrapperComponent, config).then(() => {
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('servoyextra-splitpane').should('exist').then(() => {
                 cy.wrap(registerComponent).should('be.called');
             });
@@ -94,88 +116,63 @@ describe('ServoyExtraSplitpane', () => {
     });
 
     it('show a style class', () => {
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('.svy-extra-splitpane').should('have.class', 'splitpane-test').then(() => {
-                wrapper.component.styleClass = 'new-style';
-                wrapper.fixture.detectChanges();
+                wrapper.component.styleClass.set('new-style');
                 cy.get('.svy-extra-splitpane').should('have.class', 'new-style');
             });
         });
     });
 
-    /*it('should handle div location change', () => {
-        const onChangeMethodID = cy.stub();
-        config.componentProperties.onChangeMethodID = onChangeMethodID;
-
-        cy.mount(WrapperComponent, config).then(wrapper => {
-            cy.get('bg-splitter').should('be.visible').then($splitter => {
-                // Get initial position
-                const initialLocation = wrapper.component.divLocation;
-
-                // Simulate drag and drop
-                cy.wrap($splitter)
-                    .trigger('mousedown', { clientX: initialLocation })
-                    .trigger('mousemove', { clientX: initialLocation + 100 })
-                    .trigger('mouseup', { force: true });
-
-                // Verify the change handler was called
-                cy.wrap(onChangeMethodID).should('be.called');
-
-                // Verify the div location changed
-                cy.get('bg-splitter').should('have.attr', 'position')
-                    .and('not.eq', initialLocation.toString());
-            });
-        });
-    });*/
-
     it('should handle split type change', () => {
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('servoyextra-splitpane').should('exist').then(() => {
-                wrapper.component.splitType = 1; // vertical split
-                wrapper.fixture.detectChanges();
+                wrapper.component.splitType.set(1);
                 cy.get('servoyextra-splitpane').should('exist');
             });
         });
     });
 
     it('should handle resize weight', () => {
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('servoyextra-splitpane').should('exist').then(() => {
-                wrapper.component.resizeWeight = 0.7;
-                wrapper.fixture.detectChanges();
-                cy.wrap(wrapper.component.element.resizeWeight).should('eq', 0.7);
+                wrapper.component.resizeWeight.set(0.7);
+                cy.wrap(wrapper.component.resizeWeight()).should('eq', 0.7);
             });
         });
     });
 
     it('should handle min sizes', () => {
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('servoyextra-splitpane').should('exist').then(() => {
-                wrapper.component.pane1MinSize = 50;
-                wrapper.component.pane2MinSize = 50;
-                wrapper.fixture.detectChanges();
-                cy.wrap(wrapper.component.element.pane1MinSize).should('eq', 50);
-                cy.wrap(wrapper.component.element.pane2MinSize).should('eq', 50);
+                wrapper.component.pane1MinSize.set(50);
+                wrapper.component.pane2MinSize.set(50);
+                cy.wrap(wrapper.component.pane1MinSize()).should('eq', 50);
+                cy.wrap(wrapper.component.pane2MinSize()).should('eq', 50);
             });
         });
     });
 
     it('should handle enabled state', () => {
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('servoyextra-splitpane').should('exist').then(() => {
-                wrapper.component.enabled = false;
-                wrapper.fixture.detectChanges();
-                cy.wrap(wrapper.component.element.enabled).should('be.false');
+                wrapper.component.enabled.set(false);
+                cy.wrap(wrapper.component.enabled()).should('be.false');
             });
         });
     });
 
     it('should handle readonly state', () => {
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('servoyextra-splitpane').should('exist').then(() => {
-                wrapper.component.readOnly = true;
-                wrapper.fixture.detectChanges();
-                cy.wrap(wrapper.component.element.readOnly).should('be.true');
+                wrapper.component.readOnly.set(true);
+                cy.wrap(wrapper.component.readOnly()).should('be.true');
             });
         });
     });

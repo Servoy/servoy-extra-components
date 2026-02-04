@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, signal } from '@angular/core';
 import { ServoyApi, ServoyApiTesting, ServoyPublicTestingModule } from '@servoy/public';
 import { ServoyExtraMultiFileUpload } from './multifileupload';
 import { MountConfig } from 'cypress/angular';
@@ -10,7 +10,7 @@ import { DashboardComponent } from '@uppy/angular';
 
 @Component({
     template: `<servoyextra-multifileupload
-                [servoyApi]="servoyApi"
+                [servoyApi]="servoyApi()"
                 [onBeforeFileAdded]="onBeforeFileAdded"
                 [onFileAdded]="onFileAdded"
                 [onFileRemoved]="onFileRemoved"
@@ -18,157 +18,189 @@ import { DashboardComponent } from '@uppy/angular';
                 [onModalClosed]="onModalClosed"
                 [onRestrictionFailed]="onRestrictionFailed"
                 [onUploadComplete]="onUploadComplete"
-                [allowMultipleUploads]="allowMultipleUploads"
-                [autoProceed]="autoProceed"
-                [closeAfterFinish]="closeAfterFinish"
-                [disableStatusBar]="disableStatusBar"
-                [hideUploadButton]="hideUploadButton"
-                [inline]="inline"
-                [language]="language"
-                [localeStrings]="localeStrings"
-                [metaFields]="metaFields"
-                [note]="note"
-                [options]="options"
-                [responsiveHeight]="responsiveHeight"
-                [responsiveWidth]="responsiveWidth"
-                [restrictions]="restrictions"
-                [sources]="sources"
-                [styleClass]="styleClass"
-                [tusOptions]="tusOptions"
-                [webcamOptions]="webcamOptions"
-                [cssPosition]="cssPosition"
+                [allowMultipleUploads]="allowMultipleUploads()"
+                [autoProceed]="autoProceed()"
+                [closeAfterFinish]="closeAfterFinish()"
+                [disableStatusBar]="disableStatusBar()"
+                [hideUploadButton]="hideUploadButton()"
+                [inline]="inline()"
+                [language]="language()"
+                [localeStrings]="localeStrings()"
+                [metaFields]="metaFields()"
+                [note]="note()"
+                [options]="options()"
+                [responsiveHeight]="responsiveHeight()"
+                [responsiveWidth]="responsiveWidth()"
+                [restrictions]="restrictions()"
+                [sources]="sources()"
+                [styleClass]="styleClass()"
+                [tusOptions]="tusOptions()"
+                [webcamOptions]="webcamOptions()"
+                [cssPosition]="cssPosition()"
                 #element>
                 </servoyextra-multifileupload>`,
     standalone: false
 })
 class WrapperComponent {
-    servoyApi: ServoyApi;
+    servoyApi = signal<ServoyApi>(undefined);
 
-    onBeforeFileAdded: (e: Event) => void;
-    onFileAdded: (e: Event) => void;
-    onFileRemoved: (e: Event) => void;
-    onFileUploaded: (e: Event) => void;
-    onModalClosed: (e: Event) => void;
-    onRestrictionFailed: (e: Event) => void;
-    onUploadComplete: (e: Event) => void;
+    onBeforeFileAdded = () => { };
+    onFileAdded = () => { };
+    onFileRemoved = () => { };
+    onFileUploaded = () => { };
+    onModalClosed = () => { };
+    onRestrictionFailed = () => { };
+    onUploadComplete = () => { };
 
-    allowMultipleUploads: boolean;
-    autoProceed: boolean;
-    closeAfterFinish: boolean;
-    disableStatusBar: boolean;
-    hideUploadButton: boolean;
-    inline: boolean;
-    language: string;
-    localeStrings: any;
-    metaFields: any;
-    note: string;
-    options: any;
-    responsiveHeight: number;
-    responsiveWidth: number;
-    restrictions: Restrictions;
-    sources: string[];
-    styleClass: string;
-    tusOptions: TusOpts<any, any>;
-    webcamOptions: WebcamOptions<any, any>;
+    allowMultipleUploads = signal<boolean>(undefined);
+    autoProceed = signal<boolean>(undefined);
+    closeAfterFinish = signal<boolean>(undefined);
+    disableStatusBar = signal<boolean>(undefined);
+    hideUploadButton = signal<boolean>(undefined);
+    inline = signal<boolean>(undefined);
+    language = signal<string>(undefined);
+    localeStrings = signal<any>(undefined);
+    metaFields = signal<any>(undefined);
+    note = signal<string>(undefined);
+    options = signal<any>(undefined);
+    responsiveHeight = signal<number>(undefined);
+    responsiveWidth = signal<number>(undefined);
+    restrictions = signal<Restrictions>(undefined);
+    sources = signal<string[]>(undefined);
+    styleClass = signal<string>(undefined);
+    tusOptions = signal<TusOpts<any, any>>(undefined);
+    webcamOptions = signal<WebcamOptions<any, any>>(undefined);
 
-    cssPosition: any;
+    cssPosition = signal<any>(undefined);
 
     @ViewChild('element') element: ServoyExtraMultiFileUpload;
     @ViewChild(DashboardComponent) dashboard: DashboardComponent<any, any>;
 }
 
-describe('ServoyExtraMultiFileUpload', () => {
-    const servoyApiSpy = new ServoyApiTesting();
+const defaultValues = {
+    servoyApi: new ServoyApiTesting(),
+    styleClass: 'upload-test',
+    responsiveHeight: 300,
+    responsiveWidth: 400,
+    cssPosition: {
+        "position": "absolute",
+        "top": "20px",
+        "left": "25px",
+        "height": "450px",
+        "width": "290px"
+    },
+    inline: true,
+    onBeforeFileAdded: undefined,
+    onFileAdded: undefined,
+    onFileRemoved: undefined,
+    onFileUploaded: undefined,
+    onModalClosed: undefined,
+    onRestrictionFailed: undefined,
+    onUploadComplete: undefined,
+    allowMultipleUploads: undefined,
+    autoProceed: undefined,
+    closeAfterFinish: undefined,
+    disableStatusBar: undefined,
+    hideUploadButton: undefined,
+    language: undefined,
+    localeStrings: undefined,
+    metaFields: undefined,
+    note: undefined,
+    options: undefined,
+    restrictions: undefined,
+    sources: undefined,
+    tusOptions: undefined,
+    webcamOptions: undefined
+};
 
-    const config: MountConfig<WrapperComponent> = {
-        declarations: [ServoyExtraMultiFileUpload],
-        imports: [ServoyPublicTestingModule, FormsModule, DashboardComponent],
+function applyDefaultProps(wrapper) {
+    for (const key in defaultValues) {
+        if (wrapper.component[key] && typeof wrapper.component[key].set === 'function') {
+            wrapper.component[key].set(defaultValues[key]);
+        }
+        else {
+            wrapper.component[key] = defaultValues[key];
+        }
     }
+}
 
-    beforeEach(() => {
-        config.componentProperties = {
-            servoyApi: servoyApiSpy,
-            styleClass: 'upload-test',
-            responsiveHeight: 300,
-            responsiveWidth: 400,
-            cssPosition: {
-                "position": "absolute",
-                "top": "20px",
-                "left": "25px",
-                "height": "450px",
-                "width": "290px"
-            },
-            inline: true
-        };
-    });
+const configWrapper: MountConfig<WrapperComponent> = {
+    declarations: [ServoyExtraMultiFileUpload],
+    imports: [ServoyPublicTestingModule, FormsModule, DashboardComponent]
+};
+
+describe('ServoyExtraMultiFileUpload', () => {
 
     it('should mount and register the component', () => {
+        const servoyApiSpy = defaultValues.servoyApi;
         const registerComponent = cy.stub(servoyApiSpy, 'registerComponent');
-        cy.mount(WrapperComponent, config).then(() => {
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('servoyextra-multifileupload').should('exist');
             cy.wrap(registerComponent).should('be.called');
         });
     });
 
     it('show a style class', () => {
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('.svy-extra-multifileupload').should('not.have.class', 'mystyleclass').then(() => {
-                wrapper.component.styleClass = 'mystyleclass';
-                wrapper.fixture.detectChanges();
+                wrapper.component.styleClass.set('mystyleclass');
                 cy.get('.svy-extra-multifileupload').should('have.class', 'mystyleclass');
             });
         });
     });
 
     it('show more then 1 style class', () => {
-        cy.mount(WrapperComponent, config).then(wrapper => {
-            wrapper.component.styleClass = 'classA classB';
-            wrapper.fixture.detectChanges();
+        defaultValues.styleClass = 'classA classB';
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('.svy-extra-multifileupload').should('have.class', 'classA').should('have.class', 'classB');
         });
     });
 
     it('should respect file type restrictions', () => {
-        cy.mount(WrapperComponent, config).then((wrapper) => {
-            wrapper.component.restrictions = {
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
+            wrapper.component.restrictions.set({
                 minNumberOfFiles: 1,
                 maxNumberOfFiles: 10,
                 allowedFileTypes: ['.pdf', '.jpg', '.png'],
                 maxFileSize: 5000000, // 5 MB
-            } as Restrictions;
-            wrapper.fixture.detectChanges();
+            } as Restrictions);
             cy.get('input[type="file"]').should('have.attr', 'accept', '.pdf, .jpg, .png');
         });
     });
 
     it('should handle hideUploadButton property', () => {
-        config.componentProperties.hideUploadButton = true;
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.hideUploadButton = true;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('.uppy-StatusBar-actionBtn--upload').should('not.exist');
         });
     });
 
     it('should handle note property', () => {
-        cy.mount(WrapperComponent, config).then((wrapper) => {
-            wrapper.component.note = 'Test upload note';
-            wrapper.fixture.detectChanges();
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
+            wrapper.component.note.set('Test upload note');
             cy.get('.uppy-Dashboard-note').should('contain', 'Test upload note');
         });
     });
 
     it('should handle language property', () => {
-        cy.mount(WrapperComponent, config).then((wrapper) => {
-            wrapper.component.language = 'German';
-            wrapper.fixture.detectChanges();
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
+            wrapper.component.language.set('German');
             cy.get('.uppy-Dashboard-browse').should('contain', 'durchsuchen');
         });
     });
 
     it('should trigger onFileAdded event', () => {
         const onFileAdded = cy.spy();
-        cy.mount(WrapperComponent, config).then((wrapper) => {
-            wrapper.component.onFileAdded = onFileAdded;
-            wrapper.fixture.detectChanges();
+        defaultValues.onFileAdded = onFileAdded;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('.uppy-Dashboard-input').first().selectFile({
                 contents: Cypress.Buffer.from('test content'),
                 fileName: 'test.pdf',
@@ -180,10 +212,10 @@ describe('ServoyExtraMultiFileUpload', () => {
 
     it('should handle autoProceed property', () => {
         const onUploadComplete = cy.spy().as('onUploadComplete');
-        cy.mount(WrapperComponent, config).then((wrapper) => {
-            wrapper.component.autoProceed = true;
-            wrapper.component.onUploadComplete = onUploadComplete;
-            wrapper.fixture.detectChanges();
+        defaultValues.autoProceed = true;
+        defaultValues.onUploadComplete = onUploadComplete;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('.uppy-Dashboard-input').first().selectFile({
                 contents: Cypress.Buffer.from('test content'),
                 fileName: 'test.pdf',
@@ -195,15 +227,15 @@ describe('ServoyExtraMultiFileUpload', () => {
 
     it('should respect maxFileSize restriction', () => {
         const onRestrictionFailed = cy.spy().as('onRestrictionFailed');
-        cy.mount(WrapperComponent, config).then((wrapper) => {
-            wrapper.component.restrictions = {
+        defaultValues.onRestrictionFailed = onRestrictionFailed;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
+            wrapper.component.restrictions.set({
                 minNumberOfFiles: 1,
                 maxNumberOfFiles: 10,
                 allowedFileTypes: ['.pdf', '.jpg', '.png'],
                 maxFileSize: 10,
-            } as Restrictions;
-            wrapper.component.onRestrictionFailed = onRestrictionFailed;
-            wrapper.fixture.detectChanges();
+            } as Restrictions);
             cy.get('.uppy-Dashboard-input').first().selectFile({
                 contents: Cypress.Buffer.from('test content larger than 10 bytes'),
                 fileName: 'large.pdf',
@@ -215,9 +247,9 @@ describe('ServoyExtraMultiFileUpload', () => {
 
     it('should handle file removal', () => {
         const onFileRemoved = cy.spy().as('onFileRemoved');
-        cy.mount(WrapperComponent, config).then((wrapper) => {
-            wrapper.component.onFileRemoved = onFileRemoved;
-            wrapper.fixture.detectChanges();
+        defaultValues.onFileRemoved = onFileRemoved;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('.uppy-Dashboard-input').first().selectFile({
                 contents: Cypress.Buffer.from('test content'),
                 fileName: 'test.pdf',
@@ -228,11 +260,11 @@ describe('ServoyExtraMultiFileUpload', () => {
             });
         });
     });
-    
+
     it('should handle allowMultipleUploads property', () => {
-        cy.mount(WrapperComponent, config).then((wrapper) => {
-            wrapper.component.allowMultipleUploads = false;
-            wrapper.fixture.detectChanges();
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
+            wrapper.component.allowMultipleUploads.set(false);
             cy.get('.uppy-Dashboard-input').first().selectFile([
                 {
                     contents: Cypress.Buffer.from('test1'),
@@ -250,17 +282,18 @@ describe('ServoyExtraMultiFileUpload', () => {
     });
 
     it('should handle disableStatusBar property', () => {
-        config.componentProperties.disableStatusBar = true;
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.disableStatusBar = true;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('.uppy-StatusBar').should('not.exist');
         });
     });
 
     it('should handle onBeforeFileAdded event', () => {
         const onBeforeFileAdded = cy.spy().as('onBeforeFileAdded');
-        cy.mount(WrapperComponent, config).then((wrapper) => {
-            wrapper.component.onBeforeFileAdded = onBeforeFileAdded;
-            wrapper.fixture.detectChanges();
+        defaultValues.onBeforeFileAdded = onBeforeFileAdded;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('.uppy-Dashboard-input').first().selectFile({
                 contents: Cypress.Buffer.from('test'),
                 fileName: 'test.pdf',

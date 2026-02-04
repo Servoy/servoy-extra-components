@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, signal } from '@angular/core';
 import { ServoyApi, ServoyApiTesting, ServoyPublicTestingModule, IValuelist } from '@servoy/public';
 import { ServoyExtraSpinner } from './spinner';
 import { MountConfig } from 'cypress/angular';
@@ -11,20 +11,20 @@ import { FormsModule } from '@angular/forms';
                 [onFocusGainedMethodID]="onFocusGainedMethodID"
                 [onFocusLostMethodID]="onFocusLostMethodID"
                 [onRightClickMethodID]="onRightClickMethodID"
-                [dataProviderID]="dataProviderID"
+                [dataProviderID]="dataProviderID()"
                 (dataProviderIDChange)="dataProviderIDChange($event)"
-                [displayTags]="displayTags"
-                [editable]="editable"
-                [enabled]="enabled"
-                [format]="format"
-                [placeholderText]="placeholderText"
-                [readOnly]="readOnly"
-                [responsiveHeight]="responsiveHeight"
-                [styleClass]="styleClass"
-                [tabSeq]="tabSeq"
-                [text]="text"
-                [toolTipText]="toolTipText"
-                [valuelistID]="valuelistID"
+                [displayTags]="displayTags()"
+                [editable]="editable()"
+                [enabled]="enabled()"
+                [format]="format()"
+                [placeholderText]="placeholderText()"
+                [readOnly]="readOnly()"
+                [responsiveHeight]="responsiveHeight()"
+                [styleClass]="styleClass()"
+                [tabSeq]="tabSeq()"
+                [text]="text()"
+                [toolTipText]="toolTipText()"
+                [valuelistID]="valuelistID()"
                 #element>
                 </servoyextra-spinner>`,
     standalone: false
@@ -37,32 +37,63 @@ class WrapperComponent {
     onFocusLostMethodID: (e: Event, data?: unknown) => void;
     onRightClickMethodID: (e: Event, data?: unknown) => void;
 
-    dataProviderID: any;
+    dataProviderID = signal<any>(undefined);
     dataProviderIDChange: (value: any) => void;
-    displayTags: boolean;
-    editable: boolean;
-    enabled: boolean;
-    format: string;
-    placeholderText: string;
-    readOnly: boolean;
-    responsiveHeight: number;
-    styleClass: string;
-    tabSeq: number;
-    text: string;
-    toolTipText: string;
-    valuelistID: IValuelist;
+    displayTags = signal<boolean>(undefined);
+    editable = signal<boolean>(undefined);
+    enabled = signal<boolean>(undefined);
+    format = signal<string>(undefined);
+    placeholderText = signal<string>(undefined);
+    readOnly = signal<boolean>(undefined);
+    responsiveHeight = signal<number>(undefined);
+    styleClass = signal<string>(undefined);
+    tabSeq = signal<number>(undefined);
+    text = signal<string>(undefined);
+    toolTipText = signal<string>(undefined);
+    valuelistID = signal<IValuelist>(undefined);
 
     @ViewChild('element') element: ServoyExtraSpinner;
 }
 
-describe('ServoyExtraSpinner', () => {
-    const servoyApiSpy = new ServoyApiTesting();
+const defaultValues = {
+    servoyApi: new ServoyApiTesting(),
+    enabled: true,
+    readOnly: false,
+    styleClass: 'spinner-test',
+    tabSeq: 0,
+    dataProviderID: 1,
+    valuelistID: null as IValuelist,
+    editable: true,
+    format: '#.00',
+    toolTipText: 'Test tooltip',
+    displayTags: false,
+    responsiveHeight: 0,
+    text: '',
+    placeholderText: '',
+    onActionMethodID: () => { },
+    onFocusGainedMethodID: () => { },
+    onFocusLostMethodID: () => { },
+    onRightClickMethodID: () => { },
+    dataProviderIDChange: () => { }
+};
 
-    const config: MountConfig<WrapperComponent> = {
-        declarations: [ServoyExtraSpinner],
-        imports: [ServoyPublicTestingModule, FormsModule]
+function applyDefaultProps(wrapper) {
+    for (const key in defaultValues) {
+        if (wrapper.component.hasOwnProperty(key) && typeof wrapper.component[key] === 'function') {
+            wrapper.component[key].set(defaultValues[key]);
+        }
+        else {
+            wrapper.component[key] = defaultValues[key];
+        }
     }
+}
 
+const configWrapper: MountConfig<WrapperComponent> = {
+    declarations: [ServoyExtraSpinner],
+    imports: [ServoyPublicTestingModule, FormsModule]
+};
+
+describe('ServoyExtraSpinner', () => {
     beforeEach(() => {
         const mockData = [
             { realValue: 3, displayValue: 'Value 3' },
@@ -70,23 +101,22 @@ describe('ServoyExtraSpinner', () => {
             { realValue: 2, displayValue: 'Value 2' }
         ] as IValuelist;
 
-        config.componentProperties = {
-            servoyApi: servoyApiSpy,
-            enabled: true,
-            readOnly: false,
-            styleClass: 'spinner-test',
-            tabSeq: 0,
-            dataProviderID: 1,
-            valuelistID: mockData,
-            editable: true,
-            format: '#.00',
-            toolTipText: 'Test tooltip'
-        };
+        defaultValues.valuelistID = mockData;
+        defaultValues.enabled = true;
+        defaultValues.readOnly = false;
+        defaultValues.styleClass = 'spinner-test';
+        defaultValues.tabSeq = 0;
+        defaultValues.dataProviderID = 1;
+        defaultValues.editable = true;
+        defaultValues.format = '#.00';
+        defaultValues.toolTipText = 'Test tooltip';
     });
 
     it('should mount and register the component', () => {
+        const servoyApiSpy = defaultValues.servoyApi;
         const registerComponent = cy.stub(servoyApiSpy, 'registerComponent');
-        cy.mount(WrapperComponent, config).then(() => {
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('input').should('exist').then(() => {
                 cy.wrap(registerComponent).should('be.called');
             });
@@ -94,50 +124,54 @@ describe('ServoyExtraSpinner', () => {
     });
 
     it('should show the dataprovider value', () => {
-        cy.mount(WrapperComponent, config).then(() => {
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('input').should('have.value', 'Value 1');
         });
     });
 
     it('should set the placeholder text', () => {
-        config.componentProperties.placeholderText = 'Enter your value';
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.placeholderText = 'Enter your value';
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('input').should('have.attr', 'placeholder', 'Enter your value');
         });
     });
 
     it('show a style class', () => {
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('.svy-extra-spinner').should('not.have.class', 'mystyleclass').then(() => {
-                wrapper.component.styleClass = 'mystyleclass';
-                wrapper.fixture.detectChanges();
+                wrapper.component.styleClass.set('mystyleclass');
                 cy.get('.svy-extra-spinner').should('have.class', 'mystyleclass');
             });
         });
     });
 
     it('show more then 1 style class', () => {
-        config.componentProperties.styleClass = 'mystyleclass';
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        defaultValues.styleClass = 'mystyleclass';
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('.svy-extra-spinner').should('have.class', 'mystyleclass').then(() => {
-                wrapper.component.styleClass = 'classA classB';
-                wrapper.fixture.detectChanges();
+                wrapper.component.styleClass.set('classA classB');
                 cy.get('.svy-extra-spinner').should('have.class', 'classA').should('have.class', 'classB');
             });
         });
     });
 
     it('should be read-only', () => {
-        config.componentProperties.readOnly = true;
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.readOnly = true;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('input').should('have.attr', 'readonly');
         });
     });
 
-    it('should handle onaction  event', () => {
+    it('should handle onaction event', () => {
         const onActionMethodID = cy.stub();
-        config.componentProperties.onActionMethodID = onActionMethodID;
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.onActionMethodID = onActionMethodID;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.wrap(onActionMethodID).should('be.not.called');
             cy.get('input').click().then(() => {
                 cy.wrap(onActionMethodID).should('be.called');
@@ -147,11 +181,10 @@ describe('ServoyExtraSpinner', () => {
 
     it('should handle focus gained event', () => {
         const onFocusGainedMethodID = cy.stub();
-        config.componentProperties.onFocusGainedMethodID = onFocusGainedMethodID;
-        const dataProviderIDChange = cy.stub();
-        config.componentProperties.dataProviderIDChange = dataProviderIDChange;
-        cy.mount(WrapperComponent, config).then(() => {
-            cy.get('.spinner-button-up').should('exist').click({ force: true }).then(() => {
+        defaultValues.onFocusGainedMethodID = onFocusGainedMethodID;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
+            cy.get('.spinner-button-up').should('exist').click().then(() => {
                 cy.wrap(onFocusGainedMethodID).should('be.called');
             });
         });
@@ -159,10 +192,9 @@ describe('ServoyExtraSpinner', () => {
 
     it('should handle focus lost event', () => {
         const onFocusLostMethodID = cy.stub();
-        config.componentProperties.onFocusLostMethodID = onFocusLostMethodID;
-        const dataProviderIDChange = cy.stub();
-        config.componentProperties.dataProviderIDChange = dataProviderIDChange;
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.onFocusLostMethodID = onFocusLostMethodID;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('.spinner-button-up').should('exist').click({ force: true }).blur().then(() => {
                 cy.wrap(onFocusLostMethodID).should('be.called');
             });
@@ -171,8 +203,9 @@ describe('ServoyExtraSpinner', () => {
 
     it('should handle right click event', () => {
         const onRightClickMethodID = cy.stub();
-        config.componentProperties.onRightClickMethodID = onRightClickMethodID;
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.onRightClickMethodID = onRightClickMethodID;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('input').rightclick().then(() => {
                 expect(onRightClickMethodID).to.have.been.called;
             });
@@ -181,21 +214,23 @@ describe('ServoyExtraSpinner', () => {
 
     it('should emit dataProviderIDChange event on input change', () => {
         const dataProviderIDChange = cy.stub();
-        config.componentProperties.dataProviderIDChange = dataProviderIDChange;
-        config.componentProperties.dataProviderID = '';
-        cy.mount(WrapperComponent, config);
-        cy.get('.spinner-button-up').click().then(() => {
-            cy.wrap(dataProviderIDChange).should('have.been.calledWith', 1);
+        defaultValues.dataProviderIDChange = dataProviderIDChange;
+        defaultValues.dataProviderID = null;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
+            cy.get('.spinner-button-up').click().then(() => {
+                cy.wrap(dataProviderIDChange).should('have.been.calledWith', 1);
+            });
         });
     });
 
     it('should not emit dataProviderIDChange event dataprovder change', () => {
         const dataProviderIDChange = cy.stub();
-        config.componentProperties.dataProviderIDChange = dataProviderIDChange;
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        defaultValues.dataProviderIDChange = dataProviderIDChange;
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('input').should('have.value', 'Value 1').then(() => {
-                wrapper.component.dataProviderID = 2;
-                wrapper.fixture.detectChanges();
+                wrapper.component.dataProviderID.set(2);
                 expect(dataProviderIDChange).not.to.have.been.called;
                 cy.get('input').should('have.value', 'Value 2');
             });
@@ -203,7 +238,8 @@ describe('ServoyExtraSpinner', () => {
     });
 
     it('should see the tooltip', () => {
-        cy.mount(WrapperComponent, config).then((wrapper) => {
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('input').trigger('pointerenter').then(() => {
                 cy.get('div[id="mktipmsg"]').should('contain', 'Test tooltip');
             });

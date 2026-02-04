@@ -54,6 +54,7 @@
     "zone.js": "0.16.0"
   },
   "devDependencies": {
+    "@angular-devkit/build-angular": "21.1.1",
     "@angular-eslint/builder": "21.1.0",
     "@angular-eslint/eslint-plugin": "21.1.0",
     "@angular-eslint/eslint-plugin-template": "21.1.0",
@@ -74,7 +75,7 @@
     "@typescript-eslint/types": "8.53.1",
     "@typescript-eslint/utils": "^8.53.1",
     "adm-zip": "0.5.16",
-    "cypress": "14.5.2",
+    "cypress": "15.9.0",
     "eslint": "^9.39.2",
     "eslint-plugin-only-warn": "1.1.0",
     "eslint-plugin-prefer-arrow": "1.2.3",

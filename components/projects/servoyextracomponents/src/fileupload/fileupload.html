@@ -1,6 +1,6 @@
 <div class="svy-extra-fileupload container"
-  [ngClass]="styleClass"
-  [svyTooltip]="toolTipText"
+  [ngClass]="styleClass()"
+  [svyTooltip]="toolTipText()"
   #element>
   <div ng2FileDrop
     [ngClass]="{'svy-fu-dragover': hasBaseDropZoneOver}"
@@ -9,15 +9,15 @@
     (onFileDrop) = "uploader.uploadAll()"
     class="well svy-fu-drop-box">
 
-    <i class="svy-fu-row {{uploader.progress > 0 ? [successIconStyleClass] : [iconStyleClass] }} custom-file-upload" (click)= "fileInputClick()"> </i>
+    <i class="svy-fu-row {{uploader.progress > 0 ? [successIconStyleClass()] : [iconStyleClass()] }} custom-file-upload" (click)= "fileInputClick()"> </i>
 
     <label #fileInputLabel class="custom-file-upload" >  {{customText}}
-      @if (multiFileUpload) {
+      @if (multiFileUpload()) {
         <div>
-          <input type="file" ng2FileSelect [uploader]="uploader" multiple (onFileSelected) = "uploader.uploadAll()" [accept]="acceptFiles" [disabled]="!enabled"/>
+          <input type="file" ng2FileSelect [uploader]="uploader" multiple (onFileSelected) = "uploader.uploadAll()" [accept]="acceptFiles" [disabled]="!enabled()"/>
         </div>
       } @else {
-        <input #fileInputSingleUpload type="file" ng2FileSelect [uploader]="uploader" (onFileSelected) = "uploader.uploadAll()" [accept]="acceptFiles" [disabled]="!enabled"/>
+        <input #fileInputSingleUpload type="file" ng2FileSelect [uploader]="uploader" (onFileSelected) = "uploader.uploadAll()" [accept]="acceptFiles" [disabled]="!enabled()"/>
       }
     </label>
 

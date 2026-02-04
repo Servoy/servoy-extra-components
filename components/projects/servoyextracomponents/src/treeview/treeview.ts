@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Output, SimpleChanges, ViewChild, Renderer2 } from '@angular/core';
-import { Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Output, SimpleChanges, Renderer2, input, viewChild, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { AngularTreeGridComponent } from 'angular-tree-grid';
 import { ServoyBaseComponent, ServoyPublicService, EventLike, JSEvent, LoggerFactory, LoggerService } from '@servoy/public';
 import { ServoyExtraTreeviewCellRenderer } from './cellrenderer';
@@ -11,19 +11,21 @@ import { ServoyExtraTreeviewCellRenderer } from './cellrenderer';
 })
 export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
 
-    @ViewChild('angularGrid') angularGrid: AngularTreeGridComponent;
+    readonly angularGrid = viewChild<AngularTreeGridComponent>('angularGrid');
 
-    @Input() jsDataSet: any;
-    @Input() styleClass: string;
+    readonly jsDataSet = input<any>(undefined);
+    readonly styleClass = input<string>(undefined);
 
-    @Input() onNodeClicked: any;
-    @Input() onNodeCollapsed: any;
-    @Input() onNodeDoubleClicked: any;
-    @Input() onNodeExpanded: any;
-    @Input() onNodeRightClicked: any;
-    @Input() onNodeSelected: any;
-    @Input() onReady: (e: JSEvent) => void;
-    @Input() onRowDrop: any;
+    readonly onNodeClicked = input<any>(undefined);
+    readonly onNodeCollapsed = input<any>(undefined);
+    readonly onNodeDoubleClicked = input<any>(undefined);
+    readonly onNodeExpanded = input<any>(undefined);
+    readonly onNodeRightClicked = input<any>(undefined);
+    readonly onNodeSelected = input<any>(undefined);
+    readonly onReady = input<(e: JSEvent) => void>(undefined);
+    readonly onRowDrop = input<any>(undefined);
+    
+    _jsDataSet = signal<any>(undefined);
 
     isTreeReady = false;
     dblClickTimeout: any = null;
@@ -79,7 +81,8 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
                 const change = changes[property];
                 switch (property) {
                     case 'jsDataSet': {
-                        if (this.jsDataSet) {
+                        this._jsDataSet.set(this.jsDataSet());
+                        if (this._jsDataSet()) {
                             this.updateTreeGridData();
                             this.isTreeReady = true;
                         }
@@ -108,13 +111,13 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
 
     svyOnInit(): void {
         if (this.servoyApi.isInDesigner()) {
-            this.jsDataSet = [['id', 'pid', 'treeColumn', 'icon'],
+            this._jsDataSet.set([['id', 'pid', 'treeColumn', 'icon'],
             [1, null, 'Main group', this.folderImgPath],
             [2, null, 'Second group', this.folderImgPath],
             [3, 2, 'Subgroup', this.folderImgPath],
             [4, 3, 'Mark', this.fileImgPath],
             [5, 1, 'George', this.fileImgPath]
-            ];
+            ]);
         }
         super.svyOnInit();
     }
@@ -128,44 +131,46 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         const pids: Array<number | string> = [];
 
         let isFAIcon = false;
-        const idIdx = this.jsDataSet[0].indexOf('id');
-        const pidIdx = this.jsDataSet[0].indexOf('pid');
-        let iconIdx = this.jsDataSet[0].indexOf('icon');
+        const idIdx = this._jsDataSet()[0].indexOf('id');
+        const pidIdx = this._jsDataSet()[0].indexOf('pid');
+        let iconIdx = this._jsDataSet()[0].indexOf('icon');
         if (iconIdx === -1) {
-            iconIdx = this.jsDataSet[0].indexOf('fa-icon');
+            iconIdx = this._jsDataSet()[0].indexOf('fa-icon');
             isFAIcon = iconIdx !== -1;
         }
-        const treeColumnIdx = this.jsDataSet[0].indexOf('treeColumn');
+        const treeColumnIdx = this._jsDataSet()[0].indexOf('treeColumn');
 
         // index for extra columns
         const columnsIdx = [];
-        for (let c = 0; c < this.jsDataSet[0].length; c++) {
-            if (this.jsDataSet[0][c]?.indexOf instanceof Function && this.jsDataSet[0][c]?.indexOf('column') === 0) {
+        for (let c = 0; c < this._jsDataSet()[0].length; c++) {
+            const jsDataSet = this._jsDataSet();
+            if (jsDataSet[0][c]?.indexOf instanceof Function && jsDataSet[0][c]?.indexOf('column') === 0) {
                 columnsIdx.push(c);
             }
         }
 
         // set table header
+        const jsDataSet = this._jsDataSet();
         this.configs.columns.push({
             treeview: this,
             name: 'treeColumn',
-            header: columnsIdx.length ? this.jsDataSet[1][treeColumnIdx] : '',
+            header: columnsIdx.length ? jsDataSet[1][treeColumnIdx] : '',
             type: 'custom',
             component: ServoyExtraTreeviewCellRenderer,
             filter_function: (record) =>
                 this.filterText.length === 0 || (this.filterMatchedNodes.indexOf(record.id) !== -1 || this.filterPartNodes.indexOf(record.id) !== -1)
         });
 
-        this.columnNameMap['treeColumn'] = this.jsDataSet[0][treeColumnIdx];
-        this.columnNameMapIndex[0] = this.jsDataSet[0][treeColumnIdx];
+        this.columnNameMap['treeColumn'] = jsDataSet[0][treeColumnIdx];
+        this.columnNameMapIndex[0] = jsDataSet[0][treeColumnIdx];
         if (columnsIdx.length) {
             for (let c = 1; c <= columnsIdx.length; c++) {
                 const internalName = 'column' + c;
-                const originalName = this.jsDataSet[0][columnsIdx[c - 1]]; // Get the original name
+                const originalName = jsDataSet[0][columnsIdx[c - 1]]; // Get the original name
                 this.configs.columns.push({
                     treeview: this,
                     name: internalName,
-                    header: this.jsDataSet[1][columnsIdx[c - 1]],
+                    header: jsDataSet[1][columnsIdx[c - 1]],
                     type: 'custom',
                     component: ServoyExtraTreeviewCellRenderer
                 });
@@ -176,55 +181,56 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
 
         // in table view the first contains the table header names
         let i = columnsIdx.length ? 2 : 1;
-        for (i; i < this.jsDataSet.length; i++) {
+        for (i; i < jsDataSet.length; i++) {
             const row = {
-                id: this.jsDataSet[i][idIdx],
-                pid: this.jsDataSet[i][pidIdx],
+                id: jsDataSet[i][idIdx],
+                pid: jsDataSet[i][pidIdx],
                 treeColumn: {
-                    text: this.jsDataSet[i][treeColumnIdx],
-                    icon: this.jsDataSet[i][iconIdx] ? this.jsDataSet[i][iconIdx] : '',
+                    text: jsDataSet[i][treeColumnIdx],
+                    icon: jsDataSet[i][iconIdx] ? jsDataSet[i][iconIdx] : '',
                     isFAIcon
                 }
             };
 
             for (let c = 1; c <= columnsIdx.length; c++) {
-                row['column' + c] = this.jsDataSet[i][columnsIdx[c - 1]];
+                row['column' + c] = jsDataSet[i][columnsIdx[c - 1]];
             }
-            ids.push(this.jsDataSet[i][idIdx]);
-            !['', null].includes(this.jsDataSet[i][pidIdx]) && pids.push(this.jsDataSet[i][pidIdx]);
+            ids.push(jsDataSet[i][idIdx]);
+            !['', null].includes(jsDataSet[i][pidIdx]) && pids.push(jsDataSet[i][pidIdx]);
             this.data.push(row);
         }
 
         this.checkIfAllParentsExist(this.data, ids);
         this.addDefaultIconsIfNeeded(this.data, ids, pids);
 
-        if (this.onReady) {
+        if (this.onReady()) {
             setTimeout(() => {
                 // delay so that form is completely loaded, just like dbtreeview does
-                this.onReady(this.servoyPublicService.createJSEvent({ target: this.elementRef.nativeElement } as EventLike, 'onReady'));
+                this.onReady()(this.servoyPublicService.createJSEvent({ target: this.elementRef.nativeElement } as EventLike, 'onReady'));
             });
         }
     }
     
     addOrUpdateRowData(rowArray: Array<any>) {
-        if (!this.jsDataSet || rowArray.length !== this.jsDataSet[0].length) {
+        const jsDataSet = this._jsDataSet();
+        if (!jsDataSet || rowArray.length !== jsDataSet[0].length) {
             console.warn(`Either jsDataSet is missing or the row data provided doesn't align with the component's dataset structure. No changes were made.`);
             return;
         }
-        const headerRow = this.jsDataSet[0];
+        const headerRow = jsDataSet[0];
         const idIdx = headerRow.indexOf('id');
         const pidIdx = headerRow.indexOf('pid');
         const treeColumnIdx = headerRow.indexOf('treeColumn');
         let isFAIcon = false;
-        let iconIdx = this.jsDataSet[0].indexOf('icon');
+        let iconIdx = jsDataSet[0].indexOf('icon');
         if (iconIdx === -1) {
-            iconIdx = this.jsDataSet[0].indexOf('fa-icon');
+            iconIdx = jsDataSet[0].indexOf('fa-icon');
             isFAIcon = iconIdx !== -1;
         }
         const rowId = rowArray[idIdx];
         const parentId = rowArray[pidIdx];
-        const expandedPaths = Object.keys(this.angularGrid.expand_tracker).filter(path => this.angularGrid.expand_tracker[path]);
-        const displayDataBefore = this.angularGrid.store.getDisplayData();
+        const expandedPaths = Object.keys(this.angularGrid().expand_tracker).filter(path => this.angularGrid().expand_tracker[path]);
+        const displayDataBefore = this.angularGrid().store.getDisplayData();
         const selectedNode = displayDataBefore.find(data => data.row_selected);
         const selectedId = selectedNode ? selectedNode.id : null;
         const existingIndex = this.data.findIndex(row => row.id === rowId);
@@ -261,16 +267,16 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         this.cdRef.detectChanges();
 
         setTimeout(() => {
-            const displayData = this.angularGrid.store.getDisplayData();
+            const displayData = this.angularGrid().store.getDisplayData();
 
             displayData.forEach(data => {
                 if (expandedPaths.includes(data.pathx)) {
-                    this.angularGrid.expand_tracker[data.pathx] = true;
+                    this.angularGrid().expand_tracker[data.pathx] = true;
                 }
                 data.row_selected = selectedId !== null && data.id === selectedId;
             });
 
-            this.angularGrid.store.refreshDisplayData();
+            this.angularGrid().store.refreshDisplayData();
             this.cdRef.detectChanges();
         }, 0);
     }
@@ -336,29 +342,33 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         if (originalColumnName === null) {
             originalColumnName = this.columnNameMapIndex[[...event.event.currentTarget.childNodes].filter(item => item instanceof HTMLElement).indexOf(event.event.target)];
         }
-        if (this.onNodeDoubleClicked) {
+        const onNodeDoubleClicked = this.onNodeDoubleClicked();
+        const onNodeClicked = this.onNodeClicked();
+        if (onNodeDoubleClicked) {
             if (this.dblClickTimeout) {
-                this.onNodeDoubleClicked(this.rowID, event.event);
+                onNodeDoubleClicked(this.rowID, event.event);
                 clearTimeout(this.dblClickTimeout);
                 this.dblClickTimeout = null;
             } else {
                 const id = this.rowID;
                 this.dblClickTimeout = setTimeout(() => {
-                    if (this.onNodeClicked) {
-                        this.onNodeClicked(id, event.event, originalColumnName);
+                    const onNodeClicked = this.onNodeClicked();
+                    if (onNodeClicked) {
+                        onNodeClicked(id, event.event, originalColumnName);
                     }
                     this.dblClickTimeout = null;
                 }, 400);
             }
-        } else if (this.onNodeClicked) {
-            this.onNodeClicked(this.rowID, event.event, originalColumnName);
+        } else if (onNodeClicked) {
+            onNodeClicked(this.rowID, event.event, originalColumnName);
         }
     }
 
     onselect(event) {
-        if (this.onNodeSelected) {
+        const onNodeSelected = this.onNodeSelected();
+        if (onNodeSelected) {
             if (this.lastSelectedNode !== event.data.id) {
-                this.onNodeSelected(event.data.id);
+                onNodeSelected(event.data.id);
                 this.lastSelectedNode = event.data.id;
             }
         }
@@ -367,14 +377,16 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     onexpand(event) {
-        if (this.onNodeExpanded) {
-            this.onNodeExpanded(event.data.id);
+        const onNodeExpanded = this.onNodeExpanded();
+        if (onNodeExpanded) {
+            onNodeExpanded(event.data.id);
         }
     }
 
     oncollapse(event) {
-        if (this.onNodeCollapsed) {
-            this.onNodeCollapsed(event.data.id);
+        const onNodeCollapsed = this.onNodeCollapsed();
+        if (onNodeCollapsed) {
+            onNodeCollapsed(event.data.id);
         }
     }
 
@@ -388,7 +400,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     refresh(restoreExpandedNodes) {
         if (this.isTreeReady) {
             if (restoreExpandedNodes) {
-                this.angularGrid.store.refreshDisplayData();
+                this.angularGrid().store.refreshDisplayData();
             } else {
                 this.updateTreeGridData();
             }
@@ -407,7 +419,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
      */
     expandAll() {
         if (this.isTreeReady) {
-            this.angularGrid.expandAll();
+            this.angularGrid().expandAll();
             return true;
         }
         return false;
@@ -423,7 +435,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
      */
     collapseAll() {
         if (this.isTreeReady) {
-            this.angularGrid.collapseAll();
+            this.angularGrid().collapseAll();
             return true;
         }
         return false;
@@ -431,7 +443,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     
     nodeExist(nodeId) {
         if (this.isTreeReady) {
-            const displayData = this.angularGrid.store.getDisplayData();
+            const displayData = this.angularGrid().store.getDisplayData();
             return displayData.some(data => data.id === nodeId);
         }
         return false;
@@ -448,7 +460,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
      */
     expandNode(nodeId) {
         if (this.isTreeReady) {
-            this.nodeExist(nodeId) && this.angularGrid.expandRow(isNaN(nodeId) ? nodeId.toString() : nodeId);
+            this.nodeExist(nodeId) && this.angularGrid().expandRow(isNaN(nodeId) ? nodeId.toString() : nodeId);
             !this.nodeExist(nodeId) && this.log.warn(`You have used a node id "${nodeId}" that doesn't exist!`);
         }
     }
@@ -466,9 +478,9 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     isNodeExpanded(nodeId) {
         let isNodeExpanded = false;
         if (this.isTreeReady) {
-            const displayData = this.angularGrid.store.getDisplayData();
+            const displayData = this.angularGrid().store.getDisplayData();
             displayData.forEach(data => {
-                if (data.id === nodeId && this.angularGrid.expand_tracker[data.pathx] === true) {
+                if (data.id === nodeId && this.angularGrid().expand_tracker[data.pathx] === true) {
                     isNodeExpanded = true;
                     return;
                 }
@@ -488,7 +500,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
      */
     collapseNode(nodeId) {
         if (this.isTreeReady) {
-            this.angularGrid.collapseRow(nodeId.toString());
+            this.angularGrid().collapseRow(nodeId.toString());
         }
     }
 
@@ -502,7 +514,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
      */
     setSelectedNode(nodeId) {
         if (this.isTreeReady) {
-            const displayData = this.angularGrid.store.getDisplayData();
+            const displayData = this.angularGrid().store.getDisplayData();
             displayData.forEach(data => {
                 data.row_selected = data.id === nodeId;
             });
@@ -542,7 +554,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     getSelectedNode() {
         let selectedNodeId = null;
         if (this.isTreeReady) {
-            const displayData = this.angularGrid.store.getDisplayData();
+            const displayData = this.angularGrid().store.getDisplayData();
             displayData.forEach(data => {
                 if (data.row_selected) {
                     selectedNodeId = data.id;
@@ -564,7 +576,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
 	getSeletedNode() {
 	    let selectedNodeId = null;
 	    if (this.isTreeReady) {
-	        const displayData = this.angularGrid.store.getDisplayData();
+	        const displayData = this.angularGrid().store.getDisplayData();
 	        displayData.forEach(data => {
 	            if (data.row_selected) {
 	                selectedNodeId = data.id;
@@ -588,8 +600,8 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     getChildNodes(nodeId) {
         const childNodesId = new Array();
         if (this.isTreeReady) {
-            const displayData = this.angularGrid.store.getDisplayData();
-            const childNodes = this.angularGrid.store.findChildren(displayData, nodeId, this.configs);
+            const displayData = this.angularGrid().store.getDisplayData();
+            const childNodes = this.angularGrid().store.findChildren(displayData, nodeId, this.configs);
             childNodes.forEach(element => {
                 childNodesId.push(element.id);
             });
@@ -610,7 +622,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     getParentNode(nodeId) {
         let parentNodeId = null;
         if (this.isTreeReady) {
-            const displayData = this.angularGrid.store.getDisplayData();
+            const displayData = this.angularGrid().store.getDisplayData();
             displayData.forEach(data => {
                 if (data.id === nodeId) {
                     parentNodeId = data.pid;
@@ -634,7 +646,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     getNodeLevel(nodeId) {
         let nodeLevel = -1;
         if (this.isTreeReady) {
-            const displayData = this.angularGrid.store.getDisplayData();
+            const displayData = this.angularGrid().store.getDisplayData();
             displayData.forEach(data => {
                 if (data.id === nodeId) {
                     nodeLevel = data.levelx + 1;
@@ -656,7 +668,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     getRootNodes() {
         const rootNodesId = new Array();
         if (this.isTreeReady) {
-            const displayData = this.angularGrid.store.getDisplayData();
+            const displayData = this.angularGrid().store.getDisplayData();
             displayData.forEach(data => {
                 if (['', null].includes(data.pid)) {
                     rootNodesId.push(data.id);
@@ -726,9 +738,9 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         this.filterText = text;
         if (this.isTreeReady) {
             this.getFilteredNodes();
-            this.angularGrid.store.filterBy([this.configs.columns[0]], this.filterText);
+            this.angularGrid().store.filterBy([this.configs.columns[0]], this.filterText);
             if (options && options.autoExpand) {
-                this.angularGrid.expandAll();
+                this.angularGrid().expandAll();
             }
         }
     }
@@ -740,7 +752,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         if (this.filterText.length !== 0) {
             const filterMatchedNodesPaths = [];
             const filterTextLC = this.filterText.toLowerCase();
-            const processedData = this.angularGrid.store.getProcessedData();
+            const processedData = this.angularGrid().store.getProcessedData();
             processedData.forEach(data => {
                 if (!data.treeColumn.text) return;
                 const nodeTextLC = data.treeColumn.text.toLowerCase();
@@ -779,7 +791,8 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
 
     onRowDropEvent($event) {
         $event.preventDefault();
-        if (this.onRowDrop) {
+        const onRowDrop = this.onRowDrop();
+        if (onRowDrop) {
             const targetNodeId = this.getTargetNodeId($event.target);
             const jsonData = $event.dataTransfer.getData('nggrids-drag/json');
             const dragTranferData = JSON.parse(jsonData) as DragTransferData;
@@ -787,7 +800,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
             jsDropEvent.sourceGridName = dragTranferData.sourceGridName;
             jsDropEvent.sourceColumnId = dragTranferData.sourceColumnId;
 
-            this.onRowDrop(dragTranferData.records, targetNodeId, jsDropEvent);
+            onRowDrop(dragTranferData.records, targetNodeId, jsDropEvent);
         }
     }
 

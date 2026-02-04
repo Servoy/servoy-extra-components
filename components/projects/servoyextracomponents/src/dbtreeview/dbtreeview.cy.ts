@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, signal } from '@angular/core';
 import { ServoyApi, ServoyApiTesting, ServoyPublicTestingModule } from '@servoy/public';
 import { ServoyExtraDbtreeview } from './dbtreeview';
 import { MountConfig } from 'cypress/angular';
@@ -8,58 +8,68 @@ import { TreeModule, TreeComponent } from '@ali-hm/angular-tree-component';
 
 @Component({
     template: `<servoyextra-dbtreeview 
-                [servoyApi]="servoyApi"
+                [servoyApi]="servoyApi()"
                 [onDrop]="onDrop"
                 [onReady]="onReady"
                 [onRowDrop]="onRowDrop"
-                [autoRefresh]="autoRefresh"
-                [enabled]="enabled"
-                [responsiveHeight]="responsiveHeight"
-                [showLoadingIndicator]="showLoadingIndicator"
-                [styleClass] = "styleClass"
+                [autoRefresh]="autoRefresh()"
+                [enabled]="enabled()"
+                [responsiveHeight]="responsiveHeight()"
+                [showLoadingIndicator]="showLoadingIndicator()"
+                [styleClass] = "styleClass()"
                 #element>
                 </servoyextra-dbtreeview>`,
     standalone: false
 })
 class WrapperComponent {
-    servoyApi: ServoyApi;
-    
-    onDrop: (e: Event, data?: unknown) => void = () => {};
-    onReady: (e: Event, data?: unknown) => void = () => {};
-    onRowDrop: (e: Event, data?: unknown) => void = () => {};
+    servoyApi = signal<ServoyApi>(undefined);
 
-    autoRefresh: boolean;
-    enabled: boolean;
-    responsiveHeight: number;
-    showLoadingIndicator: boolean;
-    styleClass: string;
+    onDrop = () => { };
+    onReady = () => { };
+    onRowDrop = () => { };
+
+    autoRefresh = signal<boolean>(undefined);
+    enabled = signal<boolean>(undefined);
+    responsiveHeight = signal<number>(undefined);
+    showLoadingIndicator = signal<boolean>(undefined);
+    styleClass = signal<string>(undefined);
     displayNodes: any[];
 
     @ViewChild('element') element: ServoyExtraDbtreeview;
     @ViewChild('tree') tree: TreeComponent;
 }
 
-describe('ServoyExtraDbtreeview', () => {
-    const servoyApiSpy = new ServoyApiTesting();
+const defaultValues = {
+    servoyApi: new ServoyApiTesting(),
+    styleClass: 'dbtreeview-test',
+    autoRefresh: true,
+    enabled: true,
+    showLoadingIndicator: true,
+    responsiveHeight: 0
+};
 
-    const config: MountConfig<WrapperComponent> = {
-        declarations: [ServoyExtraDbtreeview],
-        imports: [ServoyPublicTestingModule, FormsModule, TreeModule]
+function applyDefaultProps(wrapper) {
+    for (const key in defaultValues) {
+        if (wrapper.component[key] && typeof wrapper.component[key].set === 'function') {
+            wrapper.component[key].set(defaultValues[key]);
+        }
+        else {
+            wrapper.component[key] = defaultValues[key];
+        }
     }
+}
 
-    beforeEach(() => {
-        config.componentProperties = {
-            servoyApi: servoyApiSpy,
-            styleClass: 'dbtreeview-test',
-            autoRefresh: true,
-            enabled: true,
-            showLoadingIndicator: true
-        };
-    });
+const configWrapper: MountConfig<WrapperComponent> = {
+    declarations: [ServoyExtraDbtreeview],
+    imports: [ServoyPublicTestingModule, FormsModule, TreeModule]
+};
 
+describe('ServoyExtraDbtreeview', () => {
     it('should mount and register the component', () => {
+        const servoyApiSpy = defaultValues.servoyApi;
         const registerComponent = cy.stub(servoyApiSpy, 'registerComponent');
-        cy.mount(WrapperComponent, config).then(() => {
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('.dbtreeview').should('exist').then(() => {
                 cy.wrap(registerComponent).should('be.called');
             });
@@ -67,31 +77,31 @@ describe('ServoyExtraDbtreeview', () => {
     });
 
     it('show a style class', () => {
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('.dbtreeview').should('not.have.class', 'mystyleclass').then(() => {
-                wrapper.component.styleClass = 'mystyleclass';
-                wrapper.fixture.detectChanges();
+                wrapper.component.styleClass.set('mystyleclass');
                 cy.get('.dbtreeview').should('have.class', 'mystyleclass');
             });
         });
     });
 
     it('show more then 1 style class', () => {
-        config.componentProperties.styleClass = 'mystyleclass';
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        defaultValues.styleClass = 'mystyleclass';
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('.dbtreeview').should('have.class', 'mystyleclass').then(() => {
-                wrapper.component.styleClass = 'classA classB';
-                wrapper.fixture.detectChanges();
+                wrapper.component.styleClass.set('classA classB');
                 cy.get('.dbtreeview').should('have.class', 'classA').should('have.class', 'classB');
             });
         });
     });
-    
+
     it('when enabled state is changed through wrapper', () => {
-        cy.mount(WrapperComponent, config).then((wrapper) => {
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('.dbtreeview-disabled').should('not.exist').then(_ => {
-                wrapper.component.enabled = false;
-                wrapper.fixture.detectChanges();
+                wrapper.component.enabled.set(false);
                 cy.get('.dbtreeview-disabled').should('exist');
             });
         });

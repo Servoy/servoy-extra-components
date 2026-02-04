@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, signal } from '@angular/core';
 import { ServoyApi, ServoyApiTesting, ServoyPublicTestingModule, Format } from '@servoy/public';
 import { ServoyExtraTextfieldGroup } from './textfieldgroup';
 import { MountConfig } from 'cypress/angular';
@@ -7,74 +7,104 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
     template: `<servoyextra-textfieldgroup 
-                    [servoyApi]="servoyApi"
-                    [onActionMethodID] = "onActionMethodID"
-                    [onFocusGainedMethodID] = "onFocusGainedMethodID"
-                    [onFocusLostMethodID] = "onFocusLostMethodID"
-                    [onRightClickMethodID] = "onRightClickMethodID"
-                    [dataProviderID]="dataProviderID"
+                    [servoyApi]="servoyApi()"
+                    [onActionMethodID]="onActionMethodID"
+                    [onFocusGainedMethodID]="onFocusGainedMethodID"
+                    [onFocusLostMethodID]="onFocusLostMethodID"
+                    [onRightClickMethodID]="onRightClickMethodID"
+                    [dataProviderID]="dataProviderID()"
                     (dataProviderIDChange)="dataProviderIDChange($event)"
-                    [enabled]="enabled"
-                    [faclass] = "faclass"
-                    [format]="format"
-                    [inputType] = "inputType"
-                    [inputValidation]="inputValidation"
-                    [invalidEmailMessage]="invalidEmailMessage"
-                    [placeholderText]="placeholderText"
-                    [readOnly]="readOnly"
-                    [styleClass]="styleClass"
-                    [tabSeq]="tabSeq"
+                    [enabled]="enabled()"
+                    [faclass]="faclass()"
+                    [format]="format()"
+                    [inputType]="inputType()"
+                    [inputValidation]="inputValidation()"
+                    [invalidEmailMessage]="invalidEmailMessage()"
+                    [placeholderText]="placeholderText()"
+                    [readOnly]="readOnly()"
+                    [styleClass]="styleClass()"
+                    [tabSeq]="tabSeq()"
                     #element>
                 </servoyextra-textfieldgroup>`,
     standalone: false
 })
 class WrapperComponent {
-    servoyApi: ServoyApi;
+    servoyApi = signal<ServoyApi>(undefined);
 
     onActionMethodID: (e: Event, data?: unknown) => void;
     onFocusGainedMethodID: (e: Event, data?: unknown) => void;
     onFocusLostMethodID: (e: Event, data?: unknown) => void;
     onRightClickMethodID: (e: Event, data?: unknown) => void;
 
-    dataProviderID: unknown;
-    dataProviderIDChange = (newData: unknown) => { };
-    enabled: boolean;
-    faclass: string;
-    format: Format = { type: 'TEXT' } as Format
-    inputType: string;
-    inputValidation: string;
-    invalidEmailMessage: string;
-    placeholderText: string;
-    readOnly: boolean;
-    styleClass: string;
-    tabSeq: number;
+    dataProviderID = signal<unknown>(undefined);
+    dataProviderIDChange: (newData: unknown) => void;
+    enabled = signal<boolean>(undefined);
+    faclass = signal<string>(undefined);
+    format = signal<Format>(undefined);
+    inputType = signal<string>(undefined);
+    inputValidation = signal<string>(undefined);
+    invalidEmailMessage = signal<string>(undefined);
+    placeholderText = signal<string>(undefined);
+    readOnly = signal<boolean>(undefined);
+    styleClass = signal<string>(undefined);
+    tabSeq = signal<number>(undefined);
 
     @ViewChild('element') element: ServoyExtraTextfieldGroup;
 }
 
-describe('ServoyExtraTextfieldGroup', () => {
-    const servoyApiSpy = new ServoyApiTesting();
+const defaultValues = {
+    servoyApi: new ServoyApiTesting(),
+    enabled: true,
+    readOnly: false,
+    format: { type: 'TEXT' } as Format,
+    placeholderText: 'Enter text',
+    inputType: 'text',
+    dataProviderID: 'initialValue',
+    faclass: '',
+    inputValidation: '',
+    invalidEmailMessage: '',
+    styleClass: '',
+    tabSeq: 0,
+    onActionMethodID: () => { },
+    onFocusGainedMethodID: () => { },
+    onFocusLostMethodID: () => { },
+    onRightClickMethodID: () => { },
+    dataProviderIDChange: () => { }
+};
 
-    const config: MountConfig<WrapperComponent> = {
-        declarations: [ServoyExtraTextfieldGroup],
-        imports: [ServoyPublicTestingModule, FormsModule]
-    }
-
-    beforeEach(() => {
-        config.componentProperties = {
-            servoyApi: servoyApiSpy,
-            enabled: true,
-            readOnly: false,
-            format: { type: 'TEXT' } as Format,
-            placeholderText: 'Enter text',
-            inputType: 'text',
-            dataProviderID: 'initialValue'
+function applyDefaultProps(wrapper) {
+    for (const key in defaultValues) {
+        if (wrapper.component.hasOwnProperty(key) && typeof wrapper.component[key] === 'function') {
+            wrapper.component[key].set(defaultValues[key]);
         }
+        else {
+            wrapper.component[key] = defaultValues[key];
+        }
+    }
+}
+
+const configWrapper: MountConfig<WrapperComponent> = {
+    declarations: [ServoyExtraTextfieldGroup],
+    imports: [ServoyPublicTestingModule, FormsModule]
+};
+
+describe('ServoyExtraTextfieldGroup', () => {
+    beforeEach(() => {
+        defaultValues.enabled = true;
+        defaultValues.readOnly = false;
+        defaultValues.format = { type: 'TEXT' } as Format;
+        defaultValues.placeholderText = 'Enter text';
+        defaultValues.inputType = 'text';
+        defaultValues.dataProviderID = 'initialValue';
+        defaultValues.inputValidation = '';
+        defaultValues.invalidEmailMessage = '';
     });
 
     it('should mount and register the component', () => {
+        const servoyApiSpy = defaultValues.servoyApi;
         const registerComponent = cy.stub(servoyApiSpy, 'registerComponent');
-        cy.mount(WrapperComponent, config).then(() => {
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('input').should('exist').then(() => {
                 cy.wrap(registerComponent).should('be.called');
             });
@@ -82,68 +112,75 @@ describe('ServoyExtraTextfieldGroup', () => {
     });
 
     it('should show the dataprovider value', () => {
-        config.componentProperties.dataProviderID = 'myvalue';
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.dataProviderID = 'myvalue';
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('input').should('have.value', 'myvalue');
         });
     });
 
     it('should set the placeholder text', () => {
-        config.componentProperties.placeholderText = 'Enter your name';
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.placeholderText = 'Enter your name';
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('input').should('have.attr', 'placeholder', 'Enter your name');
         });
     });
 
     it('show fa class', () => {
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('.input-group-text i').should('not.have.class', 'mystyleclass').then(() => {
-                wrapper.component.faclass = 'myfaclass';
-                wrapper.fixture.detectChanges();
+                wrapper.component.faclass.set('myfaclass');
                 cy.get('.input-group-text i').should('have.class', 'myfaclass');
             });
         });
     });
 
     it('show a style class', () => {
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('input').should('not.have.class', 'mystyleclass').then(() => {
-                wrapper.component.styleClass = 'mystyleclass';
-                wrapper.fixture.detectChanges();
+                wrapper.component.styleClass.set('mystyleclass');
                 cy.get('input').should('have.class', 'mystyleclass');
             });
         });
     });
 
     it('show more then 1 style class', () => {
-        config.componentProperties.styleClass = 'mystyleclass';
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        defaultValues.styleClass = 'mystyleclass';
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('input').should('have.class', 'mystyleclass').then(() => {
-                wrapper.component.styleClass = 'classA classB';
-                wrapper.fixture.detectChanges();
+                wrapper.component.styleClass.set('classA classB');
                 cy.get('input').should('have.class', 'classA').should('have.class', 'classB');
             });
         });
     });
 
     it('should be read-only', () => {
-        config.componentProperties.readOnly = true;
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.readOnly = true;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('input').should('have.attr', 'readonly');
         });
     });
 
     it('should have the correct input type', () => {
-        config.componentProperties.inputType = 'password';
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.inputType = 'password';
+        defaultValues.readOnly = false;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('input').should('have.attr', 'type', 'password');
         });
     });
 
-    it('should handle onaction  event', () => {
+    it('should handle onaction event', () => {
         const onActionMethodID = cy.stub();
-        config.componentProperties.onActionMethodID = onActionMethodID;
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.onActionMethodID = onActionMethodID;
+        defaultValues.dataProviderID = 'initialValue';
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.wrap(onActionMethodID).should('be.not.called');
             cy.get('input').should('have.value', 'initialValue').focus().type('{enter}').then(() => {
                 cy.wrap(onActionMethodID).should('be.called');
@@ -153,8 +190,9 @@ describe('ServoyExtraTextfieldGroup', () => {
 
     it('should handle focus gained event', () => {
         const onFocusGainedMethodID = cy.stub();
-        config.componentProperties.onFocusGainedMethodID = onFocusGainedMethodID;
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.onFocusGainedMethodID = onFocusGainedMethodID;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('input').should('have.value', 'initialValue').focus().then(() => {
                 cy.wrap(onFocusGainedMethodID).should('be.called');
             });
@@ -163,8 +201,9 @@ describe('ServoyExtraTextfieldGroup', () => {
 
     it('should handle focus lost event', () => {
         const onFocusLostMethodID = cy.stub();
-        config.componentProperties.onFocusLostMethodID = onFocusLostMethodID;
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.onFocusLostMethodID = onFocusLostMethodID;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('input').should('have.value', 'initialValue').focus().blur().then(() => {
                 cy.wrap(onFocusLostMethodID).should('be.called');
             });
@@ -173,8 +212,9 @@ describe('ServoyExtraTextfieldGroup', () => {
 
     it('should handle right click event', () => {
         const onRightClickMethodID = cy.stub();
-        config.componentProperties.onRightClickMethodID = onRightClickMethodID;
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.onRightClickMethodID = onRightClickMethodID;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('input').rightclick().then(() => {
                 expect(onRightClickMethodID).to.have.been.called;
             });
@@ -183,21 +223,23 @@ describe('ServoyExtraTextfieldGroup', () => {
 
     it('should emit dataProviderIDChange event on input change', () => {
         const dataProviderIDChange = cy.stub();
-        config.componentProperties.dataProviderIDChange = dataProviderIDChange;
-        config.componentProperties.dataProviderID = '';
-        cy.mount(WrapperComponent, config);
-        cy.get('input').type('New Value').blur();
-        cy.wrap(dataProviderIDChange).should('have.been.calledWith', 'New Value');
+        defaultValues.dataProviderIDChange = dataProviderIDChange;
+        defaultValues.dataProviderID = '';
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
+            cy.get('input').type('New Value').blur();
+            cy.wrap(dataProviderIDChange).should('have.been.calledWith', 'New Value');
+        });
     });
 
     it('should not emit dataProviderIDChange event dataprovder change', () => {
         const dataProviderIDChange = cy.stub();
-        config.componentProperties.dataProviderIDChange = dataProviderIDChange;
-        cy.mount(WrapperComponent, config).then(wrapper => {
-
+        defaultValues.dataProviderIDChange = dataProviderIDChange;
+        defaultValues.dataProviderID = 'initialValue';
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('input').should('have.value', 'initialValue').then(() => {
-                wrapper.component.dataProviderID = 'new value';
-                wrapper.fixture.detectChanges();
+                wrapper.component.dataProviderID.set('new value');
                 expect(dataProviderIDChange).not.to.have.been.called;
                 cy.get('input').should('have.value', 'new value')
             });
@@ -206,8 +248,9 @@ describe('ServoyExtraTextfieldGroup', () => {
 
     it('should select text and return it', () => {
         const focusGainedSpy = cy.stub();
-        config.componentProperties.onFocusGainedMethodID = focusGainedSpy;
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        defaultValues.onFocusGainedMethodID = focusGainedSpy;
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('input').should('have.value', 'initialValue').should('not.have.focus').then(() => {
                 wrapper.component.element.requestFocus(true);
                 cy.get('input').should('have.focus');
@@ -217,15 +260,17 @@ describe('ServoyExtraTextfieldGroup', () => {
     });
 
     it('should test email', () => {
-        config.componentProperties.inputValidation = 'email';
-        config.componentProperties.invalidEmailMessage = 'Invalid email format';
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        defaultValues.inputValidation = 'email';
+        defaultValues.invalidEmailMessage = 'Invalid email format';
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
+            cy.get('input').should('have.value', 'initialValue').clear().type('invalid-email').blur();
             cy.get('.textfieldgroup-msg-error').should('exist').should('have.text', 'Invalid email format').then(() => {
-                wrapper.component.dataProviderID = 'abc@abc.com';
+                wrapper.component.dataProviderID.set('abc@abc.com');
                 wrapper.fixture.detectChanges();
+                cy.get('input').should('have.value', 'abc@abc.com');
                 cy.get('.textfieldgroup-msg-error').should('not.exist');
             });
-
         });
     });
 });

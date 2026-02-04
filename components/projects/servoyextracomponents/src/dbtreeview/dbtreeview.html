@@ -19,7 +19,7 @@
       </div>
     </ng-template>
     <ng-template #loadingTemplate>
-      @if (showLoadingIndicator) {
+      @if (showLoadingIndicator()) {
         <div>loading...</div>
       }
     </ng-template>

@@ -1,4 +1,4 @@
-import { Component, SimpleChanges, Input, Renderer2, ChangeDetectorRef } from '@angular/core';
+import { Component, SimpleChanges, Renderer2, ChangeDetectorRef, input } from '@angular/core';
 import { ServoyBaseComponent } from '@servoy/public';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
@@ -10,19 +10,19 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 })
 export class ServoyExtraYoutubeVideoEmbedder extends ServoyBaseComponent<HTMLIFrameElement> {
 
-    @Input() enabled: boolean;
-    @Input() styleClass: string;
-    @Input() tabSeq: number;
-    @Input() videoWidth: number;
-    @Input() videoHeight: number;
-    @Input() allowFullScreen: boolean;
-    @Input() autoPlay: boolean;
-    @Input() showControls: boolean;
-    @Input() modestBranding: boolean;
-    @Input() showRelatedVideosAtEnd: boolean;
+    readonly enabled = input<boolean>(undefined);
+    readonly styleClass = input<string>(undefined);
+    readonly tabSeq = input<number>(undefined);
+    readonly videoWidth = input<number>(undefined);
+    readonly videoHeight = input<number>(undefined);
+    readonly allowFullScreen = input<boolean>(undefined);
+    readonly autoPlay = input<boolean>(undefined);
+    readonly showControls = input<boolean>(undefined);
+    readonly modestBranding = input<boolean>(undefined);
+    readonly showRelatedVideosAtEnd = input<boolean>(undefined);
 
-    @Input() embeddedVideoURL: string;
-    @Input() dataProviderID: string;
+    readonly embeddedVideoURL = input<string>(undefined);
+    readonly dataProviderID = input<string>(undefined);
 
     public fullYoutubeURL: SafeResourceUrl;
 
@@ -62,16 +62,16 @@ export class ServoyExtraYoutubeVideoEmbedder extends ServoyBaseComponent<HTMLIFr
     }
 
     private updateYoutubeURL() {
-        let urlWithParams = this.dataProviderID || this.embeddedVideoURL;
+        let urlWithParams = this.dataProviderID() || this.embeddedVideoURL();
         if (!urlWithParams) return;
         let params = "";
 
         // in these if's we rely on YouTube defaults as well; we only set them when non-default
-        if (!this.allowFullScreen) params += "&fs=0";
-        if (!this.showControls) params += "&controls=0";
-        if (this.modestBranding) params += "&modestbranding=1";
-        if (this.autoPlay) params += "&autoplay=1&mute=1"; // autoplay requires mute
-        if (!this.showRelatedVideosAtEnd) params += "&rel=0";
+        if (!this.allowFullScreen()) params += "&fs=0";
+        if (!this.showControls()) params += "&controls=0";
+        if (this.modestBranding()) params += "&modestbranding=1";
+        if (this.autoPlay()) params += "&autoplay=1&mute=1"; // autoplay requires mute
+        if (!this.showRelatedVideosAtEnd()) params += "&rel=0";
 
         if (params.length > 0) urlWithParams += "?" + params.substr(1);
         this.fullYoutubeURL = this.sanitizer.bypassSecurityTrustResourceUrl(urlWithParams);

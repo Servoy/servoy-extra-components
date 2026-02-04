@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-import { ViewChild, Input, NgZone, ElementRef, OnInit, AfterViewInit, Directive, Output, EventEmitter } from '@angular/core';
+import { Input, NgZone, ElementRef, OnInit, AfterViewInit, Directive, output, viewChild } from '@angular/core';
 import * as CanvasGauges from '@servoy/canvas-gauges';
 import * as Rx from 'rx-dom-html';
 
@@ -50,8 +50,7 @@ export abstract class BaseGauge<T extends CanvasGauges.BaseGauge, T2 extends Can
     /**
      * Canvas element on the template used by the library to draw gauge element
      */
-    @ViewChild('gauge', { static: true })
-    protected canvas: ElementRef;
+    protected readonly canvas = viewChild<ElementRef>('gauge');
 
     /**
      * A gauge instance responsible for rendering and updates on the canvas.
@@ -59,7 +58,7 @@ export abstract class BaseGauge<T extends CanvasGauges.BaseGauge, T2 extends Can
      */
     protected gauge: T;
 
-    @Output() onGaugeReady = new EventEmitter<T>();
+    readonly onGaugeReady = output<T>();
 
     /**
      * Flag indicating that OnViewInit life-cycle has completed
@@ -108,7 +107,7 @@ export abstract class BaseGauge<T extends CanvasGauges.BaseGauge, T2 extends Can
     public get options(): T2 {
 
         const options = {} as T2;
-        options.renderTo = this.canvas.nativeElement;
+        options.renderTo = this.canvas().nativeElement;
 
         // Map attribute-based options onto options.
         // Requries converting kebab style attribute names to camelCase property names
@@ -267,7 +266,7 @@ export abstract class BaseGauge<T extends CanvasGauges.BaseGauge, T2 extends Can
 
         // init options.renderTo if needed
         if (!options.hasOwnProperty('renderTo') || !options.renderTo) {
-            options.renderTo = this.canvas.nativeElement;
+            options.renderTo = this.canvas().nativeElement;
         }
 
         this.basicUpdate(options);

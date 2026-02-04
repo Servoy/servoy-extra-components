@@ -1,8 +1,4 @@
-import {
-  Component, ViewChild, Input, Renderer2, ElementRef, OnDestroy, ChangeDetectorRef,
-  ChangeDetectionStrategy, Directive, Inject, HostListener, SecurityContext, SimpleChanges, CSP_NONCE,
-  DOCUMENT
-} from '@angular/core';
+import { Component, Renderer2, ElementRef, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy, Directive, Inject, HostListener, SecurityContext, SimpleChanges, CSP_NONCE, DOCUMENT, input, viewChild, signal } from '@angular/core';
 import { BaseCustomObject, Format, IFoundset, IValuelist, ServoyBaseComponent, ViewPortRow, FoundsetChangeEvent, ChangeType, FormattingService, ViewportRowUpdates, LogLevel } from '@servoy/public';
 import { LoggerFactory, LoggerService } from '@servoy/public';
 import { ResizeEvent } from 'angular-resizable-element';
@@ -17,7 +13,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
 export class TableRow {
 
-    @Input() svyTableRow: number;
+    readonly svyTableRow = input<number>(undefined);
 
     constructor(public elRef: ElementRef) {
     }
@@ -34,45 +30,60 @@ const instanceOfValuelist = (obj: any): obj is IValuelist =>
 })
 export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implements OnDestroy {
 
-    @ViewChild('tbody', { static: false }) tbody: ElementRef<HTMLTableSectionElement>;
-    @ViewChild('pager', { static: false }) pager: ElementRef<HTMLUListElement>;
-    @ViewChild('table', { static: false}) tableRef: ElementRef<HTMLTableElement>;
+    readonly tbody = viewChild<ElementRef<HTMLTableSectionElement>>('tbody');
+    readonly pager = viewChild<ElementRef<HTMLUListElement>>('pager');
+    readonly tableRef = viewChild<ElementRef<HTMLTableElement>>('table');
 
-    @Input() foundset: IFoundset;
-    @Input() columns: Array<Column>;
-    @Input() currentPage = 1;
-    @Input() sortDirection: string;
-    @Input() enableSort = true;
-    @Input() sortStyleClass: string;
-    @Input() sortdownClass = 'table-servoyextra-sort-down';
-    @Input() sortupClass = 'table-servoyextra-sort-up';
-    @Input() styleClass: string;
-    @Input() selectionClass: string;
-    @Input() horizontalScrollbar: string;
-    @Input() minRowHeight: any;
-    @Input() enableColumnResize: boolean;
-    @Input() pageSize: number;
-    @Input() rowStyleClassDataprovider: IFoundset;
-    @Input() tabSeq: number;
-    @Input() responsiveHeight: number;
-    @Input() responsiveDynamicHeight: boolean;
-    @Input() lastSelectionFirstElement: number;
-    @Input() keyCodeSettings: KeycodeSettings;
-    @Input() enableMobileView: boolean;
-    @Input() performanceSettings: {
-        minBatchSizeForRenderingMoreRows: number; minBatchSizeForLoadingMoreRows: number; maxLoadedRows: number;
-        maxRenderedRows: number; fastScrollRenderThresholdFactor: number; fastScrollLoadThresholdFactor: number;
-    };
+    readonly foundset = input<IFoundset>(undefined);
+    readonly columns = input<Array<Column>>(undefined);
+    readonly currentPage = input(1);
+    readonly sortDirection = input<string>(undefined);
+    readonly enableSort = input(true);
+    readonly sortStyleClass = input<string>(undefined);
+    readonly sortdownClass = input('table-servoyextra-sort-down');
+    readonly sortupClass = input('table-servoyextra-sort-up');
+    readonly styleClass = input<string>(undefined);
+    readonly selectionClass = input<string>(undefined);
+    readonly horizontalScrollbar = input<string>(undefined);
+    readonly minRowHeight = input<any>(undefined);
+    readonly enableColumnResize = input<boolean>(undefined);
+    readonly pageSize = input<number>(undefined);
+    readonly rowStyleClassDataprovider = input<IFoundset>(undefined);
+    readonly tabSeq = input<number>(undefined);
+    readonly responsiveHeight = input<number>(undefined);
+    readonly responsiveDynamicHeight = input<boolean>(undefined);
+    readonly lastSelectionFirstElement = input<number>(undefined);
+    readonly keyCodeSettings = input<KeycodeSettings>(undefined);
+    readonly enableMobileView = input<boolean>(undefined);
+    readonly performanceSettings = input<{
+        minBatchSizeForRenderingMoreRows: number;
+        minBatchSizeForLoadingMoreRows: number;
+        maxLoadedRows: number;
+        maxRenderedRows: number;
+        fastScrollRenderThresholdFactor: number;
+        fastScrollLoadThresholdFactor: number;
+    }>({
+        minBatchSizeForRenderingMoreRows: 10,
+        minBatchSizeForLoadingMoreRows: 20,
+        maxRenderedRows: 450,
+        maxLoadedRows: 1000,
+        fastScrollRenderThresholdFactor: 3.0,
+        fastScrollLoadThresholdFactor: 2.3
+    });
 
-    @Input() onViewPortChanged: (start: number, end: number) => void;
-    @Input() onCellClick: (rowIdx: number, colIdx: number, record?: ViewPortRow, e?: MouseEvent, columnId?: string) => void;
-    @Input() onCellDoubleClick: (rowIdx: number, colIdx: number, record?: ViewPortRow, e?: MouseEvent, columnId?: string) => void;
-    @Input() onCellRightClick: (rowIdx: number, colIdx: number, record?: ViewPortRow, e?: MouseEvent, columnId?: string) => void;
-    @Input() onHeaderClick: (colIdx: number, sortDirection: string, e?: MouseEvent, columnId?: string) => Promise<string>;
-    @Input() onHeaderRightClick: (colIdx: number, sortDirection: string, e?: MouseEvent, columnId?: string) => void;
-    @Input() onColumnResize: (event: Event) => void;
-    @Input() onFocusGainedMethodID: (event: Event) => void;
-    @Input() onFocusLostMethodID: (event?: Event) => void;
+    readonly onViewPortChanged = input<(start: number, end: number) => void>(undefined);
+    readonly onCellClick = input<(rowIdx: number, colIdx: number, record?: ViewPortRow, e?: MouseEvent, columnId?: string) => void>(undefined);
+    readonly onCellDoubleClick = input<(rowIdx: number, colIdx: number, record?: ViewPortRow, e?: MouseEvent, columnId?: string) => void>(undefined);
+    readonly onCellRightClick = input<(rowIdx: number, colIdx: number, record?: ViewPortRow, e?: MouseEvent, columnId?: string) => void>(undefined);
+    readonly onHeaderClick = input<(colIdx: number, sortDirection: string, e?: MouseEvent, columnId?: string) => Promise<string>>(undefined);
+    readonly onHeaderRightClick = input<(colIdx: number, sortDirection: string, e?: MouseEvent, columnId?: string) => void>(undefined);
+    readonly onColumnResize = input<(event: Event) => void>(undefined);
+    readonly onFocusGainedMethodID = input<(event: Event) => void>(undefined);
+    readonly onFocusLostMethodID = input<(event?: Event) => void>(undefined);
+    
+    _sortDirection = signal<string>(undefined);
+    _lastSelectionFirstElement = signal<number>(undefined);
+    _currentPage = signal<number>(undefined);
 
     private skipOnce = false;
     private log: LoggerService;
@@ -133,20 +144,21 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     windowResizeHandler() {
         if (this.resizeTimeout) clearTimeout(this.resizeTimeout);
         this.resizeTimeout = setTimeout(() => {
-            if (this.tbody) {
-                if (this.columns) {
+            if (this.tbody()) {
+                const columns = this.columns();
+                if (columns) {
                     const newComponentWidth = Math.floor(this.getNativeElement().clientWidth);
                     const deltaWidth = newComponentWidth - this.getComponentWidth();
                     if (deltaWidth !== 0) {
                         this.componentWidth = newComponentWidth;
                         this.updateTBodyStyle();
-                        if (this.columns && this.columns.length > 0) {
+                        if (columns && columns.length > 0) {
                             this.updateAutoColumnsWidth(deltaWidth);
                             setTimeout(() => {
-                                if (this.enableColumnResize) {
+                                if (this.enableColumnResize()) {
                                     this.addColResizable(true);
                                 }
-                                for (let i = 0; i < this.columns.length; i++) {
+                                for (let i = 0; i < this.columns().length; i++) {
                                     this.updateTableColumnStyleClass(i, this.getCellStyle(i));
                                 }
                                 this.cdRef.detectChanges();
@@ -167,16 +179,10 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
     svyOnInit() {
         super.svyOnInit();
-        this.performanceSettings = this.performanceSettings ? this.performanceSettings : {
-            minBatchSizeForRenderingMoreRows: 10,
-            // by default don't allow too small caches even if the height of the table is very small; also limit the rendered rows and loaded rows to a big amount, but still limited
-            minBatchSizeForLoadingMoreRows: 20,
-            maxRenderedRows: 450,
-            maxLoadedRows: 1000,
-            fastScrollRenderThresholdFactor: 3.0,
-            fastScrollLoadThresholdFactor: 2.3
-        };
 
+        this._sortDirection.set(this.sortDirection());
+        this._lastSelectionFirstElement.set(this.lastSelectionFirstElement());
+        this._currentPage.set(this.currentPage());
         if ('IntersectionObserver' in window) {
             const options = {
                 root: this.getNativeElement() as Node,
@@ -194,7 +200,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                         //                    }
                     }
                 });
-            }, options).observe(this.tableRef.nativeElement);
+            }, options).observe(this.tableRef().nativeElement);
         }
 
         this.setColumnsToInitalWidthAndInitAutoColumns();
@@ -202,15 +208,15 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         // the number of rows to render in a batch (it renders one batch then when needed renders one more batch on top or bottom and so on)
         // this should be set to at least the UI viewPort when we start calculating that
         // this should be calculated for now this value is nicer for bigger list (that show already 20+ rows by default)
-        this.batchSizeForRenderingMoreRows = Math.max(26, this.performanceSettings.minBatchSizeForRenderingMoreRows);
+        this.batchSizeForRenderingMoreRows = Math.max(26, this.performanceSettings().minBatchSizeForRenderingMoreRows);
         // the number of extra rows to be loaded (before/after) if the rendered rows get too close to the loaded rows bounds when scrolling
         // when you change this initial value please update the .spec as well - config option "initialPreferredViewPortSize" on the foundset property should match getInitialPreferredLoadedSize
         // this should be higher then batchSizeForRenderingMoreRows because when we load more rows we should load enough to at least be able to render one more batch of rendered rows;
         // so when that one (batchSizeForRenderingMoreRows) is calculated adjust this one as well
-        this.batchSizeForLoadingMoreRows = Math.max(52, this.performanceSettings.minBatchSizeForLoadingMoreRows);
+        this.batchSizeForLoadingMoreRows = Math.max(52, this.performanceSettings().minBatchSizeForLoadingMoreRows);
         this.attachHandlers();
-        if (this.foundset.viewPort.startIndex > 0) {
-			this.setCurrentPage(this.getPageForIndex(this.foundset.viewPort.startIndex));
+        if (this.foundset().viewPort.startIndex > 0) {
+			this.setCurrentPage(this.getPageForIndex(this.foundset().viewPort.startIndex));
 		}
     }
 
@@ -221,21 +227,23 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                 const change = changes[property];
                 switch (property) {
                     case 'columns': {
-                        const newLength = this.columns ? this.columns.length : 0;
+                        const columns = this.columns();
+                        const newLength = columns ? columns.length : 0;
                         const differentColumns = this.currentColumnLength !== newLength;
                         let valueChanged = differentColumns;
                         let dataproviderChanged = false;
                         this.currentColumnLength = newLength;
                         if (!valueChanged) {
-                            for (let i = 0; i < this.columns.length; i++) {
-                                if (this.columns[i].dataprovider !== undefined &&
-                                    ((this.columns[i].dataprovider.idForFoundset === undefined) || (this.currentIdForFoundset[i] !== this.columns[i].dataprovider.idForFoundset))) {
+                            for (let i = 0; i < this.columns().length; i++) {
+                                const columnsValue = this.columns();
+                                if (columnsValue[i].dataprovider !== undefined &&
+                                    ((columnsValue[i].dataprovider.idForFoundset === undefined) || (this.currentIdForFoundset[i] !== columnsValue[i].dataprovider.idForFoundset))) {
                                     dataproviderChanged = true;
                                 }
-                                this.currentIdForFoundset[i] = this.columns[i].dataprovider ? this.columns[i].dataprovider.idForFoundset : undefined;
-                                const iw = this.getNumberFromPxString(this.columns[i].initialWidth);
-                                if (iw > -1 && (this.columns[i].width !== this.columns[i].initialWidth)) {
-                                    this.columns[i].initialWidth = this.columns[i].width;
+                                this.currentIdForFoundset[i] = columnsValue[i].dataprovider ? columnsValue[i].dataprovider.idForFoundset : undefined;
+                                const iw = this.getNumberFromPxString(columnsValue[i].initialWidth);
+                                if (iw > -1 && (columnsValue[i].width !== columnsValue[i].initialWidth)) {
+                                    columnsValue[i].initialWidth = columnsValue[i].width;
                                     if (!valueChanged) valueChanged = true;
                                 }
                             }
@@ -244,13 +252,15 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                         if (valueChanged || dataproviderChanged) {
                             this.setColumnsToInitalWidthAndInitAutoColumns();
                             this.tableWidth = this.calculateTableWidth();
-                            if (this.columns && this.columns.length > 0) {
+                            const columnsValue = this.columns();
+                            const tbody = this.tbody();
+                            if (columnsValue && columnsValue.length > 0) {
                                 this.updateAutoColumnsWidth(0);
                                 setTimeout(() => {
-                                    if (this.enableColumnResize) {
+                                    if (this.enableColumnResize()) {
                                         this.addColResizable(true);
                                     } else {
-                                        for (let i = 0; i < this.columns.length; i++) {
+                                        for (let i = 0; i < this.columns().length; i++) {
                                             this.updateTableColumnStyleClass(i, this.getCellStyle(i));
                                         }
                                     }
@@ -258,9 +268,9 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                                     if (dataproviderChanged) this.updateRenderedRows(null);
 
                                 }, 0);
-                            } else if (differentColumns && this.tbody) {
-                                while (this.tbody.nativeElement.lastElementChild) {
-                                    this.tbody.nativeElement.removeChild(this.tbody.nativeElement.lastElementChild);
+                            } else if (differentColumns && tbody) {
+                                while (tbody.nativeElement.lastElementChild) {
+                                    tbody.nativeElement.removeChild(tbody.nativeElement.lastElementChild);
                                 }
                             }
                         }
@@ -293,6 +303,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                     }
                     case 'currentPage': {
                         if (change.currentValue && change.currentValue !== change.previousValue) {
+                            this._currentPage.set(this.currentPage());
                             if (change.isFirstChange()) {
                                 this.scrollToSelectionNeeded = true;
                                 this.log.debug('svy extra table * svyOnChanges currentPage changed; scrollToSelectionNeeded = true');
@@ -304,16 +315,17 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                     }
                     case 'pageSize': {
                         if (!this.servoyApi || this.servoyApi.isInDesigner()) return;
+                        const foundset = this.foundset();
                         if (change.previousValue !== change.currentValue) {
                             // start over with renderedSize
                             this.renderedSize = -1;
                             if (change.previousValue && change.currentValue && this.showPagination()) {
                                 // page size has changed; try to show the page for which we have loaded records
-                                this.setCurrentPage(this.getPageForIndex(this.foundset.viewPort.startIndex));
+                                this.setCurrentPage(this.getPageForIndex(foundset.viewPort.startIndex));
                                 this.adjustLoadedRowsIfNeeded(); // load more rows if needed according to new page bounds
                             }
                         }
-                        if (this.foundset) this.foundset.setPreferredViewportSize(this.getInitialPreferredLoadedSize());
+                        if (foundset) foundset.setPreferredViewportSize(this.getInitialPreferredLoadedSize());
                         break;
                     }
                 }
@@ -322,42 +334,44 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     }
 
     attachHandlers() {
-        if (this.onFocusGainedMethodID) {
-            this.renderer.listen(this.tableRef.nativeElement, 'focus', e => {
+        const tableRef = this.tableRef();
+        if (this.onFocusGainedMethodID()) {
+            this.renderer.listen(tableRef.nativeElement, 'focus', e => {
                 this.callFocusGained(e);
             });
         }
 
-        if (this.onFocusLostMethodID) {
-            this.renderer.listen(this.tableRef.nativeElement, 'blur', e => {
+        if (this.onFocusLostMethodID()) {
+            this.renderer.listen(tableRef.nativeElement, 'blur', e => {
                 this.callFocusLost(e);
             });
         }
-        this.renderer.listen(this.tableRef.nativeElement, 'click', e => {
+        this.renderer.listen(tableRef.nativeElement, 'click', e => {
             this.tableClicked(e, 1);
         });
-        if (this.onCellRightClick) {
-            this.renderer.listen(this.tableRef.nativeElement, 'contextmenu', e => {
+        if (this.onCellRightClick()) {
+            this.renderer.listen(tableRef.nativeElement, 'contextmenu', e => {
                 this.tableClicked(e, 2);
                 e.preventDefault();
             });
         }
 
-        if (this.onCellDoubleClick) {
-            this.renderer.listen(this.tableRef.nativeElement, 'dblclick', e => {
+        if (this.onCellDoubleClick()) {
+            this.renderer.listen(tableRef.nativeElement, 'dblclick', e => {
                 this.tableClicked(e, 3);
             });
         }
     }
 
     onResizeColumnEnd(): void {
-        if (this.onColumnResize) {
-                this.onColumnResize(new CustomEvent('onColumnResize'));
+        const onColumnResize = this.onColumnResize();
+        if (onColumnResize) {
+                onColumnResize(new CustomEvent('onColumnResize'));
         }
     }
 
     onResizeColumn(event: ResizeEvent, columnIndex: number): void {
-        const headers = this.tableRef.nativeElement.getElementsByTagName('th');
+        const headers = this.tableRef().nativeElement.getElementsByTagName('th');
         const newWidth = Math.floor(event.rectangle.width) + 'px';
         this.renderer.setStyle(headers[columnIndex], 'width', newWidth);
         this.renderer.setStyle(headers[columnIndex], 'min-width', newWidth);
@@ -366,42 +380,45 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     }
 
     public keyPressed(event: KeyboardEvent) {
-        const fs = this.foundset;
+        const fs = this.foundset();
         if (fs.selectedRowIndexes && fs.selectedRowIndexes.length > 0) {
             let selectionChanged = false;
             const oldSelectedIdxs = fs.selectedRowIndexes.slice();
             const selection = fs.selectedRowIndexes[0];
             if (event.keyCode === 33) { // PAGE UP KEY
-                if (this.keyCodeSettings && !this.keyCodeSettings.pageUp) return;
+                const keyCodeSettings = this.keyCodeSettings();
+                if (keyCodeSettings && !keyCodeSettings.pageUp) return;
                 let child = this.getFirstVisibleChild();
                 if (child) {
                     if (child.previousElementSibling) child = child.previousElementSibling;
                     const row_column = child.children.item(0)['row_column'];
                     if (row_column) {
-                        this.foundset.requestSelectionUpdate([row_column.idxInFs]);
+                        this.foundset().requestSelectionUpdate([row_column.idxInFs]);
                         selectionChanged = (selection !== row_column.idxInFs);
                     }
                     this.log.debug('svy extra table * keyPressed; scroll on PG UP');
                     child.scrollIntoView(false);
                 }
             } else if (event.keyCode === 34) { // PAGE DOWN KEY
-                if (this.keyCodeSettings && !this.keyCodeSettings.pageDown) return;
+                const keyCodeSettings = this.keyCodeSettings();
+                if (keyCodeSettings && !keyCodeSettings.pageDown) return;
                 let child = this.getLastVisibleChild();
                 if (child) {
                     // if this is the last visible child we should get the child after that to make visible.
                     if (child.nextElementSibling) child = child.nextElementSibling;
                     const row_column = child.children.item(0)['row_column'];
                     if (row_column) {
-                        this.foundset.requestSelectionUpdate([row_column.idxInFs]);
+                        this.foundset().requestSelectionUpdate([row_column.idxInFs]);
                         selectionChanged = (selection !== row_column.idxInFs);
                     }
                     this.log.debug('svy extra table * keyPressed; scroll on PG DOWN');
                     child.scrollIntoView(true);
                 }
             } else if (event.keyCode === 38) { // ARROW UP KEY
-                if (this.keyCodeSettings && !this.keyCodeSettings.arrowUp) return;
+                const keyCodeSettings = this.keyCodeSettings();
+                if (keyCodeSettings && !keyCodeSettings.arrowUp) return;
                 if (selection > 0) {
-                    this.foundset.requestSelectionUpdate([selection - 1]).then(() => {
+                    this.foundset().requestSelectionUpdate([selection - 1]).then(() => {
                         this.scrollToSelectionNeeded = true;
                         this.scrollToSelectionIfNeeded();
                     });
@@ -412,9 +429,10 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                 }
                 event.preventDefault();
             } else if (event.keyCode === 40) { // ARROW DOWN KEY
-                if (this.keyCodeSettings && !this.keyCodeSettings.arrowDown) return;
+                const keyCodeSettings = this.keyCodeSettings();
+                if (keyCodeSettings && !keyCodeSettings.arrowDown) return;
                 if (selection < fs.serverSize - 1) {
-                    this.foundset.requestSelectionUpdate([selection + 1]).then (() => {
+                    this.foundset().requestSelectionUpdate([selection + 1]).then (() => {
                         this.scrollToSelectionNeeded = true;
                         this.scrollToSelectionIfNeeded();
                     });
@@ -425,18 +443,21 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                 }
                 event.preventDefault();
             } else if (event.keyCode === 13) { // ENTER KEY
-                if (this.keyCodeSettings && !this.keyCodeSettings.enter) return;
-                if (this.onCellClick) {
-                    this.onCellClick(selection + 1, null, fs.viewPort.rows[selection]);
+                const keyCodeSettings = this.keyCodeSettings();
+                if (keyCodeSettings && !keyCodeSettings.enter) return;
+                const onCellClick = this.onCellClick();
+                if (onCellClick) {
+                    onCellClick(selection + 1, null, fs.viewPort.rows[selection]);
                 }
             } else if (event.keyCode === 36) { // HOME
-                if (this.keyCodeSettings && !this.keyCodeSettings.home) return;
+                const keyCodeSettings = this.keyCodeSettings();
+                if (keyCodeSettings && !keyCodeSettings.home) return;
                 const allowedBounds = this.calculateAllowedLoadedDataBounds();
                 if (fs.viewPort.startIndex > allowedBounds.startIdx) { // see if we have the first record loaded
                     const loadFirstRecordsIfNeeded = () => {
                         // this can be executed delayed, after pending loads finish, so do check again if we still need to load bottom of foundset
                         if (fs.viewPort.startIndex > allowedBounds.startIdx) {
-                            const newLoadPromise = this.foundset.loadRecordsAsync(allowedBounds.startIdx, Math.min(allowedBounds.size, this.getInitialPreferredLoadedSize()));
+                            const newLoadPromise = this.foundset().loadRecordsAsync(allowedBounds.startIdx, Math.min(allowedBounds.size, this.getInitialPreferredLoadedSize()));
                             newLoadPromise.then(() => {
                                 this.runWhenThereIsNoPendingLoadRequest(loadFirstRecordsIfNeeded);
                             });
@@ -466,14 +487,15 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                 event.preventDefault();
                 event.stopPropagation();
             } else if (event.keyCode === 35) { // END
-                if (this.keyCodeSettings && !this.keyCodeSettings.end) return;
+                const keyCodeSettings = this.keyCodeSettings();
+                if (keyCodeSettings && !keyCodeSettings.end) return;
                 const allowedBounds = this.calculateAllowedLoadedDataBounds();
                 if (fs.viewPort.startIndex + fs.viewPort.size < allowedBounds.startIdx + allowedBounds.size) { // see if we already have the last record loaded or not
                     const loadLastRecordsIfNeeded = () => {
                         // this can be executed delayed, after pending loads finish, so do check again if we still need to load bottom of foundset
                         if (fs.viewPort.startIndex + fs.viewPort.size < allowedBounds.startIdx + allowedBounds.size) {
                             const firstIndexToLoad = Math.max(allowedBounds.startIdx, allowedBounds.startIdx + allowedBounds.size - this.getInitialPreferredLoadedSize());
-                            const newLoadPromise = this.foundset.loadRecordsAsync(firstIndexToLoad, allowedBounds.startIdx + allowedBounds.size - firstIndexToLoad);
+                            const newLoadPromise = this.foundset().loadRecordsAsync(firstIndexToLoad, allowedBounds.startIdx + allowedBounds.size - firstIndexToLoad);
                             newLoadPromise.then(() => {
                                 // just in case server side foundset was not fully loaded and now that we accessed last part of it it already loaded more records
                                 this.runWhenThereIsNoPendingLoadRequest(loadLastRecordsIfNeeded);
@@ -512,7 +534,8 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     }
 
     public hasNext() {
-        return this.foundset && (this.currentPage < Math.ceil(this.foundset.serverSize / this.pageSize) || this.foundset.hasMoreRows);
+        const foundset = this.foundset();
+        return foundset && (this._currentPage() < Math.ceil(foundset.serverSize / this.pageSize()) || foundset.hasMoreRows);
     }
 
     public isPaginationVisible() {
@@ -520,13 +543,15 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         if (this._isPaginationVisible !== isPaginationVisibleNew) {
             this._isPaginationVisible = isPaginationVisibleNew;
             setTimeout(() => {
-                if (this.tbody) {
+                const tbody = this.tbody();
+                if (tbody) {
                     if (this.showPagination()) {
-                        if (this.pager) {
-                            this.tbody.nativeElement.style['marginBottom'] = (this.pager.nativeElement.clientHeight + 2) + 'px';
+                        const pager = this.pager();
+                        if (pager) {
+                            tbody.nativeElement.style['marginBottom'] = (pager.nativeElement.clientHeight + 2) + 'px';
                         }
                     } else {
-                        this.tbody.nativeElement.style['marginBottom'] = '';
+                        tbody.nativeElement.style['marginBottom'] = '';
                     }
                 }
             }, 0);
@@ -535,9 +560,9 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     }
 
     public modifyPage(count: number) {
-        const pages = Math.ceil(this.foundset.serverSize / this.pageSize);
-        const newPage = this.currentPage + count;
-        if (newPage >= 1 && (newPage <= pages || this.foundset.hasMoreRows)) {
+        const pages = Math.ceil(this.foundset().serverSize / this.pageSize());
+        const newPage = this._currentPage() + count;
+        if (newPage >= 1 && (newPage <= pages || this.foundset().hasMoreRows)) {
             this.setCurrentPage(newPage);
         }
         return false;
@@ -545,19 +570,21 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
     public getSortClass(column: number) {
         let sortClass = 'table-servoyextra-sort-hide';
-        if (this.enableSort) {
+        if (this.enableSort()) {
             let direction: string;
             let isGetSortFromSQL = this.sortColumnIndex < 0;
             if (column === this.sortColumnIndex) {
-                direction = this.sortDirection;
+                direction = this._sortDirection();
                 if (!direction) {
                     isGetSortFromSQL = true;
                 }
             }
             if (isGetSortFromSQL) {
-                if (this.foundset && this.foundset.sortColumns && this.columns[column].dataprovider) {
-                    const sortCol = this.columns[column].dataprovider.idForFoundset;
-                    const sortColumnsA = this.foundset.sortColumns.split(' ');
+                const columns = this.columns();
+                const foundset = this.foundset();
+                if (foundset && foundset.sortColumns && columns[column].dataprovider) {
+                    const sortCol = columns[column].dataprovider.idForFoundset;
+                    const sortColumnsA = foundset.sortColumns.split(' ');
 
                     if (sortCol === sortColumnsA[0]) {
                         direction = sortColumnsA[1].toLowerCase() === 'asc' ? 'up' : 'down';
@@ -572,7 +599,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         if (this.currentSortClass.length <= column || this.currentSortClass[column] !== sortClass) {
             if (this.sortClassUpdateTimer) clearTimeout(this.sortClassUpdateTimer);
             this.sortClassUpdateTimer = setTimeout(() => {
-                if (this.tbody) this.updateTBodyStyle();
+                if (this.tbody()) this.updateTBodyStyle();
             }, 50);
             this.currentSortClass[column] = sortClass;
         }
@@ -581,14 +608,14 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
     public getSortStyleClass(column: number) {
         let lv_styles = '';
-        if (this.enableSort) {
+        if (this.enableSort()) {
             if ((this.sortColumnIndex === -1 &&
                 column === 0) ||
                 this.sortColumnIndex === column) {
-                lv_styles = this.sortStyleClass;
+                lv_styles = this.sortStyleClass();
             }
         }
-        return lv_styles + ' ' + this.columns[column].headerStyleClass;
+        return lv_styles + ' ' + this.columns()[column].headerStyleClass;
     }
 
     public getColumnStyle(column: number) {
@@ -597,11 +624,12 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         if (columnStyle) return columnStyle;
         columnStyle = { overflow: 'hidden' };
         this.columnStyleCache[column] = columnStyle;
-        const w = this.getNumberFromPxString(this.columns[column].width);
+        const w = this.getNumberFromPxString(this.columns()[column].width);
+        const columns = this.columns();
         if (w > -1) {
             columnStyle.minWidth = columnStyle.maxWidth = columnStyle.width = w + 'px';
-        } else if (this.columns[column].width && (this.columns[column].width) !== 'auto') {
-            columnStyle.width = this.columns[column].width;
+        } else if (columns[column].width && (columns[column].width) !== 'auto') {
+            columnStyle.width = columns[column].width;
         } else {
             const autoColumnPercentage = this.getAutoColumnPercentage();
             if (autoColumnPercentage) {
@@ -618,33 +646,36 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
             this.layoutStyle.height = '100%';
         } else {
             this.layoutStyle.position = 'relative';
-            if (this.columns) {
-                if (this.responsiveDynamicHeight) {
+            if (this.columns()) {
+                if (this.responsiveDynamicHeight()) {
                     let h = 0;
-                    const p = this.pager ? this.pager.nativeElement : null;
+                    const pager = this.pager();
+                    const p = pager ? pager.nativeElement : null;
                     if (p) {
                         h += p.clientHeight;
                     }
                     const rows = this.getNativeElement() ? this.getNativeElement().querySelectorAll('tr') : null;
                     for (let i = 0; rows && i < rows.length; i++) {
                         h += rows.item(i).clientHeight;
-                        if (h > this.responsiveHeight) {
+                        if (h > this.responsiveHeight()) {
                             break;
                         }
                     }
-                    if (this.responsiveHeight === 0) {
+                    const responsiveHeight = this.responsiveHeight();
+                    if (responsiveHeight === 0) {
                         //                            $element.css("height", "100%");
                         this.layoutStyle.height = 100 + '%';
                     } else {
                         this.layoutStyle.height = h + 'px';
-                        this.layoutStyle.maxHeight = this.responsiveHeight + 'px';
+                        this.layoutStyle.maxHeight = responsiveHeight + 'px';
                     }
                 } else {
-                    if (this.responsiveHeight === 0) {
+                    const responsiveHeight = this.responsiveHeight();
+                    if (responsiveHeight === 0) {
                         //                            $element.css("height", "100%");
                         this.layoutStyle.height = 100 + '%';
                     } else {
-                        this.layoutStyle.height = this.responsiveHeight + 'px';
+                        this.layoutStyle.height = responsiveHeight + 'px';
                     }
                 }
 
@@ -660,7 +691,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     }
 
     public getTHeadStyle() {
-        if (this.enableSort || this.onHeaderClick) {
+        if (this.enableSort() || this.onHeaderClick()) {
             this.tHeadStyle.cursor = 'pointer';
         }
         this.tHeadStyle.left = this.tableLeftOffset + 'px';
@@ -678,8 +709,10 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                 const idxInViewport = this.getViewportIndexFromFoundsetIndex(idxInFs);
                 let newSelection = [idxInFs];
                 //                   if($scope.model.foundset.multiSelect) {
+                const foundsetValue = this.foundset();
                 if (event.ctrlKey) {
-                    newSelection = this.foundset.selectedRowIndexes ? this.foundset.selectedRowIndexes.slice() : [];
+                    const foundset = this.foundset();
+                    newSelection = foundset.selectedRowIndexes ? foundset.selectedRowIndexes.slice() : [];
                     const idxInSelected = newSelection.indexOf(idxInFs);
                     if (idxInSelected === -1) {
                         newSelection.push(idxInFs);
@@ -688,8 +721,8 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                     }
                 } else if (event.shiftKey) {
                     let start = -1;
-                    if (this.foundset.selectedRowIndexes) {
-                        for (const index of this.foundset.selectedRowIndexes) {
+                    if (foundsetValue.selectedRowIndexes) {
+                        for (const index of foundsetValue.selectedRowIndexes) {
                             if (start === -1 || start > index) {
                                 start = index;
                             }
@@ -706,10 +739,12 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                     }
                 }
                 //                   }
-                if (!newSelection.every(value => this.foundset.selectedRowIndexes.includes(value)))
-                    this.foundset.requestSelectionUpdate(newSelection);
-                if (type === 1 && this.onCellClick) {
-                    if (this.onCellDoubleClick) {
+                if (!newSelection.every(value => this.foundset().selectedRowIndexes.includes(value)))
+                    foundsetValue.requestSelectionUpdate(newSelection);
+                const onCellDoubleClick = this.onCellDoubleClick();
+                const onCellClick = this.onCellClick();
+                if (type === 1 && onCellClick) {
+                    if (onCellDoubleClick) {
                         if (this.timerID) {
                             clearTimeout(this.timerID);
                             this.timerID = null;
@@ -717,20 +752,21 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                         } else {
                             this.timerID = setTimeout(() => {
                                 this.timerID = null;
-                                this.onCellClick(idxInFs + 1, columnIndex, this.foundset.viewPort.rows[idxInViewport], event, columnId);
+                                this.onCellClick()(idxInFs + 1, columnIndex, this.foundset().viewPort.rows[idxInViewport], event, columnId);
                             }, 250);
                         }
                     } else {
-                        this.onCellClick(idxInFs + 1, columnIndex, this.foundset.viewPort.rows[idxInViewport], event, columnId);
+                        onCellClick(idxInFs + 1, columnIndex, foundsetValue.viewPort.rows[idxInViewport], event, columnId);
                     }
                 }
 
-                if (type === 2 && this.onCellRightClick) {
-                    this.onCellRightClick(idxInFs + 1, columnIndex, this.foundset.viewPort.rows[idxInViewport], event, columnId);
+                const onCellRightClick = this.onCellRightClick();
+                if (type === 2 && onCellRightClick) {
+                    onCellRightClick(idxInFs + 1, columnIndex, foundsetValue.viewPort.rows[idxInViewport], event, columnId);
                 }
 
-                if (type === 3 && this.onCellDoubleClick) {
-                    this.onCellDoubleClick(idxInFs + 1, columnIndex, this.foundset.viewPort.rows[idxInViewport], event, columnId);
+                if (type === 3 && onCellDoubleClick) {
+                    onCellDoubleClick(idxInFs + 1, columnIndex, foundsetValue.viewPort.rows[idxInViewport], event, columnId);
                 }
             }
         }
@@ -738,29 +774,30 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
     public headerRightClicked = function(event: Event, columnIndex: number) {
         if (this.onHeaderRightClick) {
-            this.onHeaderRightClick(columnIndex, this.sortDirection, event, this.columns[columnIndex]['id']);
+            this.onHeaderRightClick(columnIndex, this._sortDirection(), event, this.columns[columnIndex]['id']);
         }
     };
 
     public headerClicked(event: MouseEvent, columnIndex: number) {
-        if (this.onHeaderClick) {
-            if (this.enableSort && (this.sortColumnIndex !== columnIndex)) {
-                this.sortDirection = null;
+        const onHeaderClick = this.onHeaderClick();
+        if (onHeaderClick) {
+            if (this.enableSort() && (this.sortColumnIndex !== columnIndex)) {
+                this._sortDirection.set(null);
             }
-            this.onHeaderClick(columnIndex, this.sortDirection, event, this.columns[columnIndex]['id']).then((ret) => {
+            onHeaderClick(columnIndex, this._sortDirection(), event, this.columns()[columnIndex]['id']).then((ret) => {
                 if (ret === 'override')
                     return;
-                if (this.enableSort) {
+                if (this.enableSort()) {
                     this.sortColumnIndex = columnIndex;
-                    this.sortDirection = ret;
-                    if (!this.sortDirection) {
+                    this._sortDirection.set(ret);
+                    if (!this._sortDirection()) {
                         this.doFoundsetSQLSort(this.sortColumnIndex);
                     }
                 }
             }, function(reason) {
                 this.log.error(reason);
             });
-        } else if (this.enableSort) {
+        } else if (this.enableSort()) {
             this.sortColumnIndex = columnIndex;
             this.doFoundsetSQLSort(this.sortColumnIndex);
         }
@@ -769,7 +806,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
     // api
     public requestFocus(mustExecuteOnFocusGainedMethod: boolean) {
-        const tbl = this.tableRef.nativeElement;
+        const tbl = this.tableRef().nativeElement;
         this.skipOnce = mustExecuteOnFocusGainedMethod === false;
         tbl.focus();
     }
@@ -788,15 +825,16 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     private setColumnsToInitalWidthAndInitAutoColumns() {
         const newAutoColumns: { columns: Array<boolean>; minWidth: Array<number>; autoResize: Array<boolean>; count: number } =
             { columns: [], minWidth: [], autoResize: [], count: 0 };
-        if (this.columns) {
-            for (let i = 0; i < this.columns.length; i++) {
-                if (this.columns[i].initialWidth === undefined) {
-                    this.columns[i].initialWidth = this.columns[i].width === undefined ? '' : this.columns[i].width;
+        const columns = this.columns();
+        if (columns) {
+            for (let i = 0; i < columns.length; i++) {
+                if (columns[i].initialWidth === undefined) {
+                    columns[i].initialWidth = columns[i].width === undefined ? '' : columns[i].width;
                 } else {
-                    this.columns[i].width = this.columns[i].initialWidth;
+                    columns[i].width = columns[i].initialWidth;
                 }
 
-                const minWidth = this.getNumberFromPxString(this.columns[i].width);
+                const minWidth = this.getNumberFromPxString(columns[i].width);
                 if (this.isAutoResizeColumn(i) || minWidth < 0) {
                     newAutoColumns.columns[i] = true;
                     newAutoColumns.minWidth[i] = minWidth;
@@ -816,7 +854,8 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         // if this was called by the 'model.foundset' watch below, then we aren't in an incoming message handling cycle so
         // addIncomingMessageHandlingDoneTask will execute the task right away
         //            $webSocket.addIncomingMessageHandlingDoneTask(function() {
-        if (!this.foundset) return; // should never happen
+        const foundset = this.foundset();
+        if (!foundset) return; // should never happen
         // this probably means that the foundset listener was called but the same message from server also has hidden the form
         //                if (!$.contains(document, $element[0]) || $scope.$$destroyed) return;
         // => so now that this IncomingMessageHandlingDoneTask is called we can just ignore it as it's no longer relevant (directive/scope destroyed)
@@ -845,7 +884,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         // because it needs to adjust current page first in order to avoid adjustLoadedRowsIfNeeded loading rows for an outdated page
         if (shouldCheckSelection) {
             // ignore value change triggered by the watch initially with the same value except for when it was a form re-show and the selected index changed meanwhile
-            const selectedIdxs = this.foundset.selectedRowIndexes;
+            const selectedIdxs = foundset.selectedRowIndexes;
             if (!oldSelectedIdxs) oldSelectedIdxs = selectedIdxs; // initial value of the foundset then, not a change, so old = new
             this.selectedIndexesChanged(selectedIdxs, oldSelectedIdxs, !foundsetChanges.userSetSelection);
         }
@@ -867,7 +906,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                     // handle a situation where only startIndex and server size got updated due to a delete of rows before the currently loaded viewport,
                     // when the viewport is at the end of the foundset; we check if the foundset index stored in rows matches the new indexes
                     // to avoid calling update if it was only a normal viewport change
-                    const vp = this.foundset.viewPort;
+                    const vp = foundset.viewPort;
                     if (this.renderedStartIndex < vp.startIndex || this.renderedStartIndex + this.renderedSize > vp.startIndex + vp.size) {
                         this.updateRenderedRows(null);
                     }
@@ -878,12 +917,13 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         if (foundsetChanges.sortColumnsChanged) {
             let sortSet = false;
             if (foundsetChanges.sortColumnsChanged.newValue) {
-                const sortColumnsA = this.foundset.sortColumns.split(/[\s,]+/);
+                const sortColumnsA = foundset.sortColumns.split(/[\s,]+/);
                 if (sortColumnsA.length >= 2) {
-                    for (let i = 0; i < this.columns.length; i++) {
-                        if (this.columns[i].dataprovider && sortColumnsA[0] === this.columns[i].dataprovider.idForFoundset) {
+                    for (let i = 0; i < this.columns().length; i++) {
+                        const columns = this.columns();
+                        if (columns[i].dataprovider && sortColumnsA[0] === columns[i].dataprovider.idForFoundset) {
                             this.sortColumnIndex = i;
-                            this.sortDirection = sortColumnsA[1].toLowerCase() === 'asc' ? 'up' : 'down';
+                            this._sortDirection.set(sortColumnsA[1].toLowerCase() === 'asc' ? 'up' : 'down');
                             sortSet = true;
                             break;
                         }
@@ -892,7 +932,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
             }
             if (!sortSet) {
                 this.sortColumnIndex = -1;
-                this.sortDirection = null;
+                this._sortDirection.set(null);
             }
         }
         return;
@@ -935,23 +975,25 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     }
 
     private scrollToSelectionIfNeeded() {
-        if (!this.tbody || !this.scrollToSelectionNeeded) return;
+        const tbody = this.tbody();
+        if (!tbody || !this.scrollToSelectionNeeded) return;
 
         // we do not scroll to selection if there is no selected record (serverSize is probably 0) or we have multi-select with more then one or 0 selected records
-        const firstSelected = this.foundset.selectedRowIndexes.length === 1 ? this.foundset.selectedRowIndexes[0] : -1;
+        const foundset = this.foundset();
+        const firstSelected = foundset.selectedRowIndexes.length === 1 ? foundset.selectedRowIndexes[0] : -1;
 
         if (firstSelected >= 0) {
             // we must scroll to selection; see if we need to load/render other records in order to do this
-            if (this.showPagination() && this.getPageForIndex(firstSelected) !== this.currentPage) {
+            if (this.showPagination() && this.getPageForIndex(firstSelected) !== this._currentPage()) {
                 // we need to switch page in order to show selected row
                 this.setCurrentPage(this.getPageForIndex(firstSelected));
             }
 
             // check if the selected row is in the current ui viewport.
-            if (this.tbody.nativeElement.children.length - (this.topSpaceDiv ? 1 : 0) - (this.bottomSpaceDiv ? 1 : 0) > 0 &&
+            if (tbody.nativeElement.children.length - (this.topSpaceDiv ? 1 : 0) - (this.bottomSpaceDiv ? 1 : 0) > 0 &&
                 (firstSelected < this.renderedStartIndex || firstSelected >= (this.renderedStartIndex + this.renderedSize))) {
                 // it's not in the current rendered viewport, check if it is in the current data viewport
-                const vp = this.foundset.viewPort;
+                const vp = this.foundset().viewPort;
                 if (firstSelected < vp.startIndex || firstSelected >= (vp.startIndex + vp.size)) {
                     this.runWhenThereIsNoPendingLoadRequest(() => {
                         // selection is not inside the viewport, request another viewport around the selection.
@@ -981,13 +1023,13 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                 const firstSelectedRelativeToRendered = firstSelected - this.renderedStartIndex;
 
                 // eq negative idx is interpreted as n'th from the end of children list
-                const child = (firstSelectedRelativeToRendered >= 0 ? this.tbody.nativeElement.children.item(firstSelectedRelativeToRendered +
+                const child = (firstSelectedRelativeToRendered >= 0 ? tbody.nativeElement.children.item(firstSelectedRelativeToRendered +
                     (this.topSpaceDiv ? 1 : 0)) : undefined) as HTMLElement;
                 if (child) {
-                    const wrapperRect = this.tbody.nativeElement.getBoundingClientRect();
+                    const wrapperRect = tbody.nativeElement.getBoundingClientRect();
                     const childRect = child.getBoundingClientRect();
                     if (Math.floor(childRect.top) < Math.floor(wrapperRect.top) || Math.floor(childRect.bottom) > Math.floor(wrapperRect.bottom)) {
-                        this.scrollIntoView(child, this.tbody.nativeElement, !this.toBottom);
+                        this.scrollIntoView(child, tbody.nativeElement, !this.toBottom);
                     }
                     this.scrollToSelectionNeeded = false; // now reset the flag so that it is only set back to true on purpose
                     this.log.debug('svy extra table * scrollToSelectionIfNeeded; scroll done, scrollToSelectionNeeded = false');
@@ -1000,9 +1042,10 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     // changes is something like { rowUpdates: rowUpdates, oldStartIndex: oldStartIndex, oldSize : oldSize }
     private updateRenderedRows(changes: { rowUpdates: ViewportRowUpdates; oldStartIndex: number; oldSize: number }, offset?: number) {
         this.log.debug(this.log.buildMessage(() => 'svy extra table * updateRenderedRows called with: ' + JSON.stringify(changes) + ', ' + JSON.stringify(offset)));
-        if (!this.tbody) return;
+        const tbody = this.tbody();
+        if (!tbody) return;
 
-        let children = this.tbody.nativeElement.children; // contains rendered rows + optionally the top empty space and bottom empty space rows
+        let children = tbody.nativeElement.children; // contains rendered rows + optionally the top empty space and bottom empty space rows
         let childrenListChanged = false;
         let startIndex = 100000000; // starting point where rows need to be updated relative to new rendered/UI viewport
         let endIndex = 0; // end index of rows to be updated relative to new rendered/UI viewport
@@ -1014,7 +1057,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         let alignToTopWhenScrolling = false;
         let forceScroll = false;
 
-        const vp = this.foundset.viewPort;
+        const vp = this.foundset().viewPort;
         let correctRenderedBoundsAtEnd = false; // if rendered rows needed correction update them all again
         // (we don't call this at the beginning of the method if we have arguments because that might affect what changes
         // and offset were supposed to do based on current renderStartIndex and renderedSize; so I don't want to correct
@@ -1075,7 +1118,8 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         } else {
             // called when a "full" render needs to be done
             this.adjustRenderedViewportIfNeeded();
-            const firstSelected = this.foundset.selectedRowIndexes ? this.foundset.selectedRowIndexes[0] : 0;
+            const foundset = this.foundset();
+            const firstSelected = foundset.selectedRowIndexes ? foundset.selectedRowIndexes[0] : 0;
 
             if (this.scrollToSelectionNeeded && vp.startIndex <= firstSelected && (vp.startIndex + vp.size) > firstSelected) {
                 const formStartToSelection = firstSelected - vp.startIndex;
@@ -1117,7 +1161,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                         // we can't find a 'first' row to scroll to... keep scroll top position (we just want to rerender all rows, we don't want browser to autoscroll because
                         // for example top space div is removed and some row element from the bottom is now reused as the first row which is on top)
                         childIdxToScrollTo = -1;
-                        scrollTopToKeep = this.tbody.nativeElement.scrollTop;
+                        scrollTopToKeep = tbody.nativeElement.scrollTop;
                     }
 
                     if (childIdxToScrollTo === 0) {
@@ -1145,7 +1189,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         }
 
         //            const formatFilter = $filter('formatFilter');
-        const columns = this.columns;
+        const columns = this.columns();
 
         this.log.debug(this.log.buildMessage(() => 'svy extra table * updateRenderedRows; renderedStartIndex = ' + this.renderedStartIndex + ' & renderedSize = ' + this.renderedSize));
         if (startIndex <= endIndex)
@@ -1157,14 +1201,15 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
         const setupRowClassNames = (trEl: Element, idxInFoundset: number, rowIdxInFoundsetViewport: number) => {
             let rowClassNames = '';
-            if (this.rowStyleClassDataprovider && this.rowStyleClassDataprovider[rowIdxInFoundsetViewport]) {
-                rowClassNames = this.rowStyleClassDataprovider[rowIdxInFoundsetViewport];
+            const rowStyleClassDataprovider = this.rowStyleClassDataprovider();
+            if (rowStyleClassDataprovider && rowStyleClassDataprovider[rowIdxInFoundsetViewport]) {
+                rowClassNames = rowStyleClassDataprovider[rowIdxInFoundsetViewport];
             }
-            if (this.foundset.selectedRowIndexes.indexOf(idxInFoundset) !== -1) {
+            if (this.foundset().selectedRowIndexes.indexOf(idxInFoundset) !== -1) {
                 if (rowClassNames) {
                     rowClassNames += ' ';
                 }
-                rowClassNames += this.selectionClass;
+                rowClassNames += this.selectionClass();
             }
             trEl.className = rowClassNames;
         };
@@ -1181,11 +1226,11 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                 // happen before it, the data is updated in those cells, no real dom Node inserts have to happen in specific indexes in
                 // the rendered viewpot
                 const insertedEl = this.createTableRow(columns, j + rowOffSet);
-                this.tbody.nativeElement.insertBefore(insertedEl, beforeEl);
+                tbody.nativeElement.insertBefore(insertedEl, beforeEl);
                 setupRowClassNames(insertedEl, this.renderedStartIndex + j, j + rowOffSet);
             }
 
-            children = this.tbody.nativeElement.children;
+            children = tbody.nativeElement.children;
             childrenListChanged = false;
         }
 
@@ -1199,8 +1244,8 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                 // then create the newly rendered row(s) as needed and append or insert them before bottom space div row)
                 trElement = this.createTableRow(columns, rowIdxInFoundsetViewport);
 
-                if (bottomSpaceRowReached) this.tbody.nativeElement.insertBefore(trElement, this.bottomSpaceDiv.parentElement.parentElement);
-                else this.tbody.nativeElement.appendChild(trElement);
+                if (bottomSpaceRowReached) tbody.nativeElement.insertBefore(trElement, this.bottomSpaceDiv.parentElement.parentElement);
+                else tbody.nativeElement.appendChild(trElement);
 
                 childrenListChanged = true;
             } else {
@@ -1252,7 +1297,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
         if (childrenListChanged) {
             childrenListChanged = false;
-            children = this.tbody.nativeElement.children;
+            children = tbody.nativeElement.children;
         }
         if (children.length > 0 && children.length - topEmptySpaceRowCount - bottomEmptySpaceRowCount > this.renderedSize) {
             // START HACK (this is currently only useful for dodging an unwanted jump in Chrome)
@@ -1289,21 +1334,21 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
         if (childrenListChanged) {
             childrenListChanged = false;
-            children = this.tbody.nativeElement.children;
+            children = tbody.nativeElement.children;
         }
 
         if (childIdxToScrollTo >= 0) {
             const scrollToChild = children.item(childIdxToScrollTo + topEmptySpaceRowCount) as HTMLElement;
             if (scrollToChild) {
-                const tbodyBounds = this.tbody.nativeElement.getBoundingClientRect();
+                const tbodyBounds = tbody.nativeElement.getBoundingClientRect();
                 const childBounds = scrollToChild.getBoundingClientRect();
                 if (forceScroll || childBounds.top < tbodyBounds.top || childBounds.bottom > tbodyBounds.bottom) {
                     this.log.debug('svy extra table * updateRenderedRows; scrolling into view');
-                    this.scrollIntoView(scrollToChild, this.tbody.nativeElement, alignToTopWhenScrolling);
+                    this.scrollIntoView(scrollToChild, tbody.nativeElement, alignToTopWhenScrolling);
                 }
             }
         } else if (scrollTopToKeep >= 0) {
-            this.tbody.nativeElement.scrollTop = scrollTopToKeep;
+            tbody.nativeElement.scrollTop = scrollTopToKeep;
         }
 
         if (correctRenderedBoundsAtEnd) {
@@ -1318,18 +1363,19 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
     private getCellStyle(column: number) {
         const cellStyle: { overflow: string; minWidth?: string; width?: string; maxWidth?: string } = { overflow: 'hidden' };
-        if (column < this.columns.length) {
-            let w = this.getNumberFromPxString(this.columns[column].width);
+        if (column < this.columns().length) {
+            let w = this.getNumberFromPxString(this.columns()[column].width);
             if (this.isAutoResizeColumn(column) || w < 0) {
                 const headers = this.getNativeElement().querySelectorAll('th');
                 w = Math.floor(headers.item(column).offsetWidth);
             }
+            const columns = this.columns();
             if (w > -1) {
                 cellStyle.minWidth = w + 'px';
                 cellStyle.width = w + 'px';
                 cellStyle.maxWidth = w + 'px';
-            } else if (this.columns[column].width) {
-                cellStyle.width = this.columns[column].width;
+            } else if (columns[column].width) {
+                cellStyle.width = columns[column].width;
             }
         }
         return cellStyle;
@@ -1365,7 +1411,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                 const rules = targetStyleSheet.cssRules || targetStyleSheet.rules;
                 targetStyleSheet.insertRule(clsName + '{}', rules.length);
                 this.columnCSSRules[columnIndex] = rules[rules.length - 1] as CSSStyleRule;
-                this.columnCSSRules[columnIndex].style['height'] = this.minRowHeight;
+                this.columnCSSRules[columnIndex].style['height'] = this.minRowHeight();
             }
         }
 
@@ -1376,7 +1422,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     }
 
     private updateColumnStyleClass() {
-        const columns = this.columns;
+        const columns = this.columns();
         for (let c = 0; c < columns.length; c++) {
             if (c < this.columnStyleClasses.length && columns[c].styleClass !== this.columnStyleClasses[c]) {
                 this.generateTemplate();
@@ -1394,8 +1440,9 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         this.log.debug('svy extra table * generateTemplate called');
         this.adjustRenderedViewportIfNeeded();
 
-        const columns = this.columns;
-        if (!this.tbody || !columns || columns.length === 0) return;
+        const columns = this.columns();
+        const tbody = this.tbody();
+        if (!tbody || !columns || columns.length === 0) return;
         //            const tblHead = this.getNativeElement().querySelector('thead');
         //            if (tbodyJQ.length == 0) {
         //                if ($element.closest("body").length > 0) $timeout(generateTemplate);
@@ -1406,50 +1453,51 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         if (full)
             this.tableLeftOffset = 0;
 
-        const rows = this.foundset.viewPort.rows;
+        const rows = this.foundset().viewPort.rows;
 
         for (let c = 0; c < columns.length; c++) {
             this.updateTableColumnStyleClass(c, this.getCellStyle(c));
             this.columnStyleClasses[c] = columns[c].styleClass;
         }
         let isNewTBody = false;
-        if (this.tbody.nativeElement.children.length === (this.topSpaceDiv ? 1 : 0) + (this.bottomSpaceDiv ? 1 : 0) || full) {
+        if (tbody.nativeElement.children.length === (this.topSpaceDiv ? 1 : 0) + (this.bottomSpaceDiv ? 1 : 0) || full) {
             //                var formatFilter = $filter("formatFilter");
             isNewTBody = true;
-            while (this.tbody.nativeElement.lastElementChild) {
-                this.tbody.nativeElement.removeChild(this.tbody.nativeElement.lastElementChild);
+            while (tbody.nativeElement.lastElementChild) {
+                tbody.nativeElement.removeChild(tbody.nativeElement.lastElementChild);
             }
             // if new body, hide overflow-x until it is rendered, to avoid flickering because of show/hide of it
-            this.tbody.nativeElement.style.overflowX = 'hidden';
+            tbody.nativeElement.style.overflowX = 'hidden';
             this.topSpaceDiv = null;
             this.bottomSpaceDiv = null;
-            this.tbody.nativeElement.removeEventListener('scroll', this.onTBodyScrollListener);
+            tbody.nativeElement.removeEventListener('scroll', this.onTBodyScrollListener);
             this.onTBodyScrollListener = null;
 
             this.updateTBodyStyle();
             this.renderedSize = Math.min(this.renderedSize, rows.length);
-            const firstSelected = this.foundset.selectedRowIndexes ? this.foundset.selectedRowIndexes[0] : 0;
+            const foundset = this.foundset();
+            const firstSelected = foundset.selectedRowIndexes ? foundset.selectedRowIndexes[0] : 0;
             let startRow = 0;
-            const formStartToSelection = firstSelected - this.foundset.viewPort.startIndex;
-            if (formStartToSelection < this.foundset.viewPort.size && formStartToSelection > this.renderedSize) {
+            const formStartToSelection = firstSelected - this.foundset().viewPort.startIndex;
+            if (formStartToSelection < this.foundset().viewPort.size && formStartToSelection > this.renderedSize) {
                 // if the selection is in the viewport and it will not be rendered because it falls out of the max rows
                 // adjust the startRow to render
                 startRow = Math.floor(formStartToSelection - this.renderedSize / 2) + 1;
-                if (startRow + this.renderedSize > this.foundset.viewPort.size) {
-                    startRow = this.foundset.viewPort.size - this.renderedSize;
+                if (startRow + this.renderedSize > this.foundset().viewPort.size) {
+                    startRow = this.foundset().viewPort.size - this.renderedSize;
                 }
             }
-            this.renderedStartIndex = this.foundset.viewPort.startIndex + startRow;
+            this.renderedStartIndex = this.foundset().viewPort.startIndex + startRow;
             const rowEnding = startRow + this.renderedSize;
             for (let r = startRow; r < rowEnding; r++) {
-                this.tbody.nativeElement.appendChild(this.createTableRow(columns, r));
+                tbody.nativeElement.appendChild(this.createTableRow(columns, r));
             }
             this.updateTopAndBottomEmptySpace();
 
             // this is called from a scroll listener to see if more records need to be rendered or loaded
             // but also afterwards when rows are loaded due to scroll to update rendered viewport
             const scrollHandler = () => {
-                const vp = this.foundset.viewPort;
+                const vp = this.foundset().viewPort;
                 const renderedStartIndexInLoaded = this.renderedStartIndex - vp.startIndex; // so relative to loaded viewport, not to start of foundset
                 const renderedSizeBefore = this.renderedSize;
                 let visibleViewport: Array<number>;
@@ -1457,13 +1505,14 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                 //on viewport changed
                 const vpStart = this.getVisibleArea()[0];
                 const vpEnd = this.getVisibleArea()[0] + this.getVisibleArea()[1];
-                if (this.onViewPortChanged) {
-                    this.onViewPortChanged(vpStart, vpEnd);
+                const onViewPortChanged = this.onViewPortChanged();
+                if (onViewPortChanged) {
+                    onViewPortChanged(vpStart, vpEnd);
                 }
 
                 // see if more rows are needed on top
-                if (this.tbody.nativeElement.scrollTop - (this.topSpaceDiv ?
-                    this.topSpaceDiv.clientHeight : 0) < this.tbody.nativeElement.clientHeight) {
+                if (this.tbody().nativeElement.scrollTop - (this.topSpaceDiv ?
+                    this.topSpaceDiv.clientHeight : 0) < this.tbody().nativeElement.clientHeight) {
                     // the following code should mirror the scroll down behavior
 
                     // scroll up behavior
@@ -1471,7 +1520,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                     let firstIndexAllowedOnScrollUp = 0;
                     if (this.showPagination()) {
                         // paging mode calculate max size of the current viewPort
-                        firstIndexAllowedOnScrollUp = this.pageSize * (this.currentPage - 1);
+                        firstIndexAllowedOnScrollUp = this.pageSize() * (this._currentPage() - 1);
                     }
 
                     // check if the current first rendered row index is bigger then what the minimal would be
@@ -1488,7 +1537,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                         // now see what the visible area is - in case the user is scrolling fast (so rendered/loaded are left way behind
                         // with hundreds of records for example) we might need to ditch what we have and start fresh with rows around visible area
                         visibleViewport = this.getVisibleArea(); // [startIndex, size]
-                        if (this.renderedStartIndex - addedRows > visibleViewport[0] + this.getInitialRenderSize() * this.performanceSettings.fastScrollRenderThresholdFactor) {
+                        if (this.renderedStartIndex - addedRows > visibleViewport[0] + this.getInitialRenderSize() * this.performanceSettings().fastScrollRenderThresholdFactor) {
                             // so the wanted visible start index (we are scrolling up) is way outside of what we can currently render...
                             // jump to what is needed directly, discarding old content as needed
                             // instead of prepending small batches of rendered rows until we can show what is needed
@@ -1497,7 +1546,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                             // we don't change anything until we are ready to jump to the visible area (have loaded rows to be able to render the visible area)
                             this.renderedSize = renderedSizeBefore;
 
-                            if (vp.startIndex > visibleViewport[0] + this.getInitialPreferredLoadedSize() * + this.performanceSettings.fastScrollLoadThresholdFactor) {
+                            if (vp.startIndex > visibleViewport[0] + this.getInitialPreferredLoadedSize() * + this.performanceSettings().fastScrollLoadThresholdFactor) {
                                 // too many extra rows to load... just reset loaded viewport as well; start fresh
                                 this.log.debug('svy extra table * scrollHandler (fast scroll up) needs to discard loaded rows and start fresh in desired area');
                                 this.runWhenThereIsNoPendingLoadRequest(() => {
@@ -1509,7 +1558,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                                 // just load more rows on top if needed
                                 this.log.debug('svy extra table * scrollHandler (fast scroll up) more records need to be loaded on top');
                                 this.runWhenThereIsNoPendingLoadRequest(() => {
-                                    const newLoadingPromise = this.foundset.loadExtraRecordsAsync(
+                                    const newLoadingPromise = this.foundset().loadExtraRecordsAsync(
                                         -Math.min(vp.startIndex - firstIndexAllowedOnScrollUp, vp.startIndex - visibleViewport[0] + this.batchSizeForRenderingMoreRows));
                                     newLoadingPromise.then(scrollHandler); // call scroll handler again to update the rendered viewport
                                     return newLoadingPromise;
@@ -1528,7 +1577,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                                 // and then recompute everything based on the new viewport - to see if loading more is still needed (so scrollHandler() will be called)
                                 // else if there is no pending load, ask for the extra records
                                 this.runWhenThereIsNoPendingLoadRequest(() => {
-                                    const newLoadingPromise = this.foundset.loadExtraRecordsAsync(-Math.min(this.batchSizeForLoadingMoreRows, vp.startIndex - firstIndexAllowedOnScrollUp));
+                                    const newLoadingPromise = this.foundset().loadExtraRecordsAsync(-Math.min(this.batchSizeForLoadingMoreRows, vp.startIndex - firstIndexAllowedOnScrollUp));
                                     newLoadingPromise.then(scrollHandler); // check if rendered viewport needs to be updated again after more rows get loaded
                                     return newLoadingPromise;
                                 }, scrollHandler);
@@ -1547,17 +1596,17 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                 } // no else here because we don't even check if it was a scroll up or scroll down; we then just check if we need more rows either top or bottom
 
                 // see if more rows are needed at bottom
-                if ((this.tbody.nativeElement.scrollTop + 2 * this.tbody.nativeElement.clientHeight) >
-                    (this.tbody.nativeElement.scrollHeight - (this.bottomSpaceDiv ? this.bottomSpaceDiv.clientHeight : 0))) {
+                if ((this.tbody().nativeElement.scrollTop + 2 * this.tbody().nativeElement.clientHeight) >
+                    (this.tbody().nativeElement.scrollHeight - (this.bottomSpaceDiv ? this.bottomSpaceDiv.clientHeight : 0))) {
                     // the following code should mirror the scroll up behavior
                     // scroll down behavior; it seems that less then one more visible page is rendered; render more records below it (if available; also load  from server more records if needed)
                     let lastIndexAllowedOnScrollDown: number; // absolute index in foundset
 
                     // calculate max row index (relative to foundset) that can be requested, for paging it is the last index in the current page, for non-paging it is serverSize - 1
                     if (this.showPagination()) {
-                        lastIndexAllowedOnScrollDown = Math.min(this.pageSize * this.currentPage, this.foundset.serverSize) - 1;
+                        lastIndexAllowedOnScrollDown = Math.min(this.pageSize() * this._currentPage(), this.foundset().serverSize) - 1;
                     } else {
-                        lastIndexAllowedOnScrollDown = this.foundset.serverSize - 1;
+                        lastIndexAllowedOnScrollDown = this.foundset().serverSize - 1;
                     }
 
                     // see if scroll should render more rows
@@ -1572,7 +1621,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                         // now see what the visible area is - in case the user is scrolling fast (so rendered/loaded are left way behind
                         // with hundreds of records for example) we might need to ditch what we have and start fresh with rows around visible area
                         visibleViewport = this.getVisibleArea(); // [startIndex, size]
-                        if (this.renderedStartIndex + this.renderedSize + this.getInitialRenderSize() * this.performanceSettings.fastScrollRenderThresholdFactor <
+                        if (this.renderedStartIndex + this.renderedSize + this.getInitialRenderSize() * this.performanceSettings().fastScrollRenderThresholdFactor <
                             visibleViewport[0] + visibleViewport[1]) {
                             // so the wanted visible end index (we are scrolling down) is way outside of what we can currently render...
                             // jump to what is needed directly, discarding old content as needed
@@ -1582,7 +1631,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                             // we don't change anything until we are ready to jump to the visible area (have loaded rows to be able to render the visible area)
                             this.renderedSize = renderedSizeBefore;
 
-                            if (vp.startIndex > visibleViewport[0] + this.getInitialPreferredLoadedSize() * this.performanceSettings.fastScrollLoadThresholdFactor) {
+                            if (vp.startIndex > visibleViewport[0] + this.getInitialPreferredLoadedSize() * this.performanceSettings().fastScrollLoadThresholdFactor) {
                                 // too many extra rows to load... just reset loaded viewport as well; start fresh
                                 this.log.debug('svy extra table * scrollHandler (fast scroll down) needs to discard loaded rows and start fresh in desired area');
                                 this.runWhenThereIsNoPendingLoadRequest(() => {
@@ -1595,7 +1644,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                                 // just load more rows on top if needed
                                 this.log.debug('svy extra table * scrollHandler (fast scroll down) more records need to be loaded on top');
                                 this.runWhenThereIsNoPendingLoadRequest(() => {
-                                    const newLoadingPromise = this.foundset.loadExtraRecordsAsync(Math.min(lastIndexAllowedOnScrollDown - currentLastLoadedIndex,
+                                    const newLoadingPromise = this.foundset().loadExtraRecordsAsync(Math.min(lastIndexAllowedOnScrollDown - currentLastLoadedIndex,
                                         visibleViewport[0] + visibleViewport[1] - vp.startIndex - vp.size + this.batchSizeForRenderingMoreRows));
                                     newLoadingPromise.then(scrollHandler); // call scroll handler again to update the rendered viewport
                                     return newLoadingPromise;
@@ -1613,7 +1662,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                                 // and then recompute everything based on the new viewport - to see if loading more is still needed (so scrollHandler() will be called)
                                 // else if there is no pending load, ask for the extra records
                                 this.runWhenThereIsNoPendingLoadRequest(() => {
-                                    const newLoadingPromise = this.foundset.loadExtraRecordsAsync(
+                                    const newLoadingPromise = this.foundset().loadExtraRecordsAsync(
                                         Math.min(this.batchSizeForLoadingMoreRows, lastIndexAllowedOnScrollDown - currentLastLoadedIndex));
                                     newLoadingPromise.then(scrollHandler); // check if rendered viewport needs to be updated again after more rows get loaded
                                     return newLoadingPromise;
@@ -1640,7 +1689,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                 }
             };
 
-            this.tbody.nativeElement.addEventListener('scroll', scrollHandler); // register as scroll listener
+            tbody.nativeElement.addEventListener('scroll', scrollHandler); // register as scroll listener
             this.scrollToRenderedIfNeeded();
         } else {
             this.updateTBodyStyle();
@@ -1652,13 +1701,14 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
     private createTableRow(columns: Array<Column>, idxInLoaded: number) {
         const tr = document.createElement('TR');
-        if (this.rowStyleClassDataprovider && this.rowStyleClassDataprovider[idxInLoaded]) {
-            tr.className = this.rowStyleClassDataprovider[idxInLoaded];
+        const rowStyleClassDataprovider = this.rowStyleClassDataprovider();
+        if (rowStyleClassDataprovider && rowStyleClassDataprovider[idxInLoaded]) {
+            tr.className = rowStyleClassDataprovider[idxInLoaded];
         }
         for (let c = 0; c < columns.length; c++) {
             const column = columns[c];
             const td = document.createElement('TD');
-            if (this.enableMobileView) {
+            if (this.enableMobileView()) {
                 td.dataset.title = column.headerText;
             }
             td['row_column'] = { idxInFs: this.getFoundsetIndexFromViewportIndex(idxInLoaded), column: c, id: column.id };
@@ -1692,17 +1742,18 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
     private onTableRendered(isNewTBody: boolean) {
         var tbl = document.getElementById('table_'+this.servoyApi.getMarkupId());
-        if(this.enableMobileView)
+        if(this.enableMobileView())
         tbl.classList.add("mobileview");
-        this.updateSelection(this.foundset.selectedRowIndexes, null);
+        this.updateSelection(this.foundset().selectedRowIndexes, null);
         this.scrollToSelectionIfNeeded();
         //this.adjustLoadedRowsIfNeeded();
 
         if (!this.onTBodyScrollListener) {
             this.onTBodyScrollListener = () => {
                 setTimeout(() => {
-                    if (this.tbody) {
-                        this.tableLeftOffset = -this.tbody.nativeElement.scrollLeft;
+                    const tbody = this.tbody();
+                    if (tbody) {
+                        this.tableLeftOffset = -tbody.nativeElement.scrollLeft;
                         const resizer = this.getNativeElement().querySelector('.JCLRgrips') as HTMLElement;
                         if (resizer) {
                             resizer.style.left = this.tableLeftOffset + 'px';
@@ -1710,16 +1761,17 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                     }
                 });
             };
-            this.tbody.nativeElement.addEventListener('scroll', this.onTBodyScrollListener);
+            this.tbody().nativeElement.addEventListener('scroll', this.onTBodyScrollListener);
         }
 
 
         setTimeout(() => {
             let isScrollWidthChange = false;
-            if (this.tbody && (this.tbody.nativeElement.scrollHeight > this.tbody.nativeElement.clientHeight && (this.scrollWidth === 0))) {
-                this.scrollWidth = this.tbody.nativeElement.offsetWidth - this.tbody.nativeElement.clientWidth + 2;
+            const tbody = this.tbody();
+            if (tbody && (tbody.nativeElement.scrollHeight > tbody.nativeElement.clientHeight && (this.scrollWidth === 0))) {
+                this.scrollWidth = tbody.nativeElement.offsetWidth - tbody.nativeElement.clientWidth + 2;
                 isScrollWidthChange = true;
-            } else if (this.tbody.nativeElement && (this.tbody.nativeElement.scrollHeight <= this.tbody.nativeElement.clientHeight) && (this.scrollWidth > 0)) {
+            } else if (tbody.nativeElement && (tbody.nativeElement.scrollHeight <= tbody.nativeElement.clientHeight) && (this.scrollWidth > 0)) {
                 this.scrollWidth = 0;
                 isScrollWidthChange = true;
             }
@@ -1737,9 +1789,10 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                 let ignoreScrollWidth = false;
                 const headers = this.getNativeElement().querySelectorAll('th');
                 if (headers.length && this.isVisible(headers.item(0))) {
-                    for (let i = 0; i < this.columns.length; i++) {
+                    for (let i = 0; i < this.columns().length; i++) {
                         sumColumnsWidth += Math.floor(headers.item(i).scrollWidth);
-                        if (!ignoreScrollWidth && (this.columns[i].width === '' || this.columns[i].width === 'auto')) {
+                        const columns = this.columns();
+                        if (!ignoreScrollWidth && (columns[i].width === '' || columns[i].width === 'auto')) {
                             ignoreScrollWidth = true;
                         }
                     }
@@ -1747,7 +1800,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                 this.updateAutoColumnsWidth(this.getComponentWidth() - (ignoreScrollWidth ? 0 : this.scrollWidth) - sumColumnsWidth);
             }
 
-            if (this.enableColumnResize) {
+            if (this.enableColumnResize()) {
                 this.addColResizable(true);
             }
             this.cdRef.detectChanges();
@@ -1758,19 +1811,21 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
             // update the autoColumns with the right px values
             const headers = this.getNativeElement().querySelectorAll('th');
             if (headers.length && this.isVisible(headers.item(0))) {
-                for (let i = 0; i < this.columns.length; i++) {
+                for (let i = 0; i < this.columns().length; i++) {
                     if (this.autoColumns.columns[i]) {
+                        const columns = this.columns();
                         if (this.autoColumns.minWidth[i] < 0) {
                             this.autoColumns.minWidth[i] = 1;
-                            this.columns[i].width = Math.floor(headers.item(i).scrollWidth) + 'px';
+                            columns[i].width = Math.floor(headers.item(i).scrollWidth) + 'px';
                         }
-                        this.updateTableColumnStyleClass(i, { width: this.columns[i].width, minWidth: this.columns[i].width, maxWidth: this.columns[i].width });
+                        this.updateTableColumnStyleClass(i, { width: columns[i].width, minWidth: columns[i].width, maxWidth: columns[i].width });
                     }
                 }
                 this.updateTBodyStyle();
             }
-            if (this.tbody && isNewTBody && (this.horizontalScrollbar !== 'NEVER')) {
-                this.tbody.nativeElement.style.removeProperty('overflow-x');
+            const tbody = this.tbody();
+            if (tbody && isNewTBody && (this.horizontalScrollbar() !== 'NEVER')) {
+                tbody.nativeElement.style.removeProperty('overflow-x');
             }
         }, 0);
     }
@@ -1807,13 +1862,15 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         // (which has just been re-created as a DOM element) is at top showing the empty space dir - so blank
 
         // when this method is called tbody should always be scrolled to top (as this method should be called after a refresh or show/hide only)
-        if (this.tbody.nativeElement && this.tbody.nativeElement.scrollTop === 0 && this.tbody.nativeElement.children.length - (this.topSpaceDiv ? 1 : 0) - (this.bottomSpaceDiv ? 1 : 0) > 0) {
+        const tbody = this.tbody();
+        if (tbody.nativeElement && tbody.nativeElement.scrollTop === 0 && tbody.nativeElement.children.length - (this.topSpaceDiv ? 1 : 0) - (this.bottomSpaceDiv ? 1 : 0) > 0) {
             // center visible area on rendered if possible; if selection is part of rendered center on selection
             // TODO should we try to keep scroll exactly where it was before instead of centering on the rendered rows? so somehow store last scrollTop in the component's model (server side)
             let targetIntervalPosition = this.renderedStartIndex;
             let targetIntervalSize = this.renderedSize;
             // we do not scroll to selection if there is no selected record (serverSize is probably 0) or we have multi-select with more then one or 0 selected records
-            const firstSelected = this.foundset.selectedRowIndexes.length === 1 ? this.foundset.selectedRowIndexes[0] : -1;
+            const foundset = this.foundset();
+            const firstSelected = foundset.selectedRowIndexes.length === 1 ? foundset.selectedRowIndexes[0] : -1;
 
             let shouldScroll = false;
             if (firstSelected >= this.renderedStartIndex && firstSelected < this.renderedStartIndex + this.renderedSize) {
@@ -1822,17 +1879,17 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                 shouldScroll = true; // scroll to selection (which is in rendered rows) as this was most likely what user was looking at before
             }
 
-            if ((this.tbody.nativeElement.children[this.topSpaceDiv ? 1 : 0] as HTMLElement).offsetTop > 0) {
+            if ((tbody.nativeElement.children[this.topSpaceDiv ? 1 : 0] as HTMLElement).offsetTop > 0) {
                 shouldScroll = true; // scroll to some rendered row, be it selection above or not; because we are currently showing white space
             }
             if (shouldScroll) {
-                const targetIntervalStartOffsetTop = (this.tbody.nativeElement.children[(this.topSpaceDiv ? 1 : 0) + targetIntervalPosition - this.renderedStartIndex] as HTMLElement).offsetTop;
-                const targetIntervalEndElement = this.tbody.nativeElement.children[(this.topSpaceDiv ? 1 : 0)
+                const targetIntervalStartOffsetTop = (tbody.nativeElement.children[(this.topSpaceDiv ? 1 : 0) + targetIntervalPosition - this.renderedStartIndex] as HTMLElement).offsetTop;
+                const targetIntervalEndElement = tbody.nativeElement.children[(this.topSpaceDiv ? 1 : 0)
                     + targetIntervalPosition - this.renderedStartIndex + targetIntervalSize - 1] as HTMLElement;
                 const targetIntervalEndOffsetBottom = targetIntervalEndElement.offsetTop + targetIntervalEndElement.offsetHeight - 1;
 
-                const allowedStartOffsetTop = (this.tbody.nativeElement.children[(this.topSpaceDiv ? 1 : 0)] as HTMLElement).offsetTop;
-                const allowedEndElement = this.tbody.nativeElement.children[(this.topSpaceDiv ? 1 : 0) + this.renderedSize - 1] as HTMLElement;
+                const allowedStartOffsetTop = (tbody.nativeElement.children[(this.topSpaceDiv ? 1 : 0)] as HTMLElement).offsetTop;
+                const allowedEndElement = tbody.nativeElement.children[(this.topSpaceDiv ? 1 : 0) + this.renderedSize - 1] as HTMLElement;
                 const allowedEndOffsetBottom = allowedEndElement.offsetTop + allowedEndElement.offsetHeight - 1;
 
                 // attempt to center on targeted row-index-interval but based on actual DOM locations/sizes, as rows might have different visual heights (from styling / data);
@@ -1840,20 +1897,21 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                     targetIntervalEndOffsetBottom - targetIntervalStartOffsetTop,
                     allowedStartOffsetTop,
                     allowedEndOffsetBottom - allowedStartOffsetTop,
-                    this.tbody.nativeElement.clientHeight);
+                    tbody.nativeElement.clientHeight);
 
                 this.log.debug(this.log.buildMessage(() => 'svy extra table * scrollToRenderedIfNeeded will scroll to rendered viewport on initial load/refresh (scrollPos: '
                     + computedInterval[0] + ', tryingToCenterOnIndexInterval: ['
                     + targetIntervalPosition + ', ' + (targetIntervalPosition + targetIntervalSize - 1) + '], rendered: ['
                     + this.renderedStartIndex + ', ' + (this.renderedStartIndex + this.renderedSize - 1) + '])'));
 
-                this.tbody.nativeElement.scrollTop = computedInterval[0];
+                tbody.nativeElement.scrollTop = computedInterval[0];
             }
         }
     }
 
     private updateTopAndBottomEmptySpace() {
-        if (!this.tbody) return false;
+        const tbody = this.tbody();
+        if (!tbody) return false;
         let spacingRowsAddedOrRemoved = false;
         const allowedBounds = this.calculateAllowedLoadedDataBounds();
 
@@ -1868,11 +1926,12 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
             if (!this.topSpaceDiv) {
                 const topTR = this.doc.createElement('tr');
                 const topTD = this.doc.createElement('td');
-                topTD.colSpan = this.columns && this.columns.length ? this.columns.length : 1;
+                const columns = this.columns();
+                topTD.colSpan = columns && columns.length ? columns.length : 1;
                 this.topSpaceDiv = this.doc.createElement('div');
                 topTD.appendChild(this.topSpaceDiv);
                 topTR.appendChild(topTD);
-                this.tbody.nativeElement.prepend(topTR);
+                tbody.nativeElement.prepend(topTR);
 
                 spacingRowsAddedOrRemoved = true;
 
@@ -1919,11 +1978,12 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         if (!this.bottomSpaceDiv) {
             const bottomTR = this.doc.createElement('tr');
             const bottomTD = this.doc.createElement('td');
-            bottomTD.colSpan = this.columns && this.columns.length ? this.columns.length : 1;
+            const columns = this.columns();
+            bottomTD.colSpan = columns && columns.length ? columns.length : 1;
             this.bottomSpaceDiv = this.doc.createElement('div');
             bottomTD.appendChild(this.bottomSpaceDiv);
             bottomTR.appendChild(bottomTD);
-            this.tbody.nativeElement.appendChild(bottomTR);
+            this.tbody().nativeElement.appendChild(bottomTR);
 
             spacingRowsAddedOrRemoved = true;
 
@@ -1936,18 +1996,18 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         const oldBatchSizeForRenderingMoreRows = this.batchSizeForRenderingMoreRows;
         const oldBatchSizeForLoadingMoreRows = this.batchSizeForLoadingMoreRows;
         if (this.renderedSize > 0 && averageRowHeight > 0) {
-            const visibleAreaRows = Math.ceil(this.tbody.nativeElement.clientHeight / averageRowHeight);
+            const visibleAreaRows = Math.ceil(this.tbody().nativeElement.clientHeight / averageRowHeight);
 
             // initially render rows for 3 times the visible area - so 1 above and 1 below the visible area, but then when scrolling and
             // more rows are needed only render one more 'visible areas' of rows
-            this.batchSizeForRenderingMoreRows = Math.max(Math.ceil(visibleAreaRows * this.magicRenderBatchQ), this.performanceSettings.minBatchSizeForRenderingMoreRows);
+            this.batchSizeForRenderingMoreRows = Math.max(Math.ceil(visibleAreaRows * this.magicRenderBatchQ), this.performanceSettings().minBatchSizeForRenderingMoreRows);
             // initially load rows for 5 times the visible area - so 2 above and 2 below initial visible area, but then when scrolling and
             // more rows are needed only load two more 'visible areas' of rows
-            this.batchSizeForLoadingMoreRows = Math.max(Math.ceil(visibleAreaRows * this.magicLoadBatchQ), this.performanceSettings.minBatchSizeForLoadingMoreRows);
+            this.batchSizeForLoadingMoreRows = Math.max(Math.ceil(visibleAreaRows * this.magicLoadBatchQ), this.performanceSettings().minBatchSizeForLoadingMoreRows);
         } else {
             // just some defaults as we don't have enough info to calculate them
-            this.batchSizeForRenderingMoreRows = Math.max(26, this.performanceSettings.minBatchSizeForRenderingMoreRows);
-            this.batchSizeForLoadingMoreRows = Math.max(52, this.performanceSettings.minBatchSizeForLoadingMoreRows);
+            this.batchSizeForRenderingMoreRows = Math.max(26, this.performanceSettings().minBatchSizeForRenderingMoreRows);
+            this.batchSizeForLoadingMoreRows = Math.max(52, this.performanceSettings().minBatchSizeForLoadingMoreRows);
         }
 
         const batchSizesChanged = (oldBatchSizeForRenderingMoreRows !== this.batchSizeForRenderingMoreRows || oldBatchSizeForLoadingMoreRows !== this.batchSizeForLoadingMoreRows);
@@ -1970,13 +2030,13 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         // don't allow rendered rows to grow more then maxRenderedSize to avoid sluggish browser UI due to a too large DOM
         let changed = false;
 
-        const vp = this.foundset.viewPort;
+        const vp = this.foundset().viewPort;
         const allowedBounds = this.calculateAllowedLoadedDataBounds(); // { startIdx, size }
         const correctedLoadedStartIdx = Math.max(vp.startIndex, allowedBounds.startIdx);
         const correctedLoadedSize = Math.min(vp.startIndex + vp.size, allowedBounds.startIdx + allowedBounds.size) - correctedLoadedStartIdx;
         const minRenderSize = Math.min(this.getInitialRenderSize(), correctedLoadedSize);
 
-        if (!onlyIfMaxLimitReached || this.renderedSize > this.performanceSettings.maxRenderedRows) {
+        if (!onlyIfMaxLimitReached || this.renderedSize > this.performanceSettings().maxRenderedRows) {
             // remove some rendered rows as we have too many; keep rendered the ones that are really visible
 
             this.log.debug(this.log.buildMessage(() => 'svy extra table * shrinkRenderedViewport will reset rendered rows viewport as '
@@ -2014,14 +2074,15 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     }
 
     private runAndKeepScrollTopPosition(func: () => void) {
-        const prevScrollTop = this.tbody.nativeElement.scrollTop;
+        const prevScrollTop = this.tbody().nativeElement.scrollTop;
 
         func();
 
-        if (this.tbody.nativeElement.scrollTop !== prevScrollTop) {
+        const tbody = this.tbody();
+        if (tbody.nativeElement.scrollTop !== prevScrollTop) {
             this.log.debug(this.log.buildMessage(() => 'svy extra table * runAndKeepScrollTopPosition scrollTop has changed after execution; restoring... ('
-                + prevScrollTop + ', ' + this.tbody.nativeElement.scrollTop + ')'));
-            this.tbody.nativeElement.scrollTop = prevScrollTop;
+                + prevScrollTop + ', ' + this.tbody().nativeElement.scrollTop + ')'));
+            tbody.nativeElement.scrollTop = prevScrollTop;
         }
     }
     /**
@@ -2051,10 +2112,10 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         // don't allow loaded rows to grow more then maxRenderedSize to avoid sluggish browser UI due to a too large DOM
         let promise: Promise<any>;
 
-        const vp = this.foundset.viewPort;
+        const vp = this.foundset().viewPort;
         const allowedBounds = this.calculateAllowedLoadedDataBounds(); // { startIdx, size }
 
-        if (!keepMaxLoadedRows || vp.size > this.performanceSettings.maxLoadedRows) {
+        if (!keepMaxLoadedRows || vp.size > this.performanceSettings().maxLoadedRows) {
             // we need to shrink loaded rows
             this.log.debug(this.log.buildMessage(() => 'svy extra table * shrinkLoadedViewportNow will shrink loaded rows; '
                 + (keepMaxLoadedRows ? 'maxLoadedRows limit was passed (' + vp.size + ')' : 'user jumped fast to a non-loaded section of the list')));
@@ -2066,13 +2127,13 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                 if (visibleViewport[0] - vp.startIndex > vp.startIndex + vp.size - visibleViewport[0] - visibleViewport[1]) {
                     // load less records in the beginning (at least to match maxLoadedRows but even more if possible to avoid frequent load calls to server
                     // just for discarding loaded rows (limit it though to 200 to still keep data))
-                    promise = this.foundset.loadLessRecordsAsync(
-                        Math.max(vp.size - this.performanceSettings.maxLoadedRows, Math.min(200, Math.floor((this.renderedStartIndex - vp.startIndex) / 2)))); // positive int
+                    promise = this.foundset().loadLessRecordsAsync(
+                        Math.max(vp.size - this.performanceSettings().maxLoadedRows, Math.min(200, Math.floor((this.renderedStartIndex - vp.startIndex) / 2)))); // positive int
                 } else {
                     // load less records at the end (at least to match maxLoadedRows but even more if possible to avoid
                     // frequent load calls to server just for discarding loaded rows (limit it though to 200 to still keep data))
-                    promise = this.foundset.loadLessRecordsAsync(
-                        -Math.max(vp.size - this.performanceSettings.maxLoadedRows,
+                    promise = this.foundset().loadLessRecordsAsync(
+                        -Math.max(vp.size - this.performanceSettings().maxLoadedRows,
                             Math.min(200, Math.floor((vp.startIndex + vp.size - this.renderedStartIndex - this.renderedSize) / 2)))); // negative int
                 }
             } else {
@@ -2107,7 +2168,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
             let neededVpStart: number;
             let neededVpSize: number;
 
-            const fs = this.foundset;
+            const fs = this.foundset();
             const vpStart = fs.viewPort.startIndex;
             const vpSize = fs.viewPort.size;
 
@@ -2166,7 +2227,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         // well because for example when the foundset is first shown server sends a viewport around the selection - that might not adhere to the
         // bounds of the page of selection - and we don't want to render records that are not in that page; the loaded bounds will be corrected
         // by adjustLoadedRowsIfNeeded() anyway but that will happen later/async)
-        const vp = this.foundset.viewPort;
+        const vp = this.foundset().viewPort;
         const allowedBounds = this.calculateAllowedLoadedDataBounds(); // { startIdx, size }
         const correctedLoadedStartIdx = Math.max(vp.startIndex, allowedBounds.startIdx);
         const correctedLoadedSize = Math.max(0, Math.min(vp.startIndex + vp.size, allowedBounds.startIdx + allowedBounds.size) - correctedLoadedStartIdx);
@@ -2205,7 +2266,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     private smartLoadNeededViewport(neededVpStart: number, neededVpSize: number) {
         let newLoadingPromise: Promise<any>;
 
-        const fs = this.foundset;
+        const fs = this.foundset();
         const vpStart = fs.viewPort.startIndex;
         const vpSize = fs.viewPort.size;
 
@@ -2234,16 +2295,17 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
     private selectedIndexesChanged(newSelectedIdxs: Array<number>, oldSelectedIdxs: Array<number>, noScrollToSelection?: boolean) {
         if (newSelectedIdxs.length > 0) {
-            if (newSelectedIdxs !== oldSelectedIdxs || this.lastSelectionFirstElement !== newSelectedIdxs[0]) {
+            const lastSelectionFirstElement = this._lastSelectionFirstElement();
+            if (newSelectedIdxs !== oldSelectedIdxs || lastSelectionFirstElement !== newSelectedIdxs[0]) {
                 this.updateSelection(newSelectedIdxs, oldSelectedIdxs);
-                if (!noScrollToSelection && (this.lastSelectionFirstElement !== newSelectedIdxs[0])) {
+                if (!noScrollToSelection && (lastSelectionFirstElement !== newSelectedIdxs[0])) {
                     this.scrollToSelectionNeeded = true;
                     this.log.debug('svy extra table * selectedRowIndexes changed; scrollToSelectionNeeded = true');
                     this.scrollToSelectionIfNeeded();
                 }
             }
-            this.lastSelectionFirstElement = newSelectedIdxs[0];
-        } else this.lastSelectionFirstElement = -1;
+            this._lastSelectionFirstElement.set(newSelectedIdxs[0]);
+        } else this._lastSelectionFirstElement.set(-1);
     }
 
     private updateSelection(newValue: Array<number>, oldValue: Array<number>) {
@@ -2253,20 +2315,22 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         }
         if (newValue) {
             const toSelect = newValue.filter((i) => !oldValue || oldValue.indexOf(i) < 0);
-            this.updateTableRowSelectionClass(toSelect, this.selectionClass);
+            this.updateTableRowSelectionClass(toSelect, this.selectionClass());
         }
     }
 
     private updateTableRowSelectionClass(rowsFoundsetIdxArray: Array<number>, rowSelectionClass: string) {
-        if (!this.tbody) return;
-        const trChildren = this.tbody.nativeElement.children;
+        const tbody = this.tbody();
+        if (!tbody) return;
+        const trChildren = tbody.nativeElement.children;
         if (trChildren) {
             for (const value of rowsFoundsetIdxArray) {
                 const trIndex = value - this.renderedStartIndex;
                 if (trIndex >= (this.topSpaceDiv ? 1 : 0) && trIndex < trChildren.length - (this.bottomSpaceDiv ? 1 : 0)) {
                     const tr = trChildren.item(trIndex + (this.topSpaceDiv ? 1 : 0));
-                    if (this.rowStyleClassDataprovider && this.rowStyleClassDataprovider[value % this.pageSize])
-                        tr.className = this.rowStyleClassDataprovider[value % this.pageSize] + ' ' + rowSelectionClass;
+                    const rowStyleClassDataprovider = this.rowStyleClassDataprovider();
+                    if (rowStyleClassDataprovider && rowStyleClassDataprovider[value % this.pageSize()])
+                        tr.className = rowStyleClassDataprovider[value % this.pageSize()] + ' ' + rowSelectionClass;
                     else tr.className = rowSelectionClass;
                 }
             }
@@ -2275,14 +2339,14 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
     private getInitialRenderSize() {
         const potentialInitialRenderSize = Math.floor(this.batchSizeForRenderingMoreRows * 3);
-        return this.pageSize > 0 ? Math.min(potentialInitialRenderSize, this.pageSize) : potentialInitialRenderSize;
+        return this.pageSize() > 0 ? Math.min(potentialInitialRenderSize, this.pageSize()) : potentialInitialRenderSize;
     }
 
     // this is actually the preferred viewport size that the server will send automatically when foundset data completely changes
     // it should be maximum pageSize if that is > 0 or (when we implement it) -1 (so auto paging)
     private getInitialPreferredLoadedSize() {
         const potentialInitialViewportSize = Math.floor(this.batchSizeForLoadingMoreRows * 2.5);
-        return (this.pageSize > 0 && this.pageSize < potentialInitialViewportSize) ? this.pageSize : potentialInitialViewportSize;
+        return (this.pageSize() > 0 && this.pageSize() < potentialInitialViewportSize) ? this.pageSize() : potentialInitialViewportSize;
     }
 
     private setCellDivValue(column: Column, divElement: HTMLDivElement, value: any) {
@@ -2334,8 +2398,8 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
      * on top, then it WILL NOT return that first visible row (that is somewhere in the middle of the visible area).
      */
     private getFirstVisibleChild() {
-        const tbodyScrollTop = this.tbody.nativeElement.scrollTop;
-        const children = this.tbody.nativeElement.children;
+        const tbodyScrollTop = this.tbody().nativeElement.scrollTop;
+        const children = this.tbody().nativeElement.children;
         for (let i = (this.topSpaceDiv ? 1 : 0); i < children.length - (this.bottomSpaceDiv ? 1 : 0); i++) {
             const child = children[i] as HTMLElement;
             if (child.offsetTop >= tbodyScrollTop) {
@@ -2354,8 +2418,8 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     }
 
     private getLastVisibleChild() {
-        const tbodyScrollBottom = this.tbody.nativeElement.scrollTop + this.tbody.nativeElement.clientHeight;
-        const children = this.tbody.nativeElement.children;
+        const tbodyScrollBottom = this.tbody().nativeElement.scrollTop + this.tbody().nativeElement.clientHeight;
+        const children = this.tbody().nativeElement.children;
         for (let i = (this.topSpaceDiv ? 1 : 0); i < children.length - (this.bottomSpaceDiv ? 1 : 0); i++) {
             const child = children[i] as HTMLElement;
             if (child.offsetTop + child.offsetHeight >= tbodyScrollBottom) {
@@ -2368,7 +2432,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
     private getAverageRowHeight() {
         let averageRowHeight: number;
-        const children = this.tbody.nativeElement.children;
+        const children = this.tbody().nativeElement.children;
         const realRowCount = children.length - (this.topSpaceDiv ? 1 : 0) - (this.bottomSpaceDiv ? 1 : 0);
         if (realRowCount > 0) {
             const firstChild = children.item((this.topSpaceDiv ? 1 : 0)) as HTMLElement;
@@ -2386,10 +2450,11 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
     private calculateTableWidth() {
         let tableWidth = 0;
-        if (this.columns) {
-            for (let i = 0; i < this.columns.length; i++) {
-                if (!this.isAutoResizeColumn(i) && this.getNumberFromPxString(this.columns[i].initialWidth) > 0) {
-                    const w = this.getNumberFromPxString(this.columns[i].width);
+        const columns = this.columns();
+        if (columns) {
+            for (let i = 0; i < columns.length; i++) {
+                if (!this.isAutoResizeColumn(i) && this.getNumberFromPxString(columns[i].initialWidth) > 0) {
+                    const w = this.getNumberFromPxString(columns[i].width);
                     if (w > -1) {
                         tableWidth += w;
                     }
@@ -2428,18 +2493,19 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     }
 
     private isAutoResizeColumn(columnIdx: number): boolean {
-        return this.columns[columnIdx].autoResize || (this.columns[columnIdx].width === 'auto');
+        const columns = this.columns();
+        return columns[columnIdx].autoResize || (columns[columnIdx].width === 'auto');
     }
     private callFocusLost(e: any) {
         if (!this.skipOnce) {
-            this.onFocusLostMethodID(e);
+            this.onFocusLostMethodID()(e);
         }
         this.skipOnce = false;
     }
 
     private callFocusGained(e: any) {
         if (!this.skipOnce) {
-            this.onFocusGainedMethodID(e);
+            this.onFocusGainedMethodID()(e);
         }
         this.skipOnce = false;
     }
@@ -2449,7 +2515,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         let sumColumnsWithPercentage = 0;
 
         for (const autoColumnIdx of Object.keys(this.autoColumns.columns)) {
-            let w = this.columns[autoColumnIdx].width;
+            let w = this.columns()[autoColumnIdx].width;
             if (w) {
                 w = w.trim();
                 if (w.indexOf('%') === w.length - 1) {
@@ -2467,9 +2533,9 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
     private getAutoResizeColumnsWidth() {
         let autoColumnsWidth = 0;
-        for (let i = 0; i < this.columns.length; i++) {
+        for (let i = 0; i < this.columns().length; i++) {
             if (this.autoColumns.autoResize[i] && this.autoColumns.minWidth[i] > 0) {
-                autoColumnsWidth += this.getNumberFromPxString(this.columns[i].width);
+                autoColumnsWidth += this.getNumberFromPxString(this.columns()[i].width);
             }
         }
         return autoColumnsWidth;
@@ -2481,9 +2547,9 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         // if extraWidth was appended to last auto-resize column then remove it, and append it to delta
         if (this.extraWidth) {
             fixedDelta += this.extraWidth;
-            let w = this.getNumberFromPxString(this.columns[this.extraWidthColumnIdx].width);
+            let w = this.getNumberFromPxString(this.columns()[this.extraWidthColumnIdx].width);
             w += (0 - this.extraWidth);
-            this.columns[this.extraWidthColumnIdx].width = w + 'px';
+            this.columns()[this.extraWidthColumnIdx].width = w + 'px';
         }
 
         this.columnStyleCache = [];
@@ -2492,20 +2558,20 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
         let usedDelta = 0;
         let lastAutoColumnIdx = -1;
-        for (let i = 0; i < this.columns.length; i++) {
+        for (let i = 0; i < this.columns().length; i++) {
             if (this.autoColumns.autoResize[i]) {
                 if (this.autoColumns.minWidth[i] > 0) {
-                    const oldW = this.getNumberFromPxString(this.columns[i].width);
+                    const oldW = this.getNumberFromPxString(this.columns()[i].width);
                     let w = Math.floor(oldW * newWidth / oldWidth);
 
                     if (w < this.autoColumns.minWidth[i]) {
                         w = this.autoColumns.minWidth[i];
                     }
-                    this.columns[i].width = w + 'px';
+                    this.columns()[i].width = w + 'px';
                     usedDelta += (w - oldW);
                     lastAutoColumnIdx = i;
                 } else {
-                    this.columns[i].width = this.columns[i].initialWidth;
+                    this.columns()[i].width = this.columns()[i].initialWidth;
                 }
             }
         }
@@ -2515,19 +2581,19 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
             this.extraWidthColumnIdx = lastAutoColumnIdx;
             if (this.extraWidth) {
                 if (fixedDelta < 0) this.extraWidth = 0 - this.extraWidth;
-                let w = this.getNumberFromPxString(this.columns[lastAutoColumnIdx].width);
+                let w = this.getNumberFromPxString(this.columns()[lastAutoColumnIdx].width);
                 w += this.extraWidth;
-                this.columns[lastAutoColumnIdx].width = w + 'px';
+                this.columns()[lastAutoColumnIdx].width = w + 'px';
             }
         }
     }
 
     private getFoundsetIndexFromViewportIndex(idx: number) {
-        return this.foundset.viewPort.startIndex + idx;
+        return this.foundset().viewPort.startIndex + idx;
     }
 
     private getViewportIndexFromFoundsetIndex(idx: number) {
-        return idx - this.foundset.viewPort.startIndex;
+        return idx - this.foundset().viewPort.startIndex;
     }
 
     // this function also adjusts current page if needed (if it's after the foundset size for example)
@@ -2535,25 +2601,26 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         let allowedStart: number;
         let allowedSize: number;
 
-        const fs = this.foundset;
+        const fs = this.foundset();
         const serverSize = fs.serverSize;
         if (this.showPagination()) {
             // paging mode only keeps data for the showing page - at maximum
-            allowedStart = this.pageSize * (this.currentPage - 1);
-            if (!this.foundset.hasMoreRows && allowedStart >= serverSize) {
+            allowedStart = this.pageSize() * (this._currentPage() - 1);
+            const foundset = this.foundset();
+            if (!foundset.hasMoreRows && allowedStart >= serverSize) {
                 // this page no longer exists; it is after serverSize; adjust current page and that watch on that will request the correct viewport
                 this.setCurrentPage(this.getPageForIndex(serverSize - 1));
-                allowedStart = this.pageSize * (this.currentPage - 1);
+                allowedStart = this.pageSize() * (this._currentPage() - 1);
             }
 
             let newAllowedSize: number;
-            if (allowedStart >= serverSize && this.foundset.hasMoreRows) {
-                newAllowedSize = this.pageSize;
+            if (allowedStart >= serverSize && foundset.hasMoreRows) {
+                newAllowedSize = this.pageSize();
             } else {
                 newAllowedSize = serverSize - allowedStart;
             }
 
-            allowedSize = Math.min(this.pageSize, newAllowedSize);
+            allowedSize = Math.min(this.pageSize(), newAllowedSize);
         } else {
             // table is not going to show/use pages; so we can think of it as one big page
             this.setCurrentPage(1); // just to be sure - we are not paging so we are on first "page"
@@ -2565,7 +2632,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     }
 
     private getPageForIndex(idx: number) {
-        return Math.floor(Math.max(idx, 0) / this.pageSize) + 1;
+        return Math.floor(Math.max(idx, 0) / this.pageSize()) + 1;
     }
 
     private getComponentWidth() {
@@ -2584,26 +2651,27 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         if (this.isVisible(tblHead)) {
             tBodyStyle.top = tblHead.clientHeight + 'px';
         }
+        const pager = this.pager();
         if (this.showPagination()) {
-            if (this.pager) {
-                tBodyStyle.marginBottom = (this.pager.nativeElement.clientHeight + 2) + 'px';
+            if (pager) {
+                tBodyStyle.marginBottom = (pager.nativeElement.clientHeight + 2) + 'px';
             }
         }
-        if (this.responsiveDynamicHeight && this.responsiveHeight > 0) {
+        if (this.responsiveDynamicHeight() && this.responsiveHeight() > 0) {
             let h = 0;
-            if (this.pager) {
-                h += this.pager.nativeElement.clientHeight;
+            if (pager) {
+                h += pager.nativeElement.clientHeight;
             }
             const rows = this.getNativeElement().querySelectorAll('tr');
             for (let i = 0; i < rows.length; i++) {
                 h += rows.item(i).clientHeight;
-                if (h > this.responsiveHeight) {
+                if (h > this.responsiveHeight()) {
                     break;
                 }
             }
 
             // make sure no scrollbar is shown in this scenario
-            if (h < this.responsiveHeight) {
+            if (h < this.responsiveHeight()) {
                 tBodyStyle['overflow-y'] = 'hidden';
             } else  {
 				tBodyStyle['overflow-y'] = 'auto';
@@ -2611,35 +2679,39 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         }
 
         for (const key of Object.keys(tBodyStyle)) {
-            this.tbody.nativeElement.style[key] = tBodyStyle[key];
+            this.tbody().nativeElement.style[key] = tBodyStyle[key];
         }
     }
 
 
     private setCurrentPage(newCurrentPage: number) {
-        if (this.currentPage !== newCurrentPage) {
-            this.currentPage = newCurrentPage;
+        if (this._currentPage() !== newCurrentPage) {
+            this._currentPage.set(newCurrentPage);
             this.renderedStartIndex = 0;
             this.renderedSize = -1; // when we change page make sure rendered rows will be as many as needed again (just in case for example previously rendered rows were just a few of last page)
             this.adjustLoadedRowsIfNeeded();
         }
     }
     private showPagination() {
-        return this.pageSize && this.foundset && (this.foundset.serverSize > this.pageSize || this.foundset.hasMoreRows);
+        const foundset = this.foundset();
+        const pageSize = this.pageSize();
+        return pageSize && foundset && (foundset.serverSize > pageSize || foundset.hasMoreRows);
     }
 
     private doFoundsetSQLSort(column: number) {
-        if (this.columns[column].dataprovider) {
-            const sortCol = this.columns[column].dataprovider.idForFoundset;
+        const columns = this.columns();
+        if (columns[column].dataprovider) {
+            const sortCol = columns[column].dataprovider.idForFoundset;
             let sqlSortDirection: ('asc' | 'desc') = 'asc';
-            if (this.foundset.sortColumns) {
-                const sortColumnsA = this.foundset.sortColumns.split(' ');
+            const foundset = this.foundset();
+            if (foundset.sortColumns) {
+                const sortColumnsA = foundset.sortColumns.split(' ');
                 if (sortCol === sortColumnsA[0]) {
                     sqlSortDirection = sortColumnsA[1].toLowerCase() === 'asc' ? 'desc' : 'asc';
                 }
             }
-            this.foundset.sortColumns = sortCol + ' ' + sqlSortDirection;
-            this.foundset.sort([{ name: sortCol, direction: sqlSortDirection }]);
+            foundset.sortColumns = sortCol + ' ' + sqlSortDirection;
+            foundset.sort([{ name: sortCol, direction: sqlSortDirection }]);
         }
     }
 
@@ -2647,19 +2719,19 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         // foundsetSize or pageSize     -> scrollHeightPX
         // visibleSize                  -> visibleAreaHeightPX
         // visibleStartIndex            -> visibleAreaScrollStartPX + previousPages
-        const scrollHeightPX = this.tbody.nativeElement.scrollHeight;
-        const visibleAreaHeightPX = this.tbody.nativeElement.clientHeight;
-        const visibleAreaScrollStartPX = this.tbody.nativeElement.scrollTop;
+        const scrollHeightPX = this.tbody().nativeElement.scrollHeight;
+        const visibleAreaHeightPX = this.tbody().nativeElement.clientHeight;
+        const visibleAreaScrollStartPX = this.tbody().nativeElement.scrollTop;
 
         let visibleViewportStart: number;
         let visibleViewportSize: number;
-        const fs = this.foundset;
+        const fs = this.foundset();
 
         // calculate values as if scrollbar was not there for now
         if (this.showPagination()) {
             // table is using pages; so visible index is previous pages, what we add now + offset in current page (which we add later if scrollbar is present)
-            visibleViewportStart = this.pageSize * (this.currentPage - 1);
-            visibleViewportSize = Math.min(this.pageSize, fs.serverSize - visibleViewportStart);
+            visibleViewportStart = this.pageSize() * (this._currentPage() - 1);
+            visibleViewportSize = Math.min(this.pageSize(), fs.serverSize - visibleViewportStart);
         } else {
             visibleViewportStart = 0;
             visibleViewportSize = fs.serverSize;
@@ -2677,7 +2749,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         visibleViewportSize = Math.ceil(visibleAreaHeightPX * (visibleViewportSize / scrollHeightPX));
 
         this.log.spam(this.log.buildMessage(() => 'svy extra table * getVisibleArea: ' + visibleViewportStart + ', ' + visibleViewportSize));
-        this.log.spam(this.log.buildMessage(() => 'svy extra table * getVisibleArea scrollTop: ' + this.tbody.nativeElement.scrollTop));
+        this.log.spam(this.log.buildMessage(() => 'svy extra table * getVisibleArea scrollTop: ' + this.tbody().nativeElement.scrollTop));
 
         return [visibleViewportStart, visibleViewportSize];
     }

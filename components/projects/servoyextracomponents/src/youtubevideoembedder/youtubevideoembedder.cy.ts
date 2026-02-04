@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, signal } from '@angular/core';
 import { ServoyApi, ServoyApiTesting, ServoyPublicTestingModule } from '@servoy/public';
 import { ServoyExtraYoutubeVideoEmbedder } from './youtubevideoembedder';
 import { MountConfig } from 'cypress/angular';
@@ -7,66 +7,91 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
     template: `<servoyextra-youtubevideoembedder 
-                [servoyApi]="servoyApi"
-                [allowFullScreen]="allowFullScreen"
-                [autoPlay]="autoPlay"
-                [dataProviderID]="dataProviderID"
-                [embeddedVideoURL]="embeddedVideoURL"
-                [modestBranding]="modestBranding"
-                [showControls]="showControls"
-                [showRelatedVideosAtEnd]="showRelatedVideosAtEnd"
-                [styleClass] = "styleClass"
-                [tabSeq] = "tabSeq"
-                [videoHeight]="videoHeight"
-                [videoWidth]="videoWidth"
+                [servoyApi]="servoyApi()"
+                [allowFullScreen]="allowFullScreen()"
+                [autoPlay]="autoPlay()"
+                [dataProviderID]="dataProviderID()"
+                [embeddedVideoURL]="embeddedVideoURL()"
+                [modestBranding]="modestBranding()"
+                [showControls]="showControls()"
+                [showRelatedVideosAtEnd]="showRelatedVideosAtEnd()"
+                [styleClass] = "styleClass()"
+                [tabSeq] = "tabSeq()"
+                [videoHeight]="videoHeight()"
+                [videoWidth]="videoWidth()"
                 (dataProviderIDChange)="dataProviderIDChange($event)"
                 #element>
                 </servoyextra-youtubevideoembedder>`,
     standalone: false
 })
 class WrapperComponent {
-    servoyApi: ServoyApi;
+    servoyApi = signal<ServoyApi>(undefined);
 
-    allowFullScreen: boolean;
-    autoPlay: boolean;
-    dataProviderID: any;
-    embeddedVideoURL: string;
-    modestBranding: boolean;
-    showControls: boolean;
-    showRelatedVideosAtEnd: boolean;
-    styleClass: string;
-    tabSeq: number;
-    videoHeight: number;
-    videoWidth: number;
+    allowFullScreen = signal<boolean>(undefined);
+    autoPlay = signal<boolean>(undefined);
+    dataProviderID = signal<any>(undefined);
+    embeddedVideoURL = signal<string>(undefined);
+    modestBranding = signal<boolean>(undefined);
+    showControls = signal<boolean>(undefined);
+    showRelatedVideosAtEnd = signal<boolean>(undefined);
+    styleClass = signal<string>(undefined);
+    tabSeq = signal<number>(undefined);
+    videoHeight = signal<number>(undefined);
+    videoWidth = signal<number>(undefined);
 
-    dataProviderIDChange = (newData: any) => { };
+    dataProviderIDChange = () => { };
 
     @ViewChild('element') element: ServoyExtraYoutubeVideoEmbedder;
 }
 
-describe('ServoyExtraYoutubeVideoEmbedder', () => {
-    const servoyApiSpy = new ServoyApiTesting();
+const defaultValues = {
+    styleClass: 'youtube-test',
+    tabSeq: 0,
+    allowFullScreen: false,
+    autoPlay: false,
+    embeddedVideoURL: 'https://www.youtube.com/embed/2xYLTfDQJLw',
+    showControls: true,
+    dataProviderID: null as any,
+    modestBranding: false,
+    showRelatedVideosAtEnd: false,
+    videoHeight: 0,
+    videoWidth: 0,
+    servoyApi: new ServoyApiTesting(),
+    dataProviderIDChange: () => { }
+};
 
-    const config: MountConfig<WrapperComponent> = {
-        declarations: [ServoyExtraYoutubeVideoEmbedder],
-        imports: [ServoyPublicTestingModule, FormsModule]
+function applyDefaultProps(wrapper) {
+    for (const key in defaultValues) {
+        if (wrapper.component[key] && typeof wrapper.component[key].set === 'function') {
+            wrapper.component[key].set(defaultValues[key]);
+        }
+        else {
+            wrapper.component[key] = defaultValues[key];
+        }
     }
+}
 
+const configWrapper: MountConfig<WrapperComponent> = {
+    declarations: [ServoyExtraYoutubeVideoEmbedder],
+    imports: [ServoyPublicTestingModule, FormsModule]
+};
+
+describe('ServoyExtraYoutubeVideoEmbedder', () => {
     beforeEach(() => {
-        config.componentProperties = {
-            servoyApi: servoyApiSpy,
-            styleClass: 'youtube-test',
-            tabSeq: 0,
-            allowFullScreen: false,
-            autoPlay: false,
-            embeddedVideoURL: 'https://www.youtube.com/embed/2xYLTfDQJLw',
-            showControls: true,
-        };
+        defaultValues.styleClass = 'youtube-test';
+        defaultValues.tabSeq = 0;
+        defaultValues.allowFullScreen = false;
+        defaultValues.autoPlay = false;
+        defaultValues.embeddedVideoURL = 'https://www.youtube.com/embed/2xYLTfDQJLw';
+        defaultValues.showControls = true;
+        defaultValues.dataProviderIDChange = () => { };
     });
 
     it('should mount and register the component', () => {
+        const servoyApiSpy = defaultValues.servoyApi;
         const registerComponent = cy.stub(servoyApiSpy, 'registerComponent');
-        cy.mount(WrapperComponent, config).then(() => {
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('.youtube-test').should('exist').then(() => {
                 cy.wrap(registerComponent).should('be.called');
             });
@@ -74,21 +99,21 @@ describe('ServoyExtraYoutubeVideoEmbedder', () => {
     });
 
     it('show a style class', () => {
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('servoyextra-youtubevideoembedder iframe').should('not.have.class', 'mystyleclass').then(() => {
-                wrapper.component.styleClass = 'mystyleclass';
-                wrapper.fixture.detectChanges();
+                wrapper.component.styleClass.set('mystyleclass');
                 cy.get('servoyextra-youtubevideoembedder iframe').should('have.class', 'mystyleclass');
             });
         });
     });
 
     it('show more then 1 style class', () => {
-        config.componentProperties.styleClass = 'mystyleclass';
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        defaultValues.styleClass = 'mystyleclass';
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('servoyextra-youtubevideoembedder iframe').should('have.class', 'mystyleclass').then(() => {
-                wrapper.component.styleClass = 'classA classB';
-                wrapper.fixture.detectChanges();
+                wrapper.component.styleClass.set('classA classB');
                 cy.get('servoyextra-youtubevideoembedder iframe').should('have.class', 'classA').should('have.class', 'classB');
             });
         });
@@ -96,11 +121,11 @@ describe('ServoyExtraYoutubeVideoEmbedder', () => {
 
     it('should not emit dataProviderIDChange event dataprovider change', () => {
         const dataProviderIDChange = cy.stub();
-        config.componentProperties.dataProviderIDChange = dataProviderIDChange;
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        defaultValues.dataProviderIDChange = dataProviderIDChange;
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('servoyextra-youtubevideoembedder iframe').invoke('attr', 'src').should('contain', '2xYLTfDQJLw').then(() => {
-                wrapper.component.dataProviderID = 'https://www.youtube.com/embed/5MJEK-5LPS8';
-                wrapper.fixture.detectChanges();
+                wrapper.component.dataProviderID.set('https://www.youtube.com/embed/5MJEK-5LPS8');
                 expect(dataProviderIDChange).not.to.have.been.called;
                 cy.get('servoyextra-youtubevideoembedder iframe').invoke('attr', 'src').should('contain', '5MJEK-5LPS8');
             });
@@ -108,27 +133,28 @@ describe('ServoyExtraYoutubeVideoEmbedder', () => {
     });
 
     it('should auto play the video', () => {
-        config.componentProperties.autoPlay = true;
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.autoPlay = true;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('servoyextra-youtubevideoembedder iframe').invoke('attr', 'src').should('contain', 'autoplay=1');
         });
     });
 
     it('should hide Controls', () => {
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('servoyextra-youtubevideoembedder iframe').invoke('attr', 'src').should('not.contain', 'controls=0').then(() => {
-                wrapper.component.showControls = false;
-                wrapper.fixture.detectChanges();
+                wrapper.component.showControls.set(false);
                 cy.get('servoyextra-youtubevideoembedder iframe').invoke('attr', 'src').should('contain', 'controls=0');
             });
         });
     });
 
     it('should show fullscreen', () => {
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('servoyextra-youtubevideoembedder iframe').invoke('attr', 'src').should('contain', 'fs=0').then(() => {
-                wrapper.component.allowFullScreen = true;
-                wrapper.fixture.detectChanges();
+                wrapper.component.allowFullScreen.set(true);
                 cy.get('servoyextra-youtubevideoembedder iframe').invoke('attr', 'src').should('not.contain', 'fs=0');
             });
         });

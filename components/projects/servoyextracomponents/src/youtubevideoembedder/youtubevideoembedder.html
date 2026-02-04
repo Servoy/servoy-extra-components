@@ -1,17 +1,17 @@
 @if (!servoyApi.isInDesigner()) {
   <iframe
     #element
-    [width]="videoWidth"
-    [height]="videoHeight"
-    [ngClass]="styleClass"
-    [sabloTabseq]="tabSeq"
+    [width]="videoWidth()"
+    [height]="videoHeight()"
+    [ngClass]="styleClass()"
+    [sabloTabseq]="tabSeq()"
     [id]="servoyApi.getMarkupId()"
     [src]="fullYoutubeURL"
     allowfullscreen
   ></iframe>
 }
 @if (servoyApi.isInDesigner()) {
-  <div  #element class="youtubevideoembedder-designer-container" [style.width.px]="videoWidth" [style.height.px]="videoHeight">
+  <div  #element class="youtubevideoembedder-designer-container" [style.width.px]="videoWidth()" [style.height.px]="videoHeight()">
     <i class="fab fa-youtube fa-10x youtubevideoembedder-designer-icon"></i>
   </div>
 }

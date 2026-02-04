@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, signal } from '@angular/core';
 import { Format, IValuelist, ServoyApi, ServoyApiTesting, ServoyPublicTestingModule } from '@servoy/public';
 import { ServoyExtraSelect2Tokenizer } from './select2tokenizer';
 import { Select2 } from 'ng-select2-component';
@@ -8,134 +8,143 @@ import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 
 @Component({
-    template: `<servoyextra-select2tokenizer [servoyApi]="servoyApi"
+    template: `<servoyextra-select2tokenizer [servoyApi]="servoyApi()"
                 [onDataChangeMethodID]="onDataChangeMethodID"
                 [onFocusGainedMethodID]="onFocusGainedMethodID"
                 [onFocusLostMethodID]="onFocusLostMethodID"
-                [allowNewEntries] = "allowNewEntries"
-                [clearSearchTextOnSelect] = "clearSearchTextOnSelect"
-                [closeOnSelect] = "closeOnSelect"
-                [containSearchText] = "containSearchText"
-                [dataProviderID] = "dataProviderID"
+                [allowNewEntries] = "allowNewEntries()"
+                [clearSearchTextOnSelect] = "clearSearchTextOnSelect()"
+                [closeOnSelect] = "closeOnSelect()"
+                [containSearchText] = "containSearchText()"
+                [dataProviderID] = "dataProviderID()"
                 (dataProviderIDChange)="dataProviderIDChange($event)"
-                [editable] = "editable"
-                [enabled] = "enabled"
-                [maximumSelectionSize] = "maximumSelectionSize"
-                [noMatchesFoundText] = "noMatchesFoundText"
-                [openOnUnselect] = "openOnUnselect"
-                [placeholderText] = "placeholderText"
-                [selectOnClose] = "selectOnClose"
-                [styleClass] = "styleClass"
-                [tabSeq] = "tabSeq"
-                [toolTipText] = "toolTipText"
-                [valuelistID] = "valuelistID"
-                [format] = "format"
-                [readOnly] = "readOnly"
-                [hideSelectedItems] = "hideSelectedItems"
-                [overlayMode] = "overlayMode"
+                [editable] = "editable()"
+                [enabled] = "enabled()"
+                [maximumSelectionSize] = "maximumSelectionSize()"
+                [noMatchesFoundText] = "noMatchesFoundText()"
+                [openOnUnselect] = "openOnUnselect()"
+                [placeholderText] = "placeholderText()"
+                [selectOnClose] = "selectOnClose()"
+                [styleClass] = "styleClass()"
+                [tabSeq] = "tabSeq()"
+                [toolTipText] = "toolTipText()"
+                [valuelistID] = "valuelistID()"
+                [format] = "format()"
+                [readOnly] = "readOnly()"
+                [hideSelectedItems] = "hideSelectedItems()"
+                [overlayMode] = "overlayMode()"
                 #element>
                 </servoyextra-select2tokenizer>`,
     standalone: false
 })
 class WrapperComponent {
-    servoyApi: ServoyApi;
+    servoyApi = signal<ServoyApi>(undefined);
 
-    onDataChangeMethodID: (e: Event, data?: unknown) => void;
-    onFocusGainedMethodID: (e: Event, data?: unknown) => void;
-    onFocusLostMethodID: (e: Event, data?: unknown) => void;
+    onDataChangeMethodID = () => { };
+    onFocusGainedMethodID = () => { };
+    onFocusLostMethodID = () => { };
 
-    allowNewEntries: boolean;
-    clearSearchTextOnSelect: boolean;
-    closeOnSelect: boolean;
-    containSearchText: boolean;
-    dataProviderID: unknown;
-    editable: boolean;
-    enabled: boolean;
-    maximumSelectionSize: number;
-    noMatchesFoundText: string;
-    openOnUnselect: boolean;
-    placeholderText: string;
-    selectOnClose: boolean;
-    styleClass: string;
-    tabSeq: number;
-    toolTipText: string;
-    valuelistID: IValuelist;
-    format: Format;
-    readOnly: boolean;
-    hideSelectedItems: boolean;
-    overlayMode: boolean;
+    allowNewEntries = signal<boolean>(undefined);
+    clearSearchTextOnSelect = signal<boolean>(undefined);
+    closeOnSelect = signal<boolean>(undefined);
+    containSearchText = signal<boolean>(undefined);
+    dataProviderID = signal<unknown>(undefined);
+    editable = signal<boolean>(undefined);
+    enabled = signal<boolean>(undefined);
+    maximumSelectionSize = signal<number>(undefined);
+    noMatchesFoundText = signal<string>(undefined);
+    openOnUnselect = signal<boolean>(undefined);
+    placeholderText = signal<string>(undefined);
+    selectOnClose = signal<boolean>(undefined);
+    styleClass = signal<string>(undefined);
+    tabSeq = signal<number>(undefined);
+    toolTipText = signal<string>(undefined);
+    valuelistID = signal<IValuelist>(undefined);
+    format = signal<Format>(undefined);
+    readOnly = signal<boolean>(undefined);
+    hideSelectedItems = signal<boolean>(undefined);
+    overlayMode = signal<boolean>(undefined);
 
-    dataProviderIDChange = (newData: unknown) => { };
+    dataProviderIDChange = () => { };
 
     @ViewChild('element') element: ServoyExtraSelect2Tokenizer;
     @ViewChild(Select2) select2: Select2;
 }
 
-describe('ServoyExtraSelect2Tokenizer', () => {
-    let servoyApiSpy;
-    let mockData;
+const mockData = [{
+    "displayValue": "one",
+    "realValue": 1
+},
+{
+    "displayValue": "two",
+    "realValue": 2
+},
+{
+    "displayValue": "three",
+    "realValue": 3
+},
+{
+    "displayValue": "four",
+    "realValue": 4
+}] as IValuelist;
+mockData.hasRealValues = () => { return true; };
+mockData.filterList = (value) => { return of(mockData.filter(item => item.displayValue.includes(value))); };
+mockData.getDisplayValue = (value) => {
+    const item = mockData.find(({ realValue }) => realValue === value);
+    if (item) return of(item.displayValue);
+    return of(value + '');
+};
 
-    const config: MountConfig<WrapperComponent> = {
-        declarations: [ServoyExtraSelect2Tokenizer],
-        imports: [ServoyPublicTestingModule, FormsModule, Select2]
+const defaultValues = {
+    servoyApi: new ServoyApiTesting(),
+    allowNewEntries: true,
+    clearSearchTextOnSelect: false,
+    closeOnSelect: true,
+    containSearchText: true,
+    dataProviderID: '1',
+    editable: true,
+    enabled: true,
+    maximumSelectionSize: 0,
+    noMatchesFoundText: 'No matches found',
+    openOnUnselect: true,
+    placeholderText: 'Select...',
+    selectOnClose: true,
+    styleClass: 'select2-sm',
+    tabSeq: 0,
+    toolTipText: '',
+    valuelistID: mockData,
+    format: { "type": "TEXT" } as Format,
+    readOnly: false,
+    hideSelectedItems: false,
+    overlayMode: undefined,
+    onDataChangeMethodID: undefined,
+    onFocusGainedMethodID: undefined,
+    onFocusLostMethodID: undefined
+};
+
+function applyDefaultProps(wrapper) {
+    for (const key in defaultValues) {
+        if (wrapper.component[key] && typeof wrapper.component[key].set === 'function') {
+            wrapper.component[key].set(defaultValues[key]);
+        }
+        else {
+            wrapper.component[key] = defaultValues[key];
+        }
     }
+}
 
-    beforeEach(() => {
-        servoyApiSpy = new ServoyApiTesting();
+const configWrapper: MountConfig<WrapperComponent> = {
+    declarations: [ServoyExtraSelect2Tokenizer],
+    imports: [ServoyPublicTestingModule, FormsModule, Select2]
+};
 
-        mockData = [{
-            "displayValue": "one",
-            "realValue": 1
-        },
-        {
-            "displayValue": "two",
-            "realValue": 2
-        },
-        {
-            "displayValue": "three",
-            "realValue": 3
-        },
-        {
-            "displayValue": "four",
-            "realValue": 4
-        }] as IValuelist;
-        mockData.hasRealValues = () => { return true; };
-        mockData.filterList = (value) => { return mockData.filter(item => item.displayValue.includes(value)); };
-        mockData.getDisplayValue = (value) => {
-            const item = mockData.find(({ realValue }) => realValue === value);
-            if (item) return of(item.displayValue);
-            return of(value + '');
-        };
-
-        config.componentProperties = {
-            servoyApi: servoyApiSpy,
-            allowNewEntries: true,
-            clearSearchTextOnSelect: false,
-            closeOnSelect: true,
-            containSearchText: true,
-            dataProviderID: '1',
-            editable: true,
-            enabled: true,
-            maximumSelectionSize: 0,
-            noMatchesFoundText: 'No matches found',
-            openOnUnselect: true,
-            placeholderText: 'Select...',
-            selectOnClose: true,
-            styleClass: 'select2-sm',
-            tabSeq: 0,
-            toolTipText: '',
-            valuelistID: mockData,
-            format: { "type": "TEXT" } as Format,
-            readOnly: false,
-            hideSelectedItems: false
-        };
-
-        cy.mount(WrapperComponent, config);
-    });
+describe('ServoyExtraSelect2Tokenizer', () => {
 
     it('should mount and register the component', () => {
+        const servoyApiSpy = defaultValues.servoyApi;
         const registerComponent = cy.stub(servoyApiSpy, 'registerComponent');
-        cy.mount(WrapperComponent, config).then(() => {
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('select2').should('exist').then(() => {
                 cy.wrap(registerComponent).should('be.called');
             });
@@ -143,61 +152,64 @@ describe('ServoyExtraSelect2Tokenizer', () => {
     });
 
     it('should set the placeholder text', () => {
-        config.componentProperties.dataProviderID = '';
-        config.componentProperties.placeholderText = 'Enter your name';
-        cy.mount(WrapperComponent, config).then(() => {
-            cy.get('select2 ul span').should('have.text', config.componentProperties.placeholderText);
+        defaultValues.dataProviderID = '';
+        defaultValues.placeholderText = 'Enter your name';
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
+            cy.get('select2 ul span').should('have.text', defaultValues.placeholderText);
         });
     });
 
     it('should show the dataprovider value', () => {
-        config.componentProperties.dataProviderID = '2';
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.dataProviderID = '2';
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('select2 ul li').should('have.attr', 'title', 'two');
         });
     });
 
     it('show a style class', () => {
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('select2').closest('div').should('not.have.class', 'mystyleclass').then(() => {
-                wrapper.component.styleClass = 'mystyleclass';
-                wrapper.fixture.detectChanges();
+                wrapper.component.styleClass.set('mystyleclass');
                 cy.get('select2').closest('div').should('have.class', 'mystyleclass');
             });
         });
     });
 
     it('show more then 1 style class', () => {
-        config.componentProperties.styleClass = 'mystyleclass';
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        defaultValues.styleClass = 'mystyleclass';
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('select2').closest('div').should('have.class', 'mystyleclass').then(() => {
-                wrapper.component.styleClass = 'classA classB';
-                wrapper.fixture.detectChanges();
+                wrapper.component.styleClass.set('classA classB');
                 cy.get('select2').closest('div').should('have.class', 'classA').should('have.class', 'classB');
             });
         });
     });
 
     it('should be read-only', () => {
-        config.componentProperties.readOnly = true;
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.readOnly = true;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('div.select2-container--readonly').should('exist');
         });
     });
 
     it('should be editable', () => {
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.readOnly = false;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('div.select2-container--readonly').should('not.exist');
         });
     });
 
     it('should handle select on enter', () => {
-        cy.mount(WrapperComponent, config).then(() => {
-            // you need to test if the value is there for the component to be fully initialized
-            // just getting the input (of the textbox) can result in that it is not fully mounted yet (svnOnchanges not called yet)
-            // and focus() will bomb out because the Format property is not yet set
+        defaultValues.dataProviderID = '1';
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('select2 ul li').first().should('have.attr', 'title', 'one').focus().then(() => {
-                // see the commands.ts file in the cypress/support folder for the have.selection example
                 cy.get('select2 ul li').should('have.attr', 'title', 'one');
             });
         });
@@ -205,8 +217,9 @@ describe('ServoyExtraSelect2Tokenizer', () => {
 
     it('should handle focus gained event', () => {
         const onFocusGainedMethodID = cy.stub();
-        config.componentProperties.onFocusGainedMethodID = onFocusGainedMethodID;
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.onFocusGainedMethodID = onFocusGainedMethodID;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('select2').click().then(() => {
                 cy.wrap(onFocusGainedMethodID).should('be.called');
             });
@@ -215,8 +228,9 @@ describe('ServoyExtraSelect2Tokenizer', () => {
 
     it('should handle focus lost event', () => {
         const onFocusLostMethodID = cy.stub();
-        config.componentProperties.onFocusLostMethodID = onFocusLostMethodID;
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.onFocusLostMethodID = onFocusLostMethodID;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('select2').click().click({ force: true }).then(() => {
                 cy.wrap(onFocusLostMethodID).should('be.called');
             });
@@ -225,9 +239,10 @@ describe('ServoyExtraSelect2Tokenizer', () => {
 
     it('should emit dataProviderIDChange event on input change', () => {
         const dataProviderIDChange = cy.stub();
-        config.componentProperties.dataProviderIDChange = dataProviderIDChange;
-        config.componentProperties.dataProviderID = '';
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.dataProviderID = '';
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
+            wrapper.component.dataProviderIDChange = dataProviderIDChange;
             cy.get('select2').click().then(() => {
                 cy.get('input').type('two{enter}').then(() => {
                     cy.wrap(dataProviderIDChange).should('have.been.calledWith', 2);
@@ -238,26 +253,25 @@ describe('ServoyExtraSelect2Tokenizer', () => {
 
     it('should not emit dataProviderIDChange event dataprovider change', () => {
         const dataProviderIDChange = cy.stub();
-        config.componentProperties.dataProviderIDChange = dataProviderIDChange;
-        cy.mount(WrapperComponent, config).then(wrapper => {
-
+        defaultValues.dataProviderID = '1';
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
+            wrapper.component.dataProviderIDChange = dataProviderIDChange;
             cy.get('select2 ul li').should('have.attr', 'title', 'one').then(() => {
-                wrapper.component.dataProviderID = '2';
-                wrapper.fixture.detectChanges();
+                wrapper.component.dataProviderID.set('2');
                 expect(dataProviderIDChange).not.to.have.been.called;
                 cy.get('select2 ul li').should('have.attr', 'title', 'two');
             });
         });
     });
 
-     it('should multiselect on dataprovider change', () => {
+    it('should multiselect on dataprovider change', () => {
         const dataProviderIDChange = cy.stub();
-        config.componentProperties.dataProviderIDChange = dataProviderIDChange;
-        cy.mount(WrapperComponent, config).then(wrapper => {
-
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
+            wrapper.component.dataProviderIDChange = dataProviderIDChange;
             cy.get('select2 ul li').should('have.attr', 'title', 'one').then(() => {
-                wrapper.component.dataProviderID = '2\n3';
-                wrapper.fixture.detectChanges();
+                wrapper.component.dataProviderID.set('2\n3');
                 expect(dataProviderIDChange).not.to.have.been.called;
                 cy.get('select2 ul li').should('have.attr', 'title', 'two');
                 cy.get('select2 ul li:nth-child(3)').should('have.attr', 'title', 'three');
@@ -267,20 +281,16 @@ describe('ServoyExtraSelect2Tokenizer', () => {
 
     it('should select one not in the list', () => {
         const dataProviderIDChange = cy.stub();
-        config.componentProperties.dataProviderIDChange = dataProviderIDChange;
-        cy.mount(WrapperComponent, config).then(wrapper => {
-            
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
+            wrapper.component.dataProviderIDChange = dataProviderIDChange;
             cy.get('select2 ul li').should('have.attr', 'title', 'one').then(() => {
-                wrapper.component.dataProviderID = '5';
-                wrapper.fixture.detectChanges();
+                wrapper.component.dataProviderID.set('5');
                 expect(dataProviderIDChange).not.to.have.been.called;
-                wrapper.component.valuelistID = [...mockData, {displayValue: '5', realValue: 5}] as IValuelist;
-                wrapper.fixture.detectChanges();
+                wrapper.component.valuelistID.set([...mockData, { displayValue: '5', realValue: 5 }] as IValuelist);
             }).then(() => {
-                wrapper.component.dataProviderID = '4';
-                wrapper.fixture.detectChanges();
-                wrapper.component.dataProviderID = '5';
-                wrapper.fixture.detectChanges();
+                wrapper.component.dataProviderID.set('4');
+                wrapper.component.dataProviderID.set('5');
                 cy.get('select2 ul li').should('have.attr', 'title', '5');
             });
         });
@@ -288,11 +298,11 @@ describe('ServoyExtraSelect2Tokenizer', () => {
 
     it('change valuelist and dataprovider together', () => {
         const dataProviderIDChange = cy.stub();
-        config.componentProperties.dataProviderIDChange = dataProviderIDChange;
-        cy.mount(WrapperComponent, config).then(wrapper => {
-
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
+            wrapper.component.dataProviderIDChange = dataProviderIDChange;
             cy.get('select2 ul li').should('have.attr', 'title', 'one').then(() => {
-                wrapper.component.valuelistID =[{
+                const newValuelist = [{
                     "displayValue": "AAAA",
                     "realValue": "AAAA"
                 },
@@ -308,14 +318,13 @@ describe('ServoyExtraSelect2Tokenizer', () => {
                     "displayValue": "DDDD",
                     "realValue": "DDDD"
                 }] as IValuelist;
-                wrapper.component.valuelistID.getDisplayValue = (value) => {
+                newValuelist.getDisplayValue = (value) => {
                     const item = mockData.find(({ realValue }) => realValue === value);
                     if (item) return of(item.displayValue);
                     return of(value);
                 };
-                wrapper.fixture.detectChanges();
-                wrapper.component.dataProviderID = 'AAAA';
-                wrapper.fixture.detectChanges();
+                wrapper.component.valuelistID.set(newValuelist);
+                wrapper.component.dataProviderID.set('AAAA');
                 expect(dataProviderIDChange).not.to.have.been.called;
                 cy.get('select2 ul li').should('have.attr', 'title', 'AAAA');
             });
@@ -323,8 +332,9 @@ describe('ServoyExtraSelect2Tokenizer', () => {
     });
 
     it('should select the highlighted item on close', () => {
-        config.componentProperties.dataProviderID = '';
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.dataProviderID = '';
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('select2').click().then(() => {
                 cy.get('input').type('{downarrow}').then(() => {
                     cy.get('select2').click({ force: true }).then(() => {
@@ -336,23 +346,26 @@ describe('ServoyExtraSelect2Tokenizer', () => {
     });
 
     it('should not select the highlighted item on close', () => {
-        config.componentProperties.dataProviderID = '';
-        config.componentProperties.selectOnClose = false;
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.dataProviderID = '';
+        defaultValues.selectOnClose = false;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('select2').click().then(() => {
                 cy.get('input').type('{downarrow}').then(() => {
                     cy.get('select2').click({ force: true }).then(() => {
-                        cy.get('select2 ul span').should('have.text', config.componentProperties.placeholderText);
+                        cy.get('select2 ul span').should('have.text', defaultValues.placeholderText);
                     });
                 });
             });
         });
     });
-    
+
     it('should hide selected items', () => {
-        config.componentProperties.hideSelectedItems = true;
-        config.componentProperties.selectOnClose = false;
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.hideSelectedItems = true;
+        defaultValues.selectOnClose = false;
+        defaultValues.dataProviderID = '1';
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('select2').click().then(() => {
                 cy.get('.select2-results ul li div').should('have.length', 3);
                 cy.get('.select2-results ul li div').eq(0).should('have.text', 'two');
@@ -361,10 +374,12 @@ describe('ServoyExtraSelect2Tokenizer', () => {
             });
         });
     });
-    
+
     it('should not hide selected items', () => {
-        config.componentProperties.selectOnClose = false;
-        cy.mount(WrapperComponent, config).then(() => {
+        defaultValues.selectOnClose = false;
+        defaultValues.hideSelectedItems = false;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
             cy.get('select2').click().then(() => {
                 cy.get('.select2-results ul li div').should('have.length', 4);
                 cy.get('.select2-results ul li div').eq(0).should('have.text', 'one');
@@ -374,10 +389,11 @@ describe('ServoyExtraSelect2Tokenizer', () => {
             });
         });
     });
-    
+
     it('should have ovarlay when dropdown list is open', () => {
-        config.componentProperties.overlayMode = true;
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        defaultValues.overlayMode = true;
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('select2').click().then(() => {
                 cy.get('.cdk-overlay-container').should('exist');
             });
@@ -385,8 +401,9 @@ describe('ServoyExtraSelect2Tokenizer', () => {
     });
 
     it('should not have ovarlay when dropdown list is open', () => {
-        config.componentProperties.overlayMode = false;
-        cy.mount(WrapperComponent, config).then(wrapper => {
+        defaultValues.overlayMode = false;
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
             cy.get('select2').click().then(() => {
                 cy.get('.cdk-overlay-container').should('not.exist');
             });

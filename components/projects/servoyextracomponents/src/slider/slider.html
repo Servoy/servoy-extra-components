@@ -3,14 +3,14 @@
 	[id]="servoyApi.getMarkupId()"
 	class="svy-slider-container"  >
 	<ngx-slider class="svy-slider bts-extra-slider" 
-				[value]="dataProvider"
-				[highValue]="dataProviderHigh" 
+				[value]="dataProvider()"
+				[highValue]="dataProviderHigh()" 
 				[options]="options"
 				[manualRefresh]="manualRefresh"
 				(userChangeStart)="onUserChangeStart($event)"
 	            (userChangeEnd)="onUserChangeEnd($event)" 
-	            (valueChange)="dataProviderChange"
-	            (highValueChange)="dataProviderHighChange"
+	            (valueChange)="dataProviderChange.emit($event)"
+	            (highValueChange)="dataProviderHighChange.emit($event)"
 				(userChange)="onUserChange($event)"
 				>
 	</ngx-slider>

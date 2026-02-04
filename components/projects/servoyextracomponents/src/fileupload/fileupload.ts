@@ -1,4 +1,4 @@
-import { Component, SimpleChanges, Input, Renderer2, EventEmitter, Output, ChangeDetectorRef, ChangeDetectionStrategy, Inject, ViewChild, ElementRef, DOCUMENT } from '@angular/core';
+import { Component, SimpleChanges, Renderer2, ChangeDetectorRef, ChangeDetectionStrategy, Inject, ElementRef, DOCUMENT, input, output, viewChild } from '@angular/core';
 import { ServoyBaseComponent, ServoyPublicService } from '@servoy/public';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 
@@ -14,35 +14,35 @@ import {FileTypesUtilsService} from './lib/filetypes';
 })
 export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
 
-    @Input() onDataChangeMethodID: (e: Event) => void;
-    @Input() onFileUploadedMethodID: () => void;
-    @Input() onFileTransferFinishedMethodID: (e: Event) => void;
+    readonly onDataChangeMethodID = input<(e: Event) => void>(undefined);
+    readonly onFileUploadedMethodID = input<() => void>(undefined);
+    readonly onFileTransferFinishedMethodID = input<(e: Event) => void>(undefined);
 
-    @Output() dataProviderIDChange = new EventEmitter();
-    @Input() dataProviderID: any;
-    @Input() displaysTags: boolean;
-    @Input() accept: string;
-    @Input() enabled: boolean;
-    @Input() name: string;
-    @Input() styleClass: string;
-    @Input() styleClassExpression: string;
-    @Input() iconStyleClass: string;
-    @Input() resultDisplayTimeout: number;
-    @Input() successIconStyleClass: string;
-    @Input() showFileName: boolean;
-    @Input() showProgress: boolean;
-    @Input() multiFileUpload: boolean;
-    @Input() uploadText: string;
-    @Input() uploadProgressText: string;
-    @Input() uploadSuccessText: string;
-    @Input() uploadCancelText: string;
-    @Input() uploadNotSupportedText: string;
-    @Input() uploadNotSupportedFileText: string;
-    @Input() toolTipText: string;
-    @Input() maxFileSize: number;
+    readonly dataProviderIDChange = output();
+    readonly dataProviderID = input<any>(undefined);
+    readonly displaysTags = input<boolean>(undefined);
+    readonly accept = input<string>(undefined);
+    readonly enabled = input<boolean>(undefined);
+    name: string;
+    readonly styleClass = input<string>(undefined);
+    readonly styleClassExpression = input<string>(undefined);
+    readonly iconStyleClass = input<string>(undefined);
+    readonly resultDisplayTimeout = input<number>(undefined);
+    readonly successIconStyleClass = input<string>(undefined);
+    readonly showFileName = input<boolean>(undefined);
+    readonly showProgress = input<boolean>(undefined);
+    readonly multiFileUpload = input<boolean>(undefined);
+    readonly uploadText = input<string>(undefined);
+    readonly uploadProgressText = input<string>(undefined);
+    readonly uploadSuccessText = input<string>(undefined);
+    readonly uploadCancelText = input<string>(undefined);
+    readonly uploadNotSupportedText = input<string>(undefined);
+    readonly uploadNotSupportedFileText = input<string>(undefined);
+    readonly toolTipText = input<string>(undefined);
+    readonly maxFileSize = input<number>(undefined);
 
-    @ViewChild('fileInputLabel') fileInputLabel: ElementRef;
-    @ViewChild('fileInputSingleUpload') fileInput: ElementRef;
+    readonly fileInputLabel = viewChild<ElementRef>('fileInputLabel');
+    readonly fileInput = viewChild<ElementRef>('fileInputSingleUpload');
 
     uploader: FileUploader;
     hasBaseDropZoneOver = false;
@@ -63,22 +63,25 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     public fileInputClick(): void {
-        this.fileInputLabel.nativeElement.click();
+        this.fileInputLabel().nativeElement.click();
     }
 
     initializeComponent() {
         super.initializeComponent();
         if (!this.uploader) {
-            if (this.multiFileUpload && !this.onFileUploadedMethodID) {
+            const multiFileUpload = this.multiFileUpload();
+            const onFileUploadedMethodID = this.onFileUploadedMethodID();
+            if (multiFileUpload && !onFileUploadedMethodID) {
                 this.log.warn('Multifile upload without onFileUploaded Method isn\'t supported. To upload multi file start using onFileUploaded Method');
             }
-            const url = this.onFileUploadedMethodID ? this.servoyService.generateUploadUrl(this.servoyApi.getFormName(), this.name, 'onFileUploadedMethodID') :
+            const url = onFileUploadedMethodID ? this.servoyService.generateUploadUrl(this.servoyApi.getFormName(), this.name, 'onFileUploadedMethodID') :
                 this.servoyService.generateUploadUrl(this.servoyApi.getFormName(), this.name, 'dataProviderID');
             const options: FileUploaderOptions = { url }
-            if (this.accept && '*/*' != this.accept) {
+            const accept = this.accept();
+            if (accept && '*/*' != accept) {
                 const acceptedFiles = new Array();
                 const acceptedMimeTypes = new Array();
-                this.accept.split(',').forEach(value => {
+                accept.split(',').forEach(value => {
                     // library wants mime type here, so try to guess it
                     value = value.trim();
                     if (value.indexOf('/') > -1) {
@@ -120,8 +123,9 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
                 }
             }
             
-            if (this.maxFileSize) {
-                options.maxFileSize = this.maxFileSize;
+            const maxFileSize = this.maxFileSize();
+            if (maxFileSize) {
+                options.maxFileSize = maxFileSize;
             }
 
             options.filters = [{
@@ -135,7 +139,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
                 }
             }];
             
-            if (!this.multiFileUpload) {
+            if (!multiFileUpload) {
                 options.filters.push({
                     name: 'multi', fn: (): boolean => {
                         const retValue = this.ready;
@@ -152,16 +156,18 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
 
             this.uploader.onCompleteAll = this.onComplete;
             this.uploader.onWhenAddingFileFailed = this.onWhenAddingFileFailed;
-            this.customText = this.uploadText;
+            this.customText = this.uploadText();
         }
     }
 
     onComplete = () => {
         this.ready = true;
-        if (this.onFileTransferFinishedMethodID) this.onFileTransferFinishedMethodID(new CustomEvent('onFileTransferFinishedMethodID'));
-        this.customText = this.uploadSuccessText;
-        if (this.fileInput){
-            this.fileInput.nativeElement.value = null;
+        const onFileTransferFinishedMethodID = this.onFileTransferFinishedMethodID();
+        if (onFileTransferFinishedMethodID) onFileTransferFinishedMethodID(new CustomEvent('onFileTransferFinishedMethodID'));
+        this.customText = this.uploadSuccessText();
+        const fileInput = this.fileInput();
+        if (fileInput){
+            fileInput.nativeElement.value = null;
         }
         this.cdRef.detectChanges();
         this.hideProgress();
@@ -174,7 +180,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
             this.log.warn(`File ${item.name} rejected: ${this.customText}`);
         } else {
             // Other validation failure
-            this.customText = this.uploadNotSupportedFileText;
+            this.customText = this.uploadNotSupportedFileText();
         }
         this.cdRef.detectChanges();
         this.hideProgress();
@@ -182,13 +188,13 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
 
     hideProgress = () => {
         if(this.hideProgressTimer) clearTimeout(this.hideProgressTimer);
-        if(this.resultDisplayTimeout > -1) {
+        if(this.resultDisplayTimeout() > -1) {
             this.hideProgressTimer = setTimeout(() =>  {
                 this.hideProgressTimer = null;
                 this.uploader.progress = 0;
-                this.customText = this.uploadText;
+                this.customText = this.uploadText();
                 this.cdRef.detectChanges();
-            } , this.resultDisplayTimeout);
+            } , this.resultDisplayTimeout());
         }
     }
 
@@ -200,7 +206,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
                     case 'enabled':
                         if (change.currentValue){
                              this.renderer.removeAttribute(this.getFocusElement(), 'disabled');
-                             this.customText = this.uploadText;
+                             this.customText = this.uploadText();
                         } else{
                             this.renderer.setAttribute(this.getFocusElement(), 'disabled', 'disabled');
                             if (!this.servoyApi.isInDesigner()) this.customText = "Component disabled, cannot upload file.";
@@ -208,7 +214,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
                         break;
                     case 'uploadText':
                         if (!change.isFirstChange()){
-                             this.customText = this.uploadText;
+                             this.customText = this.uploadText();
                              this.cdRef.detectChanges();
                         }
                         break;    

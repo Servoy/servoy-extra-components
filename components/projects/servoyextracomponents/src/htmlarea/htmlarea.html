@@ -1,7 +1,7 @@
 <div style="width:100%; height:100%; overflow:hidden"
      class='svy-extra-htmlarea'
      [id]="servoyApi.getMarkupId()" 
-     [svyTooltip]="toolTipText"
+     [svyTooltip]="toolTipText()"
      #element>
   <editor
    [init]="tinyConfig"
@@ -13,7 +13,7 @@
    (onInit)="onInit($event)"
    [(ngModel)]="tinyValue"
    style="height: 100%"
-   [sabloTabseq]="tabSeq"
+   [sabloTabseq]="tabSeq()"
    [sabloTabseqConfig]="{tabSeqSetter: this}"
     ></editor>
 </div>

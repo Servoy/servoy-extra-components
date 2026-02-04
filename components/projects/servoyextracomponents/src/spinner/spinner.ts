@@ -1,4 +1,4 @@
-import { Component, Renderer2, SimpleChanges, ChangeDetectorRef, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Renderer2, SimpleChanges, ChangeDetectorRef, ChangeDetectionStrategy, input, output, signal } from '@angular/core';
 import { Format, FormattingService, ServoyBaseComponent, IValuelist } from '@servoy/public';
 
 @Component({
@@ -9,23 +9,25 @@ import { Format, FormattingService, ServoyBaseComponent, IValuelist } from '@ser
     standalone: false
 })
 export class ServoyExtraSpinner extends ServoyBaseComponent<HTMLDivElement> {
-    @Input() onDataChangeMethodID: (e: Event, data?: any) => void;
-    @Input() onActionMethodID: (e: Event, data?: any) => void;
-    @Input() onFocusGainedMethodID: (e: Event, data?: any) => void;
-    @Input() onRightClickMethodID: (e: Event, data?: any) => void;
-    @Input() onFocusLostMethodID: (e: Event, data?: any) => void;
+    readonly onDataChangeMethodID = input<(e: Event, data?: any) => void>(undefined);
+    readonly onActionMethodID = input<(e: Event, data?: any) => void>(undefined);
+    readonly onFocusGainedMethodID = input<(e: Event, data?: any) => void>(undefined);
+    readonly onRightClickMethodID = input<(e: Event, data?: any) => void>(undefined);
+    readonly onFocusLostMethodID = input<(e: Event, data?: any) => void>(undefined);
 
-    @Output() dataProviderIDChange = new EventEmitter();
-    @Input() dataProviderID: any;
-    @Input() enabled: boolean;
-    @Input() editable: boolean;
-    @Input() format: Format;
-    @Input() tabSeq: number;
-    @Input() toolTipText: string;
-    @Input() valuelistID: IValuelist;
-    @Input() responsiveHeight: number;
-    @Input() placeholderText: string;
-    @Input() styleClass: string;
+    readonly dataProviderIDChange = output<any>();
+    readonly dataProviderID = input<any>(undefined);
+    readonly enabled = input<boolean>(undefined);
+    readonly editable = input<boolean>(undefined);
+    readonly format = input<Format>(undefined);
+    readonly tabSeq = input<number>(undefined);
+    readonly toolTipText = input<string>(undefined);
+    readonly valuelistID = input<IValuelist>(undefined);
+    readonly responsiveHeight = input<number>(undefined);
+    readonly placeholderText = input<string>(undefined);
+    readonly styleClass = input<string>(undefined);
+    
+    _dataProviderID = signal<any>(undefined);
        
     selection: any;
     private counter = 0;
@@ -37,6 +39,7 @@ export class ServoyExtraSpinner extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     svyOnInit() {
+        this._dataProviderID.set(this.dataProviderID());
         this.selection = this.getSelectionFromDataprovider();
         this.addHandlersToInputAndSpinnerButtons();
         super.svyOnInit();
@@ -52,11 +55,12 @@ export class ServoyExtraSpinner extends ServoyBaseComponent<HTMLDivElement> {
             const change = changes[property];
             switch (property) {
                 case 'dataProviderID':
+                    this._dataProviderID.set(this.dataProviderID());
                     this.selection = this.getSelectionFromDataprovider();
                     break;
                 case 'responsiveHeight':
                     if (!this.servoyApi.isInAbsoluteLayout()) {
-                        this.getNativeElement().style.minHeight = this.responsiveHeight + 'px';
+                        this.getNativeElement().style.minHeight = this.responsiveHeight() + 'px';
                         this.getNativeElement().style.position = 'relative';
                     }
                     break;
@@ -88,24 +92,25 @@ export class ServoyExtraSpinner extends ServoyBaseComponent<HTMLDivElement> {
         this.renderer.listen(spinnerButtons[0], 'click', e => this.increment());
         this.renderer.listen(spinnerButtons[1], 'click', e => this.decrement());
         
-         if (this.onActionMethodID)
-                this.renderer.listen(this.getNativeChild(), 'click', e => this.onActionMethodID(e));
+         const onActionMethodID = this.onActionMethodID();
+         if (onActionMethodID)
+                this.renderer.listen(this.getNativeChild(), 'click', e => this.onActionMethodID()(e));
 
-         if (this.onRightClickMethodID)
+         if (this.onRightClickMethodID())
                 this.renderer.listen(this.getNativeChild(), 'contextmenu', e => {
-                 this.onRightClickMethodID(e);
+                 this.onRightClickMethodID()(e);
                  return false;
                 });
 
         for (const i of Object.keys(spinnerButtons)) {
-            if (this.onActionMethodID)
-                this.renderer.listen(spinnerButtons[i], 'click', e => this.onActionMethodID(e));
+            if (onActionMethodID)
+                this.renderer.listen(spinnerButtons[i], 'click', e => this.onActionMethodID()(e));
 
-            if (this.onFocusLostMethodID)
-                this.renderer.listen(spinnerButtons[i], 'blur', e => this.onFocusLostMethodID(e));
+            if (this.onFocusLostMethodID())
+                this.renderer.listen(spinnerButtons[i], 'blur', e => this.onFocusLostMethodID()(e));
 
-            if (this.onFocusGainedMethodID)
-                this.renderer.listen(spinnerButtons[i], 'focus', e => this.onFocusGainedMethodID(e));
+            if (this.onFocusGainedMethodID())
+                this.renderer.listen(spinnerButtons[i], 'focus', e => this.onFocusGainedMethodID()(e));
         }
     }
 
@@ -114,7 +119,7 @@ export class ServoyExtraSpinner extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     pushUpdate() {
-        this.dataProviderIDChange.emit(this.dataProviderID);
+        this.dataProviderIDChange.emit(this._dataProviderID());
     }
 
     // copied from angularui timepicker
@@ -145,40 +150,44 @@ export class ServoyExtraSpinner extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     isDisabled() {
-        return this.enabled === false || this.editable === false;
+        return this.enabled() === false || this.editable() === false;
     }
 
     increment() {
-        if (this.valuelistID) {
-            this.counter = this.counter < this.valuelistID.length - 1 ? this.counter + 1 : 0;
-            this.dataProviderID = this.valuelistID[this.counter].realValue;
+        const valuelistID = this.valuelistID();
+        if (valuelistID) {
+            this.counter = this.counter < valuelistID.length - 1 ? this.counter + 1 : 0;
+            this._dataProviderID.set(valuelistID[this.counter].realValue);
         }
         this.pushUpdate();
     }
 
     decrement() {
-        if (this.valuelistID) {
-            this.counter = this.counter > 0 ? this.counter - 1 : this.valuelistID.length - 1;
-            this.dataProviderID = this.valuelistID[this.counter].realValue;
+        const valuelistID = this.valuelistID();
+        if (valuelistID) {
+            this.counter = this.counter > 0 ? this.counter - 1 : valuelistID.length - 1;
+            this._dataProviderID.set(valuelistID[this.counter].realValue);
         }
         this.pushUpdate();
     }
 
     getSelectionFromDataprovider() {
-        if (!this.dataProviderID) {
+        const dataProviderID = this._dataProviderID();
+        if (!dataProviderID) {
             this.counter = 0;
             return undefined;
         }
 
-        for (let i = 0; i < this.valuelistID.length; i++) {
-            const item = this.valuelistID[i];
-            if (item && item.realValue && this.dataProviderID === item.realValue) {
+        for (let i = 0; i < this.valuelistID().length; i++) {
+            const item = this.valuelistID()[i];
+            if (item && item.realValue && dataProviderID === item.realValue) {
                 let displayFormat;
                 let type;
-                if (this.format && this.format.display)
-                    displayFormat = this.format.display;
-                if (this.format && this.format.type)
-                    type = this.format.type;
+                const format = this.format();
+                if (format && format.display)
+                    displayFormat = format.display;
+                if (format && format.type)
+                    type = format.type;
                 this.counter = i;
                 return item.displayValue;
             }

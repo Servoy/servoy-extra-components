@@ -1,36 +1,36 @@
 <div #element class="svy-extra-sidenav">
   <div class="svy-sidenav"
-    [dir] = "scrollbarPosition == 'rtl' ? 'rtl' : null"
-        [ngClass]="{'svy-sidenav-right': slidePosition == 'right', 'svy-sidenav-static': slidePosition == 'static' , 'svy-sidenav-left': slidePosition == 'left', 
-        'nav-slide-menu': slideAnimation == 'slide-menu', 'nav-collapse-menu': slideAnimation == 'collapse-menu' || slideAnimation == 'collapse-menu-nohover',
-        'nav-side-toggle': togglePosition == 'side-toggle', 'nav-fixed-toggle': togglePosition == 'fixed-toggle' , 'nav-hide-toggle': togglePosition == 'hide-toggle' }">
+    [dir] = "scrollbarPosition() == 'rtl' ? 'rtl' : null"
+        [ngClass]="{'svy-sidenav-right': slidePosition() == 'right', 'svy-sidenav-static': slidePosition() == 'static' , 'svy-sidenav-left': slidePosition() == 'left', 
+        'nav-slide-menu': slideAnimation() == 'slide-menu', 'nav-collapse-menu': slideAnimation() == 'collapse-menu' || slideAnimation() == 'collapse-menu-nohover',
+        'nav-side-toggle': togglePosition() == 'side-toggle', 'nav-fixed-toggle': togglePosition() == 'fixed-toggle' , 'nav-hide-toggle': togglePosition() == 'hide-toggle' }">
     <div class="svy-sidenav-header">
       <i (click)="slideMenu($event)" class="svy-sidenav-action-open"></i>
     </div>
     <nav [id]="servoyApi.getMarkupId()" class="svy-sidenav-content">
       <!-- The main menu -->
       <ul class="svy-sidenav-menu sn-level-1 svy-sidenav-collapsed" dir="ltr">
-        @if (headerForm != null && open) {
+        @if (headerForm() != null && open()) {
           <li>
             @if (isDesignTime()) {
               <div class="svy-navitem-selected">
-                <span class="svy-sidenav-item sn-level-1 svy-sidenav-item-text">{{headerForm}}</span>
+                <span class="svy-sidenav-item sn-level-1 svy-sidenav-item-text">{{headerForm()}}</span>
               </div>
             } @else {
               <div class="svy-container"
                 [ngStyle]="getHeaderFormStyle()"
-                [sabloTabseq]="tabSeq"
+                [sabloTabseq]="tabSeq()"
                 [sabloTabseqConfig]="{container: true, reservedGap: 50}">
-                <ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{name:getHeaderForm()}"></ng-template>
+                <ng-template [ngTemplateOutlet]="templateRef()" [ngTemplateOutletContext]="{name:getHeaderForm()}"></ng-template>
               </div>
             }
           </li>
         }
         <!-- Main list -->
-        @for (item of menu; track item) {
+        @for (item of _menu(); track item) {
           <li
             class="svy-sidenav-dropdown sn-level-1"
-            [ngClass]="{'svy-navitem-selected': item.id != null && selectedIndex[1] == item.id, 'svy-navitem-disabled': item.enabled === false }">
+            [ngClass]="{'svy-navitem-selected': item.id != null && _selectedIndex()[1] == item.id, 'svy-navitem-disabled': item.enabled === false }">
             <!-- Main Menu Items -->
             @if (!item.isDivider) {
               <a class="svy-sidenav-item sn-level-1" [ngClass]="item.styleClass" (click)="selectItem(1, $index, item, $event)" [svyTooltip]="item.tooltip">
@@ -39,20 +39,20 @@
                   <span [ngClass]="item.badgeStyleClass">{{item.badgeText}}</span>
                 }</span>
                 <i class="svy-sidenav-collapse-icon sn-level-1 pull-right"
-                  [ngClass]="item.menuItems ? (expandedIndex[1] == item.id ? iconCollapseStyleClass : iconExpandStyleClass) : 'hidden'"
+                  [ngClass]="item.menuItems ? (_expandedIndex()[1] == item.id ? iconCollapseStyleClass() : iconExpandStyleClass()) : 'hidden'"
                   (click)="toggleExpandedItem(1, $index, item, $event)"
                 ></i>
               </a>
             }
             <!-- Second List -->
-            @if (expandedIndex[1] == item.id) {
+            @if (_expandedIndex()[1] == item.id) {
               <ul class="svy-sidenav-menu sn-level-2"
-                [ngClass]="{'svy-sidenav-collapsed': expandedIndex[1] == item.id}"
+                [ngClass]="{'svy-sidenav-collapsed': _expandedIndex()[1] == item.id}"
                 >
                 @for (item2 of item.menuItems; track item2) {
                   <li
                     class="svy-sidenav-dropdown sn-level-2"
-                    [ngClass]="{'svy-navitem-selected': item2.id != null && selectedIndex[2] == item2.id, 'svy-navitem-disabled': (item.enabled === false || item2.enabled == false) }">
+                    [ngClass]="{'svy-navitem-selected': item2.id != null && _selectedIndex()[2] == item2.id, 'svy-navitem-disabled': (item.enabled === false || item2.enabled == false) }">
                     <!-- Second Menu Items -->
                     @if (!item2.isDivider) {
                       <a class="svy-sidenav-item sn-level-2" [ngClass]="item2.styleClass" (click)="selectItem(2, $index, item2, $event)" [svyTooltip]="item2.tooltip">
@@ -61,19 +61,19 @@
                           <span [ngClass]="item2.badgeStyleClass">{{item2.badgeText}}</span>
                         }</span>
                         <i class="svy-sidenav-collapse-icon sn-level-2 pull-right"
-                          [ngClass]="item2.menuItems ? (expandedIndex[2] == item2.id ? iconCollapseStyleClass : iconExpandStyleClass) : 'hidden'"
+                          [ngClass]="item2.menuItems ? (_expandedIndex()[2] == item2.id ? iconCollapseStyleClass() : iconExpandStyleClass()) : 'hidden'"
                           (click)="toggleExpandedItem(2, $index, item2, $event)"
                         ></i>
                       </a>
                     }
                     <!-- Third List -->
-                    @if (expandedIndex[2] == item2.id) {
-                      <ul class="svy-sidenav-menu sn-level-3" [ngClass]="{'svy-sidenav-collapsed': expandedIndex[2] == item2.id}"
+                    @if (_expandedIndex()[2] == item2.id) {
+                      <ul class="svy-sidenav-menu sn-level-3" [ngClass]="{'svy-sidenav-collapsed': _expandedIndex()[2] == item2.id}"
                         >
                         @for (item3 of item2.menuItems; track item3) {
                           <li
                             class="svy-sidenav-dropdown sn-level-3"
-                            [ngClass]="{'svy-navitem-selected': item3.id != null && selectedIndex[3] == item3.id, 'svy-navitem-disabled': (item.enabled === false || item2.enabled == false || item3.enabled == false) }">
+                            [ngClass]="{'svy-navitem-selected': item3.id != null && _selectedIndex()[3] == item3.id, 'svy-navitem-disabled': (item.enabled === false || item2.enabled == false || item3.enabled == false) }">
                             <!-- Third Menu Items -->
                             @if (!item3.isDivider) {
                               <a class="svy-sidenav-item sn-level-3" [ngClass]="item3.styleClass" (click)="selectItem(3, $index, item3, $event)" [svyTooltip]="item3.tooltip">
@@ -82,19 +82,19 @@
                                   <span [ngClass]="item3.badgeStyleClass">{{item3.badgeText}}</span>
                                 }</span>
                                 <i class="svy-sidenav-collapse-icon sn-level-3 pull-right"
-                                  [ngClass]="item3.menuItems ? (expandedIndex[3] == item3.id ? iconCollapseStyleClass : iconExpandStyleClass) : 'hidden'"
+                                  [ngClass]="item3.menuItems ? (_expandedIndex()[3] == item3.id ? iconCollapseStyleClass() : iconExpandStyleClass()) : 'hidden'"
                                   (click)="toggleExpandedItem(3, $index, item3, $event)"
                                 ></i>
                               </a>
                             }
                             <!-- Fourth List -->
-                            @if (expandedIndex[3] == item3.id) {
-                              <ul class="svy-sidenav-menu sn-level-4" [ngClass]="{'svy-sidenav-collapsed': expandedIndex[3] == item3.id}"
+                            @if (_expandedIndex()[3] == item3.id) {
+                              <ul class="svy-sidenav-menu sn-level-4" [ngClass]="{'svy-sidenav-collapsed': _expandedIndex()[3] == item3.id}"
                                 >
                                 @for (item4 of item3.menuItems; track item4) {
                                   <li
                                     class="svy-sidenav-dropdown sn-level-4"
-                                    [ngClass]="{'svy-navitem-selected': item4.id != null && selectedIndex[4] == item4.id, 'svy-navitem-disabled': (item.enabled === false || item2.enabled == false || item3.enabled == false || item4.enabled == false) }">
+                                    [ngClass]="{'svy-navitem-selected': item4.id != null && _selectedIndex()[4] == item4.id, 'svy-navitem-disabled': (item.enabled === false || item2.enabled == false || item3.enabled == false || item4.enabled == false) }">
                                     <!-- Second Menu Items -->
                                     @if (!item4.isDivider) {
                                       <a class="svy-sidenav-item sn-level-4" [ngClass]="item4.styleClass" (click)="selectItem(4, $index, item4, $event)" [svyTooltip]="item4.tooltip">
@@ -131,18 +131,18 @@
                   }
                 </li>
               }
-              @if (footerForm != null && open && !stickyBottom()) {
+              @if (footerForm() != null && open() && !stickyBottom()) {
                 <li>
                   @if (isDesignTime()) {
                     <div class="svy-navitem-selected">
-                      <span class="svy-sidenav-item sn-level-1 svy-sidenav-item-text">{{footerForm}}</span>
+                      <span class="svy-sidenav-item sn-level-1 svy-sidenav-item-text">{{footerForm()}}</span>
                     </div>
                   } @else {
                     <div class="svy-container"
                       [ngStyle]="getFooterFormStyle()"
-                      [sabloTabseq]="tabSeq"
+                      [sabloTabseq]="tabSeq()"
                       [sabloTabseqConfig]="{container: true, reservedGap: 50}">
-                      <ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{name:getFooterForm()}"></ng-template>
+                      <ng-template [ngTemplateOutlet]="templateRef()" [ngTemplateOutletContext]="{name:getFooterForm()}"></ng-template>
                     </div>
                   }
                 </li>
@@ -151,16 +151,16 @@
           </nav>
         </div>
 
-        @if (footerForm != null && open && stickyBottom()) {
+        @if (footerForm() != null && open() && stickyBottom()) {
           <div id="footerForm" class="svy-sidenav-absoluteFooter">
             @if (isDesignTime()) {
               <div class="svy-navitem-selected">
-                <span class="svy-sidenav-item sn-level-1 svy-sidenav-item-text">{{footerForm}}</span>
+                <span class="svy-sidenav-item sn-level-1 svy-sidenav-item-text">{{footerForm()}}</span>
               </div>
             } @else {
-              <div class="svy-container" [ngStyle]="getFooterFormStyle()" [sabloTabseq]="tabSeq"
+              <div class="svy-container" [ngStyle]="getFooterFormStyle()" [sabloTabseq]="tabSeq()"
                 [sabloTabseqConfig]="{container: true, reservedGap: 50}">
-                <ng-template [ngTemplateOutlet]="templateRef"
+                <ng-template [ngTemplateOutlet]="templateRef()"
                 [ngTemplateOutletContext]="{name:getFooterForm()}"></ng-template>
               </div>
             }
@@ -169,16 +169,16 @@
 
         @if (isDesignTime()) {
           <div class="svy-navitem-selected">
-            <span class="svy-sidenav-item sn-level-1 svy-sidenav-item-text">{{containedForm}}</span>
+            <span class="svy-sidenav-item sn-level-1 svy-sidenav-item-text">{{containedForm()}}</span>
           </div>
         } @else {
           @if (realContainedForm != null) {
             <div class="svy-sidenav-tablesspanel"
               [ngStyle]="getContainerStyle()"
-              [ngClass]="{'svy-sidenav-right': slidePosition == 'right', 'svy-sidenav-static': slidePosition == 'static' , 'svy-sidenav-left': slidePosition == 'left' }"
-              [sabloTabseq]="tabSeq"
+              [ngClass]="{'svy-sidenav-right': slidePosition() == 'right', 'svy-sidenav-static': slidePosition() == 'static' , 'svy-sidenav-left': slidePosition() == 'left' }"
+              [sabloTabseq]="tabSeq()"
               [sabloTabseqConfig]="{container: true, reservedGap: 50}">
-              <ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{name:getForm()}"></ng-template>
+              <ng-template [ngTemplateOutlet]="templateRef()" [ngTemplateOutletContext]="{name:getForm()}"></ng-template>
             </div>
           }
         }

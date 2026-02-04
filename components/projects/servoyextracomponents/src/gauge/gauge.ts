@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, Input, Output, Renderer2, SimpleChanges, ViewChild, HostListener } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Output, Renderer2, SimpleChanges, ViewChild, HostListener, input, signal } from '@angular/core';
 import { ServoyBaseComponent } from '@servoy/public';
 import { BaseGauge } from './lib/base-gauge';
 import { RadialGauge } from './lib/radial-gauge';
@@ -9,28 +9,30 @@ import { RadialGauge } from './lib/radial-gauge';
     standalone: false
 })
 export class ServoyExtraGauge extends ServoyBaseComponent<HTMLDivElement> {
-    @Input() gaugeType: string;
-    @Input() minValue = 0;
-    @Input() maxValue = 100;
-    @Input() value: number;
-    @Input() units: string;
+    readonly gaugeType = input<string>(undefined);
+    readonly minValue = input(0);
+    readonly maxValue = input(100);
+    readonly value = input<number>(undefined);
+    readonly units = input<string>(undefined);
 
-    @Input() animationOptions;
-    @Input() highlights;
-    @Input() ticks;
+    readonly animationOptions = input(undefined);
+    readonly highlights = input(undefined);
+    readonly ticks = input(undefined);
 
-    @Input() colorOptions;
-    @Input() valueBoxOptions;
-    @Input() needleOptions;
-    @Input() borderOptions;
-    @Input() fontOptions;
+    readonly colorOptions = input(undefined);
+    readonly valueBoxOptions = input(undefined);
+    readonly needleOptions = input(undefined);
+    readonly borderOptions = input(undefined);
+    readonly fontOptions = input(undefined);
 
-    @Input() radialGaugeOptions;
-    @Input() linearGaugeOptions;
+    readonly radialGaugeOptions = input(undefined);
+    readonly linearGaugeOptions = input(undefined);
 
-    @Input() title;
+    readonly title = input(undefined);
 
-    @Input() canvasGaugeOptions;
+    readonly canvasGaugeOptions = input(undefined);
+    
+    _canvasGaugeOptions = signal(undefined);
 
     canvasGauge;
 
@@ -47,12 +49,17 @@ export class ServoyExtraGauge extends ServoyBaseComponent<HTMLDivElement> {
     svyOnInit() {
         super.svyOnInit();
         this.onResize(null);
+        this._canvasGaugeOptions.set(this.canvasGaugeOptions() || {});
     }
 
     svyOnChanges(changes: SimpleChanges) {
         if (changes) {
             for (const property of Object.keys(changes)) {
                 switch (property) {
+                    case 'canvasGaugeOptions':
+                        this._canvasGaugeOptions.set(this.canvasGaugeOptions() || {});
+                        this.refreshGauge();
+                        break;
                     case 'gaugeType':
                         this.refreshGauge();
                         break;
@@ -66,43 +73,58 @@ export class ServoyExtraGauge extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     refreshGauge() {
-        this.canvasGaugeOptions = {
-            minValue: this.minValue,
-            maxValue: this.maxValue,
+        const value = this.value();
+        this._canvasGaugeOptions.set({
+            minValue: this.minValue(),
+            maxValue: this.maxValue(),
             width: this.elementRef.nativeElement.clientWidth,
             height: this.elementRef.nativeElement.clientHeight,
-            value: (this.value == null || this.value == undefined) ? 0 : this.value
-        };
+            value: (value == null || value == undefined) ? 0 : value
+        });
 
-        if (this.units) this.canvasGaugeOptions['units'] = this.units;
+        const units = this.units();
+        const canvasGaugeOptions = this._canvasGaugeOptions();
+        if (units) canvasGaugeOptions['units'] = units;
         const titleText = this.getTitleText();
-        if (titleText) this.canvasGaugeOptions['title'] = titleText;
-        if (this.animationOptions) Object.assign(this.canvasGaugeOptions, this.animationOptions);
-        if (this.highlights) {
-            this.ticks = this.ticks || {};
-            this.ticks.highlights = this.highlights;
+        if (titleText) canvasGaugeOptions['title'] = titleText;
+        const animationOptions = this.animationOptions();
+        if (animationOptions) Object.assign(canvasGaugeOptions, animationOptions);
+        const highlights = this.highlights();
+        let ticks = this.ticks();
+        if (highlights) {
+            ticks = this.ticks() || {};
+            ticks.highlights = highlights;
         }
-        if (this.ticks) {
-            Object.assign(this.canvasGaugeOptions, this.ticks);
+        if (ticks) {
+            Object.assign(canvasGaugeOptions, ticks);
         }
-        if (this.colorOptions) Object.assign(this.canvasGaugeOptions, this.colorOptions);
-        if (this.valueBoxOptions) Object.assign(this.canvasGaugeOptions, this.valueBoxOptions);
-        if (this.needleOptions) Object.assign(this.canvasGaugeOptions, this.needleOptions);
-        if (this.borderOptions) Object.assign(this.canvasGaugeOptions, this.borderOptions);
-        if (this.fontOptions) Object.assign(this.canvasGaugeOptions, this.fontOptions);
+        const colorOptions = this.colorOptions();
+        if (colorOptions) Object.assign(canvasGaugeOptions, colorOptions);
+        const valueBoxOptions = this.valueBoxOptions();
+        if (valueBoxOptions) Object.assign(canvasGaugeOptions, valueBoxOptions);
+        const needleOptions = this.needleOptions();
+        if (needleOptions) Object.assign(canvasGaugeOptions, needleOptions);
+        const borderOptions = this.borderOptions();
+        if (borderOptions) Object.assign(canvasGaugeOptions, borderOptions);
+        const fontOptions = this.fontOptions();
+        if (fontOptions) Object.assign(canvasGaugeOptions, fontOptions);
 
-        if (this.gaugeType == "radial") {
-            if (this.radialGaugeOptions) Object.assign(this.canvasGaugeOptions, this.radialGaugeOptions);
-        } else if (this.gaugeType == "linear") {
-            if (this.linearGaugeOptions) Object.assign(this.canvasGaugeOptions, this.linearGaugeOptions);
+        const gaugeType = this.gaugeType();
+        if (gaugeType == "radial") {
+            const radialGaugeOptions = this.radialGaugeOptions();
+            if (radialGaugeOptions) Object.assign(canvasGaugeOptions, radialGaugeOptions);
+        } else if (gaugeType == "linear") {
+            const linearGaugeOptions = this.linearGaugeOptions();
+            if (linearGaugeOptions) Object.assign(canvasGaugeOptions, linearGaugeOptions);
         }
     }
 
     getTitleText(): string {
         let result = null;
 
-        if (this.title) {
-            result = ((this.title.dataProviderID == null) ? this.title.text : this.title.dataProviderID);
+        const title = this.title();
+        if (title) {
+            result = ((title.dataProviderID == null) ? title.text : title.dataProviderID);
         }
 
         return result;

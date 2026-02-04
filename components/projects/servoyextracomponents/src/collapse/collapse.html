@@ -1,10 +1,10 @@
 <div #element
-  class="svy-collapse {{ styleClass }}"
+  class="svy-collapse {{ styleClass() }}"
   [id]="servoyApi.getMarkupId()"
-  [sabloTabseq]='tabSeq'
+  [sabloTabseq]='tabSeq()'
   [sabloTabseqConfig]="{container: true, reservedGap: 100}">
   <!-- //collapsibles -->
-  @for (collapsible of collapsibles; track collapsible; let idx = $index) {
+  @for (collapsible of collapsibles(); track collapsible; let idx = $index) {
     <div
       class="svy-collapse-collapsible {{collapsible.styleClass ? collapsible.styleClass : ''}}"
       id="{{servoyApi.getMarkupId()}}-{{idx}}"
@@ -52,7 +52,7 @@
             <div
               class="svy-collapse-card-body-container"
               [ngStyle]="getFormStyle(collapsible.form)" >
-              <ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{name:getFormIfVisible(collapsible)}"></ng-template>
+              <ng-template [ngTemplateOutlet]="templateRef()" [ngTemplateOutletContext]="{name:getFormIfVisible(collapsible)}"></ng-template>
             </div>
           </div>
         </div>
@@ -84,7 +84,7 @@
                   class="svy-collapse-card-body-container"
                   [sabloTabseq]='myIdx+1' sablo-tabseq-config="{container: true}"
                   id="{{servoyApi.getMarkupId()}}-{{idx}}-collapsible-card-container-{{myIdx}}" >
-                  <ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{name:getCardFormIfVisible(collapsible, card)}"></ng-template>
+                  <ng-template [ngTemplateOutlet]="templateRef()" [ngTemplateOutletContext]="{name:getCardFormIfVisible(collapsible, card)}"></ng-template>
                 </div>
               }
             </div>

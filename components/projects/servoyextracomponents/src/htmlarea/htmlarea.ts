@@ -1,4 +1,4 @@
-import { Component, SimpleChanges, Input, Renderer2, EventEmitter, Output, ChangeDetectorRef, ChangeDetectionStrategy, Inject, DOCUMENT } from '@angular/core';
+import { Component, SimpleChanges, Renderer2, ChangeDetectorRef, ChangeDetectionStrategy, Inject, DOCUMENT, input, output, signal } from '@angular/core';
 import { ServoyBaseComponent, PropertyUtils, ServoyPublicService } from '@servoy/public';
 import tinymce, { RawEditorOptions, Editor } from 'tinymce';
 
@@ -12,23 +12,25 @@ import tinymce, { RawEditorOptions, Editor } from 'tinymce';
 export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
 
 
-    @Input() onActionMethodID: (e: Event) => void;
-    @Input() onRightClickMethodID: (e: Event) => void;
-    @Input() onDataChangeMethodID: (e: Event) => void;
-    @Input() onFocusGainedMethodID: (e: Event) => void;
-    @Input() onFocusLostMethodID: (e: Event) => void;
+    readonly onActionMethodID = input<(e: Event) => void>(undefined);
+    readonly onRightClickMethodID = input<(e: Event) => void>(undefined);
+    readonly onDataChangeMethodID = input<(e: Event) => void>(undefined);
+    readonly onFocusGainedMethodID = input<(e: Event) => void>(undefined);
+    readonly onFocusLostMethodID = input<(e: Event) => void>(undefined);
 
-    @Output() dataProviderIDChange = new EventEmitter();
-    @Input() dataProviderID: any;
-    @Input() enabled: boolean;
-    @Input() editable: boolean;
-    @Input() readOnly: boolean;
-    @Input() responsiveHeight: any;
-    @Input() styleClass: string;
-    @Input() tabSeq: number;
-    @Input() text: string;
-    @Input() toolTipText: string;
-    @Input() scrollbars: any;
+    readonly dataProviderIDChange = output();
+    readonly dataProviderID = input<any>(undefined);
+    readonly enabled = input<boolean>(undefined);
+    readonly editable = input<boolean>(undefined);
+    readonly readOnly = input<boolean>(undefined);
+    readonly responsiveHeight = input<any>(undefined);
+    readonly styleClass = input<string>(undefined);
+    readonly tabSeq = input<number>(undefined);
+    readonly text = input<string>(undefined);
+    readonly toolTipText = input<string>(undefined);
+    readonly scrollbars = input<any>(undefined);
+    
+    _dataProviderID = signal<any>(undefined);
 
     mustExecuteOnFocus = true;
     lastServerValueAsSeenByTinyMCEContent: string;
@@ -51,9 +53,10 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     focus() {
-        if (this.onFocusGainedMethodID) {
+        const onFocusGainedMethodID = this.onFocusGainedMethodID();
+        if (onFocusGainedMethodID) {
             if (this.mustExecuteOnFocus !== false) {
-                this.onFocusGainedMethodID(new CustomEvent('focus'));
+                onFocusGainedMethodID(new CustomEvent('focus'));
             }
             this.mustExecuteOnFocus = true;
         }
@@ -61,19 +64,22 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
 
     blur() {
         if (this.lastServerValueAsSeenByTinyMCEContent != this.tinyValue) {
-            this.dataProviderID = '<html><body>' + this.tinyValue ? this.tinyValue : '' + '</body></html>';
+            this._dataProviderID.set('<html><body>' + this.tinyValue ? this.tinyValue : '' + '</body></html>');
             this.pushUpdate();
         }
-        if (this.onFocusLostMethodID) this.onFocusLostMethodID(new CustomEvent('blur'));
+        const onFocusLostMethodID = this.onFocusLostMethodID();
+        if (onFocusLostMethodID) onFocusLostMethodID(new CustomEvent('blur'));
     }
 
     click({ event }: { event: MouseEvent }) {
-        if (this.onActionMethodID) this.onActionMethodID(new MouseEvent(event.type, event));
+        const onActionMethodID = this.onActionMethodID();
+        if (onActionMethodID) onActionMethodID(new MouseEvent(event.type, event));
     }
 
     contextMenu(event) {
-        if (this.onRightClickMethodID) {
-            this.onRightClickMethodID(new CustomEvent('contextmenu'));
+        const onRightClickMethodID = this.onRightClickMethodID();
+        if (onRightClickMethodID) {
+            onRightClickMethodID(new CustomEvent('contextmenu'));
             event.event.preventDefault();
         }
     }
@@ -132,7 +138,8 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
 
     svyOnInit() {
         super.svyOnInit();
-        this.tinyValue = this.dataProviderID;
+        this._dataProviderID.set(this.dataProviderID());
+        this.tinyValue = this._dataProviderID();
     }
 
     svyOnChanges(changes: SimpleChanges) {
@@ -159,7 +166,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
                     case 'editable':
                     case 'readOnly':
                     case 'enabled':
-                        const editable = this.editable && !this.readOnly && this.enabled;
+                        const editable = this.editable() && !this.readOnly() && this.enabled();
                         if (this.getEditor() && !change.firstChange) {
                             if (editable) {
                                 this.getEditor().mode.set('design');
@@ -169,12 +176,13 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
                         }
                         break;
                     case 'dataProviderID':
-                        this.tinyValue = this.dataProviderID;
+                        this._dataProviderID.set(this.dataProviderID());
+                        this.tinyValue = this._dataProviderID();
                         this.lastServerValueAsSeenByTinyMCEContent = this.tinyValue;
                         break;
                     case 'responsiveHeight':
                         if (!this.servoyApi.isInAbsoluteLayout()) {
-                            this.getNativeElement().style.minHeight = this.responsiveHeight + 'px';
+                            this.getNativeElement().style.minHeight = this.responsiveHeight() + 'px';
                         }
                         break;
                 }
@@ -211,7 +219,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
     public onInit({ event, editor }: any) {
         this.editor = editor;
         this.lastServerValueAsSeenByTinyMCEContent = editor.getContent();
-        const editable = this.editable && !this.readOnly && this.enabled;
+        const editable = this.editable() && !this.readOnly() && this.enabled();
         if (!editable) editor.mode.set('readonly')
         this.setTabIndexOnIFrame();
     }
@@ -250,10 +258,10 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
         this.getEditor().selection.setContent(text);
         const edContent = this.getEditor().getContent();
         if (this.lastServerValueAsSeenByTinyMCEContent != edContent) {
-            this.dataProviderID = '<html><body>' + edContent + '</body></html>';
+            this._dataProviderID.set('<html><body>' + edContent + '</body></html>');
             this.pushUpdate();
         }
-        return this.dataProviderID;
+        return this._dataProviderID();
     }
 
     public setScroll(x: number, y: number) {
@@ -261,6 +269,6 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     pushUpdate() {
-        this.dataProviderIDChange.emit(this.dataProviderID);
+        this.dataProviderIDChange.emit(this._dataProviderID());
     }
 }

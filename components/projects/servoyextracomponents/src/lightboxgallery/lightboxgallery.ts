@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, SimpleChanges, Renderer2, Input, ChangeDetectionStrategy, HostListener } from '@angular/core';
+import { Component, ChangeDetectorRef, SimpleChanges, Renderer2, ChangeDetectionStrategy, HostListener, input } from '@angular/core';
 import { ServoyBaseComponent, IFoundset, BaseCustomObject } from '@servoy/public';
 import { Lightbox, LightboxConfig } from '@servoy/ngx-lightbox';
 
@@ -11,28 +11,28 @@ import { Lightbox, LightboxConfig } from '@servoy/ngx-lightbox';
 })
 export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivElement> {
 
-    @Input() onHoverButtonClicked: (e: Event, imageId: string) => void;
+    readonly onHoverButtonClicked = input<(e: Event, imageId: string) => void>(undefined);
 
-    @Input() imagesFoundset: IFoundset;
-    @Input() maxImageWidth: number;
-    @Input() maxImageHeight: number;
-    @Input() albumLabel: string;
-    @Input() fadeDuration: number;
-    @Input() fitImagesInViewport: boolean;
-    @Input() imageFadeDuration: number;
-    @Input() positionFromTop: number;
-    @Input() resizeDuration: number;
-    @Input() wrapAround: boolean;
-    @Input() galleryVisible: boolean;
-    @Input() showCaptionInGallery: boolean;
-    @Input() showImageNumberLabel: boolean;
-    @Input() hoverButtonIcon: string;
-    @Input() buttonText: string;
-    @Input() buttonStyleClass: string;
-    @Input() enabled: boolean;
-    @Input() imageBatchSize: number;
-    @Input() responsiveHeight: number;
-    @Input() imagesDataset: Array<Image>;
+    readonly imagesFoundset = input<IFoundset>(undefined);
+    readonly maxImageWidth = input<number>(undefined);
+    readonly maxImageHeight = input<number>(undefined);
+    readonly albumLabel = input<string>(undefined);
+    readonly fadeDuration = input<number>(undefined);
+    readonly fitImagesInViewport = input<boolean>(undefined);
+    readonly imageFadeDuration = input<number>(undefined);
+    readonly positionFromTop = input<number>(undefined);
+    readonly resizeDuration = input<number>(undefined);
+    readonly wrapAround = input<boolean>(undefined);
+    readonly galleryVisible = input<boolean>(undefined);
+    readonly showCaptionInGallery = input<boolean>(undefined);
+    readonly showImageNumberLabel = input<boolean>(undefined);
+    readonly hoverButtonIcon = input<string>(undefined);
+    readonly buttonText = input<string>(undefined);
+    readonly buttonStyleClass = input<string>(undefined);
+    readonly enabled = input<boolean>(undefined);
+    readonly imageBatchSize = input<number>(undefined);
+    readonly responsiveHeight = input<number>(undefined);
+    readonly imagesDataset = input<Array<Image>>(undefined);
 
     public images: Array<any> = [];
 
@@ -80,41 +80,46 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 
     onScroll() {
 		if (Math.abs(this.elementRef.nativeElement.scrollHeight - this.elementRef.nativeElement.clientHeight - this.elementRef.nativeElement.scrollTop) < 1) {
-			if (this.imagesFoundset && this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
-				this.imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize);
+			const imagesFoundset = this.imagesFoundset();
+            if (imagesFoundset && imagesFoundset.serverSize > imagesFoundset.viewPort.size) {
+				imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize());
 			}
 		}
 	}
 
 	loadMoreData() {
-		if (this.maxImageHeight || this.maxImageWidth) {
-			if (this.imagesFoundset && this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
+		if (this.maxImageHeight() || this.maxImageWidth()) {
+			const imagesFoundset = this.imagesFoundset();
+            if (imagesFoundset && imagesFoundset.serverSize > imagesFoundset.viewPort.size) {
 				if (!(this.elementRef.nativeElement.clientHeight < this.elementRef.nativeElement.scrollHeight)) {
-					this.imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize);
+					imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize());
 				}
 			}
 		}
 	}
 
     open(index: number): void {
-        if (this.imagesFoundset && (this.images && this.images.length - 1 <= index) && this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
-			this.imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize).then(() => {
+        const imagesFoundset = this.imagesFoundset();
+        if (imagesFoundset && (this.images && this.images.length - 1 <= index) && imagesFoundset.serverSize > imagesFoundset.viewPort.size) {
+			imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize()).then(() => {
 				this.open(index);
 			});
 		} else {
 			if (this.images && this.images.length - 1 >= index) {
 				// open lightbox
-				this._lightboxConfig.albumLabel = this.albumLabel;
-				this._lightboxConfig.fitImageInViewPort = this.fitImagesInViewport;
-				this._lightboxConfig.positionFromTop = this.positionFromTop;
-				this._lightboxConfig.wrapAround = this.wrapAround;
-				this._lightboxConfig.showImageNumberLabel = this.showImageNumberLabel;
+				this._lightboxConfig.albumLabel = this.albumLabel();
+				this._lightboxConfig.fitImageInViewPort = this.fitImagesInViewport();
+				this._lightboxConfig.positionFromTop = this.positionFromTop();
+				this._lightboxConfig.wrapAround = this.wrapAround();
+				this._lightboxConfig.showImageNumberLabel = this.showImageNumberLabel();
 				this._lightboxConfig.disableKeyboardNav = true;
-				if (this.fadeDuration) this._lightboxConfig.fadeDuration = this.fadeDuration / 1000;
-				if (this.resizeDuration) this._lightboxConfig.resizeDuration = this.resizeDuration / 1000;
+				const fadeDuration = this.fadeDuration();
+                if (fadeDuration) this._lightboxConfig.fadeDuration = fadeDuration / 1000;
+				const resizeDuration = this.resizeDuration();
+                if (resizeDuration) this._lightboxConfig.resizeDuration = resizeDuration / 1000;
 
 				this._lightbox.open(this.images, index);
-				if (this.imagesFoundset && this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size) {
+				if (imagesFoundset && imagesFoundset.serverSize > imagesFoundset.viewPort.size) {
 					const interval = setInterval(() => {
 						if (document.querySelector('.fadeIn.lightbox')) {
 							document.querySelector('.fadeIn.lightbox').querySelector('.lb-next').addEventListener('click', this.handleClick);
@@ -135,8 +140,8 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
     }
 
     updateTotalImages(page: number) {
-		let totalImages: string = (this.imagesFoundset.serverSize - this.nullImages).toString();
-		if (this.imagesFoundset.hasMoreRows) {
+		let totalImages: string = (this.imagesFoundset().serverSize - this.nullImages).toString();
+		if (this.imagesFoundset().hasMoreRows) {
 			totalImages += '+';
 		}
 		const arr = document.querySelector('.lb-number').textContent.split(' ');
@@ -157,7 +162,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 		const currentImage = parseInt(document.querySelector('.lb-number').textContent.split(' ')[1], 10);
 		if((currentImage + this.nullImages) === this.checkNumber){
 			const openAt = currentImage;
-			this.imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize).then(()=>{
+			this.imagesFoundset().loadExtraRecordsAsync(this.imageBatchSize()).then(()=>{
 				document.querySelector('.lb-next').removeEventListener('click', this.handleClick);
 				this.close();
 				this.open(openAt);
@@ -168,18 +173,20 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 
 	getStyle = () => {
 		const style = { };
-		if (this.maxImageWidth) {
-			if (this.maxImageWidth === -1) {
+		const maxImageWidth = this.maxImageWidth();
+        if (maxImageWidth) {
+			if (maxImageWidth === -1) {
 				style['maxWidth'] = 'none';
 			} else {
-				style['maxWidth'] = this.maxImageWidth + 'px';
+				style['maxWidth'] = maxImageWidth + 'px';
 			}
 		}
-		if (this.maxImageHeight) {
-			if (this.maxImageHeight === -1) {
+		const maxImageHeight = this.maxImageHeight();
+        if (maxImageHeight) {
+			if (maxImageHeight === -1) {
 				style['height'] = 'auto';
 			} else {
-				style['maxHeight'] = this.maxImageHeight + 'px';
+				style['maxHeight'] = maxImageHeight + 'px';
 			}
 		}
 		return style;
@@ -187,11 +194,12 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 
 	getCaptionStyle = () => {
 		const style = { };
-		if (this.maxImageWidth) {
-			if (this.maxImageWidth === -1) {
+		const maxImageWidth = this.maxImageWidth();
+        if (maxImageWidth) {
+			if (maxImageWidth === -1) {
 				style['maxWidth'] = 'none';
 			} else {
-				style['maxWidth'] = this.maxImageWidth + 'px';
+				style['maxWidth'] = maxImageWidth + 'px';
 			}
 		}
 		return style;
@@ -212,8 +220,9 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 
     setHeight() {
         if (!this.servoyApi.isInAbsoluteLayout()) {
-            if (this.responsiveHeight) {
-                this.elementRef.nativeElement.style.height = this.responsiveHeight + 'px';
+            const responsiveHeight = this.responsiveHeight();
+            if (responsiveHeight) {
+                this.elementRef.nativeElement.style.height = responsiveHeight + 'px';
             } else {
                 this.elementRef.nativeElement.style.height = '100%';
             }
@@ -222,12 +231,14 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 
     private createImages = () => {
         this.images = [];
-        if (this.imagesFoundset) {
-			if (this.imageBatchSize > 5 && this.imagesFoundset.serverSize > this.imagesFoundset.viewPort.size && this.imageBatchSize > this.imagesFoundset.viewPort.size){
-				this.imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize - 5);
+        const imagesFoundset = this.imagesFoundset();
+        const imagesDataset = this.imagesDataset();
+        if (imagesFoundset) {
+			if (this.imageBatchSize() > 5 && imagesFoundset.serverSize > imagesFoundset.viewPort.size && this.imageBatchSize() > imagesFoundset.viewPort.size){
+				imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize() - 5);
 			}
 			this.nullImages = 0;
-            for (const row of this.imagesFoundset.viewPort.rows) {
+            for (const row of imagesFoundset.viewPort.rows) {
                 const image = {
                     src: row.image && row.image.url ? row.image.url : null,
                     caption: row.caption ? row.caption : null,
@@ -245,8 +256,8 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
                 this.images.push(image);
             }
             this.checkNumber = this.images.length + this.nullImages - 1;
-        } else if (this.imagesDataset?.length) {
-            for (const { imageUrl, caption, thumbnailUrl, id } of this.imagesDataset) {
+        } else if (imagesDataset?.length) {
+            for (const { imageUrl, caption, thumbnailUrl, id } of imagesDataset) {
                 this.images.push({
                     src: imageUrl ?? null,
                     caption: caption ?? null,

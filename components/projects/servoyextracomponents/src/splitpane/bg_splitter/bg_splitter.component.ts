@@ -1,7 +1,11 @@
 import {
-  Component, Input, Output, OnChanges, SimpleChanges, EventEmitter, HostListener, AfterContentInit,
-  ContentChildren, QueryList, Renderer2, ViewEncapsulation, ViewChild, ElementRef, Inject,
-  DOCUMENT
+  Component, OnChanges, SimpleChanges, HostListener, AfterContentInit,
+  Renderer2, ViewEncapsulation, ElementRef, Inject,
+  DOCUMENT,
+  input,
+  output,
+  contentChildren,
+  viewChild
 } from '@angular/core';
 
 import { BGPane } from './bg_pane.component';
@@ -14,19 +18,17 @@ import { BGPane } from './bg_pane.component';
 } )
 export class BGSplitter implements AfterContentInit , OnChanges {
 
-    @Input() orientation = 'vertical';
-    @Input() divSize: number;
-    @Input() divLocation: number;
+    readonly orientation = input('vertical');
+    readonly divSize = input<number>(undefined);
+    readonly divLocation = input<number>(undefined);
 
     // eslint-disable-next-line @angular-eslint/no-output-on-prefix
-    @Output() onDividerChange = new EventEmitter();
+    readonly onDividerChange = output<number>();
 
 
-    @ContentChildren( BGPane )
-    private panes: QueryList<BGPane>;
+    private readonly panes = contentChildren(BGPane);
 
-    @ViewChild( 'element' , {static: true})
-    private elementRef: ElementRef;
+    private readonly elementRef = viewChild<ElementRef>('element');
 
     private drag = false;
     private handler;
@@ -40,7 +42,7 @@ export class BGSplitter implements AfterContentInit , OnChanges {
     pointerup( event: PointerEvent ) {
         if ( this.drag ) {
             let dividerLocation: string;
-            if(this.orientation === 'vertical' ) {
+            if(this.orientation() === 'vertical' ) {
                 dividerLocation = this.handler.style.top;
             } else {
                 dividerLocation = this.handler.style.left;
@@ -68,12 +70,12 @@ export class BGSplitter implements AfterContentInit , OnChanges {
     ngOnChanges(changes: SimpleChanges) {
         if (changes['divSize']  && changes['divSize'].currentValue >= 0 ) {
             let styleName = 'width';
-            if (this.orientation === 'vertical') styleName = 'height';
+            if (this.orientation() === 'vertical') styleName = 'height';
             this.renderer.setStyle(this.handler,styleName, changes['divSize'].currentValue +'px');
-            this.adjustLocation(null, this.divLocation);
+            this.adjustLocation(null, this.divLocation());
         }
          if (changes['orientation']) {
-            this.renderer.addClass( this.elementRef.nativeElement, this.orientation);
+            this.renderer.addClass( this.elementRef().nativeElement, this.orientation());
         }
         if (changes['divLocation'] && changes['divLocation'].currentValue >= 0) {
             this.adjustLocation(null, changes['divLocation'].currentValue);
@@ -82,49 +84,49 @@ export class BGSplitter implements AfterContentInit , OnChanges {
 
     ngAfterContentInit() {
         let index = 1;
-        this.panes.forEach(( item ) => {
+        this.panes().forEach(( item ) => {
             item.index = index++;
-            if ( item.minSize === undefined ) item.minSize = 0;
         } );
-        this.renderer.insertBefore( this.elementRef.nativeElement, this.handler, this.panes.last.element.nativeElement );
+        this.renderer.insertBefore( this.elementRef().nativeElement, this.handler, this.panes().at(-1)!.element.nativeElement );
 
-        this.adjustLocation(null,this.divLocation);
+        this.adjustLocation(null,this.divLocation());
     }
 
 
     private adjustLocation(event?: PointerEvent,wantedPosition?: number) {
-        if (!this.panes || this.panes.length !== 2) return;
-        const bounds = this.elementRef.nativeElement.getBoundingClientRect();
+        const panes = this.panes();
+        if (!panes || panes.length !== 2) return;
+        const bounds = this.elementRef().nativeElement.getBoundingClientRect();
         const pos = this.getPosition(bounds, event, wantedPosition);
-        if ( this.orientation === 'vertical' ) {
+        if ( this.orientation() === 'vertical' ) {
             const height = bounds.bottom - bounds.top;
 
             // only check for minSize if it is adjusting because of mousemove
             if(event) {
-                if ( pos < this.panes.first.minSize ) return;
-                if ( height - pos < this.panes.last.minSize ) return;
+                if ( pos < panes.at(0)!.minSize() ) return;
+                if ( height - pos < panes.at(-1)!.minSize() ) return;
             }
 
             this.renderer.setStyle( this.handler, 'top', pos + 'px' );
-            this.renderer.setStyle( this.panes.first.element.nativeElement, 'height', pos + 'px' );
-            this.renderer.setStyle( this.panes.last.element.nativeElement, 'top', (pos + this.handler.offsetHeight) + 'px' );
+            this.renderer.setStyle( panes.at(0)!.element.nativeElement, 'height', pos + 'px' );
+            this.renderer.setStyle( panes.at(-1)!.element.nativeElement, 'top', (pos + this.handler.offsetHeight) + 'px' );
         } else {
             const width = bounds.right - bounds.left;
 
             // only check for minSize if it is adjusting because of mousemove
             if(event) {
-                if ( pos < this.panes.first.minSize ) return;
-                if ( width - pos < this.panes.last.minSize ) return;
+                if ( pos < panes.at(0)!.minSize() ) return;
+                if ( width - pos < panes.at(-1)!.minSize() ) return;
             }
             
             this.renderer.setStyle( this.handler, 'left', pos + 'px' );
-            this.renderer.setStyle( this.panes.first.element.nativeElement, 'width', pos + 'px' );
-            this.renderer.setStyle( this.panes.last.element.nativeElement, 'left',  (pos + this.handler.offsetWidth) + 'px' );
+            this.renderer.setStyle( panes.at(0)!.element.nativeElement, 'width', pos + 'px' );
+            this.renderer.setStyle( panes.at(-1)!.element.nativeElement, 'left',  (pos + this.handler.offsetWidth) + 'px' );
         }
     }
 
     private getPosition(bounds: any, event?: any, wantedPosition?: number) {
-        if ( this.orientation === 'vertical' ) {
+        if ( this.orientation() === 'vertical' ) {
             const height = bounds.bottom - bounds.top;
             // test for == null can't be === because must match on null or undefined
             if ((wantedPosition < 0 || wantedPosition == null) && (event == null)) {

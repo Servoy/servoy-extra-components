@@ -1,4 +1,4 @@
-import { Component, Renderer2, SimpleChanges, ChangeDetectorRef, ChangeDetectionStrategy, Input, TemplateRef, Inject, ContentChild, Output, EventEmitter, DOCUMENT } from '@angular/core';
+import { Component, Renderer2, SimpleChanges, ChangeDetectorRef, ChangeDetectionStrategy, TemplateRef, Inject, DOCUMENT, input, output, contentChild } from '@angular/core';
 import { BaseCustomObject, ServoyBaseComponent } from '@servoy/public';
 import { ServoyPublicService } from '@servoy/public';
 
@@ -13,23 +13,22 @@ import { ServoyPublicService } from '@servoy/public';
 export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 
 	//model
-	@Input() styleClass: string;
-	@Input() tabSeq: number;
-	@Input() collapsibles: Collapsible[];
-	@Output() collapsiblesChange = new EventEmitter();
-	@Input() accordionMode: boolean;
-	@Input() expandedIndices: number[];
+	readonly styleClass = input<string>(undefined);
+	readonly tabSeq = input<number>(undefined);
+	readonly collapsibles = input<Collapsible[]>(undefined);
+	readonly collapsiblesChange = output<Collapsible[]>();
+	readonly accordionMode = input<boolean>(undefined);
+	readonly expandedIndices = input<number[]>(undefined);
 
 	//handlers
-	@Input() onCollapsibleShown: (event: Event, collapsible: Collapsible, collapsibleIndex: number) => void;
-	@Input() onCollapsibleHidden: (event: Event, collapsible: Collapsible, collapsibleIndex: number) => void;
-	@Input() onHeaderClicked: (event: Event, collapsible: Collapsible, collapsibleIndex: number, dataTarget: string) => Promise<boolean>;
-	@Input() onHeaderDoubleClicked: (event: Event, collapsible: Collapsible, collapsibleIndex: number, dataTarget: string) => Promise<boolean>;
-	@Input() onCardClicked: (event: Event, card: Card, collapsible: Collapsible, cardIndex: number, collapsibleIndex: number, dataTarget: string) => void;
+	readonly onCollapsibleShown = input<(event: Event, collapsible: Collapsible, collapsibleIndex: number) => void>(undefined);
+	readonly onCollapsibleHidden = input<(event: Event, collapsible: Collapsible, collapsibleIndex: number) => void>(undefined);
+	readonly onHeaderClicked = input<(event: Event, collapsible: Collapsible, collapsibleIndex: number, dataTarget: string) => Promise<boolean>>(undefined);
+	readonly onHeaderDoubleClicked = input<(event: Event, collapsible: Collapsible, collapsibleIndex: number, dataTarget: string) => Promise<boolean>>(undefined);
+	readonly onCardClicked = input<(event: Event, card: Card, collapsible: Collapsible, cardIndex: number, collapsibleIndex: number, dataTarget: string) => void>(undefined);
 
 
-	@ContentChild(TemplateRef, { static: true })
-	templateRef: TemplateRef<any>;
+	readonly templateRef = contentChild(TemplateRef);
 
 	preventSingleClick = false;
 	timer: any;
@@ -47,14 +46,16 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 		super.svyOnInit();
 		//get form states and fix possible accordionMode misconfiguration
 		let openedCollapseFound = false;
-		if (this.collapsibles) {
-            this.checkIfCollapsibleHaveUniqueIds(this.collapsibles);
-			for (let x = 0; x < this.collapsibles.length; x++) {
-				const collapsible = this.collapsibles[x];
+		const collapsibles = this.collapsibles();
+        if (collapsibles) {
+            this.checkIfCollapsibleHaveUniqueIds(collapsibles);
+			for (let x = 0; x < collapsibles.length; x++) {
+				const collapsible = collapsibles[x];
 
-				if (this.expandedIndices && this.expandedIndices.indexOf(x) !== -1) {
+				const expandedIndices = this.expandedIndices();
+                if (expandedIndices && expandedIndices.indexOf(x) !== -1) {
 					//should be expanded
-					if (!this.accordionMode || !openedCollapseFound) {
+					if (!this.accordionMode() || !openedCollapseFound) {
 						//when not in accordionMode or no collapse is yet expanded
 						collapsible.isCollapsed = false;
 						openedCollapseFound = true;
@@ -71,9 +72,10 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 
 	svyOnChanges(changes: SimpleChanges) {
 		super.svyOnChanges(changes);
-		if (this.collapsibles) {
-            this.checkIfCollapsibleHaveUniqueIds(this.collapsibles);
-			for (const collapsible of this.collapsibles) {
+		const collapsibles = this.collapsibles();
+        if (collapsibles) {
+            this.checkIfCollapsibleHaveUniqueIds(collapsibles);
+			for (const collapsible of collapsibles) {
 				if (collapsible.form) {
 					this.getFormState(collapsible.form, collapsible, !collapsible.isCollapsed,true);
 				}
@@ -100,14 +102,14 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 		if (!index) {
 			index = 0;
 		}
-        this.closeOrOpenCollapsiblesAfterClick(null, index, this.collapsibles[index], true);
+        this.closeOrOpenCollapsiblesAfterClick(null, index, this.collapsibles()[index], true);
 	}
 
 	hide(index: number) {
 		if (!index) {
 			index = 0;
 		}
-        this.closeOrOpenCollapsiblesAfterClick(null, index, this.collapsibles[index], false);
+        this.closeOrOpenCollapsiblesAfterClick(null, index, this.collapsibles()[index], false);
 	}
 
 	/**
@@ -120,7 +122,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 				e.stopPropagation();
 				e.preventDefault();
 
-				this.handleHeaderClickEvent(e, this.onHeaderClicked);
+				this.handleHeaderClickEvent(e, this.onHeaderClicked());
 			}
 		}, 300);
 	}
@@ -132,12 +134,12 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 		this.preventSingleClick = true;
 		clearTimeout(this.timer);
 
-		this.handleHeaderClickEvent(e, this.onHeaderDoubleClicked);
+		this.handleHeaderClickEvent(e, this.onHeaderDoubleClicked());
 	}
 	
 	handleHeaderClickEvent(e: Event, handlerFunction: (e: Event, collapsible: Collapsible, collapsibleIndex: number, dataTarget: string) => Promise<boolean>) {
 		const collapsibleIndex = parseInt((e.target as Element).closest('.svy-collapse-collapsible').getAttribute('id').split('-')[1], 10);
-		const collapsible = this.collapsibles[collapsibleIndex];
+		const collapsible = this.collapsibles()[collapsibleIndex];
 		const previousState = collapsible.isCollapsed;
 
 		if (handlerFunction) {
@@ -160,29 +162,32 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 	}
 	
 	closeOrOpenCollapsiblesAfterClick(e: Event, collapsibleIndex: number, collapsible: Collapsible, previousState: boolean) {
-		const [closedCollapsible, closedIndex] = this.setCollapsedState(collapsibleIndex, !previousState);
-			if (closedCollapsible !== null && closedIndex !== null && this.onCollapsibleHidden) {
-				// this block only executes when there was a close due to accordion mode.
-				this.onCollapsibleHidden(e, closedCollapsible, closedIndex);
-			}
-			if (previousState === true && this.onCollapsibleShown) {
-				this.onCollapsibleShown(e, collapsible, collapsibleIndex);
-			} else if (previousState !== true && this.onCollapsibleHidden) {
-				this.onCollapsibleHidden(e, collapsible, collapsibleIndex);
-			}
+        const [closedCollapsible, closedIndex] = this.setCollapsedState(collapsibleIndex, !previousState);
+        const onCollapsibleHidden = this.onCollapsibleHidden();
+        if (closedCollapsible !== null && closedIndex !== null && onCollapsibleHidden) {
+            // this block only executes when there was a close due to accordion mode.
+            onCollapsibleHidden(e, closedCollapsible, closedIndex);
+        }
+        const onCollapsibleShown = this.onCollapsibleShown();
+        if (previousState === true && onCollapsibleShown) {
+            onCollapsibleShown(e, collapsible, collapsibleIndex);
+        } else if (previousState !== true && onCollapsibleHidden) {
+            onCollapsibleHidden(e, collapsible, collapsibleIndex);
+        }
 	}
 
 	onCardClick(e: Event, cardIndex: number, collapsibleIndex: number) {
-		if (this.onCardClicked) {
-			const collapsible = this.getCollapsible(collapsibleIndex);
+        const onCardClicked = this.onCardClicked();
+        if (onCardClicked) {
+            const collapsible = this.getCollapsible(collapsibleIndex);
             const dataTarget = (e.target as HTMLElement).closest('[data-target]');
-			if (collapsible.cards && collapsible.cards[cardIndex]) {
-				this.onCardClicked(e, collapsible.cards[cardIndex], collapsible, cardIndex, collapsibleIndex, dataTarget ? dataTarget.getAttribute('data-target') : null);
-			} else {
-				//collasible html only
-				this.onCardClicked(e, null, collapsible, cardIndex, collapsibleIndex, dataTarget ? dataTarget.getAttribute('data-target') : null);
-			}
-		}
+            if (collapsible.cards && collapsible.cards[cardIndex]) {
+                onCardClicked(e, collapsible.cards[cardIndex], collapsible, cardIndex, collapsibleIndex, dataTarget ? dataTarget.getAttribute('data-target') : null);
+            } else {
+                //collasible html only
+                onCardClicked(e, null, collapsible, cardIndex, collapsibleIndex, dataTarget ? dataTarget.getAttribute('data-target') : null);
+            }
+        }
 	}
 
 	getFormIfVisible(collapse: Collapsible) {
@@ -229,9 +234,9 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 	}
 
 	private notifyChange(index: number) {
-		this.collapsibles[index].getStateHolder().getChangedKeys().add('isCollapsed');
-		this.collapsibles[index].getStateHolder().notifyChangeListener();
-		this.collapsiblesChange.emit(this.collapsibles);
+		this.collapsibles()[index].getStateHolder().getChangedKeys().add('isCollapsed');
+		this.collapsibles()[index].getStateHolder().notifyChangeListener();
+		this.collapsiblesChange.emit(this.collapsibles());
 	}
 
 	/**
@@ -240,9 +245,9 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 	private setCollapsedState(index: number, state: boolean) {
 		const collapsibleToChange = this.getCollapsible(index);
 		var accordionClosedCollapsible = [null, null];
-		if (this.accordionMode && state === false) {
+		if (this.accordionMode() && state === false) {
 			//collapsible is being expanded and we are in accordionMode
-			for (let i = 0; i < this.collapsibles.length; i++) {
+			for (let i = 0; i < this.collapsibles().length; i++) {
 				const otherCollapse = this.getCollapsible(i);
 				//if another collapsible is open, close that
 				if (i !== index && !otherCollapse.isCollapsed) {
@@ -265,15 +270,15 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 		if (collapsibleToChange.form) {
 			if (state === false) {
 				this.servoyApi.formWillShow(collapsibleToChange.form, collapsibleToChange.relationName).then(() => {
-					this.collapsibles[index].isCollapsed = state;
-					this.collapsibles[index].formIsVisibleServerSide = true;
+					this.collapsibles()[index].isCollapsed = state;
+					this.collapsibles()[index].formIsVisibleServerSide = true;
 					this.cdRef.detectChanges();
 					this.notifyChange(index);
 				});
 			} else if (state === true) {
 				this.servoyApi.hideForm(collapsibleToChange.form, collapsibleToChange.relationName).then(() => {
-					this.collapsibles[index].isCollapsed = state;
-					this.collapsibles[index].formIsVisibleServerSide = false;
+					this.collapsibles()[index].isCollapsed = state;
+					this.collapsibles()[index].formIsVisibleServerSide = false;
 					this.cdRef.detectChanges();
 					this.notifyChange(index);
 				});
@@ -284,7 +289,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 		} else if (collapsibleToChange.cards) {
 			this.toggleFormVisibilityOnCards(collapsibleToChange.cards, state, index);
 		} else {
-			this.collapsibles[index].isCollapsed = state;
+			this.collapsibles()[index].isCollapsed = state;
 			this.notifyChange(index);
 		}
 		return accordionClosedCollapsible;
@@ -293,8 +298,8 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
     private toggleFormVisibilityOnCards(cards: Card[], state: boolean, index: number) {
         //toggle form visibility on cards
         this.toggleCardVisibility(cards, state).then(() => {
-            this.collapsibles[index].isCollapsed = state;
-			this.collapsibles[index].formIsVisibleServerSide = !state;
+            this.collapsibles()[index].isCollapsed = state;
+			this.collapsibles()[index].formIsVisibleServerSide = !state;
             this.cdRef.detectChanges();
             this.notifyChange(index);
         }); 
@@ -305,7 +310,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 	 * return {{form: String, cards: Array}}
 	 */
 	private getCollapsible(index: number) {
-		return this.collapsibles[index];
+		return this.collapsibles()[index];
 	}
 
 	/**

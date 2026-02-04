@@ -1,4 +1,4 @@
-import { Component, ViewChild, SimpleChanges, Input, Renderer2, ElementRef, EventEmitter, Output, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, SimpleChanges, Renderer2, ElementRef, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy, input, output, viewChild, signal } from '@angular/core';
 import { ServoyBaseComponent, Format } from '@servoy/public';
 
 @Component( {
@@ -9,28 +9,30 @@ import { ServoyBaseComponent, Format } from '@servoy/public';
 } )
 export class ServoyExtraTextfieldGroup extends ServoyBaseComponent<HTMLDivElement> {
 
-    @ViewChild('input', { static: false }) input: ElementRef<HTMLInputElement>;
-    @ViewChild('span', { static: false }) span: ElementRef<HTMLSpanElement>;
+    readonly input = viewChild<ElementRef<HTMLInputElement>>('input');
+    readonly span = viewChild<ElementRef<HTMLSpanElement>>('span');
     
-    @Input() onActionMethodID: ( e: Event ) => void;
-    @Input() onRightClickMethodID: ( e: Event ) => void;
-    @Input() onDataChangeMethodID: ( e: Event ) => void;
-    @Input() onFocusGainedMethodID: ( e: Event ) => void;
-    @Input() onFocusLostMethodID: ( e: Event ) => void;
+    readonly onActionMethodID = input<(e: Event) => void>(undefined);
+    readonly onRightClickMethodID = input<(e: Event) => void>(undefined);
+    readonly onDataChangeMethodID = input<(e: Event) => void>(undefined);
+    readonly onFocusGainedMethodID = input<(e: Event) => void>(undefined);
+    readonly onFocusLostMethodID = input<(e: Event) => void>(undefined);
 
-    @Output() dataProviderIDChange = new EventEmitter();
-    @Input() dataProviderID: any;
-    @Input() enabled: boolean;
-    @Input() format: Format;
-    @Input() faclass: string;
-    @Input() inputType: string;
-    @Input() inputValidation: string;
-    @Input() invalidEmailMessage: string;
-    @Input() placeholderText: string;
-    @Input() readOnly: boolean;
-    @Input() styleClass: string;
-    @Input() tabSeq: number;
-    @Input() visible: boolean;
+    readonly dataProviderIDChange = output<any>();
+    readonly dataProviderID = input<any>(undefined);
+    readonly enabled = input<boolean>(undefined);
+    readonly format = input<Format>(undefined);
+    readonly faclass = input<string>(undefined);
+    readonly inputType = input<string>(undefined);
+    readonly inputValidation = input<string>(undefined);
+    readonly invalidEmailMessage = input<string>(undefined);
+    readonly placeholderText = input<string>(undefined);
+    readonly readOnly = input<boolean>(undefined);
+    readonly styleClass = input<string>(undefined);
+    readonly tabSeq = input<number>(undefined);
+    readonly visible = input<boolean>(undefined);
+    
+    _dataProviderID = signal<any>(undefined);
     
     showError = false;
     
@@ -46,7 +48,7 @@ export class ServoyExtraTextfieldGroup extends ServoyBaseComponent<HTMLDivElemen
     }
     
     getFocusElement() {
-        return this.input.nativeElement;
+        return this.input().nativeElement;
     }
 
     requestFocus( mustExecuteOnFocusGainedMethod: boolean ) {
@@ -70,6 +72,7 @@ export class ServoyExtraTextfieldGroup extends ServoyBaseComponent<HTMLDivElemen
                             this.renderer.setAttribute( this.getFocusElement(), 'disabled', 'disabled' );
                         break;
                     case 'dataProviderID':
+                        this._dataProviderID.set(this.dataProviderID());
                         this.dataProviderValidation();
                         break;
                     case 'placeholderText':
@@ -77,7 +80,7 @@ export class ServoyExtraTextfieldGroup extends ServoyBaseComponent<HTMLDivElemen
                         else this.renderer.removeAttribute(this.getFocusElement(), 'placeholder');
                         break;
                     case 'inputType':
-                        this.renderer.setAttribute(this.getFocusElement(), 'type', this.inputType);
+                        this.renderer.setAttribute(this.getFocusElement(), 'type', this.inputType());
                         break;
                 }
             }
@@ -86,10 +89,10 @@ export class ServoyExtraTextfieldGroup extends ServoyBaseComponent<HTMLDivElemen
     }
 
     dataProviderValidation() {
-        if ( this.inputValidation === 'email' ) {
+        if ( this.inputValidation() === 'email' ) {
             const email_regexp = /^[_a-z0-9-+^$']+(\.[_a-z0-9-+^$']+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/i;
-            let isMatchRegex = email_regexp.test( this.dataProviderID );
-            if ( isMatchRegex || !this.dataProviderID ) {
+            let isMatchRegex = email_regexp.test( this._dataProviderID() );
+            if ( isMatchRegex || !this._dataProviderID() ) {
                 this.showError = false;
             } else {
                 this.showError = true;
@@ -100,9 +103,10 @@ export class ServoyExtraTextfieldGroup extends ServoyBaseComponent<HTMLDivElemen
     }
     
     pushUpdate( event: any) {
-		if (event !== this.dataProviderID) {
-			this.dataProviderID = event;
-        	this.dataProviderIDChange.emit(this.dataProviderID);
+		const dataProviderID = this.dataProviderID();
+        if (event !== dataProviderID) {
+			this._dataProviderID.set(event);
+        	this.dataProviderIDChange.emit(event);
         	this.dataProviderValidation();
 		} 
     }
@@ -110,32 +114,32 @@ export class ServoyExtraTextfieldGroup extends ServoyBaseComponent<HTMLDivElemen
     protected attachHandlers() {
 
         this.attachFocusListeners(this.getFocusElement());
-        if ( this.onActionMethodID ) {
+        if ( this.onActionMethodID() ) {
             this.renderer.listen( this.getFocusElement(), 'keydown', e => {
                 if (e.keyCode === 13) {
-                    this.pushUpdate(this.input.nativeElement.value);
-                    this.onActionMethodID( e );
+                    this.pushUpdate(this.input().nativeElement.value);
+                    this.onActionMethodID()( e );
                 }
             });
         }
-        if ( this.onRightClickMethodID ) {
+        if ( this.onRightClickMethodID() ) {
             this.renderer.listen( this.getNativeElement(), 'contextmenu', e => {
-                this.onRightClickMethodID( e ); return false;
+                this.onRightClickMethodID()( e ); return false;
             } );
         }
     }
     
     attachFocusListeners( nativeElement: any ) {
-        if ( this.onFocusGainedMethodID )
+        if ( this.onFocusGainedMethodID() )
             this.renderer.listen( nativeElement, 'focus', ( e ) => {
                 if ( this.mustExecuteOnFocus !== false ) {
-                    this.onFocusGainedMethodID( e );
+                    this.onFocusGainedMethodID()( e );
                 }
                 this.mustExecuteOnFocus = true;
             } );
-        if ( this.onFocusLostMethodID )
+        if ( this.onFocusLostMethodID() )
             this.renderer.listen( nativeElement, 'blur', ( e ) => {
-                this.onFocusLostMethodID( e );
+                this.onFocusLostMethodID()( e );
             } );
     }
 }

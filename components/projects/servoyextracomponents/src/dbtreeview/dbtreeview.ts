@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, Renderer2, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, Renderer2, SimpleChanges, input, output, viewChild, effect, signal } from '@angular/core';
 import { LoggerService, LoggerFactory, ServoyBaseComponent, BaseCustomObject, IFoundsetTree, ServoyPublicService, EventLike, JSEvent } from '@servoy/public';
 import { IActionMapping, ITreeOptions, TreeComponent, TreeNode } from '@ali-hm/angular-tree-component';
 
@@ -14,29 +14,33 @@ import { IActionMapping, ITreeOptions, TreeComponent, TreeNode } from '@ali-hm/a
 
 export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> implements OnDestroy {
 
-    @ViewChild('element', { static: true }) elementRef: ElementRef;
-    @ViewChild('tree', { static: true }) tree: TreeComponent;
+    elementRef: ElementRef<HTMLDivElement>;
+    readonly elementRefSignal = viewChild<ElementRef<HTMLDivElement>>('element');
+    readonly tree = viewChild<TreeComponent>('tree');
 
-    @Input() foundsettree: IFoundsetTree;
-    @Input() autoRefresh: boolean;
-    @Input() allowDrag: any;
-    @Input() allowDrop: any;
-    @Input() bindings: Array<Binding>;
-    @Input() enabled: boolean;
-    @Input() levelVisibility: LevelVisibilityType;
-    @Input() responsiveHeight: number;
-    @Input() selection: Array<string>;
-    @Input() visible: boolean;
-    @Input() showLoadingIndicator: boolean;
-	@Input() styleClass: string;
-    @Input() onReady: (e: JSEvent) => void;
-    @Input() onDrop: (sourceNodePkPath: Array<string>, targetNodePkPath: Array<string>, indexInParent: number, e: JSEvent) => void;
-    @Input() onRowDrop: any;
+    readonly foundsettree = input<IFoundsetTree>(undefined);
+    readonly autoRefresh = input<boolean>(undefined);
+    readonly allowDrag = input<any>(undefined);
+    readonly allowDrop = input<any>(undefined);
+    readonly bindings = input<Array<Binding>>(undefined);
+    readonly enabled = input<boolean>(undefined);
+    readonly levelVisibility = input<LevelVisibilityType>(undefined);
+    readonly responsiveHeight = input<number>(undefined);
+    readonly selection = input<Array<string>>(undefined);
+    readonly visible = input<boolean>(undefined);
+    readonly showLoadingIndicator = input<boolean>(undefined);
+	readonly styleClass = input<string>(undefined);
+    readonly onReady = input<(e: JSEvent) => void>(undefined);
+    readonly onDrop = input<(sourceNodePkPath: Array<string>, targetNodePkPath: Array<string>, indexInParent: number, e: JSEvent) => void>(undefined);
+    readonly onRowDrop = input<any>(undefined);
 	
-	@Input() actions: Array<Action>;
+	readonly actions = input<Array<Action>>(undefined);
 
-    @Input() isInitialized: boolean;
-    @Output() isInitializedChange = new EventEmitter();
+    readonly isInitialized = input<boolean>(undefined);
+    readonly isInitializedChange = output<boolean>();
+    
+    _selection = signal<Array<string>>(undefined);
+    _isInitialized = signal<boolean>(undefined);
 
     log: LoggerService;
     folderImgPath = './assets/images/folder.png';
@@ -48,13 +52,13 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     actionMapping: IActionMapping = {
         mouse: {
             click: (_tree, node, $event) => {
-                this.tree.treeModel.setActiveNode(node, true);
+                this.tree().treeModel.setActiveNode(node, true);
                 this.setSelectionFromTree(node);
                 if (node.data && node.data.callbackinfo) {
                     const doubleClick = node.data.callbackinfo;
                     doubleClick(node.data.callbackinfoParamValue);
                 }
-				if (node.data && this.actions) {
+				if (node.data && this.actions()) {
 					const action = this.getAction(event.target as HTMLElement);
 					if (action) {
 						const callback = action.callbackfunction;
@@ -70,7 +74,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
             },
             contextMenu: (_tree, node, $event) => {
                 $event.preventDefault();
-                this.tree.treeModel.setActiveNode(node, true);
+                this.tree().treeModel.setActiveNode(node, true);
                 this.setSelectionFromTree(node);
                 if (node.data && node.data.methodToCallOnRightClick) {
                     const rightClick = node.data.methodToCallOnRightClick;
@@ -90,17 +94,25 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
         private servoyPublicService: ServoyPublicService) {
         super(renderer, cdRef);
         this.log = logFactory.getLogger('ServoyExtraDbtreeview');
+        effect(() => {
+            const el = this.elementRefSignal();
+            if (el) {
+                this.elementRef = el;
+            }
+        });
     }
 
     svyOnInit() {
         super.svyOnInit();
-        if(this.onRowDrop) {
+        this._selection.set(this.selection());
+        this._isInitialized.set(this.isInitialized());
+        if(this.onRowDrop()) {
             this.options.allowDrag = false;
             this.options.allowDrop = false;
             this.options.allowDragoverStyling = false;
         } else {
-            this.options.allowDrag = this.allowDrag;
-            this.options.allowDrop = this.allowDrop;
+            this.options.allowDrag = this.allowDrag();
+            this.options.allowDrop = this.allowDrop();
         }
 
         if (!this.displayNodes || this.displayNodes.length === 0) {
@@ -110,27 +122,34 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
 
     svyOnChanges(changes: SimpleChanges) {
         if (changes) {
+            if (changes.selection) {
+                this._selection.set(this.selection());
+            }
+            if (changes.isInitialized) {
+                this._isInitialized.set(this.isInitialized());
+            }
             for (const property of Object.keys(changes)) {
                 const change = changes[property];
+                const elementRef = this.elementRefSignal();
                 switch (property) {
                     case 'responsiveHeight':
-                        if (this.elementRef && this.servoyApi.isInAbsoluteLayout() && change.currentValue) {
-                            this.renderer.setStyle(this.elementRef, 'height', change.currentValue + 'px');
+                        if (elementRef && this.servoyApi.isInAbsoluteLayout() && change.currentValue) {
+                            this.renderer.setStyle(elementRef, 'height', change.currentValue + 'px');
                         }
                         break;
                     case 'foundsettree': {
                         if (change.currentValue && !change.firstChange && !this.gettingChildren) {
-                            const newcheckedvalues = this.foundsettree.getAndResetUpdatedCheckboxValues();
-                            const newchildren = this.foundsettree.getAndResetNewChildren();
+                            const newcheckedvalues = this.foundsettree().getAndResetUpdatedCheckboxValues();
+                            const newchildren = this.foundsettree().getAndResetNewChildren();
                             if (newcheckedvalues) {
                                 for (const nodeid of Object.keys(newcheckedvalues)) {
-                                    const node = this.tree.treeModel.getNodeById(nodeid);
+                                    const node = this.tree().treeModel.getNodeById(nodeid);
                                     if (node) {
                                         node.data.checked = newcheckedvalues[nodeid];
                                     }
                                 }
                             } else if (newchildren) {
-                                if (this.autoRefresh) {
+                                if (this.autoRefresh()) {
                                     for (const nodeid of Object.keys(newchildren)) {
                                         const node = this.findDataNode(nodeid, this.displayNodes);
                                         if (node) {
@@ -142,7 +161,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
                                             }
                                         }
                                     }
-                                    this.tree.treeModel.update();
+                                    this.tree().treeModel.update();
                                 }
                             } else if (change.currentValue !== change.previousValue) {
                                 this.initTree();
@@ -151,17 +170,19 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
                         break;
                     }
                     case 'levelVisibility': {
-                        if (change.currentValue && this.tree && this.tree.treeModel && this.tree.treeModel.virtualRoot) {
-                            this.expandChildNodes(this.tree.treeModel.virtualRoot, change.currentValue.level, change.currentValue.value);
+                        const tree = this.tree();
+                        if (change.currentValue && tree && tree.treeModel && tree.treeModel.virtualRoot) {
+                            this.expandChildNodes(tree.treeModel.virtualRoot, change.currentValue.level, change.currentValue.value);
                         }
                         break;
                     }
                     case 'enabled': {
-                        if (change.previousValue !== change.currentValue && this.elementRef) {
+                        const elementRefValue = this.elementRefSignal();
+                        if (change.previousValue !== change.currentValue && elementRefValue) {
                             if (change.currentValue) {
-                                this.renderer.removeClass(this.elementRef.nativeElement, 'dbtreeview-disabled');
+                                this.renderer.removeClass(elementRefValue.nativeElement, 'dbtreeview-disabled');
                             } else {
-                                this.renderer.addClass(this.elementRef.nativeElement, 'dbtreeview-disabled');
+                                this.renderer.addClass(elementRefValue.nativeElement, 'dbtreeview-disabled');
                             }
                         }
                         break;
@@ -189,7 +210,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     async getChildren(node: TreeNode): Promise<Array<ChildNode>> {
         const children: Array<ChildNode> = [];
         this.gettingChildren = true;
-        const nodes = await this.foundsettree.getChildren(node.data.id, node.data.level);
+        const nodes = await this.foundsettree().getChildren(node.data.id, node.data.level);
         this.gettingChildren = false;
         if (nodes) {
             for (const treenode of nodes as Array<ChildNode>) {
@@ -204,10 +225,11 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
             if (child.data.active) {
                 child.setIsActive(true);
             }
-            if (this.selection) {
-                const index = this.selection.indexOf(child.data.id);
+            const selection = this._selection();
+            if (selection) {
+                const index = selection.indexOf(child.data.id);
                 if (index >= 0) {
-                    if (index === this.selection.length - 1) {
+                    if (index === selection.length - 1) {
                         child.setIsActive(true);
                     } else {
                         child.expand();
@@ -217,7 +239,8 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
            // if (event.node.data.checked) {
            //     child.data.checked = true;
            //}
-            if (this.levelVisibility && this.levelVisibility.value && this.levelVisibility.level >= child.level) {
+            const levelVisibility = this.levelVisibility();
+            if (levelVisibility && levelVisibility.value && levelVisibility.level >= child.level) {
                 child.expand();
             } else if (this.expandedNodes && !child.isExpanded && this.expandedNodes.indexOf(child.data.id) >= 0) {
                 // expand node if is within the expandedNodes path. It allows to expand nodes async on multiple levels
@@ -231,16 +254,17 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     }
 
     nodeDropped(event: any){
-       if (this.onDrop){
-           this.onDrop(this.getNodePKPath(event.node), this.getNodePKPath(event.to.parent), event.to.index,
-                this.servoyPublicService.createJSEvent({ target: this.elementRef.nativeElement } as EventLike, 'onDrop'));
+       const onDrop = this.onDrop();
+       if (onDrop){
+           onDrop(this.getNodePKPath(event.node), this.getNodePKPath(event.to.parent), event.to.index,
+                this.servoyPublicService.createJSEvent({ target: this.elementRefSignal().nativeElement } as EventLike, 'onDrop'));
        }
     }
 
     onTreeLoad(event: any) {
-        this.isInitialized = true;
-        this.isInitializedChange.emit(this.isInitialized);
-        const treenode = this.tree.treeModel.getNodeBy((node) => {
+        this._isInitialized.set(true);
+        this.isInitializedChange.emit(this._isInitialized());
+        const treenode = this.tree().treeModel.getNodeBy((node) => {
             if (node.data.active) {
                 return true;
             }
@@ -251,8 +275,9 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
             treenode.setIsActive(true);
         }
         this.expandNodes(this.displayNodes);
-        if (this.onReady) {
-            this.onReady(this.servoyPublicService.createJSEvent({ target: this.elementRef.nativeElement } as EventLike, 'onReady'));
+        const onReady = this.onReady();
+        if (onReady) {
+            onReady(this.servoyPublicService.createJSEvent({ target: this.elementRefSignal().nativeElement } as EventLike, 'onReady'));
         }
     }
 
@@ -268,7 +293,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     expandNodes(nodes: ChildNode[]) {
         nodes.forEach(node => {
             if (node.expanded) {
-                this.tree.treeModel.getNodeById(node.id).setIsExpanded(true);
+                this.tree().treeModel.getNodeById(node.id).setIsExpanded(true);
             }
             if (node.hasChildren && node.children) this.expandNodes(node.children);
         });
@@ -282,7 +307,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
              node.data.checked = checked;
         }
 
-        this.foundsettree.updateCheckboxValue(node.data.id, checked);
+        this.foundsettree().updateCheckboxValue(node.data.id, checked);
 
         if (node.data && node.data.methodToCallOnCheckBoxChange) {
             const checkboxChange = node.data.methodToCallOnCheckBoxChange;
@@ -340,8 +365,9 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     }
 
     public isNodeExpandedClientSide(idarray: Array<string>): boolean {
-        if (this.tree && idarray && idarray.length) {
-            const node = this.tree.treeModel.getNodeById(idarray[idarray.length - 1]);
+        const tree = this.tree();
+        if (tree && idarray && idarray.length) {
+            const node = tree.treeModel.getNodeById(idarray[idarray.length - 1]);
             if (node) {
                 return node.isExpanded ? true : false;
             }
@@ -350,7 +376,8 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     }
 
     public setExpandNodeClientSide(idarray: Array<any>, state: boolean): void {
-        if (this.tree && idarray && idarray.length) {
+        const tree = this.tree();
+        if (tree && idarray && idarray.length) {
             if (state) {
                 this.expandedNodes = idarray;
             } else if (this.expandedNodes && idarray && this.expandedNodes.length && this.expandedNodes.length === idarray.length) {
@@ -360,7 +387,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
                 }
             }
             for (let index = idarray.length - 1; index >= 0; index--) {
-                const node = this.tree.treeModel.getNodeById(idarray[index]);
+                const node = tree.treeModel.getNodeById(idarray[index]);
                 if (node) {
                     if (index === idarray.length - 1) {
                         // found the actual node
@@ -371,7 +398,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
                             if (node.parent) {
                                 node.parent.collapse();
                             }
-                            this.tree.treeModel.setExpandedNode(node, state);
+                            tree.treeModel.setExpandedNode(node, state);
                         }
                     } else if (state) {
                         node.expand();
@@ -382,10 +409,10 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     }
 
     public setSelectionPathClientSide(idarray: Array<string>) {
-        this.selection = idarray;
+        this._selection.set(idarray);
         if (idarray && idarray.length){
             for (let i = idarray.length - 1; i >= 0; i--) {
-                const node = this.tree.treeModel.getNodeById(idarray[i]);
+                const node = this.tree().treeModel.getNodeById(idarray[i]);
                 if (node) {
                     if (i === idarray.length - 1) {
                         node.setIsActive(true);
@@ -397,7 +424,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
                 }
             }
         } else{
-            const node = this.tree.treeModel.getActiveNode();
+            const node = this.tree().treeModel.getActiveNode();
             if (node) {
                 node.setIsActive(false);
                 node.blur();
@@ -452,7 +479,8 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
             child.image = this.fileImgPath;
         }
 
-        const isLevelVisible = this.levelVisibility && this.levelVisibility.value && (this.levelVisibility.level >= dataNode.level);
+        const levelVisibility = this.levelVisibility();
+        const isLevelVisible = levelVisibility && levelVisibility.value && (levelVisibility.level >= dataNode.level);
         const isNodeExpanded = (this.expandedNodes && this.expandedNodes.indexOf(child.id) >= 0);
 
         if (isLevelVisible || isNodeExpanded) {
@@ -503,8 +531,9 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     }
 
     private getBinding(datasource: string): Binding {
-        if (this.bindings) {
-            for (const binding of this.bindings) {
+        const bindings = this.bindings();
+        if (bindings) {
+            for (const binding of bindings) {
                 if (datasource === binding.datasource) {
                     return binding;
                 }
@@ -514,7 +543,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     }
 	
 	private getAction(action: HTMLElement): Action {
-		return this.actions.filter((item) => [...(this.elementRef.nativeElement as HTMLElement).querySelectorAll(item.name)].includes(action))[0];
+		return this.actions().filter((item) => [...(this.elementRefSignal().nativeElement as HTMLElement).querySelectorAll(item.name)].includes(action))[0];
 	}
 
     private initTree(): void {
@@ -527,8 +556,9 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
         }
 
         const children = [];
-        if (this.foundsettree) {
-            this.foundsettree.forEach((elem) => {
+        const foundsettree = this.foundsettree();
+        if (foundsettree) {
+            foundsettree.forEach((elem) => {
                 const child = this.buildChild(elem);
                 children.push(child);
             }, this);
@@ -538,13 +568,13 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     }
 
     private setSelectionFromTree(node: TreeNode): void {
-        this.selection = new Array();
+        this._selection.set(new Array());
         while (node && node.parent) {
-            this.selection.push(node.data.id);
+            this._selection().push(node.data.id);
             node = node.parent;
         }
-        this.selection = this.selection.reverse();
-        this.foundsettree.updateSelection(this.selection);
+        this._selection.set(this._selection().reverse());
+        this.foundsettree().updateSelection(this._selection());
     }
 
     private findDataNode(nodeid: string, childArray: Array<ChildNode>): ChildNode {
@@ -588,7 +618,8 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
 
     onRowDropEvent($event) {
         $event.preventDefault();
-        if (this.onRowDrop) {
+        const onRowDrop = this.onRowDrop();
+        if (onRowDrop) {
             const jsonData = $event.dataTransfer.getData('nggrids-drag/json');
             const dragTranferData = JSON.parse(jsonData) as DragTransferData;
             const jsDropEvent = this.servoyPublicService.createJSEvent($event, 'onDrop') as JSDNDEvent;
@@ -598,10 +629,10 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
             let nodePKPath = null;
             const targetNodeId = this.getTargetNodeId($event.target);
             if(targetNodeId) {
-                const node = this.tree.treeModel.getNodeById(targetNodeId);
+                const node = this.tree().treeModel.getNodeById(targetNodeId);
                 if(node)  nodePKPath = this.getNodePKPath(node);
             }
-            this.onRowDrop(dragTranferData.records, nodePKPath, jsDropEvent);
+            onRowDrop(dragTranferData.records, nodePKPath, jsDropEvent);
         }
     }
 

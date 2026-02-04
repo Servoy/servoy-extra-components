@@ -1,5 +1,5 @@
 import { PointerType, ChangeContext, LabelType, Options } from '@angular-slider/ngx-slider';
-import { Component, SimpleChanges, Input, Renderer2, EventEmitter, Output, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, SimpleChanges, Renderer2, ChangeDetectorRef, ChangeDetectionStrategy, input, output, EventEmitter } from '@angular/core';
 import { Format, ServoyBaseComponent } from '@servoy/public'
 
 import { FormattingService } from '@servoy/public';
@@ -12,63 +12,63 @@ import { FormattingService } from '@servoy/public';
 })
 export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
 
-    @Input() onDataChangeMethodID;
-    @Input() onDataChangeHigh;
-    @Input() onSlideStart;
-    @Input() onSlideEnd;
-    @Input() onTick;
+    readonly onDataChangeMethodID = input(undefined);
+    readonly onDataChangeHigh = input(undefined);
+    readonly onSlideStart = input(undefined);
+    readonly onSlideEnd = input(undefined);
+    readonly onTick = input(undefined);
 
-    @Input() dataProvider;
-    @Input() dataProviderHigh;
-    @Input() numberFormat;
-    @Input() dataChangeOnSlideEnd;
-    @Input() ceil;
-    @Input() floor;
-    @Input() enabled;
-    @Input() step;
-    @Input() precision;
-    @Input() minLimit;
-    @Input() maxLimit;
-    @Input() minRange;
-    @Input() maxRange;
-    @Input() enforceStep;
-    @Input() enforceRange;
-    @Input() pushRange;
-    @Input() rightToLeft;
-    @Input() noSwitching;
-    @Input() draggableRange;
-    @Input() draggableRangeOnly;
-    @Input() showSelectionBar;
-    @Input() showSelectionBarEnd;
-    @Input() selectionBarGradient;
-    @Input() showOuterSelectionBars;
-    @Input() showTicks;
-    @Input() showTicksValues;
-    @Input() ticksInterval;
-    @Input() ticksValuesInterval;
-    @Input() hidePointerLabels;
-    @Input() hideLimitLabels;
-    @Input() autoHideLimitLabels;
-    @Input() vertical;
-    @Input() logScale;
-    @Input() formattingFunction;
-    @Input() selectionBarColorFunction;
-    @Input() getLegendFunction;
-    @Input() tickColorFunction;
-    @Input() ticksTooltipFunction;
-    @Input() ticksValuesTooltipFunction;
-    @Input() pointerColorFunction;
-    @Input() stepsValueList;
-    @Input() styleClass;
+    readonly dataProvider = input(undefined);
+    readonly dataProviderHigh = input(undefined);
+    readonly numberFormat = input(undefined);
+    readonly dataChangeOnSlideEnd = input(undefined);
+    readonly ceil = input(undefined);
+    readonly floor = input(undefined);
+    readonly enabled = input(undefined);
+    readonly step = input(undefined);
+    readonly precision = input(undefined);
+    readonly minLimit = input(undefined);
+    readonly maxLimit = input(undefined);
+    readonly minRange = input(undefined);
+    readonly maxRange = input(undefined);
+    readonly enforceStep = input(undefined);
+    readonly enforceRange = input(undefined);
+    readonly pushRange = input(undefined);
+    readonly rightToLeft = input(undefined);
+    readonly noSwitching = input(undefined);
+    readonly draggableRange = input(undefined);
+    readonly draggableRangeOnly = input(undefined);
+    readonly showSelectionBar = input(undefined);
+    readonly showSelectionBarEnd = input(undefined);
+    readonly selectionBarGradient = input(undefined);
+    readonly showOuterSelectionBars = input(undefined);
+    readonly showTicks = input(undefined);
+    readonly showTicksValues = input(undefined);
+    readonly ticksInterval = input(undefined);
+    readonly ticksValuesInterval = input(undefined);
+    readonly hidePointerLabels = input(undefined);
+    readonly hideLimitLabels = input(undefined);
+    readonly autoHideLimitLabels = input(undefined);
+    readonly vertical = input(undefined);
+    readonly logScale = input(undefined);
+    readonly formattingFunction = input(undefined);
+    readonly selectionBarColorFunction = input(undefined);
+    readonly getLegendFunction = input(undefined);
+    readonly tickColorFunction = input(undefined);
+    readonly ticksTooltipFunction = input(undefined);
+    readonly ticksValuesTooltipFunction = input(undefined);
+    readonly pointerColorFunction = input(undefined);
+    readonly stepsValueList = input(undefined);
+    readonly styleClass = input(undefined);
 
-    @Output() dataProviderChange = new EventEmitter();
-    @Output() dataProviderHighChange = new EventEmitter();
+    readonly dataProviderChange = output<any>();
+    readonly dataProviderHighChange = output<any>();
     manualRefresh: EventEmitter<void> = new EventEmitter<void>();
 
     formattingFunctionParsed: any;
 
     options: Options = {
-        translate: this.formatValue
+        translate: (value: number, label: LabelType) => this.formatValue(value, label)
     };
 
     constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, private formatService: FormattingService) {
@@ -78,8 +78,8 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
     ngOnInit() {
         super.ngOnInit();
         // these options must be initialized otherwise dataprovider is not displayed in ui
-        this.setNewOptions('ceil', this.ceilValue(this.ceil));
-        this.setNewOptions('floor', this.floor);
+        this.setNewOptions('ceil', this.ceilValue(this.ceil()));
+        this.setNewOptions('floor', this.floor());
     }
 
     svyOnChanges(changes: SimpleChanges) {
@@ -238,12 +238,13 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     formatValue(value: number, label: LabelType): string {
-        if (this.formattingFunctionParsed) {
+        if (this.formattingFunctionParsed && typeof this.formattingFunctionParsed === 'function') {
             return this.formattingFunctionParsed(value, label);
         }
-        if (this.numberFormat) {
+        const numberFormat = this.numberFormat();
+        if (numberFormat && numberFormat.type === 'NUMBER') {
             const format = new Format();
-            format.display = this.numberFormat;
+            format.display = numberFormat;
             format.type = 'NUMBER';
             return this.formatService.format(value, format, false);
         }
@@ -251,16 +252,18 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     onUserChangeStart(changeContext: ChangeContext) {
-        if (this.onSlideStart) {
-            this.onSlideStart(null, changeContext.value, changeContext.highValue, changeContext.pointerType == PointerType.Min ? "value" : "high");
+        const onSlideStart = this.onSlideStart();
+        if (onSlideStart) {
+            onSlideStart(null, changeContext.value, changeContext.highValue, changeContext.pointerType == PointerType.Min ? "value" : "high");
         }
     }
 
     onUserChange(changeContext: ChangeContext) {
-        if (this.onTick) {
-            this.onTick(changeContext.value, changeContext.highValue, changeContext.pointerType == PointerType.Min ? "value" : "high", this.rightToLeft);
+        const onTick = this.onTick();
+        if (onTick) {
+            onTick(changeContext.value, changeContext.highValue, changeContext.pointerType == PointerType.Min ? "value" : "high", this.rightToLeft());
         }
-        if (!this.dataChangeOnSlideEnd) {
+        if (!this.dataChangeOnSlideEnd()) {
             this.dataProviderChange.emit(changeContext.value);
             this.dataProviderHighChange.emit(changeContext.highValue);
         }
@@ -269,18 +272,19 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
     onUserChangeEnd(changeContext: ChangeContext) {
         this.dataProviderChange.emit(changeContext.value);
         this.dataProviderHighChange.emit(changeContext.highValue);
-        if (this.onSlideEnd) {
-            this.onSlideEnd(null, changeContext.value, changeContext.highValue, changeContext.pointerType == PointerType.Min ? "value" : "high");
+        const onSlideEnd = this.onSlideEnd();
+        if (onSlideEnd) {
+            onSlideEnd(null, changeContext.value, changeContext.highValue, changeContext.pointerType == PointerType.Min ? "value" : "high");
         }
     }
 
     ceilValue(ceil: number) {
         if (ceil >= 0) {
             return ceil;
-        } else if (this.dataProviderHigh >= 0) {
-            return this.dataProviderHigh;
-        } else if (this.dataProvider >= 0) {
-            return this.dataProvider;
+        } else if (this.dataProviderHigh() >= 0) {
+            return this.dataProviderHigh();
+        } else if (this.dataProvider() >= 0) {
+            return this.dataProvider();
         }
         return 100;
     }

@@ -1,4 +1,4 @@
-import { Directive, Input ,ViewChild,ElementRef} from '@angular/core';
+import { Directive, ViewChild, ElementRef, input } from '@angular/core';
 
 import { BGSplitter } from './bg_splitter.component';
 
@@ -12,7 +12,7 @@ import { BGSplitter } from './bg_splitter.component';
 })
 export class BGPane{
 
-    @Input()minSize;
+    readonly minSize = input(0);
 
     index;
 

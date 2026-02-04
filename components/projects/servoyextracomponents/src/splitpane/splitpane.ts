@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ContentChild, TemplateRef, ChangeDetectorRef, SimpleChanges, Renderer2, ChangeDetectionStrategy, HostListener} from '@angular/core';
+import { Component, TemplateRef, ChangeDetectorRef, SimpleChanges, Renderer2, ChangeDetectionStrategy, HostListener, input, output, contentChild, signal } from '@angular/core';
 
 import { BaseCustomObject, ServoyBaseComponent } from '@servoy/public';
 
@@ -10,28 +10,30 @@ import { BaseCustomObject, ServoyBaseComponent } from '@servoy/public';
 } )
 export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
 
-    @Input() onChangeMethodID;
+    readonly onChangeMethodID = input(undefined);
 
-    @Input() enabled: boolean;
-    @Input() readOnly: boolean;
-    @Input() styleClass: string;
-    @Input() splitType: number;
-    @Input() tabSeq: number;
-    @Input() pane1: Pane;
-    @Input() pane2: Pane;
+    readonly enabled = input<boolean>(undefined);
+    readonly readOnly = input<boolean>(undefined);
+    readonly styleClass = input<string>(undefined);
+    readonly splitType = input<number>(undefined);
+    readonly tabSeq = input<number>(undefined);
+    readonly pane1 = input<Pane>(undefined);
+    readonly pane2 = input<Pane>(undefined);
 
-    @Input() divLocation: number;
-    @Output() divLocationChange = new EventEmitter();
-    @Input() divSize: number;
-    @Input() pane1MinSize: number;
-    @Input() pane2MinSize: number;
-    @Input() resizeWeight: number;
-    @Input() responsiveHeight: number;
+    readonly divLocation = input<number>(undefined);
+    readonly divLocationChange = output<number>();
+    readonly divSize = input<number>(5);
+    readonly pane1MinSize = input<number>(30);
+    readonly pane2MinSize = input<number>(30);
+    readonly resizeWeight = input<number>(0);
+    readonly responsiveHeight = input<number>(undefined);
+    
+    _divLocation = signal<number>(undefined);
 	
 	previousValue: number = -1;
 	resizeTimeout: ReturnType<typeof setTimeout> = null;
 
-    @ContentChild( TemplateRef, {static: true} ) templateRef: TemplateRef<any>;
+    readonly templateRef = contentChild(TemplateRef);
 
     containerStyle = {
         width: '100%',
@@ -50,23 +52,24 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
 		const elementWidth = this.getInternalWidth();
 		const elementHeight = this.getInternalHeight();
 		let delta  = 0;
-		if(this.splitType === 1) {
+		const splitType = this.splitType();
+        if (splitType === 1) {
 			this.previousValue === -1 && (this.previousValue = elementHeight);
 			delta = elementHeight - this.previousValue;
-		} else if (this.splitType === 0) {
+		} else if (splitType === 0) {
 			this.previousValue === -1 && (this.previousValue = elementWidth);
 			delta = elementWidth - this.previousValue;
 		}
 		
 		if (delta !== 0) {
-			let newLocation = this.divLocation;
-			(newLocation > 0 && newLocation < 1) && (newLocation = this.splitType === 1 ? (this.divLocation * this.previousValue) : (this.divLocation * this.previousValue));
-			newLocation += Math.round(delta * this.resizeWeight);
+			let newLocation = this._divLocation();
+			(newLocation > 0 && newLocation < 1) && (newLocation = splitType === 1 ? (this._divLocation() * this.previousValue) : (this._divLocation() * this.previousValue));
+			newLocation += Math.round(delta * this.resizeWeight());
 			this.divLocationChange.emit(newLocation);
 		}
 									
-		this.splitType === 1 && (this.previousValue = elementHeight); 
-		this.splitType === 0 && (this.previousValue = elementWidth); 
+		splitType === 1 && (this.previousValue = elementHeight); 
+		splitType === 0 && (this.previousValue = elementWidth); 
 	}
 	
 	@HostListener('window:resize')
@@ -78,12 +81,9 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
 	}
 	
     svyOnInit() {
-        if (this.resizeWeight === undefined) this.resizeWeight = 0;
-        if (this.pane1MinSize === undefined) this.pane1MinSize = 30;
-        if (this.pane2MinSize === undefined) this.pane2MinSize = 30;
-        if (this.divSize === undefined) this.divSize = 5;
+        this._divLocation.set(this.divLocation());
         if (!this.servoyApi.isInAbsoluteLayout()) {
-            this.containerStyle['min-height'] = this.responsiveHeight + 'px';
+            this.containerStyle['min-height'] = this.responsiveHeight() + 'px';
             this.containerStyle['position'] = 'relative';
         }
 		this.resizeCalc();
@@ -92,11 +92,12 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
 
     svyOnChanges(changes: SimpleChanges) {
 		if(changes['pane1'] || changes['pane2']) {
-			this.leftTab = this.pane1;
-            this.rightTab = this.pane2;
+			this.leftTab = this.pane1();
+            this.rightTab = this.pane2();
 		}
         super.svyOnChanges(changes);
         if (changes) {
+            if (changes['divLocation']) this._divLocation.set(this.divLocation());
             for (const property of Object.keys(changes)) {
                 const change = changes[property];
                 switch (property) {
@@ -120,9 +121,10 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     onChange( location ) {
-        this.divLocation = location;
-        this.divLocationChange.emit(this.divLocation);
-        if (this.onChangeMethodID) this.onChangeMethodID(-1, new Event('change'));
+        this._divLocation.set(location);
+        this.divLocationChange.emit(this._divLocation());
+        const onChangeMethodID = this.onChangeMethodID();
+        if (onChangeMethodID) onChangeMethodID(-1, new Event('change'));
     }
 
     getRightTab() {

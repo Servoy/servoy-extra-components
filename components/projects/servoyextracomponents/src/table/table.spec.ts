@@ -1,5 +1,5 @@
 import { ScrollingModule } from '@angular/cdk/scrolling';
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, input, viewChild } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { Format, FormattingService, IFoundset, LoggerFactory, ServoyApi, ServoyPublicModule } from '@servoy/public';
 import { SpecTypesService, ViewPortRow, WindowRefService } from '@servoy/public';
@@ -12,29 +12,29 @@ import { ResizableModule } from 'angular-resizable-element';
     // eslint-disable-next-line @angular-eslint/component-selector
     selector: 'test-wrapper',
     template: '<div style="position: absolute; left: 29px; top: 139px; width: 571px; height: 300px;">\
-                    <servoyextra-table #table [servoyApi]="servoyApi" [foundset]="foundset" [columns]="columns" [minRowHeight]="minRowHeight"\
-                         [enableColumnResize]="enableColumnResize" [pageSize]="pageSize" [responsiveHeight]="responsiveHeight"\
-                         [onCellClick]="cellClick" [onCellRightClick]="cellRightClick" [onCellDoubleClick]="cellDoubleClick"\
-                         [onHeaderClick]="headerClick" [onHeaderRightClick]="headerRightClick" [onFocusGainedMethodID]="focusGained" [onFocusLostMethodID]="focusLost" >\
+                    <servoyextra-table #table [servoyApi]="servoyApi()" [foundset]="foundset()" [columns]="columns()" [minRowHeight]="minRowHeight()"\
+                         [enableColumnResize]="enableColumnResize()" [pageSize]="pageSize()" [responsiveHeight]="responsiveHeight()"\
+                         [onCellClick]="cellClick()" [onCellRightClick]="cellRightClick()" [onCellDoubleClick]="cellDoubleClick()"\
+                         [onHeaderClick]="headerClick()" [onHeaderRightClick]="headerRightClick()" [onFocusGainedMethodID]="focusGained()" [onFocusLostMethodID]="focusLost()" >\
                     </servoyextra-table > </div>',
     standalone: false
 })
 class TestWrapperComponent {
-    @ViewChild('table', { static: false }) table: ServoyExtraTable;
-    @Input() servoyApi: ServoyApi;
-    @Input() columns;
-    @Input() foundset: Foundset;
-    @Input() minRowHeight: string;
-    @Input() enableColumnResize: boolean;
-    @Input() pageSize: number;
-    @Input() responsiveHeight;
-    @Input() cellClick: (rowIdx: number, colIdx: number, record?: ViewPortRow, e?: MouseEvent, columnId?: string) => void;
-    @Input() cellRightClick;
-    @Input() cellDoubleClick;
-    @Input() headerClick;
-    @Input() headerRightClick;
-    @Input() focusGained;
-    @Input() focusLost;
+    readonly table = viewChild<ServoyExtraTable>('table');
+    readonly servoyApi = input<ServoyApi>(undefined);
+    readonly columns = input(undefined);
+    readonly foundset = input<Foundset>(undefined);
+    readonly minRowHeight = input<string>(undefined);
+    readonly enableColumnResize = input<boolean>(undefined);
+    readonly pageSize = input<number>(undefined);
+    readonly responsiveHeight = input(undefined);
+    readonly cellClick = input<(rowIdx: number, colIdx: number, record?: ViewPortRow, e?: MouseEvent, columnId?: string) => void>(undefined);
+    readonly cellRightClick = input(undefined);
+    readonly cellDoubleClick = input(undefined);
+    readonly headerClick = input(undefined);
+    readonly headerRightClick = input(undefined);
+    readonly focusGained = input(undefined);
+    readonly focusLost = input(undefined);
 }
 
 describe('ServoyExtraTable', () => {
@@ -150,9 +150,9 @@ const finishInit = () => {
     fixture.componentInstance.servoyApi = servoyApi;
     component = fixture.componentInstance;
     component.foundset = getFoundset();
-    component.foundset.requestSelectionUpdate = jasmine.createSpy('requestSelectionUpdate');
-    component.foundset.sort = sort;
-    component.foundset.loadExtraRecordsAsync = loadExtraRecordsAsync;
+    foundset.requestSelectionUpdate = jasmine.createSpy('requestSelectionUpdate');
+    foundset.sort = sort;
+    foundset.loadExtraRecordsAsync = loadExtraRecordsAsync;
     component.columns = [
       {
         state: {
@@ -217,9 +217,9 @@ const finishInit = () => {
         initialWidth: 'auto'
       }
     ];
-    component.columns[0].dataprovider.idForFoundset= 'ID_columnID'; //have some readable id for fs
-    component.columns[1].dataprovider.idForFoundset= 'Country_columnID';
-    component.columns[2].dataprovider.idForFoundset= 'City_columnID';
+    columns[0].dataprovider.idForFoundset= 'ID_columnID'; //have some readable id for fs
+    columns[1].dataprovider.idForFoundset= 'Country_columnID';
+    columns[2].dataprovider.idForFoundset= 'City_columnID';
     component.minRowHeight = '25px';
     component.enableColumnResize = false;
     component.pageSize = 10;
@@ -237,19 +237,19 @@ const finishInit = () => {
   it('should create table with 3 columns', fakeAsync(() => {
     finishInit();
     expect(component).toBeTruthy('table wrapper component should be created');
-    expect(component.table).toBeTruthy('table component should be created');
+    expect(component.table()).toBeTruthy('table component should be created');
 
     const compiled = fixture.debugElement.nativeElement as HTMLElement;
     expect(compiled.querySelectorAll('tr').length).toBeGreaterThan(1);
 
-    const headers = component.table.getNativeElement().getElementsByTagName('th');
+    const headers = component.table().getNativeElement().getElementsByTagName('th');
     expect(headers).toBeDefined();
     expect(headers.length).toEqual(3, 'should have 3 column headers');
     expect(headers[0].innerText.trim()).toEqual('ID', 'first header text should be ID');
     expect(headers[1].innerText.trim()).toEqual('Country', 'second header text should be Country');
     expect(headers[2].innerText.trim()).toEqual('City', 'third header text should be City');
-    expect(component.table.getNativeElement().clientHeight).toBe(300);
-    const rows = component.table.getNativeElement().getElementsByTagName('tr');
+    expect(component.table().getNativeElement().clientHeight).toBe(300);
+    const rows = component.table().getNativeElement().getElementsByTagName('tr');
     expect(rows).toBeDefined();
     expect(rows.length).toBeGreaterThan(0, 'should have rows');
     const firstRow = rows[1].getElementsByTagName('td');
@@ -263,11 +263,11 @@ const finishInit = () => {
   it('should call cell handlers and select row', fakeAsync(() => {
     finishInit();
 
-    const rows = component.table.getNativeElement().getElementsByTagName('tr');
+    const rows = component.table().getNativeElement().getElementsByTagName('tr');
     const firstRow = rows[1].getElementsByTagName('td');
 
-    expect(component.table.foundset.selectedRowIndexes).toHaveSize(1);
-    expect(component.table.foundset.selectedRowIndexes[0]).toEqual(1, 'second row should be selected');
+    expect(component.table().foundset().selectedRowIndexes).toHaveSize(1);
+    expect(component.table().foundset().selectedRowIndexes[0]).toEqual(1, 'second row should be selected');
     expect(rows[2]).toHaveClass('table-servoyextra-selected', 'second row should have class "table-servoyextra-selected"');
 
     firstRow[1].click();
@@ -275,9 +275,9 @@ const finishInit = () => {
     flush();
     expect(onCellClick).toHaveBeenCalled();
     expect(onCellClick).toHaveBeenCalledWith(1, 1, { _svyRowId: '5.10248;_0' }, jasmine.anything(), undefined);
-    expect(component.table.foundset.selectedRowIndexes).toHaveSize(1);
-    expect(component.table.foundset.selectedRowIndexes[0]).toEqual(0, 'first row should be selected');
-    expect(component.table.foundset.requestSelectionUpdate).toHaveBeenCalledWith([0]);
+    expect(component.table().foundset().selectedRowIndexes).toHaveSize(1);
+    expect(component.table().foundset().selectedRowIndexes[0]).toEqual(0, 'first row should be selected');
+    expect(component.table().foundset().requestSelectionUpdate).toHaveBeenCalledWith([0]);
     expect(rows[1]).toHaveClass('table-servoyextra-selected', 'second row should have class "table-servoyextra-selected"');
     expect(rows[2]).not.toHaveClass('table-servoyextra-selected', 'second row should NOT have class "table-servoyextra-selected" anymore');
 
@@ -299,14 +299,14 @@ const finishInit = () => {
     fixture.detectChanges();
     flush();
 
-    const headers = component.table.getNativeElement().getElementsByTagName('th');
+    const headers = component.table().getNativeElement().getElementsByTagName('th');
     expect(headers).toBeDefined();
 
     headers[2].click();
     fixture.detectChanges();
     flush();
     expect(onHeaderClick).toHaveBeenCalledWith(2, undefined, jasmine.anything(), undefined);
-    expect(component.table.foundset.sort).toHaveBeenCalledWith([{ name: 'City_columnID', direction: 'asc' }]);
+    expect(component.table().foundset().sort).toHaveBeenCalledWith([{ name: 'City_columnID', direction: 'asc' }]);
 
     headers[1].dispatchEvent(new MouseEvent('contextmenu'));
     fixture.detectChanges();
@@ -319,13 +319,13 @@ const finishInit = () => {
     fixture.detectChanges();
     flush();
 
-    expect(component.table.getNativeElement().getElementsByTagName('table')[0]).toBeDefined();
-    component.table.getNativeElement().getElementsByTagName('table')[0].dispatchEvent(new Event('focus'));
+    expect(component.table().getNativeElement().getElementsByTagName('table')[0]).toBeDefined();
+    component.table().getNativeElement().getElementsByTagName('table')[0].dispatchEvent(new Event('focus'));
     fixture.detectChanges();
     flush();
     expect(onFocusGained).toHaveBeenCalled();
     
-    component.table.getNativeElement().getElementsByTagName('table')[0].dispatchEvent(new Event('blur'));
+    component.table().getNativeElement().getElementsByTagName('table')[0].dispatchEvent(new Event('blur'));
     fixture.detectChanges();
     flush();
     expect(onFocusLost).toHaveBeenCalled();
@@ -334,10 +334,10 @@ const finishInit = () => {
   it('should scroll to index', fakeAsync(() => {
     finishInit();
 
-    expect(component.table.renderedRows.length).toEqual(21, 'should have rendered 21 rows');
-    expect(component.table.getFirstVisibleIndex()).toEqual(0, 'first visible index should be 0');
+    expect(component.table().renderedRows.length).toEqual(21, 'should have rendered 21 rows');
+    expect(component.table().getFirstVisibleIndex()).toEqual(0, 'first visible index should be 0');
 
-    component.table.viewPort.scrollToIndex(3);
+    component.table().viewPort.scrollToIndex(3);
     fixture.detectChanges();
     flush();
     tick(5000);
@@ -346,10 +346,10 @@ const finishInit = () => {
     fixture.detectChanges();
     flush();
     expect(loadExtraRecordsAsync).not.toHaveBeenCalled();
-    expect(component.table.getFirstVisibleIndex()).toEqual(3);
+    expect(component.table().getFirstVisibleIndex()).toEqual(3);
 
     //scroll to the end to force it load more records
-    component.table.viewPort.scrollToIndex(22);
+    component.table().viewPort.scrollToIndex(22);
     fixture.detectChanges();
     flush();
     tick(9000);
@@ -359,38 +359,38 @@ const finishInit = () => {
     fixture.detectChanges();
     flush();
 
-    expect(component.table.getFirstVisibleIndex()).toEqual(12, 'the first visible index should be 12 (21 is the last visible)');
+    expect(component.table().getFirstVisibleIndex()).toEqual(12, 'the first visible index should be 12 (21 is the last visible)');
     expect(loadExtraRecordsAsync).toHaveBeenCalled();
   }));
 
   it('should navigate pages', fakeAsync(() => {
     finishInit();
 
-    expect(component.table.showPagination()).toBeTrue();
+    expect(component.table().showPagination()).toBeTrue();
 
-    const pagination = component.table.getNativeElement().getElementsByTagName('ngb-pagination');
+    const pagination = component.table().getNativeElement().getElementsByTagName('ngb-pagination');
     expect(pagination[0]).toBeDefined();
     //const paginationLinks = pagination[0].getElementsByClassName('page-link');
     //expect(paginationLinks.length).toEqual(3);
     //const prevPage = paginationLinks[0] as HTMLElement;
     //const nextPage = paginationLinks[2] as HTMLElement;
 
-    expect(component.table.getFirstVisibleIndex()).toEqual(0, 'first visible index should be 0');
-    expect(component.table.pageSize).toEqual(10);
+    expect(component.table().getFirstVisibleIndex()).toEqual(0, 'first visible index should be 0');
+    expect(component.table().pageSize()).toEqual(10);
 
     //nextPage.click();
-    component.table.modifyPage(2);
+    component.table().modifyPage(2);
     fixture.detectChanges();
     flush();
     tick(9000);
-    expect(component.table.currentPage).toEqual(2, 'current page should be 2');
-    expect(component.table.getFirstVisibleIndex()).toEqual(10, 'first visible index should be 10');
+    expect(component.table().currentPage()).toEqual(2, 'current page should be 2');
+    expect(component.table().getFirstVisibleIndex()).toEqual(10, 'first visible index should be 10');
 
-    component.table.modifyPage(1);
+    component.table().modifyPage(1);
     fixture.detectChanges();
     flush();
     tick(9000);
-    expect(component.table.currentPage).toEqual(1, 'current page should be 1');
-    expect(component.table.getFirstVisibleIndex()).toEqual(0, 'first visible index should be 0');
+    expect(component.table().currentPage()).toEqual(1, 'current page should be 1');
+    expect(component.table().getFirstVisibleIndex()).toEqual(0, 'first visible index should be 0');
   }));
 });
