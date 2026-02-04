@@ -314,8 +314,8 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                         break;
                     }
                     case 'currentPage': {
+                        this._currentPage.set(this.currentPage());
                         if (change.currentValue && change.currentValue !== change.previousValue) {
-                            this._currentPage.set(this.currentPage());
                             if (change.isFirstChange()) {
                                 this.scrollToSelectionNeeded = true;
                                 this.log.debug('svy extra table * svyOnChanges currentPage changed; scrollToSelectionNeeded = true');
