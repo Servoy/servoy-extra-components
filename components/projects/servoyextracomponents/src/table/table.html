@@ -31,7 +31,7 @@
 @if (isPaginationVisible()) {
   <ul #pager class="svy-pagination pagination svy-nomargin">
     <li [ngClass]="_currentPage() == 1 ? 'disabled' : ''" class="page-item"><a href="#" (click)="modifyPage(-1)" tabindex="-1" class="page-link">&laquo;</a></li>
-    <li class="page-item active"><span tabindex="-1" class="page-link">{{currentPage()}}</span></li>
+    <li class="page-item active"><span tabindex="-1" class="page-link">{{_currentPage()}}</span></li>
     <li [ngClass]="hasNext() ? '' : 'disabled'" class="page-item"><a href="#" (click)="modifyPage(1)" tabindex="-1" class="page-link">&raquo;</a></li>
   </ul>
 }

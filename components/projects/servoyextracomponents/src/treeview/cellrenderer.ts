@@ -59,7 +59,7 @@ export class ServoyExtraTreeviewCellRenderer {
     const onNodeRightClicked = treeview.onNodeRightClicked();
     if (onNodeRightClicked) {
       event.preventDefault();
-      onNodeRightClicked(this.row_data().id, event);
+      onNodeRightClicked(this.row_data.id, event);
     }
   }
 
