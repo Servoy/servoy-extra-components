@@ -62,14 +62,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         maxRenderedRows: number;
         fastScrollRenderThresholdFactor: number;
         fastScrollLoadThresholdFactor: number;
-    }>({
-        minBatchSizeForRenderingMoreRows: 10,
-        minBatchSizeForLoadingMoreRows: 20,
-        maxRenderedRows: 450,
-        maxLoadedRows: 1000,
-        fastScrollRenderThresholdFactor: 3.0,
-        fastScrollLoadThresholdFactor: 2.3
-    });
+    }>(undefined);
 
     readonly onViewPortChanged = input<(start: number, end: number) => void>(undefined);
     readonly onCellClick = input<(rowIdx: number, colIdx: number, record?: ViewPortRow, e?: MouseEvent, columnId?: string) => void>(undefined);
@@ -84,6 +77,14 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     _sortDirection = signal<string>(undefined);
     _lastSelectionFirstElement = signal<number>(undefined);
     _currentPage = signal<number>(undefined);
+    _performanceSettings = signal<{
+        minBatchSizeForRenderingMoreRows: number;
+        minBatchSizeForLoadingMoreRows: number;
+        maxLoadedRows: number;
+        maxRenderedRows: number;
+        fastScrollRenderThresholdFactor: number;
+        fastScrollLoadThresholdFactor: number;
+    }>(undefined);
 
     private skipOnce = false;
     private log: LoggerService;
@@ -183,6 +184,17 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         this._sortDirection.set(this.sortDirection());
         this._lastSelectionFirstElement.set(this.lastSelectionFirstElement());
         this._currentPage.set(this.currentPage());
+        this._performanceSettings.set(this.performanceSettings());
+        if (!this._performanceSettings()) {
+            this._performanceSettings.set({
+                minBatchSizeForRenderingMoreRows: 10,
+                minBatchSizeForLoadingMoreRows: 20,
+                maxRenderedRows: 450,
+                maxLoadedRows: 1000,
+                fastScrollRenderThresholdFactor: 3.0,
+                fastScrollLoadThresholdFactor: 2.3
+            });
+        }
         if ('IntersectionObserver' in window) {
             const options = {
                 root: this.getNativeElement() as Node,
@@ -208,12 +220,12 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         // the number of rows to render in a batch (it renders one batch then when needed renders one more batch on top or bottom and so on)
         // this should be set to at least the UI viewPort when we start calculating that
         // this should be calculated for now this value is nicer for bigger list (that show already 20+ rows by default)
-        this.batchSizeForRenderingMoreRows = Math.max(26, this.performanceSettings().minBatchSizeForRenderingMoreRows);
+        this.batchSizeForRenderingMoreRows = Math.max(26, this._performanceSettings().minBatchSizeForRenderingMoreRows);
         // the number of extra rows to be loaded (before/after) if the rendered rows get too close to the loaded rows bounds when scrolling
         // when you change this initial value please update the .spec as well - config option "initialPreferredViewPortSize" on the foundset property should match getInitialPreferredLoadedSize
         // this should be higher then batchSizeForRenderingMoreRows because when we load more rows we should load enough to at least be able to render one more batch of rendered rows;
         // so when that one (batchSizeForRenderingMoreRows) is calculated adjust this one as well
-        this.batchSizeForLoadingMoreRows = Math.max(52, this.performanceSettings().minBatchSizeForLoadingMoreRows);
+        this.batchSizeForLoadingMoreRows = Math.max(52, this._performanceSettings().minBatchSizeForLoadingMoreRows);
         this.attachHandlers();
         if (this.foundset().viewPort.startIndex > 0) {
 			this.setCurrentPage(this.getPageForIndex(this.foundset().viewPort.startIndex));
@@ -1537,7 +1549,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                         // now see what the visible area is - in case the user is scrolling fast (so rendered/loaded are left way behind
                         // with hundreds of records for example) we might need to ditch what we have and start fresh with rows around visible area
                         visibleViewport = this.getVisibleArea(); // [startIndex, size]
-                        if (this.renderedStartIndex - addedRows > visibleViewport[0] + this.getInitialRenderSize() * this.performanceSettings().fastScrollRenderThresholdFactor) {
+                        if (this.renderedStartIndex - addedRows > visibleViewport[0] + this.getInitialRenderSize() * this._performanceSettings().fastScrollRenderThresholdFactor) {
                             // so the wanted visible start index (we are scrolling up) is way outside of what we can currently render...
                             // jump to what is needed directly, discarding old content as needed
                             // instead of prepending small batches of rendered rows until we can show what is needed
@@ -1546,7 +1558,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                             // we don't change anything until we are ready to jump to the visible area (have loaded rows to be able to render the visible area)
                             this.renderedSize = renderedSizeBefore;
 
-                            if (vp.startIndex > visibleViewport[0] + this.getInitialPreferredLoadedSize() * + this.performanceSettings().fastScrollLoadThresholdFactor) {
+                            if (vp.startIndex > visibleViewport[0] + this.getInitialPreferredLoadedSize() * + this._performanceSettings().fastScrollLoadThresholdFactor) {
                                 // too many extra rows to load... just reset loaded viewport as well; start fresh
                                 this.log.debug('svy extra table * scrollHandler (fast scroll up) needs to discard loaded rows and start fresh in desired area');
                                 this.runWhenThereIsNoPendingLoadRequest(() => {
@@ -1621,7 +1633,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                         // now see what the visible area is - in case the user is scrolling fast (so rendered/loaded are left way behind
                         // with hundreds of records for example) we might need to ditch what we have and start fresh with rows around visible area
                         visibleViewport = this.getVisibleArea(); // [startIndex, size]
-                        if (this.renderedStartIndex + this.renderedSize + this.getInitialRenderSize() * this.performanceSettings().fastScrollRenderThresholdFactor <
+                        if (this.renderedStartIndex + this.renderedSize + this.getInitialRenderSize() * this._performanceSettings().fastScrollRenderThresholdFactor <
                             visibleViewport[0] + visibleViewport[1]) {
                             // so the wanted visible end index (we are scrolling down) is way outside of what we can currently render...
                             // jump to what is needed directly, discarding old content as needed
@@ -1631,7 +1643,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                             // we don't change anything until we are ready to jump to the visible area (have loaded rows to be able to render the visible area)
                             this.renderedSize = renderedSizeBefore;
 
-                            if (vp.startIndex > visibleViewport[0] + this.getInitialPreferredLoadedSize() * this.performanceSettings().fastScrollLoadThresholdFactor) {
+                            if (vp.startIndex > visibleViewport[0] + this.getInitialPreferredLoadedSize() * this._performanceSettings().fastScrollLoadThresholdFactor) {
                                 // too many extra rows to load... just reset loaded viewport as well; start fresh
                                 this.log.debug('svy extra table * scrollHandler (fast scroll down) needs to discard loaded rows and start fresh in desired area');
                                 this.runWhenThereIsNoPendingLoadRequest(() => {
@@ -2000,14 +2012,14 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
             // initially render rows for 3 times the visible area - so 1 above and 1 below the visible area, but then when scrolling and
             // more rows are needed only render one more 'visible areas' of rows
-            this.batchSizeForRenderingMoreRows = Math.max(Math.ceil(visibleAreaRows * this.magicRenderBatchQ), this.performanceSettings().minBatchSizeForRenderingMoreRows);
+            this.batchSizeForRenderingMoreRows = Math.max(Math.ceil(visibleAreaRows * this.magicRenderBatchQ), this._performanceSettings().minBatchSizeForRenderingMoreRows);
             // initially load rows for 5 times the visible area - so 2 above and 2 below initial visible area, but then when scrolling and
             // more rows are needed only load two more 'visible areas' of rows
-            this.batchSizeForLoadingMoreRows = Math.max(Math.ceil(visibleAreaRows * this.magicLoadBatchQ), this.performanceSettings().minBatchSizeForLoadingMoreRows);
+            this.batchSizeForLoadingMoreRows = Math.max(Math.ceil(visibleAreaRows * this.magicLoadBatchQ), this._performanceSettings().minBatchSizeForLoadingMoreRows);
         } else {
             // just some defaults as we don't have enough info to calculate them
-            this.batchSizeForRenderingMoreRows = Math.max(26, this.performanceSettings().minBatchSizeForRenderingMoreRows);
-            this.batchSizeForLoadingMoreRows = Math.max(52, this.performanceSettings().minBatchSizeForLoadingMoreRows);
+            this.batchSizeForRenderingMoreRows = Math.max(26, this._performanceSettings().minBatchSizeForRenderingMoreRows);
+            this.batchSizeForLoadingMoreRows = Math.max(52, this._performanceSettings().minBatchSizeForLoadingMoreRows);
         }
 
         const batchSizesChanged = (oldBatchSizeForRenderingMoreRows !== this.batchSizeForRenderingMoreRows || oldBatchSizeForLoadingMoreRows !== this.batchSizeForLoadingMoreRows);
@@ -2036,7 +2048,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         const correctedLoadedSize = Math.min(vp.startIndex + vp.size, allowedBounds.startIdx + allowedBounds.size) - correctedLoadedStartIdx;
         const minRenderSize = Math.min(this.getInitialRenderSize(), correctedLoadedSize);
 
-        if (!onlyIfMaxLimitReached || this.renderedSize > this.performanceSettings().maxRenderedRows) {
+        if (!onlyIfMaxLimitReached || this.renderedSize > this._performanceSettings().maxRenderedRows) {
             // remove some rendered rows as we have too many; keep rendered the ones that are really visible
 
             this.log.debug(this.log.buildMessage(() => 'svy extra table * shrinkRenderedViewport will reset rendered rows viewport as '
@@ -2115,7 +2127,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         const vp = this.foundset().viewPort;
         const allowedBounds = this.calculateAllowedLoadedDataBounds(); // { startIdx, size }
 
-        if (!keepMaxLoadedRows || vp.size > this.performanceSettings().maxLoadedRows) {
+        if (!keepMaxLoadedRows || vp.size > this._performanceSettings().maxLoadedRows) {
             // we need to shrink loaded rows
             this.log.debug(this.log.buildMessage(() => 'svy extra table * shrinkLoadedViewportNow will shrink loaded rows; '
                 + (keepMaxLoadedRows ? 'maxLoadedRows limit was passed (' + vp.size + ')' : 'user jumped fast to a non-loaded section of the list')));
@@ -2128,12 +2140,12 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                     // load less records in the beginning (at least to match maxLoadedRows but even more if possible to avoid frequent load calls to server
                     // just for discarding loaded rows (limit it though to 200 to still keep data))
                     promise = this.foundset().loadLessRecordsAsync(
-                        Math.max(vp.size - this.performanceSettings().maxLoadedRows, Math.min(200, Math.floor((this.renderedStartIndex - vp.startIndex) / 2)))); // positive int
+                        Math.max(vp.size - this._performanceSettings().maxLoadedRows, Math.min(200, Math.floor((this.renderedStartIndex - vp.startIndex) / 2)))); // positive int
                 } else {
                     // load less records at the end (at least to match maxLoadedRows but even more if possible to avoid
                     // frequent load calls to server just for discarding loaded rows (limit it though to 200 to still keep data))
                     promise = this.foundset().loadLessRecordsAsync(
-                        -Math.max(vp.size - this.performanceSettings().maxLoadedRows,
+                        -Math.max(vp.size - this._performanceSettings().maxLoadedRows,
                             Math.min(200, Math.floor((vp.startIndex + vp.size - this.renderedStartIndex - this.renderedSize) / 2)))); // negative int
                 }
             } else {

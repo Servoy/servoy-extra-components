@@ -93,15 +93,12 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		if (changes) {
             for (const property of Object.keys(changes)) {
                 const change = changes[property];
-                if (changes.selectedIndex) this._selectedIndex.set(this.selectedIndex()??{});
-                if (changes.expandedIndex) this._expandedIndex.set(this.expandedIndex()??{});
-                if (changes.open) this._open.set(this.open());
-                const selectedIndex = this._selectedIndex();
-                const expandedIndex = this._expandedIndex();
+                const selectedIndex = this.selectedIndex();
+                const expandedIndex = this.expandedIndex();
                 const containedForm = this.containedForm();
                 const headerForm = this.headerForm();
                 const footerForm = this.footerForm();
-                const open = this._open();
+                const open = this.open();
                 switch (property) {
                     case 'footerFormStickyBottom':
                         this.addRemoveStickyStyle();
@@ -182,6 +179,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 						this.updateSidenavStyle();
 						break;
 					case 'open':
+                        this._open.set(open);
 						this.animateMenuHover(open);
 						this.animateSlideMenu(open);
 
@@ -221,6 +219,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 						else if (typeof expandedIndex == 'string') {
 							this._expandedIndex.set(JSON.parse(expandedIndex));
 						}
+                        this.cdRef.markForCheck();
 						break;
 					case 'selectedIndex':
 						if (!change.currentValue) {
@@ -229,6 +228,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 						else if (typeof selectedIndex == 'string') {
 							this._selectedIndex.set(JSON.parse(selectedIndex));
 						}
+                        this.cdRef.markForCheck();
 						break;
 					case 'servoyMenu':
 						this.copyServoyMenu();
