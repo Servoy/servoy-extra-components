@@ -123,6 +123,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     private columnStyleClasses: Array<string> = [];
     private columnCSSRules: Array<CSSStyleRule> = [];
     private onTBodyScrollListener: () => void;
+    private removeFoundsetListenerFunction: () => void;
     private extraWidth: number;
     private extraWidthColumnIdx: number;
     private currentIdForFoundset: Array<string> = [];
@@ -296,9 +297,9 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                         const newValue = change.currentValue as IFoundset;
                         if (oldValue !== newValue) {
                             // so not initial value && old value did have listener; unregister it
-                            if (oldValue) oldValue.removeChangeListener(this.foundsetListener);
+                            if (this.removeFoundsetListenerFunction) this.removeFoundsetListenerFunction();
                             if (newValue) {
-                                newValue.addChangeListener(this.foundsetListener); // either a value changed happened or it is the initial value of the watch; do register the listener
+                                this.removeFoundsetListenerFunction = newValue.addChangeListener(this.foundsetListener); // either a value changed happened or it is the initial value of the watch; do register the listener
                                 if (!oldValue) {
                                     // either old value was nothing (so it didn't have listeners that would already have been triggered (due to a full value change); just simulate a full value change)
                                     // or it is an initial value, which we do handle as a full change
@@ -342,6 +343,13 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                     }
                 }
             }
+        }
+    }
+    
+    ngOnDestroy() {
+        if (this.removeFoundsetListenerFunction != null) {
+            this.removeFoundsetListenerFunction();
+            this.removeFoundsetListenerFunction = null;
         }
     }
 
