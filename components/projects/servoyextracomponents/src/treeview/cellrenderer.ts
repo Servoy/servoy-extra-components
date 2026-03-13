@@ -68,9 +68,9 @@ export class ServoyExtraTreeviewCellRenderer {
     if(this.column.name === 'treeColumn') {
       let clazz = 'treeLabel';
       if(treeview.filterText.length > 0) {
-        if(treeview.filterMatchedNodes.indexOf(this.row_data().id) !== -1) {
+        if(treeview.filterMatchedNodes.indexOf(this.row_data.id) !== -1) {
           clazz += ' filteredNode';
-        } else if(treeview.filterPartNodes.indexOf(this.row_data().id) !== -1) {
+        } else if(treeview.filterPartNodes.indexOf(this.row_data.id) !== -1) {
           clazz += ' filterPartNode';
         }
       }
