@@ -139,7 +139,6 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         @Inject(DOCUMENT) private doc: Document, private formatter: FormattingService, @Inject(CSP_NONCE) private nonce: string) {
         super(renderer, cdRef);
         this.log = logFactory.getLogger('Table');
-//        this.log.logLevel = this.log.logLevel = LogLevel.DEBUG;
     }
 
     @HostListener('window:resize')
