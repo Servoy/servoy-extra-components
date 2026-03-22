@@ -265,6 +265,11 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
         this.loadUppyLocale();
         this.cdRef.detectChanges();
     }
+    
+    ngOnDestroy() {
+        super.ngOnDestroy();
+        this.uppy.destroy();
+    }
 
     openModal(): void {
         (this.uppy.getPlugin('angular:Dashboard') as Dashboard<any,any>).openModal();
