@@ -37,3 +37,7 @@ servoyextra-spinner {
     height: 0px;
     min-height: 30px;
 }
+
+.cdk-overlay-container {
+    z-index: 9999;
+}
