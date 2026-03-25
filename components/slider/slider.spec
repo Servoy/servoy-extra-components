@@ -57,7 +57,7 @@
 		"showTicksValues"				: { "type": "boolean", "default": false, "tags": { "doc": "Set to true to display a tick and the step value for each step of the slider" } },
 		"hidePointerLabels"				: { "type": "boolean", "default": false, "tags": { "doc": "Set to true to hide pointer labels" } },
 		"hideLimitLabels"				: { "type": "boolean", "default": false, "tags": { "doc": "Set to true to hide min / max labels" } },
-		"autoHideLimitLabels"			: { "type": "boolean", "default": false, "tags": { "doc": "Set to false to disable the auto-hiding behavior of the limit labels" } },
+		"autoHideLimitLabels"			: { "type": "boolean", "default": true, "tags": { "doc": "Set to false to disable the auto-hiding behavior of the limit labels" } },
 		"stepsValueList"				: { "type": "valuelist", "for":["dataProvider"], "tags": { "doc": "If you want to provide all the steps with display and real values, you can provide a value list to provide step values (realValues) and step labels (displayValues)." } },
 		"ticksArray"					: { "type": "int[]", "tags": { "doc": "Use to display ticks at specific positions. The array contains the index of the ticks that should be displayed." } },
 		"stepsArray"					: { "type": "int[]", "tags": { "doc": "If you want to display a slider with non linear/number steps." } },
