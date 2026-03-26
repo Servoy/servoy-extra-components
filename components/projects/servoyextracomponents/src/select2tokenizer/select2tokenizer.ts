@@ -152,8 +152,13 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                             counter--;
                             // only refresh once, after the last one resolves
                             if (counter === 0) {
-                                this.data = [...opt];
+								// workaround for library issue, must also change the value otherwise is not refreshed
+								var oldFilteredDataProviderId = this.filteredDataProviderId;
+								this.filteredDataProviderId = [];
                                 this.cdRef.detectChanges();
+								this.data = [...opt];
+								this.filteredDataProviderId = oldFilteredDataProviderId;
+								this.cdRef.detectChanges();
                             }
                         });
                     } else {
