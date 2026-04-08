@@ -46,6 +46,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     folderImgPath = './assets/images/folder.png';
     fileImgPath = './assets/images/file.png';
     expandedNodes: Array<string> = [];
+    expandedNodesOnRefresh: Array<string> = [];
     displayNodes: Array<ChildNode> = [];
     gettingChildren = false;
 
@@ -251,6 +252,13 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
 
     onNodeExpanded(event: any) {
         event.node.data.expanded = event.isExpanded;
+        // Collect all currently expanded node paths and send to server
+        this.collectExpandedNodes();
+        // Send to server so it persists across form navigation
+        const foundsetTree = this.foundsettree();
+        if (foundsetTree) {
+            foundsetTree.updateExpandedNodes(this.expandedNodesOnRefresh);
+        }
     }
 
     nodeDropped(event: any){
@@ -293,7 +301,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     expandNodes(nodes: ChildNode[]) {
         nodes.forEach(node => {
             if (node.expanded) {
-                this.tree().treeModel.getNodeById(node.id).setIsExpanded(true);
+                this.tree().treeModel.getNodeById(node.id)?.setIsExpanded(true);
             }
             if (node.hasChildren && node.children) this.expandNodes(node.children);
         });
@@ -457,7 +465,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     }
 
 
-    private buildChild(dataNode: ChildNode): ChildNode {
+    private buildChild(dataNode: ChildNode, parentItem?: ChildNode): ChildNode {
         const child: ChildNode = {
             id: dataNode.id,
             hasChildren: dataNode.hasChildren
@@ -483,17 +491,23 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
         const isLevelVisible = levelVisibility && levelVisibility.value && (levelVisibility.level >= dataNode.level);
         const isNodeExpanded = (this.expandedNodes && this.expandedNodes.indexOf(child.id) >= 0);
 
-        if (isLevelVisible || isNodeExpanded) {
+        // Check if the incoming dataNode already has expanded state (from server-side tracking)
+        if (dataNode.expanded || isLevelVisible || isNodeExpanded) {
             child.expanded = true;
         }
 
         child.active = dataNode.active;
 
+        // Store parent reference for path building (like AngularJS item.data.parentItem)
+        if (parentItem) {
+            child.parentItem = parentItem;
+        }
+
         if (dataNode.children && dataNode.children.length > 0) {
             //child.image = this.folderImgPath; no need to do this, because it is already set above - line 448
             child.children = new Array();
             for (const info of dataNode.children) {
-                child.children.push(this.buildChild(info));
+                child.children.push(this.buildChild(info, child));
             }
 
         }
@@ -559,11 +573,35 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
         const foundsettree = this.foundsettree();
         if (foundsettree) {
             foundsettree.forEach((elem) => {
-                const child = this.buildChild(elem);
+                const child = this.buildChild(elem, null);
                 children.push(child);
             }, this);
         }
         this.displayNodes = children;
+        
+        // Apply expanded/active nodes
+        const hasActiveNode = this.hasActiveNode(children);
+        if (this.isInitialized && this.tree && (children.some(c => c.expanded) || hasActiveNode)) {
+            const tree = this.tree();
+            if (tree && tree.treeModel) {
+                tree.treeModel.update();
+                this.expandNodes(this.displayNodes);
+
+                if (hasActiveNode) {
+                    const treenode = tree.treeModel.getNodeBy((node) => {
+                        if (node.data.active) {
+                            return true;
+                        }
+                        return false;
+                    });
+                    if (treenode) {
+                        treenode.ensureVisible();
+                        treenode.setIsActive(true);
+                    }
+                }
+            }
+        }
+        
         this.cdRef.detectChanges();
     }
 
@@ -640,6 +678,54 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
         const cell = element.closest('[node-id]');
         return cell ? cell.getAttribute('node-id') : null;
     }
+    
+    private hasActiveNode(nodes: Array<any>): boolean {
+        for (const node of nodes) {
+            if (node.active) {
+                return true;
+            }
+            if (node.children && node.children.length > 0) {
+                if (this.hasActiveNode(node.children)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private collectExpandedNodes(): void {
+        this.expandedNodesOnRefresh = [];
+        const tree = this.tree();
+        if (tree && tree.treeModel && tree.treeModel.roots) {
+            this.walkExpandedNodes(tree.treeModel.roots);
+        }
+    }
+
+    private walkExpandedNodes(nodes: TreeNode[]): void {
+        if (!nodes) return;
+
+        nodes.forEach(node => {
+            if (node.isExpanded && node.data && node.data.id) {
+                const keyPath = this.buildNodeKeyPath(node);
+                this.expandedNodesOnRefresh.push(keyPath);
+            }
+            if (node.children && node.children.length > 0) {
+                this.walkExpandedNodes(node.children);
+            }
+        });
+    }
+
+    private buildNodeKeyPath(node: TreeNode): string {
+        const pathParts: string[] = [];
+        let currentNode: TreeNode | null = node;
+
+        while (currentNode && currentNode.data && currentNode.data.id) {
+            pathParts.unshift(currentNode.data.id);
+            currentNode = currentNode.parent;
+        }
+
+        return '/' + pathParts.join('/');
+    }
 }
 
 export class Binding extends BaseCustomObject {
@@ -674,6 +760,7 @@ export class Action extends BaseCustomObject {
 
 class ChildNode {
     parent?: TreeNode;
+    parentItem?: ChildNode;
     parentID?: string;
     id?: string;
     name?: string;
