@@ -100,6 +100,9 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
                 const footerForm = this.footerForm();
                 const open = this.open();
                 switch (property) {
+                    case 'menu':
+                        this._menu.set(this.menu());
+                        break;
                     case 'footerFormStickyBottom':
                         this.addRemoveStickyStyle();
                         break;

@@ -27,7 +27,7 @@
           </li>
         }
         <!-- Main list -->
-        @for (item of _menu(); track item) {
+        @for (item of _menu(); track (item.id ? ("id_" + item.id) : ("index_" + $index))) {
           <li
             class="svy-sidenav-dropdown sn-level-1"
             [ngClass]="{'svy-navitem-selected': item.id != null && _selectedIndex()[1] == item.id, 'svy-navitem-disabled': item.enabled === false }">
@@ -49,7 +49,7 @@
               <ul class="svy-sidenav-menu sn-level-2"
                 [ngClass]="{'svy-sidenav-collapsed': _expandedIndex()[1] == item.id}"
                 >
-                @for (item2 of item.menuItems; track item2) {
+                @for (item2 of item.menuItems; track (item2.id ? ("id_" + item2.id) : ("index_" + $index))) {
                   <li
                     class="svy-sidenav-dropdown sn-level-2"
                     [ngClass]="{'svy-navitem-selected': item2.id != null && _selectedIndex()[2] == item2.id, 'svy-navitem-disabled': (item.enabled === false || item2.enabled == false) }">
@@ -70,7 +70,7 @@
                     @if (_expandedIndex()[2] == item2.id) {
                       <ul class="svy-sidenav-menu sn-level-3" [ngClass]="{'svy-sidenav-collapsed': _expandedIndex()[2] == item2.id}"
                         >
-                        @for (item3 of item2.menuItems; track item3) {
+                        @for (item3 of item2.menuItems; track (item3.id ? ("id_" + item3.id) : ("index_" + $index))) {
                           <li
                             class="svy-sidenav-dropdown sn-level-3"
                             [ngClass]="{'svy-navitem-selected': item3.id != null && _selectedIndex()[3] == item3.id, 'svy-navitem-disabled': (item.enabled === false || item2.enabled == false || item3.enabled == false) }">
@@ -91,7 +91,7 @@
                             @if (_expandedIndex()[3] == item3.id) {
                               <ul class="svy-sidenav-menu sn-level-4" [ngClass]="{'svy-sidenav-collapsed': _expandedIndex()[3] == item3.id}"
                                 >
-                                @for (item4 of item3.menuItems; track item4) {
+                                @for (item4 of item3.menuItems; track (item4.id ? ("id_" + item4.id) : ("index_" + $index))) {
                                   <li
                                     class="svy-sidenav-dropdown sn-level-4"
                                     [ngClass]="{'svy-navitem-selected': item4.id != null && _selectedIndex()[4] == item4.id, 'svy-navitem-disabled': (item.enabled === false || item2.enabled == false || item3.enabled == false || item4.enabled == false) }">
