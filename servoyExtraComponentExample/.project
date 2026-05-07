@@ -3,7 +3,6 @@
 	<name>servoyExtraComponentExample</name>
 	<comment></comment>
 	<projects>
-		<project>resources</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
