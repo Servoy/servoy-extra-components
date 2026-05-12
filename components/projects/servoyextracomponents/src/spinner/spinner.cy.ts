@@ -245,4 +245,19 @@ describe('ServoyExtraSpinner', () => {
             });
         });
     });
+
+    it('should not change value when editable is false and arrow key is pressed', () => {
+        const dataProviderIDChange = cy.stub();
+        defaultValues.dataProviderIDChange = dataProviderIDChange;
+        defaultValues.editable = false;
+        defaultValues.dataProviderID = 1;
+        cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
+            applyDefaultProps(wrapper);
+            cy.get('input').should('have.value', 'Value 1').then(() => {
+                cy.get('.svy-extra-spinner').trigger('keydown', { which: 38 }).then(() => {
+                    cy.wrap(dataProviderIDChange).should('not.have.been.called');
+                });
+            });
+        });
+    });
 });

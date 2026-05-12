@@ -1,10 +1,11 @@
-import { Component, SimpleChanges, Renderer2, ElementRef, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy, input, output, viewChild, signal } from '@angular/core';
+import { Component, SimpleChanges, Renderer2, ElementRef, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy, input, output, viewChild, linkedSignal, computed } from '@angular/core';
 import { ServoyBaseComponent, Format } from '@servoy/public';
 
 @Component( {
     selector: 'servoyextra-textfieldgroup',
     styleUrls: ['./textfieldgroup.css'],
     templateUrl: './textfieldgroup.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: false
 } )
 export class ServoyExtraTextfieldGroup extends ServoyBaseComponent<HTMLDivElement> {
@@ -32,9 +33,16 @@ export class ServoyExtraTextfieldGroup extends ServoyBaseComponent<HTMLDivElemen
     readonly tabSeq = input<number>(undefined);
     readonly visible = input<boolean>(undefined);
     
-    _dataProviderID = signal<any>(undefined);
-    
-    showError = false;
+    _dataProviderID = linkedSignal<any>(() => this.dataProviderID());
+
+    readonly showError = computed(() => {
+        if (this.inputValidation() === 'email') {
+            const email_regexp = /^[_a-z0-9-+^$']+(\.[_a-z0-9-+^$']+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/i;
+            const val = this._dataProviderID();
+            return !!val && !email_regexp.test(val);
+        }
+        return false;
+    });
     
     mustExecuteOnFocus = true;
 
@@ -57,7 +65,7 @@ export class ServoyExtraTextfieldGroup extends ServoyBaseComponent<HTMLDivElemen
     }
 
     isValid() {
-        return !this.showError;
+        return !this.showError();
     }
 
     svyOnChanges( changes: SimpleChanges ) {
@@ -70,10 +78,6 @@ export class ServoyExtraTextfieldGroup extends ServoyBaseComponent<HTMLDivElemen
                             this.renderer.removeAttribute( this.getFocusElement(), 'disabled' );
                         else
                             this.renderer.setAttribute( this.getFocusElement(), 'disabled', 'disabled' );
-                        break;
-                    case 'dataProviderID':
-                        this._dataProviderID.set(this.dataProviderID());
-                        this.dataProviderValidation();
                         break;
                     case 'placeholderText':
                         if (change.currentValue) this.renderer.setAttribute(this.getFocusElement(), 'placeholder', change.currentValue);
@@ -88,26 +92,11 @@ export class ServoyExtraTextfieldGroup extends ServoyBaseComponent<HTMLDivElemen
         super.svyOnChanges( changes );
     }
 
-    dataProviderValidation() {
-        if ( this.inputValidation() === 'email' ) {
-            const email_regexp = /^[_a-z0-9-+^$']+(\.[_a-z0-9-+^$']+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/i;
-            let isMatchRegex = email_regexp.test( this._dataProviderID() );
-            if ( isMatchRegex || !this._dataProviderID() ) {
-                this.showError = false;
-            } else {
-                this.showError = true;
-            }
-        } else {
-            this.showError = false;
-        }
-    }
-    
     pushUpdate( event: any) {
 		const dataProviderID = this.dataProviderID();
         if (event !== dataProviderID) {
 			this._dataProviderID.set(event);
         	this.dataProviderIDChange.emit(event);
-        	this.dataProviderValidation();
 		} 
     }
 

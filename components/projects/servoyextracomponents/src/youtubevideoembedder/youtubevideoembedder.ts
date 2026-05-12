@@ -1,4 +1,4 @@
-import { Component, SimpleChanges, Renderer2, ChangeDetectorRef, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, SimpleChanges, Renderer2, ChangeDetectorRef, input } from '@angular/core';
 import { ServoyBaseComponent } from '@servoy/public';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
@@ -6,6 +6,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
     selector: 'servoyextra-youtubevideoembedder',
     templateUrl: './youtubevideoembedder.html',
     styleUrls: ['./youtubevideoembedder.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: false
 })
 export class ServoyExtraYoutubeVideoEmbedder extends ServoyBaseComponent<HTMLIFrameElement> {
@@ -44,16 +45,6 @@ export class ServoyExtraYoutubeVideoEmbedder extends ServoyBaseComponent<HTMLIFr
                     case "modestBranding":
                     case "showRelatedVideosAtEnd":
                         this.updateYoutubeURL();
-                        break;
-                    case 'styleClass':
-                        if (change.previousValue) {
-                            const array = change.previousValue.trim().split(' ');
-                            array.filter((element: string) => element !== '').forEach((element: string) => this.renderer.removeClass(this.getNativeElement(), element));
-                        }
-                        if (change.currentValue) {
-                            const array = change.currentValue.trim().split(' ');
-                            array.filter((element: string) => element !== '').forEach((element: string) => this.renderer.addClass(this.getNativeElement(), element));
-                        }
                         break;
                 }
             }

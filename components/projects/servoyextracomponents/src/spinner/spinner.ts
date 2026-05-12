@@ -64,16 +64,6 @@ export class ServoyExtraSpinner extends ServoyBaseComponent<HTMLDivElement> {
                         this.getNativeElement().style.position = 'relative';
                     }
                     break;
-                case 'styleClass':
-                    if (change.previousValue) {
-                        const array = change.previousValue.trim().split(' ');
-                        array.filter((element: string) => element !== '').forEach((element: string) => this.renderer.removeClass(this.getNativeElement(), element));
-                    }
-                    if (change.currentValue) {
-                        const array = change.currentValue.trim().split(' ');
-                        array.filter((element: string) => element !== '').forEach((element: string) => this.renderer.addClass(this.getNativeElement(), element));
-                    }
-                    break;
                 case 'placeholderText':
                     if (change.currentValue) this.renderer.setAttribute(this.getFocusElement().querySelector('input'), 'placeholder', change.currentValue);
                     else this.renderer.removeAttribute(this.getFocusElement().querySelector('input'), 'placeholder');

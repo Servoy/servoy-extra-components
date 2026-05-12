@@ -1,4 +1,4 @@
-import { Component, TemplateRef, ChangeDetectorRef, SimpleChanges, Renderer2, ChangeDetectionStrategy, HostListener, input, output, contentChild, signal } from '@angular/core';
+import { Component, TemplateRef, ChangeDetectorRef, SimpleChanges, Renderer2, ChangeDetectionStrategy, input, output, contentChild, signal } from '@angular/core';
 
 import { BaseCustomObject, ServoyBaseComponent } from '@servoy/public';
 
@@ -6,7 +6,10 @@ import { BaseCustomObject, ServoyBaseComponent } from '@servoy/public';
     selector: 'servoyextra-splitpane',
     templateUrl: './splitpane.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    standalone: false,
+    host: {
+        '(window:resize)': 'onResize()'
+    }
 } )
 export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
 
@@ -72,7 +75,6 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
 		splitType === 0 && (this.previousValue = elementWidth); 
 	}
 	
-	@HostListener('window:resize')
 	onResize() {
 		if (this.resizeTimeout) {
 			clearTimeout(this.resizeTimeout);

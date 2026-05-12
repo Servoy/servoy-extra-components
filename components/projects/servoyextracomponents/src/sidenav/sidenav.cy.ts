@@ -296,4 +296,111 @@ describe('ServoyExtraSidenav', () => {
                 .and('have.class', 'text-bg-secondary');
         });
     });
+
+    it('should disable nav when enabled is false', () => {
+        defaultValues.enabled = false;
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
+            cy.get('nav').should('have.class', 'svy-sidenav-disabled').and('have.attr', 'disabled').then(() => {
+                wrapper.component.enabled.set(true);
+                cy.get('nav').should('not.have.class', 'svy-sidenav-disabled').and('not.have.attr', 'disabled');
+            });
+        });
+    });
+
+    it('should apply slidePosition class to svy-sidenav', () => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
+            cy.get('.svy-sidenav').should('have.class', 'svy-sidenav-left').then(() => {
+                wrapper.component.slidePosition.set('right');
+                cy.get('.svy-sidenav').should('have.class', 'svy-sidenav-right').and('not.have.class', 'svy-sidenav-left');
+            });
+        });
+    });
+
+    it('should apply slideAnimation class to svy-sidenav', () => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
+            cy.get('.svy-sidenav').should('have.class', 'nav-slide-menu').then(() => {
+                wrapper.component.slideAnimation.set('collapse-menu');
+                cy.get('.svy-sidenav').should('have.class', 'nav-collapse-menu').and('not.have.class', 'nav-slide-menu');
+            });
+        });
+    });
+
+    it('should render divider items as svy-sidenav-divider', () => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
+            cy.get('.svy-sidenav-divider').should('exist');
+        });
+    });
+
+    it('should not select a disabled menu item', () => {
+        const onMenuItemSelected = cy.stub().resolves(true);
+        defaultValues.onMenuItemSelected = onMenuItemSelected;
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
+            // 'Settings' has enabled: false — it is the 3rd anchor (index 2); divider has no .svy-sidenav-item
+            cy.get('.svy-sidenav-item.sn-level-1').eq(2).click({ force: true }).then(() => {
+                expect(onMenuItemSelected).not.to.have.been.called;
+            });
+        });
+    });
+
+    it('should apply expand/collapse icon classes', () => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
+            // 'Users' item (index 1) has sub-items — shows the expand icon before expand
+            cy.get('.svy-sidenav-collapse-icon.sn-level-1').eq(1).should('have.class', 'custom-expand').then(() => {
+                // set expandedIndex to show 'users' as expanded and trigger change detection
+                wrapper.component.expandedIndex.set(JSON.stringify({ 1: 'users' }));
+                cy.get('.svy-sidenav-collapse-icon.sn-level-1').eq(1).should('have.class', 'custom-collapse');
+            });
+        });
+    });
+
+    it('should show sub-menu items after expanding a parent', () => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
+            cy.get('.svy-sidenav-item.sn-level-2').should('not.exist').then(() => {
+                // set expandedIndex to expand 'Users' and trigger change detection
+                wrapper.component.expandedIndex.set(JSON.stringify({ 1: 'users' }));
+                cy.get('.svy-sidenav-item.sn-level-2').should('exist');
+                cy.get('.svy-sidenav-item-text').contains('User List').should('exist');
+                cy.get('.svy-sidenav-item-text').contains('User Groups').should('exist');
+            });
+        });
+    });
+
+    it('should reflect selectedIndex in DOM after input change', () => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
+            cy.get('.svy-sidenav-dropdown.sn-level-1').first().should('not.have.class', 'svy-navitem-selected').then(() => {
+                // drive selection via the input signal — this goes through svyOnChanges → _selectedIndex.set → markForCheck
+                wrapper.component.selectedIndex.set(JSON.stringify({ 1: 'dashboard' }));
+                cy.get('.svy-sidenav-dropdown.sn-level-1').first().should('have.class', 'svy-navitem-selected');
+            });
+        });
+    });
+
+    it('should update rendered items when menu input changes', () => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
+            cy.get('.svy-sidenav-item-text').contains('Dashboard').should('exist').then(() => {
+                wrapper.component.menu.set([{ id: 'home', text: 'Home', enabled: true } as MenuItem]);
+                cy.get('.svy-sidenav-item-text').contains('Home').should('exist');
+                cy.get('.svy-sidenav-item-text').contains('Dashboard').should('not.exist');
+            });
+        });
+    });
+
+    it('should remove styleClass when set to empty string', () => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
+            cy.get('.svy-sidenav').should('have.class', 'sidenav-test').then(() => {
+                wrapper.component.styleClass.set('');
+                cy.get('.svy-sidenav').should('not.have.class', 'sidenav-test');
+            });
+        });
+    });
 });

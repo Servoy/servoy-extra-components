@@ -5,7 +5,7 @@
   </span>
 </div>
 <input class='form-control'
-  [ngClass]="styleClass()"
+  [class]="styleClass()"
   (ngModelChange)="pushUpdate($event)"
   [id]="servoyApi.getMarkupId()"
   [ngModel]="dataProviderID()"
@@ -16,6 +16,6 @@
   [readOnly]="readOnly()"
   #input />
 </div>
-@if (showError) {
+@if (showError()) {
   <div class="textfieldgroup-msg-error">{{invalidEmailMessage()}}</div>
 }

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, SimpleChanges, Renderer2, ChangeDetectionStrategy, HostListener, input } from '@angular/core';
+import { Component, ChangeDetectorRef, SimpleChanges, Renderer2, ChangeDetectionStrategy, input } from '@angular/core';
 import { ServoyBaseComponent, IFoundset, BaseCustomObject } from '@servoy/public';
 import { Lightbox, LightboxConfig } from '@servoy/ngx-lightbox';
 
@@ -7,7 +7,10 @@ import { Lightbox, LightboxConfig } from '@servoy/ngx-lightbox';
     templateUrl: './lightboxgallery.html',
     styleUrls: ['./lightboxgallery.css'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    standalone: false,
+    host: {
+        '(document:keydown)': 'onKeyDown($event)'
+    }
 })
 export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivElement> {
 
@@ -63,8 +66,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
         super.svyOnChanges(changes);
     }
 	
-	@HostListener('document:keydown', ['$event'])
-		onKeyDown(event: KeyboardEvent) {
+	onKeyDown(event: KeyboardEvent) {
 			if (event.code === 'ArrowRight') {
 				if (document.querySelector('.fadeIn.lightbox')) {
 					const nextBtn: HTMLElement = document.querySelector('.fadeIn.lightbox').querySelector('.lb-next');

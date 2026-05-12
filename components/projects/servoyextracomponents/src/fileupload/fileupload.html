@@ -1,9 +1,9 @@
 <div class="svy-extra-fileupload container"
-  [ngClass]="styleClass()"
+  [class]="styleClass()"
   [svyTooltip]="toolTipText()"
   #element>
   <div ng2FileDrop
-    [ngClass]="{'svy-fu-dragover': hasBaseDropZoneOver}"
+    [class.svy-fu-dragover]="hasBaseDropZoneOver"
     (fileOver)="fileOverBase($event)"
     [uploader]="uploader"
     (onFileDrop) = "uploader.uploadAll()"
@@ -23,7 +23,7 @@
 
     @if (uploader.progress > 0) {
       <div class="svy-fu-row" >
-        <div class="svy-fu-progress-bar" role="progressbar" aria-valuenow="uploader.progress" aria-valuemin="0" aria-valuemax="100" [ngStyle]="{ 'width': uploader.progress + '%' }">
+        <div class="svy-fu-progress-bar" role="progressbar" aria-valuenow="uploader.progress" aria-valuemin="0" aria-valuemax="100" [style.width]="uploader.progress + '%'">
           {{uploader.progress}}%
         </div>
       </div>

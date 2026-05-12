@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-import {Component, NgZone, ElementRef, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, NgZone, ElementRef, OnInit} from '@angular/core';
 import {BaseGauge} from './base-gauge';
 import * as CanvasGauges from '@servoy/canvas-gauges';
 
@@ -35,6 +35,7 @@ export { LinearGaugeOptions } from '@servoy/canvas-gauges';
     // tslint:disable-next-line:component-selector
     selector: 'linear-gauge',
     template: '<canvas #gauge></canvas>',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: false
 })
 // tslint:disable-next-line:component-class-suffix

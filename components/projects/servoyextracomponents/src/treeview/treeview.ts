@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Output, SimpleChanges, Renderer2, input, viewChild, signal } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Output, SimpleChanges, Renderer2, input, viewChild, signal } from '@angular/core';
 import { Component } from '@angular/core';
 import { AngularTreeGridComponent } from 'angular-tree-grid';
 import { ServoyBaseComponent, ServoyPublicService, EventLike, JSEvent, LoggerFactory, LoggerService } from '@servoy/public';
@@ -7,6 +7,7 @@ import { ServoyExtraTreeviewCellRenderer } from './cellrenderer';
 @Component({
     selector: 'servoyextra-treeview',
     templateUrl: './treeview.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: false
 })
 export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {

@@ -1,4 +1,4 @@
-import { Component, Renderer2, SimpleChanges, ChangeDetectorRef, HostListener, ChangeDetectionStrategy, Inject, DOCUMENT, input, output, viewChild, signal } from '@angular/core';
+import { Component, Renderer2, SimpleChanges, ChangeDetectorRef, ChangeDetectionStrategy, Inject, DOCUMENT, input, output, viewChild, signal } from '@angular/core';
 import { Select2Option, Select2UpdateEvent, Select2, Select2RemoveEvent } from 'ng-select2-component';
 import { ServoyBaseComponent, IValuelist, Format, PopupStateService } from '@servoy/public';
 
@@ -7,7 +7,10 @@ import { ServoyBaseComponent, IValuelist, Format, PopupStateService } from '@ser
     selector: 'servoyextra-select2tokenizer',
     templateUrl: './select2tokenizer.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    standalone: false,
+    host: {
+        '(keydown)': 'handleKeyDown($event)'
+    }
 })
 export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElement> {
 
@@ -59,7 +62,6 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
         super(renderer, cdRef);
     }
 
-    @HostListener('keydown', ['$event'])
     handleKeyDown(event: KeyboardEvent) {
         if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
             // stop propagation when using list form component (to not break the selection)

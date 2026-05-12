@@ -1,18 +1,19 @@
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { ServoyExtraTreeview } from './treeview';
 @Component({
     selector: 'servoyextra-treeview-cell-renderer',
     template: `
-    <div [ngStyle]="setDisplay()" (contextmenu)="oncontextmenu($event)" [attr.cell-id]="getCellId()">
+    <div [style]="setDisplay()" (contextmenu)="oncontextmenu($event)" [attr.cell-id]="getCellId()">
       @if (!isFAIcon() && getIcon()) {
         <img [src]="getIcon()">
       }
       @if (isFAIcon() && getIcon()) {
         <span [class]="getIcon()"></span>
       }
-      <span class="treeLabel" [ngStyle]="setStyle()" [class]="getFilterClass()" [innerHtml]="getLabel()"></span>
+      <span class="treeLabel" [style]="setStyle()" [class]="getFilterClass()" [innerHtml]="getLabel()"></span>
     </div>
     `,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: false
 })
 export class ServoyExtraTreeviewCellRenderer {

@@ -277,4 +277,14 @@ describe('ServoyExtraSlider', () => {
             });
         });
     });
+
+    it('should show two pointers in range mode when dataProviderHigh is set', () => {
+        defaultValues.dataProviderHigh = 15;
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
+            // range mode: both min and max pointers exist
+            cy.get('.ngx-slider-pointer-min').should('exist');
+            cy.get('.ngx-slider-pointer-max').should('exist');
+        });
+    });
 });

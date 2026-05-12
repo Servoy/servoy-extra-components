@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, Output, Renderer2, SimpleChanges, ViewChild, HostListener, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Output, Renderer2, SimpleChanges, ViewChild, input, signal } from '@angular/core';
 import { ServoyBaseComponent } from '@servoy/public';
 import { BaseGauge } from './lib/base-gauge';
 import { RadialGauge } from './lib/radial-gauge';
@@ -6,7 +6,11 @@ import { RadialGauge } from './lib/radial-gauge';
 @Component({
     selector: 'servoyextra-gauge',
     templateUrl: './gauge.html',
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false,
+    host: {
+        '(window:resize)': 'onResize($event)'
+    }
 })
 export class ServoyExtraGauge extends ServoyBaseComponent<HTMLDivElement> {
     readonly gaugeType = input<string>(undefined);
@@ -36,7 +40,6 @@ export class ServoyExtraGauge extends ServoyBaseComponent<HTMLDivElement> {
 
     canvasGauge;
 
-    @HostListener('window:resize', ['$event'])
     onResize(event) {
         // responsive form in designer keeps growing so this will become an infinite cycle
         if (!this.servoyApi.isInDesigner()) {

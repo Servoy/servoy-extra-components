@@ -228,4 +228,35 @@ describe('ServoyExtraCollapse', () => {
             });
         });
     });
+
+    it('should open a collapsible via expandedIndices input', () => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
+            // initially: collapsible[0] open, collapsible[1] closed
+            cy.get('div').contains('Content 2').should('not.exist').then(() => {
+                // set expandedIndices to open index 1
+                wrapper.component.expandedIndices.set([1]);
+                wrapper.component.collapsibles.set(createDefaultCollapsibles().map((c, i) => {
+                    c.isCollapsed = i !== 1;
+                    return c;
+                }));
+                cy.get('div').contains('Content 2').should('exist');
+            });
+        });
+    });
+
+    it('should show and hide a collapsible via toggle() API', () => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
+            // collapsible[0] starts open; toggle it closed
+            cy.get('div').contains('Content 1').should('exist').then(() => {
+                wrapper.component.element.toggle(0);
+                cy.get('div').contains('Content 1').should('not.exist').then(() => {
+                    // toggle again to re-open
+                    wrapper.component.element.toggle(0);
+                    cy.get('div').contains('Content 1').should('exist');
+                });
+            });
+        });
+    });
 });

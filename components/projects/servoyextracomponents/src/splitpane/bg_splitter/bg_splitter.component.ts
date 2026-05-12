@@ -1,5 +1,5 @@
 import {
-  Component, OnChanges, SimpleChanges, HostListener, AfterContentInit,
+  ChangeDetectionStrategy, Component, OnChanges, SimpleChanges, AfterContentInit,
   Renderer2, ViewEncapsulation, ElementRef, Inject,
   DOCUMENT,
   input,
@@ -14,7 +14,13 @@ import { BGPane } from './bg_pane.component';
     template: '<div class="split-panes" #element><ng-content></ng-content></div>',
     styleUrls: ['./bg_splitter.css'],
     encapsulation: ViewEncapsulation.None,
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false,
+    host: {
+        '(document:pointerup)': 'pointerup($event)',
+        '(pointermove)': 'pointermove($event)',
+        '(pointerdown)': 'pointerdown($event)'
+    }
 } )
 export class BGSplitter implements AfterContentInit , OnChanges {
 
@@ -38,7 +44,6 @@ export class BGSplitter implements AfterContentInit , OnChanges {
         this.renderer.addClass( this.handler, 'split-handler' );
     }
 
-    @HostListener( 'document:pointerup', ['$event'] )
     pointerup( event: PointerEvent ) {
         if ( this.drag ) {
             let dividerLocation: string;
@@ -52,13 +57,11 @@ export class BGSplitter implements AfterContentInit , OnChanges {
         this.drag = false;
     }
 
-    @HostListener( 'pointermove', ['$event'] )
     pointermove( event: PointerEvent ) {
         if ( !this.drag ) return;
         this.adjustLocation(event);
     }
 
-    @HostListener( 'pointerdown', ['$event'] )
     pointerdown( event: PointerEvent ) {
         const el = this.doc.elementFromPoint(event.clientX, event.clientY);
         if(el === this.handler) {

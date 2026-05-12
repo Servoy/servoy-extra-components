@@ -49,16 +49,6 @@ export class ServoyExtraImageLabel extends ServoyBaseComponent<HTMLImageElement>
                     case 'media':
                         this.updateImageURL( change.currentValue );
                         break;
-                    case 'styleClass':
-                        if (change.previousValue) {
-                            const array = change.previousValue.trim().split(' ');
-                            array.filter((element: string) => element !== '').forEach((element: string) => this.renderer.removeClass(this.getNativeElement(), element));
-                        }
-                        if (change.currentValue) {
-                            const array = change.currentValue.trim().split(' ');
-                            array.filter((element: string) => element !== '').forEach((element: string) => this.renderer.addClass(this.getNativeElement(), element));
-                        }
-                        break;
                     case 'centerImage':
 						this.renderer.removeClass(this.getNativeElement(), 'svy-extra-imagelabel-center');
 						if (change.currentValue && !this.servoyApi.isInDesigner()) {

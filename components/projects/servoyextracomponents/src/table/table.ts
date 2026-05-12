@@ -1,4 +1,4 @@
-import { Component, Renderer2, ElementRef, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy, Directive, Inject, HostListener, SecurityContext, SimpleChanges, CSP_NONCE, DOCUMENT, input, viewChild, signal } from '@angular/core';
+import { Component, Renderer2, ElementRef, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy, Directive, Inject, SecurityContext, SimpleChanges, CSP_NONCE, DOCUMENT, input, viewChild, signal } from '@angular/core';
 import { BaseCustomObject, Format, IFoundset, IValuelist, ServoyBaseComponent, ViewPortRow, FoundsetChangeEvent, ChangeType, FormattingService, ViewportRowUpdates, LogLevel } from '@servoy/public';
 import { LoggerFactory, LoggerService } from '@servoy/public';
 import { ResizeEvent } from 'angular-resizable-element';
@@ -26,7 +26,10 @@ const instanceOfValuelist = (obj: any): obj is IValuelist =>
     selector: 'servoyextra-table',
     templateUrl: './table.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    standalone: false,
+    host: {
+        '(window:resize)': 'windowResizeHandler()'
+    }
 })
 export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implements OnDestroy {
 
@@ -141,7 +144,6 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         this.log = logFactory.getLogger('Table');
     }
 
-    @HostListener('window:resize')
     windowResizeHandler() {
         if (this.resizeTimeout) clearTimeout(this.resizeTimeout);
         this.resizeTimeout = setTimeout(() => {

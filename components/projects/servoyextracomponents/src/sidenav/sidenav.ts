@@ -1,4 +1,4 @@
-import { Component, SimpleChanges, Renderer2, ChangeDetectorRef, TemplateRef, ElementRef, Inject, DOCUMENT, input, output, contentChild, viewChild, effect, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, SimpleChanges, Renderer2, ChangeDetectorRef, TemplateRef, ElementRef, Inject, DOCUMENT, input, output, contentChild, viewChild, effect, signal, linkedSignal } from '@angular/core';
 import { ServoyBaseComponent, ServoyPublicService, IJSMenu, IJSMenuItem } from '@servoy/public';
 
 import { LoggerFactory, LoggerService } from '@servoy/public';
@@ -6,6 +6,7 @@ import { LoggerFactory, LoggerService } from '@servoy/public';
 @Component({
 	selector: 'servoyextra-sidenav',
 	templateUrl: './sidenav.html',
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	standalone: false
 })
 export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
@@ -50,10 +51,10 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
     elementRef: ElementRef<HTMLDivElement>;
     readonly elementRefSignal = viewChild<ElementRef<HTMLDivElement>>('element');
     
-    _selectedIndex = signal<any>(undefined);
-    _expandedIndex = signal<any>(undefined);
+    _selectedIndex = signal<any>({});
+    _expandedIndex = signal<any>({});
     _open = signal<boolean>(undefined);
-    _menu = signal<Array<MenuItem>>(undefined);
+    _menu = linkedSignal<Array<MenuItem>>(() => this.menu());
 
 	animateSlideMenuTimeout: number;
 	mouseEnterTimeout: number;
@@ -77,10 +78,9 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 
 	svyOnInit() {
 		super.svyOnInit();
-        this._selectedIndex.set(this.selectedIndex()??{});
+		this._selectedIndex.set(this.selectedIndex()??{});
         this._expandedIndex.set(this.expandedIndex()??{});
         this._open.set(this.open());
-        this._menu.set(this.menu());
 		this.copyServoyMenu();
         const menu = this._menu();
         if (menu && menu.length > 0 && !this.servoyMenu()) {
@@ -100,9 +100,6 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
                 const footerForm = this.footerForm();
                 const open = this.open();
                 switch (property) {
-                    case 'menu':
-                        this._menu.set(this.menu());
-                        break;
                     case 'footerFormStickyBottom':
                         this.addRemoveStickyStyle();
                         break;
@@ -116,18 +113,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 							this.renderer.addClass(nav, 'svy-sidenav-disabled');
 						}
 						break;
-					case 'styleClass':
-						const sidenav = this.getNativeElement().querySelector('.svy-sidenav');
-						if (change.previousValue) {
-							const array = change.previousValue.trim().split(' ');
-							array.filter((element: string) => element !== '').forEach((element: string) => this.renderer.removeClass(sidenav, element));
-						}
-						if (change.currentValue) {
-							const array = change.currentValue.trim().split(' ');
-							array.filter((element: string) => element !== '').forEach((element: string) => this.renderer.addClass(sidenav, element));
-						}
-						break;
-					case 'containedForm':
+				case 'containedForm':
 						if (change.currentValue) {
 							this.renderer.addClass(this.getNativeElement(), 'has-panel');
 						} else {
@@ -241,8 +227,25 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		}
 	}
 
-	isDesignTime() {
-		return this.servoyApi.isInDesigner();
+	getSidenavClass(): { [key: string]: boolean } {
+		const cls: { [key: string]: boolean } = {
+			'svy-sidenav-right': this.slidePosition() === 'right',
+			'svy-sidenav-static': this.slidePosition() === 'static',
+			'svy-sidenav-left': this.slidePosition() === 'left',
+			'nav-slide-menu': this.slideAnimation() === 'slide-menu',
+			'nav-collapse-menu': this.slideAnimation() === 'collapse-menu' || this.slideAnimation() === 'collapse-menu-nohover',
+			'nav-side-toggle': this.togglePosition() === 'side-toggle',
+			'nav-fixed-toggle': this.togglePosition() === 'fixed-toggle',
+			'nav-hide-toggle': this.togglePosition() === 'hide-toggle'
+		};
+		const sc = this.styleClass();
+		if (sc) {
+			sc.trim().split(' ').filter(c => c !== '').forEach(c => cls[c] = true);
+		}
+		return cls;
+	}
+
+	isDesignTime() {		return this.servoyApi.isInDesigner();
 	}
 
 	getForm() {
@@ -411,15 +414,15 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 					}
 
 				}
-				this.iconCloseStyleClass().split(' ').forEach(element => this.renderer.removeClass(iconOpen, element));
-				this.iconOpenStyleClass().split(' ').forEach(element => this.renderer.addClass(iconOpen, element));
-			} else {
-				if (!svyextracontainer.classList.contains('svy-slide-out')) {
-					this.renderer.addClass(sidenav, 'svy-slide-out');
-					this.renderer.addClass(svyextracontainer, 'svy-slide-out');
-				}
-				this.iconOpenStyleClass().split(' ').forEach(element => this.renderer.removeClass(iconOpen, element));
-				this.iconCloseStyleClass().split(' ').forEach(element => this.renderer.addClass(iconOpen, element));
+			this.iconCloseStyleClass()?.split(' ').forEach(element => this.renderer.removeClass(iconOpen, element));
+			this.iconOpenStyleClass()?.split(' ').forEach(element => this.renderer.addClass(iconOpen, element));
+		} else {
+			if (!svyextracontainer.classList.contains('svy-slide-out')) {
+				this.renderer.addClass(sidenav, 'svy-slide-out');
+				this.renderer.addClass(svyextracontainer, 'svy-slide-out');
+			}
+			this.iconOpenStyleClass()?.split(' ').forEach(element => this.renderer.removeClass(iconOpen, element));
+			this.iconCloseStyleClass()?.split(' ').forEach(element => this.renderer.addClass(iconOpen, element));
 			}
 		} else {
 			this._open.set(true);
@@ -762,6 +765,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         }
 		this._selectedIndex.set(newSelectedIndex);
 		this.selectedIndexChange.emit(JSON.stringify(newSelectedIndex));
+		this.cdRef.markForCheck();
 	}
 
 	clearSelectedIndex(level: number) {
@@ -798,6 +802,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		}
 		this._expandedIndex.set(newExpandedIndex);
 		this.expandedIndexChange.emit(JSON.stringify(newExpandedIndex));
+		this.cdRef.markForCheck();
 	}
 
 

@@ -71,7 +71,7 @@
               @if (!card.form) {
                 <div
                   [innerHTML]="card.contentHtml | htmlFilter | trustAsHtml:isTrustedHTML()"
-                  [ngClass]="card.styleClass"
+                  [class]="card.styleClass"
                   (click)="onCardClick($event, myIdx, idx)"
                   class="svy-collapse-card-body-container"
                   id="{{servoyApi.getMarkupId()}}-{{idx}}-collapsible-card-container-{{myIdx}}" >
@@ -79,7 +79,7 @@
               }
               @if (card.form) {
                 <div
-                  [ngClass]="card.styleClass"
+                  [class]="card.styleClass"
                   [ngStyle]="getFormStyle(card.form)"
                   class="svy-collapse-card-body-container"
                   [sabloTabseq]='myIdx+1' sablo-tabseq-config="{container: true}"
