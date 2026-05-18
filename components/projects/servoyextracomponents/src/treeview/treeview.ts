@@ -405,6 +405,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
             } else {
                 this.updateTreeGridData();
             }
+            this.cdRef.detectChanges();
         }
     }
 
@@ -421,6 +422,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     expandAll() {
         if (this.isTreeReady) {
             this.angularGrid().expandAll();
+            this.cdRef.detectChanges();
             return true;
         }
         return false;
@@ -437,6 +439,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     collapseAll() {
         if (this.isTreeReady) {
             this.angularGrid().collapseAll();
+            this.cdRef.detectChanges();
             return true;
         }
         return false;
@@ -463,6 +466,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         if (this.isTreeReady) {
             this.nodeExist(nodeId) && this.angularGrid().expandRow(isNaN(nodeId) ? nodeId.toString() : nodeId);
             !this.nodeExist(nodeId) && this.log.warn(`You have used a node id "${nodeId}" that doesn't exist!`);
+            this.cdRef.detectChanges();
         }
     }
 
@@ -502,6 +506,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     collapseNode(nodeId) {
         if (this.isTreeReady) {
             this.angularGrid().collapseRow(nodeId.toString());
+            this.cdRef.detectChanges();
         }
     }
 
@@ -523,6 +528,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
                 this.expandNode(nodeId);
             }
             this.refresh(true);
+            this.cdRef.detectChanges();
         }
     }
     
@@ -743,6 +749,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
             if (options && options.autoExpand) {
                 this.angularGrid().expandAll();
             }
+            this.cdRef.detectChanges();
         }
     }
 
