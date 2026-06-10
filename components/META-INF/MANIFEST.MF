@@ -42,25 +42,16 @@ Web-Component: True
 Name: youtubevideoembedder/youtubevideoembedder.spec
 Web-Component: True
 
-Name: onrenderlabel/onrenderlabel.spec
-Web-Component: True
-
 Name: slider/slider.spec
 Web-Component: True
 
 Name: fileupload/fileupload.spec
 Web-Component: True
 
-Name: fontawesome/fontawesome.spec
-Web-Component: True
-
 Name: dbtreeview/dbtreeview.spec
 Web-Component: True
 
 Name: select2tokenizer/select2tokenizer.spec
-Web-Component: True
-
-Name: listformcomponent/listformcomponent.spec
 Web-Component: True
 
 Name: multifileupload/multifileupload.spec
