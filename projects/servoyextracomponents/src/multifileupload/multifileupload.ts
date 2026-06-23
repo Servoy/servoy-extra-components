@@ -38,7 +38,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
 	@Input() responsiveWidth: string;
 	@Input() responsiveHeight: number;
     @Input() styleClass: string;
-
+	
     @Input() onFileUploaded: (file: any, event: JSEvent) => void;
     @Input() onFileAdded: (file: UploadFile, event: JSEvent) => void;
     @Input() onBeforeFileAdded: (fileToAdd: UploadFile, files: UploadFile[], event: JSEvent) => Promise<boolean>;
@@ -352,9 +352,18 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
 	
 	getSize() {
 		if (this.servoyApi.isInAbsoluteLayout()) {
-			return {
-				width: this.cssPosition.width,
-				height: this.cssPosition.height
+			if (this.cssPosition){
+				return {
+					width: this.cssPosition.width,
+					height: this.cssPosition.height
+				}
+			}
+			else{
+				const wrapper: HTMLDivElement = this.elementRef.nativeElement.closest('.svy-wrapper');
+				return {
+					width: wrapper.offsetWidth,
+					height: wrapper.offsetHeight
+				}
 			}
 		} else {
 			return {
