@@ -13,6 +13,7 @@
     "@angular-slider/ngx-slider": "^21",
     "@ali-hm/angular-tree-component": "^21",
     "@ng-bootstrap/ng-bootstrap": "^20",
+	"@popperjs/core": "<3",
     "bootstrap": "<6",
     "@servoy/canvas-gauges": "<3",
     "@tinymce/tinymce-angular": "<8",
