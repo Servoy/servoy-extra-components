@@ -24,6 +24,7 @@
 		"positionFromTop"			: { "type": "int", "default": 50 },
 		"resizeDuration"			: { "type": "int", "default": 700 },
 		"wrapAround"				: { "type": "boolean", "default": false },
+		"visible"					: { "type": "visible", "default": true },
 		"galleryVisible"			: { "type": "boolean", "default": true },
 		"showCaptionInGallery" 		: { "type" : "boolean", "default": false },
 		"showImageNumberLabel"		: { "type": "boolean", "default": true },

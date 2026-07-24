@@ -61,7 +61,7 @@
 		"stepsValueList"				: { "type": "valuelist", "for":["dataProvider"], "tags": { "doc": "If you want to provide all the steps with display and real values, you can provide a value list to provide step values (realValues) and step labels (displayValues)." } },
 		"ticksArray"					: { "type": "int[]", "tags": { "doc": "Use to display ticks at specific positions. The array contains the index of the ticks that should be displayed." } },
 		"stepsArray"					: { "type": "int[]", "tags": { "doc": "If you want to display a slider with non linear/number steps." } },
-		"visible" 						: { "type": "boolean", "default": true },
+		"visible" 						: { "type": "visible", "default": true },
 		"vertical" 						: { "type": "boolean", "default": false, "tags": { "doc": "Set to true to display the slider vertically." }},
 		"logScale" 						: { "type": "boolean", "default": false, "tags": { "doc": "Set to true to use a logarithmic scale to display the slider" }}
 	},

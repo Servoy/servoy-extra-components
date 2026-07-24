@@ -21,7 +21,7 @@
 	    "bindings" : {"type":"binding[]", "tags": { "scope": "private" }},
 	    "allowDrag" : {"type":"object", "tags": { "scope": "runtime", "doc": "Can be used to enable dragging of nodes. Can either be a boolean value or a clientfunction that is executed in browser. Default value is false." }},
 	    "allowDrop" : {"type":"object", "tags": { "scope": "runtime", "doc": "Can be used to enable dropping of nodes. Can either be a boolean value or a clientfunction that is executed in browser. Default value is false." }},
-	    "visible" : {"type":"boolean", "default":true},
+	    "visible" : {"type":"visible", "default":true},
 		"enabled" : {"type":"boolean", "default":true},
 		"autoRefresh": {"type":"boolean", "default":true, "tags": { "doc" :"If true, component listens to foundset changes and updates itself while visible."}},
 	    "selection" : {"type":"object[]", "tags": { "scope": "private" }},
