@@ -402,14 +402,14 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
     private observeFooterSize(sidenavDiv: HTMLElement, footerFormDiv: HTMLElement) {
         if (footerFormDiv.clientHeight > 0 && sidenavDiv.clientWidth > 0) {
             this.applyFooterStickyStyle(sidenavDiv, footerFormDiv);
-            return;
         }
 
         this.footerResizeObserver = new ResizeObserver(() => {
-            if (footerFormDiv.clientHeight > 0 && sidenavDiv.clientWidth > 0) {
-                this.applyFooterStickyStyle(sidenavDiv, footerFormDiv);
-                this.disconnectFooterObservers();
-            }
+            requestAnimationFrame(() => {
+                if (footerFormDiv.clientHeight > 0 && sidenavDiv.clientWidth > 0) {
+                    this.applyFooterStickyStyle(sidenavDiv, footerFormDiv);
+                }
+            });
         });
         this.footerResizeObserver.observe(footerFormDiv);
         this.footerResizeObserver.observe(sidenavDiv);
