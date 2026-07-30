@@ -1,5 +1,5 @@
 import { ScrollingModule } from '@angular/cdk/scrolling';
-import { Component, input, viewChild } from '@angular/core';
+import { Component, input, viewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { Format, FormattingService, IFoundset, LoggerFactory, ServoyApi, ServoyPublicModule } from '@servoy/public';
 import { SpecTypesService, ViewPortRow, WindowRefService } from '@servoy/public';
@@ -17,6 +17,7 @@ import { ResizableModule } from 'angular-resizable-element';
                          [onCellClick]="cellClick()" [onCellRightClick]="cellRightClick()" [onCellDoubleClick]="cellDoubleClick()"\
                          [onHeaderClick]="headerClick()" [onHeaderRightClick]="headerRightClick()" [onFocusGainedMethodID]="focusGained()" [onFocusLostMethodID]="focusLost()" >\
                     </servoyextra-table > </div>',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 class TestWrapperComponent {

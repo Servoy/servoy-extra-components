@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ServoyExtraTreeview } from './treeview';
 @Component({
     selector: 'servoyextra-treeview-cell-renderer',
@@ -13,6 +13,7 @@ import { ServoyExtraTreeview } from './treeview';
       <span class="treeLabel" [style]="setStyle()" [class]="getFilterClass()" [innerHtml]="getLabel()"></span>
     </div>
     `,
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ServoyExtraTreeviewCellRenderer {

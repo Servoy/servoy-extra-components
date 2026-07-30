@@ -29,7 +29,7 @@ import { Binding, Callback, LevelVisibilityType, RelationInfo, ServoyExtraDbtree
 import { TreeModule } from '@ali-hm/angular-tree-component';
 import { EditorModule , TINYMCE_SCRIPT_SRC} from '@tinymce/tinymce-angular';
 import { ServoyExtraTreeview } from './treeview/treeview';
-import { AngularTreeGridModule } from 'angular-tree-grid';
+import { AngularTreeGridComponent } from '@servoy/angular-tree-grid';
 import { ServoyExtraTreeviewCellRenderer } from './treeview/cellrenderer';
 import { ServoyExtraGauge } from './gauge/gauge';
 import { LinearGauge } from './gauge/lib/linear-gauge';
@@ -78,7 +78,7 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
         LightboxModule,
         TreeModule,
         EditorModule,
-        AngularTreeGridModule,
+        AngularTreeGridComponent,
         DashboardComponent
     ],
     providers: [AsyncPipe,

@@ -4,7 +4,7 @@ import { ServoyApi, ServoyApiTesting, ServoyPublicTestingModule } from '@servoy/
 import { ServoyExtraTreeview } from './treeview';
 import { MountConfig } from 'cypress/angular';
 import { FormsModule } from '@angular/forms';
-import { AngularTreeGridModule, AngularTreeGridComponent } from 'angular-tree-grid';
+import { AngularTreeGridComponent } from '@servoy/angular-tree-grid';
 import { ServoyExtraTreeviewCellRenderer } from './cellrenderer';
 
 @Component({
@@ -68,7 +68,7 @@ function applyDefaultProps(wrapper) {
 
 const configWrapper: MountConfig<WrapperComponent> = {
     declarations: [ServoyExtraTreeview, ServoyExtraTreeviewCellRenderer],
-    imports: [ServoyPublicTestingModule, FormsModule, AngularTreeGridModule]
+    imports: [ServoyPublicTestingModule, FormsModule, AngularTreeGridComponent]
 };
 
 describe('ServoyExtraTreeview', () => {

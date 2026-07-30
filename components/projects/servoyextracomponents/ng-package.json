@@ -15,7 +15,7 @@
     "@servoy/ngx-lightbox", "ngx-filesaver","file-saver",
     "ng2-file-upload", 
     "@ali-hm/angular-tree-component", 
-    "angular-tree-grid", 
+    "@servoy/angular-tree-grid", 
     "@uppy/angular",
     "@uppy/companion-client",
     "@uppy/dashboard",
