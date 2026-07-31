@@ -205,4 +205,39 @@ describe('ServoyExtraTreeview', () => {
             });
         });
     });
+
+    it('addOrUpdateRowData should update text without collapsing expanded nodes', () => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
+            cy.get('.svy-treeview').contains('Second group').should('exist');
+            cy.get('.expand-icon-container').first().click();
+            cy.get('.svy-treeview').contains('Subgroup').should('be.visible').then(() => {
+                wrapper.component.element.addOrUpdateRowData(['2', null, 'Changed group', null]);
+                cy.get('.svy-treeview').contains('Changed group').should('exist');
+                cy.get('.svy-treeview').contains('Subgroup').should('be.visible');
+            });
+        });
+    });
+
+    it('addOrUpdateRowData should add a new node', () => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
+            cy.get('.svy-treeview').contains('Main group').should('exist').then(() => {
+                wrapper.component.element.addOrUpdateRowData(['6', null, 'New node', null]);
+                cy.get('.svy-treeview').contains('New node').should('exist');
+                cy.get('.svy-treeview').contains('Main group').should('exist');
+            });
+        });
+    });
+
+    it('addOrUpdateRowData should preserve selection', () => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
+            cy.get('.svy-treeview').contains('Main group').click().then(() => {
+                wrapper.component.element.addOrUpdateRowData(['2', null, 'Changed', null]);
+                cy.get('.svy-treeview').contains('Changed').should('exist');
+                cy.get('tr.selected').should('contain.text', 'Main group');
+            });
+        });
+    });
 });

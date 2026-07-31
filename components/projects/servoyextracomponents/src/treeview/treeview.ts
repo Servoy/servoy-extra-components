@@ -230,10 +230,6 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         }
         const rowId = rowArray[idIdx];
         const parentId = rowArray[pidIdx];
-        const expandedPaths = Object.keys(this.angularGrid()!.expand_tracker).filter(path => (this.angularGrid()!.expand_tracker as any)[path]);
-        const displayDataBefore = this.angularGrid()!.store.getDisplayData();
-        const selectedNode = displayDataBefore.find(data => data.row_selected);
-        const selectedId = selectedNode ? selectedNode.id : null;
         const existingIndex = this.data.findIndex(row => row.id === rowId);
         const mappedRow: any = {
             id: rowId,
@@ -266,20 +262,6 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         this.addDefaultIconsIfNeeded(this.data, ids, pids);
 
         this.cdRef.detectChanges();
-
-        setTimeout(() => {
-            const displayData = this.angularGrid()!.store.getDisplayData();
-
-            displayData.forEach(data => {
-                if (expandedPaths.includes(data.pathx)) {
-                    (this.angularGrid()!.expand_tracker as any)[data.pathx] = true;
-                }
-                data.row_selected = selectedId !== null && data.id === selectedId;
-            });
-
-            this.angularGrid()!.store.refreshDisplayData();
-            this.cdRef.detectChanges();
-        }, 0);
     }
     
     checkIfAllParentsExist(data: Array<IRowData>, ids: Array<number | string>) {
