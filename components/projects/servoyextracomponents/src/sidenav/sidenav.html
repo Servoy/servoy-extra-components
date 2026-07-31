@@ -1,6 +1,6 @@
 <div #element class="svy-extra-sidenav">
   <div class="svy-sidenav"
-    [dir] = "scrollbarPosition() == 'rtl' ? 'rtl' : null"
+    [dir] = "scrollbarPosition() == 'rtl' ? 'rtl' : $any(null)"
         [class]="getSidenavClass()">
     <div class="svy-sidenav-header">
       <i (click)="slideMenu($event)" class="svy-sidenav-action-open"></i>

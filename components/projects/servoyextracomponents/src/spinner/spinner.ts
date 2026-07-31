@@ -9,23 +9,23 @@ import { Format, FormattingService, ServoyBaseComponent, IValuelist } from '@ser
     standalone: false
 })
 export class ServoyExtraSpinner extends ServoyBaseComponent<HTMLDivElement> {
-    readonly onDataChangeMethodID = input<(e: Event, data?: any) => void>(undefined);
-    readonly onActionMethodID = input<(e: Event, data?: any) => void>(undefined);
-    readonly onFocusGainedMethodID = input<(e: Event, data?: any) => void>(undefined);
-    readonly onRightClickMethodID = input<(e: Event, data?: any) => void>(undefined);
-    readonly onFocusLostMethodID = input<(e: Event, data?: any) => void>(undefined);
+    readonly onDataChangeMethodID = input<((e: Event, data?: any) => void) | undefined>(undefined);
+    readonly onActionMethodID = input<((e: Event, data?: any) => void) | undefined>(undefined);
+    readonly onFocusGainedMethodID = input<((e: Event, data?: any) => void) | undefined>(undefined);
+    readonly onRightClickMethodID = input<((e: Event, data?: any) => void) | undefined>(undefined);
+    readonly onFocusLostMethodID = input<((e: Event, data?: any) => void) | undefined>(undefined);
 
     readonly dataProviderIDChange = output<any>();
-    readonly dataProviderID = input<any>(undefined);
-    readonly enabled = input<boolean>(undefined);
-    readonly editable = input<boolean>(undefined);
-    readonly format = input<Format>(undefined);
-    readonly tabSeq = input<number>(undefined);
-    readonly toolTipText = input<string>(undefined);
-    readonly valuelistID = input<IValuelist>(undefined);
-    readonly responsiveHeight = input<number>(undefined);
-    readonly placeholderText = input<string>(undefined);
-    readonly styleClass = input<string>(undefined);
+    readonly dataProviderID = input<any>(undefined as any);
+    readonly enabled = input<boolean>(undefined as any);
+    readonly editable = input<boolean>(undefined as any);
+    readonly format = input<Format>(undefined as any);
+    readonly tabSeq = input<number>(undefined as any);
+    readonly toolTipText = input<string>(undefined as any);
+    readonly valuelistID = input<IValuelist>(undefined as any);
+    readonly responsiveHeight = input<number>(undefined as any);
+    readonly placeholderText = input<string>(undefined as any);
+    readonly styleClass = input<string>(undefined as any);
     
     _dataProviderID = signal<any>(undefined);
        
@@ -84,23 +84,23 @@ export class ServoyExtraSpinner extends ServoyBaseComponent<HTMLDivElement> {
         
          const onActionMethodID = this.onActionMethodID();
          if (onActionMethodID)
-                this.renderer.listen(this.getNativeChild(), 'click', e => this.onActionMethodID()(e));
+                this.renderer.listen(this.getNativeChild(), 'click', e => this.onActionMethodID()!(e));
 
          if (this.onRightClickMethodID())
                 this.renderer.listen(this.getNativeChild(), 'contextmenu', e => {
-                 this.onRightClickMethodID()(e);
+                 this.onRightClickMethodID()!(e);
                  return false;
                 });
 
         for (const i of Object.keys(spinnerButtons)) {
             if (onActionMethodID)
-                this.renderer.listen(spinnerButtons[i], 'click', e => this.onActionMethodID()(e));
+                this.renderer.listen((spinnerButtons as any)[i], 'click', e => this.onActionMethodID()!(e));
 
             if (this.onFocusLostMethodID())
-                this.renderer.listen(spinnerButtons[i], 'blur', e => this.onFocusLostMethodID()(e));
+                this.renderer.listen((spinnerButtons as any)[i], 'blur', e => this.onFocusLostMethodID()!(e));
 
             if (this.onFocusGainedMethodID())
-                this.renderer.listen(spinnerButtons[i], 'focus', e => this.onFocusGainedMethodID()(e));
+                this.renderer.listen((spinnerButtons as any)[i], 'focus', e => this.onFocusGainedMethodID()!(e));
         }
     }
 
@@ -113,7 +113,7 @@ export class ServoyExtraSpinner extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     // copied from angularui timepicker
-    isScrollingUp(e): boolean {
+    isScrollingUp(e: any): boolean {
         if (e.originalEvent) {
             e = e.originalEvent;
         }
@@ -122,7 +122,7 @@ export class ServoyExtraSpinner extends ServoyBaseComponent<HTMLDivElement> {
         return (e.detail || delta > 0);
     }
 
-    scrollCallback(e) {
+    scrollCallback(e: any) {
         if (!this.isDisabled()) {
             if (this.isScrollingUp(e))this.increment();
             else this.decrement();
@@ -130,7 +130,7 @@ export class ServoyExtraSpinner extends ServoyBaseComponent<HTMLDivElement> {
         e.preventDefault();
     }
 
-    keydownKeypressCallback(e) {
+    keydownKeypressCallback(e: any) {
         if (!this.isDisabled()) {
             if (e.which === 40)
                 this.decrement();
@@ -168,8 +168,8 @@ export class ServoyExtraSpinner extends ServoyBaseComponent<HTMLDivElement> {
             return undefined;
         }
 
-        for (let i = 0; i < this.valuelistID().length; i++) {
-            const item = this.valuelistID()[i];
+        for (let i = 0; i < this.valuelistID()!.length; i++) {
+            const item = this.valuelistID()![i];
             if (item && item.realValue && dataProviderID === item.realValue) {
                 let displayFormat;
                 let type;

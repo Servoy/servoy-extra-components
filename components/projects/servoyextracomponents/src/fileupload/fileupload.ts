@@ -14,39 +14,39 @@ import {FileTypesUtilsService} from './lib/filetypes';
 })
 export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
 
-    readonly onDataChangeMethodID = input<(e: Event) => void>(undefined);
-    readonly onFileUploadedMethodID = input<() => void>(undefined);
-    readonly onFileTransferFinishedMethodID = input<(e: Event) => void>(undefined);
+    readonly onDataChangeMethodID = input<((e: Event) => void) | undefined>(undefined);
+    readonly onFileUploadedMethodID = input<(() => void) | undefined>(undefined);
+    readonly onFileTransferFinishedMethodID = input<((e: Event) => void) | undefined>(undefined);
 
     readonly dataProviderIDChange = output();
-    readonly dataProviderID = input<any>(undefined);
-    readonly displaysTags = input<boolean>(undefined);
-    readonly accept = input<string>(undefined);
-    readonly enabled = input<boolean>(undefined);
-    name: string;
-    readonly styleClass = input<string>(undefined);
-    readonly styleClassExpression = input<string>(undefined);
-    readonly iconStyleClass = input<string>(undefined);
-    readonly resultDisplayTimeout = input<number>(undefined);
-    readonly successIconStyleClass = input<string>(undefined);
-    readonly showFileName = input<boolean>(undefined);
-    readonly showProgress = input<boolean>(undefined);
-    readonly multiFileUpload = input<boolean>(undefined);
-    readonly uploadText = input<string>(undefined);
-    readonly uploadProgressText = input<string>(undefined);
-    readonly uploadSuccessText = input<string>(undefined);
-    readonly uploadCancelText = input<string>(undefined);
-    readonly uploadNotSupportedText = input<string>(undefined);
-    readonly uploadNotSupportedFileText = input<string>(undefined);
-    readonly toolTipText = input<string>(undefined);
-    readonly maxFileSize = input<number>(undefined);
+    readonly dataProviderID = input<any>(undefined as any);
+    readonly displaysTags = input<boolean>(undefined as any);
+    readonly accept = input<string>(undefined as any);
+    readonly enabled = input<boolean>(undefined as any);
+    name!: string;
+    readonly styleClass = input<string>(undefined as any);
+    readonly styleClassExpression = input<string>(undefined as any);
+    readonly iconStyleClass = input<string>(undefined as any);
+    readonly resultDisplayTimeout = input<number>(undefined as any);
+    readonly successIconStyleClass = input<string>(undefined as any);
+    readonly showFileName = input<boolean>(undefined as any);
+    readonly showProgress = input<boolean>(undefined as any);
+    readonly multiFileUpload = input<boolean>(undefined as any);
+    readonly uploadText = input<string>(undefined as any);
+    readonly uploadProgressText = input<string>(undefined as any);
+    readonly uploadSuccessText = input<string>(undefined as any);
+    readonly uploadCancelText = input<string>(undefined as any);
+    readonly uploadNotSupportedText = input<string>(undefined as any);
+    readonly uploadNotSupportedFileText = input<string>(undefined as any);
+    readonly toolTipText = input<string>(undefined as any);
+    readonly maxFileSize = input<number>(undefined as any);
 
     readonly fileInputLabel = viewChild<ElementRef>('fileInputLabel');
     readonly fileInput = viewChild<ElementRef>('fileInputSingleUpload');
 
-    uploader: FileUploader;
+    uploader!: FileUploader;
     hasBaseDropZoneOver = false;
-    customText: string;
+    customText!: string;
     acceptFiles = '*/*';
     private ready = true;
     private log: LoggerService;
@@ -63,7 +63,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     public fileInputClick(): void {
-        this.fileInputLabel().nativeElement.click();
+        this.fileInputLabel()!.nativeElement.click();
     }
 
     initializeComponent() {
@@ -132,7 +132,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
                 name: 'emptyType', fn: (item: any, options: any): boolean => {
                     if (!item.type && options.allowedMimeType) {
                         const fileExtension = item.name.split('.').at(-1).toLowerCase();
-                        const allowedExtensions = options.allowedMimeType.map(mime => mime.split('/').at(-1).toLowerCase());
+                        const allowedExtensions = options.allowedMimeType.map((mime: any) => mime.split('/').at(-1).toLowerCase());
                         return allowedExtensions.includes(fileExtension);
                     }
                     return true;
@@ -156,7 +156,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
 
             this.uploader.onCompleteAll = this.onComplete;
             this.uploader.onWhenAddingFileFailed = this.onWhenAddingFileFailed;
-            this.customText = this.uploadText();
+            this.customText = this.uploadText() ?? '';
         }
     }
 
@@ -164,7 +164,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
         this.ready = true;
         const onFileTransferFinishedMethodID = this.onFileTransferFinishedMethodID();
         if (onFileTransferFinishedMethodID) onFileTransferFinishedMethodID(new CustomEvent('onFileTransferFinishedMethodID'));
-        this.customText = this.uploadSuccessText();
+        this.customText = this.uploadSuccessText() ?? '';
         const fileInput = this.fileInput();
         if (fileInput){
             fileInput.nativeElement.value = null;
@@ -173,14 +173,14 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
         this.hideProgress();
     };
 
-    onWhenAddingFileFailed = (item, filter, options) => {
+    onWhenAddingFileFailed = (item: any, filter: any, options: any) => {
         if (filter.name === 'fileSize') {
             // File size exceeded the limit            
             this.customText = `File size (${item.size}) exceeds the maximum allowed size (${options.maxFileSize})`;
             this.log.warn(`File ${item.name} rejected: ${this.customText}`);
         } else {
             // Other validation failure
-            this.customText = this.uploadNotSupportedFileText();
+            this.customText = this.uploadNotSupportedFileText() ?? '';
         }
         this.cdRef.detectChanges();
         this.hideProgress();
@@ -188,11 +188,11 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
 
     hideProgress = () => {
         if(this.hideProgressTimer) clearTimeout(this.hideProgressTimer);
-        if(this.resultDisplayTimeout() > -1) {
+        if(this.resultDisplayTimeout()! > -1) {
             this.hideProgressTimer = setTimeout(() =>  {
                 this.hideProgressTimer = null;
                 this.uploader.progress = 0;
-                this.customText = this.uploadText();
+                this.customText = this.uploadText() ?? '';
                 this.cdRef.detectChanges();
             } , this.resultDisplayTimeout());
         }
@@ -206,7 +206,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
                     case 'enabled':
                         if (change.currentValue){
                              this.renderer.removeAttribute(this.getFocusElement(), 'disabled');
-                             this.customText = this.uploadText();
+                             this.customText = this.uploadText() ?? '';
                         } else{
                             this.renderer.setAttribute(this.getFocusElement(), 'disabled', 'disabled');
                             if (!this.servoyApi.isInDesigner()) this.customText = "Component disabled, cannot upload file.";
@@ -214,7 +214,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
                         break;
                     case 'uploadText':
                         if (!change.isFirstChange()){
-                             this.customText = this.uploadText();
+                             this.customText = this.uploadText() ?? '';
                              this.cdRef.detectChanges();
                         }
                         break;    

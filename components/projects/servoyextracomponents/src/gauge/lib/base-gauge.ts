@@ -23,7 +23,9 @@
  */
 
 import { Input, NgZone, ElementRef, OnInit, AfterViewInit, Directive, output, viewChild } from '@angular/core';
+// @ts-ignore
 import * as CanvasGauges from '@servoy/canvas-gauges';
+// @ts-ignore
 import * as Rx from 'rx-dom-html';
 
 
@@ -56,7 +58,7 @@ export abstract class BaseGauge<T extends CanvasGauges.BaseGauge, T2 extends Can
      * A gauge instance responsible for rendering and updates on the canvas.
      * Subclasses should initialize in their ngOnInit implementation.
      */
-    protected gauge: T;
+    protected gauge!: T;
 
     readonly onGaugeReady = output<T>();
 
@@ -68,19 +70,19 @@ export abstract class BaseGauge<T extends CanvasGauges.BaseGauge, T2 extends Can
     /**
      * value property of gauge prior to component view initialization
      */
-    private preInitValue: number;
+    private preInitValue!: number;
 
     /**
      * options property of gauge prior to component view initialization
      */
-    private preInitOptions: T2;
+    private preInitOptions!: T2 | null;
 
 
     /**
      * Listen for attribute changes, i.e., options properties that are stored
      * as attributes on this ElementRef
      */
-    private domListener: MutationObserver;
+    private domListener!: MutationObserver | null;
 
 
     /**
@@ -107,19 +109,19 @@ export abstract class BaseGauge<T extends CanvasGauges.BaseGauge, T2 extends Can
     public get options(): T2 {
 
         const options = {} as T2;
-        options.renderTo = this.canvas().nativeElement;
+        (options as any).renderTo = this.canvas()!.nativeElement;
 
         // Map attribute-based options onto options.
         // Requries converting kebab style attribute names to camelCase property names
         for (const attr of this.el.nativeElement.attributes) {
             const prop = attributeName2PropertyName(attr.name);
-            options[prop] = CanvasGauges.DomObserver.parse(attr.value);
+            (options as any)[prop] = CanvasGauges.DomObserver.parse(attr.value);
         }
 
         // merge preOptons with attribute-based properties
         // tslint:disable-next-line:forin
         for (const prop in this.preInitOptions) {
-            options[prop] = this.preInitOptions[prop];
+            (options as any)[prop] = (this.preInitOptions as any)[prop];
         }
 
         // clear the preInitOptions as they have already been merged
@@ -187,7 +189,7 @@ export abstract class BaseGauge<T extends CanvasGauges.BaseGauge, T2 extends Can
 
         // tslint:disable-next-line:forin
         for (const prop of Object.keys(newOptions)) {
-            const val = newOptions[prop].toString();
+            const val = (newOptions as any)[prop].toString();
 
             if (prop === 'value') {
                 // short circuit the value property update by calling
@@ -226,13 +228,12 @@ export abstract class BaseGauge<T extends CanvasGauges.BaseGauge, T2 extends Can
         // Convert all changed attribtues into a GenericOptions or subclass
         // Update the gauge with the new options.
         this.domListener =
-            Rx.DOM.fromMutationObserver(this.el.nativeElement, { attributes: true }).
-                subscribe(changes => {
+            (Rx.DOM as any).fromMutationObserver(this.el.nativeElement, { attributes: true }).
+                subscribe((changes: any) => {
                     const newOptions = {} as T2;
-                    changes.forEach(change => {
+                    changes.forEach((change: any) => {
                         if ('attributes' === change.type) {
-                            // console.log('DOM, change', change.attributeName);
-                            newOptions[attributeName2PropertyName(change.attributeName)] =
+                            (newOptions as any)[attributeName2PropertyName(change.attributeName)] =
                                 CanvasGauges.DomObserver.parse(
                                     this.el.nativeElement.getAttribute(change.attributeName));
                         }
@@ -266,7 +267,7 @@ export abstract class BaseGauge<T extends CanvasGauges.BaseGauge, T2 extends Can
 
         // init options.renderTo if needed
         if (!options.hasOwnProperty('renderTo') || !options.renderTo) {
-            options.renderTo = this.canvas().nativeElement;
+            (options as any).renderTo = this.canvas()!.nativeElement;
         }
 
         this.basicUpdate(options);
@@ -298,6 +299,5 @@ export abstract class BaseGauge<T extends CanvasGauges.BaseGauge, T2 extends Can
     }
 
 }
-
 
 

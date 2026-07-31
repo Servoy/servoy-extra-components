@@ -18,37 +18,37 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
 
     readonly dashboard = viewChild(DashboardComponent);
 
-    readonly autoProceed = input<boolean>(undefined);
-    readonly allowMultipleUploads = input<boolean>(undefined);
-    readonly hideUploadButton = input<boolean>(undefined);
-    readonly restrictions = input<Restrictions>(undefined);
-    readonly note = input<string>(undefined);
-    readonly metaFields = input<MetaField[]>(undefined);
+    readonly autoProceed = input<boolean>(undefined as any);
+    readonly allowMultipleUploads = input<boolean>(undefined as any);
+    readonly hideUploadButton = input<boolean>(undefined as any);
+    readonly restrictions = input<Restrictions>(undefined as any);
+    readonly note = input<string>(undefined as any);
+    readonly metaFields = input<MetaField[]>(undefined as any);
     readonly cssPosition = input<{
         width: number;
         height: number;
-    }>(undefined);
-    readonly disableStatusBar = input<boolean>(undefined);
-    readonly inline = input<boolean>(undefined);
-    readonly closeAfterFinish = input<boolean>(undefined);
-    readonly sources = input<string[]>(undefined);
-    readonly options = input<any>(undefined);
-    readonly tusOptions = input<TusOpts<any, any>>(undefined);
-    readonly webcamOptions = input<WebcamOptions<any, any>>(undefined);
-    readonly localeStrings = input<any>(undefined);
-    readonly language = input<string>(undefined);
-	readonly responsiveWidth = input<string>(undefined);
-	readonly responsiveHeight = input<number>(undefined);
-    readonly styleClass = input<string>(undefined);
+    } | undefined>(undefined);
+    readonly disableStatusBar = input<boolean>(undefined as any);
+    readonly inline = input<boolean>(undefined as any);
+    readonly closeAfterFinish = input<boolean>(undefined as any);
+    readonly sources = input<string[]>(undefined as any);
+    readonly options = input<any>(undefined as any);
+    readonly tusOptions = input<TusOpts<any, any> | undefined>(undefined);
+    readonly webcamOptions = input<WebcamOptions<any, any> | undefined>(undefined);
+    readonly localeStrings = input<any>(undefined as any);
+    readonly language = input<string>(undefined as any);
+    readonly responsiveWidth = input<any>(undefined);
+	readonly responsiveHeight = input<number>(undefined as any);
+    readonly styleClass = input<string>(undefined as any);
 
-    readonly onFileUploaded = input<(file: any, event: JSEvent) => void>(undefined);
-    readonly onFileAdded = input<(file: UploadFile, event: JSEvent) => void>(undefined);
-    readonly onBeforeFileAdded = input<(fileToAdd: UploadFile, files: UploadFile[], event: JSEvent) => Promise<boolean>>(undefined);
-    readonly onFileRemoved = input<(file: UploadFile, event: JSEvent) => void>(undefined);
-    readonly onUploadComplete = input<(successfulFiles: UploadFile[], failedFiles: UploadFile[], event: JSEvent) => void>(undefined);
-    readonly onModalOpened = input<() => void>(undefined);
-    readonly onModalClosed = input<() => void>(undefined);
-    readonly onRestrictionFailed = input<(file: UploadFile, error: string, event: JSEvent) => void>(undefined);
+    readonly onFileUploaded = input<((file: any, event: JSEvent) => void) | undefined>(undefined);
+    readonly onFileAdded = input<((file: UploadFile, event: JSEvent) => void) | undefined>(undefined);
+    readonly onBeforeFileAdded = input<((fileToAdd: UploadFile, files: UploadFile[], event: JSEvent) => Promise<boolean>) | undefined>(undefined);
+    readonly onFileRemoved = input<((file: UploadFile, event: JSEvent) => void) | undefined>(undefined);
+    readonly onUploadComplete = input<((successfulFiles: UploadFile[], failedFiles: UploadFile[], event: JSEvent) => void) | undefined>(undefined);
+    readonly onModalOpened = input<(() => void) | undefined>(undefined);
+    readonly onModalClosed = input<(() => void) | undefined>(undefined);
+    readonly onRestrictionFailed = input<((file: UploadFile, error: string, event: JSEvent) => void) | undefined>(undefined);
 
     showDashboard = false;
 
@@ -80,19 +80,19 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     initUppy() {
         if (this.onFileAdded()) {
             this.uppy.on('file-added', (file) => {
-                this.onFileAdded()(this.createUppyFile(file), this.createJSEvent('file-added'));
+                this.onFileAdded()!(this.createUppyFile(file), this.createJSEvent('file-added'));
             });
         }
 
         if (this.onFileRemoved()) {
             this.uppy.on('file-removed', (file: UppyFile<any,any>) => {
-                this.onFileRemoved()(this.createUppyFile(file), this.createJSEvent('file-removed'));
+                this.onFileRemoved()!(this.createUppyFile(file), this.createJSEvent('file-removed'));
             });
         }
 
         if (this.onRestrictionFailed()) {
-            this.uppy.on('restriction-failed', (file: UppyFile<any,any>, error: { message: string }) => {
-                if (file) this.onRestrictionFailed()(this.createUppyFile(file), error.message, this.createJSEvent('restriction-failed'));
+            this.uppy.on('restriction-failed', (file: any, error: any) => {
+                if (file) this.onRestrictionFailed()!(this.createUppyFile(file), error.message, this.createJSEvent('restriction-failed'));
                 else if (error?.message) {
                     if (error.message.indexOf('onBeforeFileAdded') === -1) {
                         this.log.error(error.message);
@@ -103,18 +103,18 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
 
         if (this.onModalOpened()) {
             this.uppy.on('dashboard:modal-open', () => {
-                this.onModalOpened()();
+                this.onModalOpened()!();
             });
         }
 
         if (this.onModalClosed()) {
             this.uppy.on('dashboard:modal-closed', () => {
-                this.onModalOpened()();
+                this.onModalClosed()!();
             });
         }
 
         if (this.onUploadComplete()) {
-            this.uppy.on('complete', (result: { successful: []; failed: [] }) => {
+            this.uppy.on('complete', (result: any) => {
                 const filesSuccess = [];
                 if (result.successful) {
                     for (const o of Object.keys(result.successful)) {
@@ -127,10 +127,10 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
                         filesFailed.push(this.createUppyFile(result.failed[f]));
                     }
                 }
-                this.onUploadComplete()(filesSuccess, filesFailed, this.createJSEvent('complete'));
+                this.onUploadComplete()!(filesSuccess, filesFailed, this.createJSEvent('complete'));
             });
         }
-        this.uppy.on('error', (error) => {
+        this.uppy.on('error', (error: any) => {
             this.log.error(error);
         });
         const tusOptionsValue = this.tusOptions();
@@ -141,9 +141,9 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
         this.uppy.use(Tus, tusOptions);
 
         const debugLogger = {
-            debug: (...args) => this.log.debug(args),
-            warn: (...args) => this.log.warn(args),
-            error: (...args) => this.log.error(args),
+            debug: (...args: any[]) => this.log.debug(args),
+            warn: (...args: any[]) => this.log.warn(args),
+            error: (...args: any[]) => this.log.error(args),
         };
         const options = this.getUppyOptions();
         options.logger = debugLogger;
@@ -165,8 +165,8 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     }
 
     installWebcam = () => import('@uppy/webcam').then(module => {
-        this.uppy.use(module.default, this.webcamOptions());
-        this.properties.plugins.push('Webcam');
+        this.uppy.use(module.default, this.webcamOptions() as any);
+        this.properties.plugins!.push('Webcam');
     }, (err) => {
         this.log.error(err);
     }
@@ -174,7 +174,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
 
     installScreenCapture = () => import('@uppy/screen-capture').then(module => {
         this.uppy.use(module.default);
-        this.properties.plugins.push('ScreenCapture');
+        this.properties.plugins!.push('ScreenCapture');
     }, (err) => {
         this.log.error(err);
     }
@@ -184,7 +184,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
         const options: UppyOptions<any,any> = {
             autoProceed: this.autoProceed(),
             allowMultipleUploadBatches: this.allowMultipleUploads(),
-            restrictions: this.restrictions(),
+            restrictions: this.restrictions() as any,
         };
         if (this.closeAfterFinish()) {
             options.allowMultipleUploadBatches = false;
@@ -210,7 +210,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
         const options = this.options();
         if (options) {
             for (const x of Object.keys(options)) {
-                this.properties[x] = options[x];
+                (this.properties as any)[x] = options[x];
             }
         }
         // this must be done becuse the options above are not set through to the plugin state.
@@ -308,7 +308,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
         return event;
     }
 
-    getFile(fileID: string): UploadFile {
+    getFile(fileID: string): UploadFile | null {
         const file = this.uppy.getFile(fileID);
         if (file != null) {
             return this.createUppyFile(file);
@@ -321,7 +321,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
         const result = [];
         if (files) {
             for (const f of Object.keys(files)) {
-                result.push(this.createUppyFile(files[f]));
+                result.push(this.createUppyFile((files as any)[f]));
             }
         }
         return result;
@@ -333,14 +333,14 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
             name: file.name,
             extension: file.extension,
             type: file.type,
-            size: file.size,
+            size: file.size!,
             metaFields: {},
-            error: null
+            error: null as any
         };
         const metaFields = this.metaFields();
         if (metaFields && file.meta) {
             for (const m of Object.keys(metaFields)) {
-                const fieldName = metaFields[m].id;
+                const fieldName = (metaFields as any)[m].id;
                 if (fieldName) result.metaFields[fieldName] = file.meta[fieldName] as MetaField || null;
             }
         }
@@ -350,14 +350,14 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
             bytesUploaded: 0,
             percentage: 0,
             uploadComplete: false,
-            uploadStarted: null
+            uploadStarted: null as any
         };
         if (file.progress) {
-            result.progress.bytesTotal = file.progress.bytesTotal;
-            result.progress.bytesUploaded = file.progress.bytesUploaded as number;
-            result.progress.percentage = file.progress.percentage;
-            result.progress.uploadComplete = file.progress.uploadComplete;
-            result.progress.uploadStarted = file.progress.uploadStarted;
+            result.progress!.bytesTotal = file.progress.bytesTotal;
+            result.progress!.bytesUploaded = file.progress.bytesUploaded as number;
+            result.progress!.percentage = file.progress.percentage;
+            result.progress!.uploadComplete = file.progress.uploadComplete;
+            result.progress!.uploadStarted = file.progress.uploadStarted as any;
         }
         return result;
     }
@@ -366,12 +366,12 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
 		if (this.servoyApi.isInAbsoluteLayout()) {
 			if (this.cssPosition()){
 				return {
-					width: this.cssPosition().width,
-					height: this.cssPosition().height
+					width: this.cssPosition()!.width,
+					height: this.cssPosition()!.height
 				}
 			}
 			else{
-				const wrapper: HTMLDivElement = this.elementRef.nativeElement.closest('.svy-wrapper');
+				const wrapper = this.elementRef.nativeElement.closest('.svy-wrapper') as HTMLDivElement;
 				return {
 					width: wrapper.offsetWidth,
 					height: wrapper.offsetHeight
@@ -385,7 +385,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
 		}
 	}
 	
-	convertToNumberOrReturnValue(value: string) {
+	convertToNumberOrReturnValue(value: any) {
 		if (Number(value) >= 0) {
 			return Number(value);
 		}
@@ -393,7 +393,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
 	}
 
     private loadUppyLocale() {
-        let localeId = null;
+        let localeId: string | null = null;
         const language = this.language();
         if (language) {
             if (language === 'English') {
@@ -434,13 +434,13 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
         } else {
             localeId = this.servoyService.getLocale().replace('-', '_');
         }
-        if (localeId.indexOf('_') === -1) {
-            localeId = localeId + '_' + localeId.toUpperCase();
+        if (localeId!.indexOf('_') === -1) {
+            localeId = localeId + '_' + localeId!.toUpperCase();
         }
         if (localeId == 'en_GB'){
             localeId = 'en_US';
         }
-        const moduleLoader =  module => {
+        const moduleLoader = (module: any) => {
             const locale = module.default;
             const localeStrings = this.localeStrings();
             if (localeStrings) {

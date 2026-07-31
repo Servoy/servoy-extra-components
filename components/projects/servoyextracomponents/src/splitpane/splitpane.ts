@@ -15,26 +15,26 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
 
     readonly onChangeMethodID = input(undefined);
 
-    readonly enabled = input<boolean>(undefined);
-    readonly readOnly = input<boolean>(undefined);
-    readonly styleClass = input<string>(undefined);
-    readonly splitType = input<number>(undefined);
-    readonly tabSeq = input<number>(undefined);
-    readonly pane1 = input<Pane>(undefined);
-    readonly pane2 = input<Pane>(undefined);
+    readonly enabled = input<boolean>(undefined as any);
+    readonly readOnly = input<boolean>(undefined as any);
+    readonly styleClass = input<string>(undefined as any);
+    readonly splitType = input<number>(undefined as any);
+    readonly tabSeq = input<number>(undefined as any);
+    readonly pane1 = input<Pane>(undefined as any);
+    readonly pane2 = input<Pane>(undefined as any);
 
-    readonly divLocation = input<number>(undefined);
+    readonly divLocation = input<number>(undefined as any);
     readonly divLocationChange = output<number>();
     readonly divSize = input<number>(5);
     readonly pane1MinSize = input<number>(30);
     readonly pane2MinSize = input<number>(30);
     readonly resizeWeight = input<number>(0);
-    readonly responsiveHeight = input<number>(undefined);
+    readonly responsiveHeight = input<number>(undefined as any);
     
-    _divLocation = signal<number>(undefined);
+    _divLocation = signal<number | undefined>(undefined);
 	
 	previousValue: number = -1;
-	resizeTimeout: ReturnType<typeof setTimeout> = null;
+	resizeTimeout: ReturnType<typeof setTimeout> | null = null;
 
     readonly templateRef = contentChild(TemplateRef);
 
@@ -44,8 +44,8 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
     };
 
 
-    private leftTab: Pane;
-    private rightTab: Pane;
+    private leftTab: Pane | undefined;
+    private rightTab: Pane | undefined;
 
     constructor(renderer: Renderer2, cdRef: ChangeDetectorRef) {
         super(renderer, cdRef);
@@ -66,9 +66,9 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
 		
 		if (delta !== 0) {
 			let newLocation = this._divLocation();
-			(newLocation > 0 && newLocation < 1) && (newLocation = splitType === 1 ? (this._divLocation() * this.previousValue) : (this._divLocation() * this.previousValue));
-			newLocation += Math.round(delta * this.resizeWeight());
-			this.divLocationChange.emit(newLocation);
+			(newLocation! > 0 && newLocation! < 1) && (newLocation = splitType === 1 ? (this._divLocation()! * this.previousValue) : (this._divLocation()! * this.previousValue));
+			newLocation! += Math.round(delta * this.resizeWeight()!);
+			this.divLocationChange.emit(newLocation!);
 		}
 									
 		splitType === 1 && (this.previousValue = elementHeight); 
@@ -85,8 +85,8 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
     svyOnInit() {
         this._divLocation.set(this.divLocation());
         if (!this.servoyApi.isInAbsoluteLayout()) {
-            this.containerStyle['min-height'] = this.responsiveHeight() + 'px';
-            this.containerStyle['position'] = 'relative';
+            (this.containerStyle as any)['min-height'] = this.responsiveHeight() + 'px';
+            (this.containerStyle as any)['position'] = 'relative';
         }
 		this.resizeCalc();
         super.svyOnInit();
@@ -122,11 +122,11 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
         }
     }
 
-    onChange( location ) {
+    onChange( location: number ) {
         this._divLocation.set(location);
-        this.divLocationChange.emit(this._divLocation());
+        this.divLocationChange.emit(this._divLocation()!);
         const onChangeMethodID = this.onChangeMethodID();
-        if (onChangeMethodID) onChangeMethodID(-1, new Event('change'));
+        if (onChangeMethodID) (onChangeMethodID as any)(-1, new Event('change'));
     }
 
     getRightTab() {
@@ -147,6 +147,6 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
 }
 
 export class Pane extends BaseCustomObject {
-	containsFormId: string;
-	relationName: string;
+	containsFormId!: string;
+	relationName!: string;
 }

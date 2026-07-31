@@ -10,14 +10,14 @@ import { ServoyBaseComponent } from '@servoy/public';
 } )
 export class ServoyExtraImageLabel extends ServoyBaseComponent<HTMLImageElement> {
 
-    readonly onActionMethodID = input<(e: Event) => void>(undefined);
-    readonly onRightClickMethodID = input<(e: Event) => void>(undefined);
+    readonly onActionMethodID = input<((e: Event) => void) | undefined>(undefined);
+    readonly onRightClickMethodID = input<((e: Event) => void) | undefined>(undefined);
 
-    readonly enabled = input<boolean>(undefined);
-    readonly styleClass = input<string>(undefined);
-    readonly tabSeq = input<number>(undefined);
-    readonly media = input<any>(undefined);
-    readonly centerImage = input<boolean>(undefined);
+    readonly enabled = input<boolean>(undefined as any);
+    readonly styleClass = input<string>(undefined as any);
+    readonly tabSeq = input<number>(undefined as any);
+    readonly media = input<any>(undefined as any);
+    readonly centerImage = input<boolean>(undefined as any);
 
     imageURL = 'servoyextra/imagelabel/empty.gif';
 
@@ -72,11 +72,11 @@ export class ServoyExtraImageLabel extends ServoyBaseComponent<HTMLImageElement>
 
     protected attachHandlers() {
         if ( this.onActionMethodID() ) {
-            this.renderer.listen( this.getNativeElement(), 'click', e => this.onActionMethodID()( e ) );
+            this.renderer.listen( this.getNativeElement(), 'click', e => this.onActionMethodID()!( e ) );
         }
         if ( this.onRightClickMethodID() ) {
             this.renderer.listen( this.getNativeElement(), 'contextmenu', e => {
-                this.onRightClickMethodID()( e ); return false;
+                this.onRightClickMethodID()!( e ); return false;
             } );
         }
     }

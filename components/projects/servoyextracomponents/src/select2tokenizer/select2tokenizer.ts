@@ -16,43 +16,43 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 
     readonly select2 = viewChild(Select2);
 
-    readonly onDataChangeMethodID = input<(e: Event, data?: any) => void>(undefined);
-    readonly onFocusGainedMethodID = input<(e: Event, data?: any) => void>(undefined);
-    readonly onFocusLostMethodID = input<(e: Event, data?: any) => void>(undefined);
+    readonly onDataChangeMethodID = input<((e: Event, data?: any) => void) | undefined>(undefined);
+    readonly onFocusGainedMethodID = input<((e: Event, data?: any) => void) | undefined>(undefined);
+    readonly onFocusLostMethodID = input<((e: Event, data?: any) => void) | undefined>(undefined);
 
-    readonly placeholderText = input<string>(undefined);
-    readonly readOnly = input<boolean>(undefined);
-    readonly valuelistID = input<IValuelist>(undefined);
-    readonly styleClass = input<string>(undefined);
-    readonly tabSeq = input<number>(undefined);
-    readonly toolTipText = input<string>(undefined);
-    readonly dataProviderID = input<any>(undefined);
-    readonly enabled = input<boolean>(undefined);
-    readonly editable = input<boolean>(undefined);
-    readonly noMatchesFoundText = input<string>(undefined);
-    readonly maximumSelectionSize = input<number>(undefined);
-    readonly openOnUnselect = input<boolean>(undefined);
-    readonly closeOnSelect = input<boolean>(undefined);
-    readonly clearSearchTextOnSelect = input<boolean>(undefined);
-    readonly selectOnClose = input<boolean>(undefined);
-    readonly allowNewEntries = input<boolean>(undefined);
-    readonly format = input<Format>(undefined);
+    readonly placeholderText = input<string>(undefined as any);
+    readonly readOnly = input<boolean>(undefined as any);
+    readonly valuelistID = input<IValuelist>(undefined as any);
+    readonly styleClass = input<string>(undefined as any);
+    readonly tabSeq = input<number>(undefined as any);
+    readonly toolTipText = input<string>(undefined as any);
+    readonly dataProviderID = input<any>(undefined as any);
+    readonly enabled = input<boolean>(undefined as any);
+    readonly editable = input<boolean>(undefined as any);
+    readonly noMatchesFoundText = input<string>(undefined as any);
+    readonly maximumSelectionSize = input<number>(undefined as any);
+    readonly openOnUnselect = input<boolean>(undefined as any);
+    readonly closeOnSelect = input<boolean>(undefined as any);
+    readonly clearSearchTextOnSelect = input<boolean>(undefined as any);
+    readonly selectOnClose = input<boolean>(undefined as any);
+    readonly allowNewEntries = input<boolean>(undefined as any);
+    readonly format = input<Format>(undefined as any);
     readonly cssPosition = input<{
         width: number;
         height: number;
-    }>(undefined);
-    readonly containSearchText = input<boolean>(undefined);
-    readonly hideSelectedItems = input<boolean>(undefined);
-    readonly overlayMode = input<boolean>(undefined);
+    } | undefined>(undefined);
+    readonly containSearchText = input<boolean>(undefined as any);
+    readonly hideSelectedItems = input<boolean>(undefined as any);
+    readonly overlayMode = input<boolean>(undefined as any);
 
     readonly dataProviderIDChange = output();
     
     _dataProviderID = signal<any>(undefined);
 
-    tabIndex: number;
+    tabIndex!: number;
 
     data: Select2Option[] = [];
-    filteredDataProviderId: Array<any>;
+    filteredDataProviderId!: Array<any>;
     listPosition: 'above' | 'below' | 'auto' = 'auto';
     mustExecuteOnFocus = true;
 
@@ -78,9 +78,9 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 
     attachFocusListeners(nativeElement: HTMLDivElement) {
         if (this.onFocusGainedMethodID()) {
-            this.select2().open.subscribe(() => {
+            this.select2()!.open.subscribe(() => {
                 if (this.mustExecuteOnFocus !== false) {
-                    this.onFocusGainedMethodID()(new CustomEvent('open'));
+                    this.onFocusGainedMethodID()!(new CustomEvent('open'));
                 }
                 this.mustExecuteOnFocus = true;
             });
@@ -88,20 +88,20 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
              * fix for SVYX-210 */
             this.renderer.listen(nativeElement, 'focusin', (e) => {
                 if (!this.isEditable()) {
-                    this.onFocusGainedMethodID()(e);
+                    this.onFocusGainedMethodID()!(e);
                 }
             });
         }
         if (this.onFocusLostMethodID()) {
-            this.select2().close.subscribe(() => {
-                this.onFocusLostMethodID()(new CustomEvent('close'));
+            this.select2()!.close.subscribe(() => {
+                this.onFocusLostMethodID()!(new CustomEvent('close'));
             });
 
             /* used for triggering a focus lost when the component is not editable
              * fix for SVYX-210 */
             this.renderer.listen(nativeElement, 'focusout', (e) => {
                 if (!this.isEditable()) {
-                    this.onFocusLostMethodID()(e);
+                    this.onFocusLostMethodID()!(e);
                 }
             });
         }
@@ -110,7 +110,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     requestFocus(mustExecuteOnFocusGainedMethod: boolean) {
         this.mustExecuteOnFocus = mustExecuteOnFocusGainedMethod;
         this.getNativeElement().focus();
-        this.select2().toggleOpenAndClose();
+        this.select2()!.toggleOpenAndClose();
     }
 
     isEnabled() {
@@ -146,7 +146,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                             label: realValue + '' // convert to string  
                         }
                         opt.push(option);
-                        this.valuelistID().getDisplayValue(realValue).subscribe((val) => {
+                        this.valuelistID()!.getDisplayValue(realValue).subscribe((val) => {
                             if (val) {
                                 option.label = val;
                             }
@@ -247,7 +247,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
         if (dataProviderID) {
 			const helper = this.isTypeString() && typeof dataProviderID === 'string' ? dataProviderID.split('\n') : [dataProviderID];
 			const valuelistID = this.valuelistID();
-            if (valuelistID.length && typeof valuelistID[valuelistID.length - 1].realValue === 'number') {
+            if (valuelistID!.length && typeof valuelistID![valuelistID!.length - 1].realValue === 'number') {
                 // convert items to numbers if valuelistID and valuelistID ends with a numeric realValue
 				helper.forEach((item,index) => {
 					!isNaN(item) && (helper[index] = Number(item));
@@ -279,7 +279,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
         if (event.key === 'Tab') {
             event.stopPropagation();
             event.preventDefault();
-            this.select2().toggleOpenAndClose();
+            this.select2()!.toggleOpenAndClose();
             (this.getNativeElement().querySelector('.selection') as HTMLElement).focus();
         }
     }
@@ -295,8 +295,8 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                 const displayValue = highlightItem.textContent;
                 let found = false;
                 let realValue: any;
-                for (let i = 0; i < this.valuelistID().length; i++) {
-                    const valuelistID = this.valuelistID();
+                for (let i = 0; i < this.valuelistID()!.length; i++) {
+                    const valuelistID = this.valuelistID()!;
                     if (valuelistID[i].displayValue === displayValue) {
                         // set value
                         found = true;
@@ -317,13 +317,13 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
         if (!this.allowNewEntries() && !this.hasKeyListenerAttribute()) {
 			const searchBox = this.doc.querySelector('.select2-search__field');
 			if (searchBox) {
-				searchBox.removeEventListener('keydown', this.handleSearch);
+				searchBox.removeEventListener('keydown', this.handleSearch as EventListener);
 			}
 		}
     }
     
     resetSearch = () => {
-		this.valuelistID().filterList('');
+		this.valuelistID()!.filterList('');
 		this.setData();
 	}
 
@@ -333,9 +333,9 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 		const value = input.value;
 		if (value) {
 			if (this.containSearchText()) {
-				this.valuelistID().filterList('%' + value);
+				this.valuelistID()!.filterList('%' + value);
 			} else {
-				this.valuelistID().filterList(value);
+				this.valuelistID()!.filterList(value);
 			}
 			this.setData();			
 		} else {
@@ -390,7 +390,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 			setTimeout(() => {
 				const searchBox = this.doc.querySelector('.select2-search__field');
 				if (searchBox) {
-					searchBox.addEventListener('keyup', this.handleSearch);
+					searchBox.addEventListener('keyup', this.handleSearch as EventListener);
 				}
 			}, 50);
 		}
@@ -422,11 +422,11 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     }
 
     private isTypeString() {
-        return this.format().type === "TEXT";
+        return this.format()!.type === "TEXT";
     }
 
     private isTypeNumber() {
-        return this.format().type === "INTEGER";
+        return this.format()!.type === "INTEGER";
     }
 
     private isTypeBoolean() {

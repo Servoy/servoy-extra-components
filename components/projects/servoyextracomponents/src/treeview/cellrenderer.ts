@@ -55,7 +55,7 @@ export class ServoyExtraTreeviewCellRenderer {
 	return {};
   }
 
-  oncontextmenu(event) {
+  oncontextmenu(event: any) {
     const treeview: ServoyExtraTreeview = this.column.treeview;
     const onNodeRightClicked = treeview.onNodeRightClicked();
     if (onNodeRightClicked) {

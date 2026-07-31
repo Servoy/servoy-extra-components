@@ -14,7 +14,7 @@ export class BGPane{
 
     readonly minSize = input(0);
 
-    index;
+    index!: number;
 
     constructor(public element: ElementRef) {
 

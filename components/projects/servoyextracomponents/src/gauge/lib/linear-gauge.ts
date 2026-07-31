@@ -24,8 +24,10 @@
 
 import {ChangeDetectionStrategy, Component, NgZone, ElementRef, OnInit} from '@angular/core';
 import {BaseGauge} from './base-gauge';
+// @ts-ignore
 import * as CanvasGauges from '@servoy/canvas-gauges';
 
+// @ts-ignore
 export { LinearGaugeOptions } from '@servoy/canvas-gauges';
 
 /**

@@ -11,7 +11,7 @@
               @if (this.onHoverButtonClicked() && enabled()) {
                 <div
                   class="svyextra-lightboxgallery-image-delete"
-                  (click)="onHoverButtonClicked()($event, image.imageId)">
+                  (click)="onHoverButtonClicked()!($event, image.imageId)">
                   <i class="{{hoverButtonIcon()}}"></i>
                 </div>
               }

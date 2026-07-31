@@ -13,35 +13,34 @@ import { RadialGauge } from './lib/radial-gauge';
     }
 })
 export class ServoyExtraGauge extends ServoyBaseComponent<HTMLDivElement> {
-    readonly gaugeType = input<string>(undefined);
+    readonly gaugeType = input<string>(undefined as any);
     readonly minValue = input(0);
     readonly maxValue = input(100);
-    readonly value = input<number>(undefined);
-    readonly units = input<string>(undefined);
+    readonly value = input<number>(undefined as any);
+    readonly units = input<string>(undefined as any);
 
-    readonly animationOptions = input(undefined);
-    readonly highlights = input(undefined);
-    readonly ticks = input(undefined);
+    readonly animationOptions = input<any>(undefined);
+    readonly highlights = input<any>(undefined);
+    readonly ticks = input<any>(undefined);
 
-    readonly colorOptions = input(undefined);
-    readonly valueBoxOptions = input(undefined);
-    readonly needleOptions = input(undefined);
-    readonly borderOptions = input(undefined);
-    readonly fontOptions = input(undefined);
+    readonly colorOptions = input<any>(undefined);
+    readonly valueBoxOptions = input<any>(undefined);
+    readonly needleOptions = input<any>(undefined);
+    readonly borderOptions = input<any>(undefined);
+    readonly fontOptions = input<any>(undefined);
 
-    readonly radialGaugeOptions = input(undefined);
-    readonly linearGaugeOptions = input(undefined);
+    readonly radialGaugeOptions = input<any>(undefined);
+    readonly linearGaugeOptions = input<any>(undefined);
 
-    readonly title = input(undefined);
+    readonly title = input<any>(undefined);
 
-    readonly canvasGaugeOptions = input(undefined);
+    readonly canvasGaugeOptions = input<any>(undefined);
     
-    _canvasGaugeOptions = signal(undefined);
+    _canvasGaugeOptions = signal<any>(undefined);
 
-    canvasGauge;
+    canvasGauge: any;
 
-    onResize(event) {
-        // responsive form in designer keeps growing so this will become an infinite cycle
+    onResize(event: any) {
         if (!this.servoyApi.isInDesigner()) {
             this.canvasGauge.update({ height: this.elementRef.nativeElement.clientHeight });
             this.canvasGauge.update({ width: this.elementRef.nativeElement.clientWidth });
@@ -71,7 +70,7 @@ export class ServoyExtraGauge extends ServoyBaseComponent<HTMLDivElement> {
         }
     }
 
-    onGaugeReady(gaugeCanvas) {
+    onGaugeReady(gaugeCanvas: any) {
         this.canvasGauge = gaugeCanvas;
     }
 
@@ -122,8 +121,8 @@ export class ServoyExtraGauge extends ServoyBaseComponent<HTMLDivElement> {
         }
     }
 
-    getTitleText(): string {
-        let result = null;
+    getTitleText(): string | null {
+        let result: string | null = null;
 
         const title = this.title();
         if (title) {

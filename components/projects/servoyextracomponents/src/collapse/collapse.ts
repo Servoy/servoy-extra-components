@@ -13,26 +13,26 @@ import { ServoyPublicService } from '@servoy/public';
 export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 
 	//model
-	readonly styleClass = input<string>(undefined);
-	readonly tabSeq = input<number>(undefined);
-	readonly collapsibles = input<Collapsible[]>(undefined);
+	readonly styleClass = input<string>(undefined as any);
+	readonly tabSeq = input<number>(undefined as any);
+	readonly collapsibles = input<Collapsible[]>(undefined as any);
 	readonly collapsiblesChange = output<Collapsible[]>();
-	readonly accordionMode = input<boolean>(undefined);
-	readonly expandedIndices = input<number[]>(undefined);
+	readonly accordionMode = input<boolean>(undefined as any);
+	readonly expandedIndices = input<number[]>(undefined as any);
 
 	//handlers
-	readonly onCollapsibleShown = input<(event: Event, collapsible: Collapsible, collapsibleIndex: number) => void>(undefined);
-	readonly onCollapsibleHidden = input<(event: Event, collapsible: Collapsible, collapsibleIndex: number) => void>(undefined);
-	readonly onHeaderClicked = input<(event: Event, collapsible: Collapsible, collapsibleIndex: number, dataTarget: string) => Promise<boolean>>(undefined);
-	readonly onHeaderDoubleClicked = input<(event: Event, collapsible: Collapsible, collapsibleIndex: number, dataTarget: string) => Promise<boolean>>(undefined);
-	readonly onCardClicked = input<(event: Event, card: Card, collapsible: Collapsible, cardIndex: number, collapsibleIndex: number, dataTarget: string) => void>(undefined);
+	readonly onCollapsibleShown = input<((event: Event, collapsible: Collapsible, collapsibleIndex: number) => void) | undefined>(undefined);
+	readonly onCollapsibleHidden = input<((event: Event, collapsible: Collapsible, collapsibleIndex: number) => void) | undefined>(undefined);
+	readonly onHeaderClicked = input<((event: Event, collapsible: Collapsible, collapsibleIndex: number, dataTarget: string) => Promise<boolean>) | undefined>(undefined);
+	readonly onHeaderDoubleClicked = input<((event: Event, collapsible: Collapsible, collapsibleIndex: number, dataTarget: string) => Promise<boolean>) | undefined>(undefined);
+	readonly onCardClicked = input<((event: Event, card: Card, collapsible: Collapsible, cardIndex: number, collapsibleIndex: number, dataTarget: string) => void) | undefined>(undefined);
 
 
 	readonly templateRef = contentChild(TemplateRef);
 
 	preventSingleClick = false;
 	timer: any;
-	delay: Number;
+	delay!: Number;
 
 	constructor(
 		renderer: Renderer2,
@@ -95,21 +95,21 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 			index = 0;
 		}
 		const collapsible = this.getCollapsible(index);
-        this.closeOrOpenCollapsiblesAfterClick(null, index, collapsible, collapsible.isCollapsed);
+        this.closeOrOpenCollapsiblesAfterClick(null as any, index, collapsible, collapsible.isCollapsed);
 	}
 
 	show(index: number) {
 		if (!index) {
 			index = 0;
 		}
-        this.closeOrOpenCollapsiblesAfterClick(null, index, this.collapsibles()[index], true);
+        this.closeOrOpenCollapsiblesAfterClick(null as any, index, this.collapsibles()![index], true);
 	}
 
 	hide(index: number) {
 		if (!index) {
 			index = 0;
 		}
-        this.closeOrOpenCollapsiblesAfterClick(null, index, this.collapsibles()[index], false);
+        this.closeOrOpenCollapsiblesAfterClick(null as any, index, this.collapsibles()![index], false);
 	}
 
 	/**
@@ -122,7 +122,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 				e.stopPropagation();
 				e.preventDefault();
 
-				this.handleHeaderClickEvent(e, this.onHeaderClicked());
+				this.handleHeaderClickEvent(e, this.onHeaderClicked()!);
 			}
 		}, 300);
 	}
@@ -134,18 +134,18 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 		this.preventSingleClick = true;
 		clearTimeout(this.timer);
 
-		this.handleHeaderClickEvent(e, this.onHeaderDoubleClicked());
+		this.handleHeaderClickEvent(e, this.onHeaderDoubleClicked()!);
 	}
 	
 	handleHeaderClickEvent(e: Event, handlerFunction: (e: Event, collapsible: Collapsible, collapsibleIndex: number, dataTarget: string) => Promise<boolean>) {
-		const collapsibleIndex = parseInt((e.target as Element).closest('.svy-collapse-collapsible').getAttribute('id').split('-')[1], 10);
-		const collapsible = this.collapsibles()[collapsibleIndex];
+		const collapsibleIndex = parseInt((e.target as Element).closest('.svy-collapse-collapsible')!.getAttribute('id')!.split('-')[1], 10);
+		const collapsible = this.collapsibles()![collapsibleIndex];
 		const previousState = collapsible.isCollapsed;
 
 		if (handlerFunction) {
 
 			const dataTarget = (e.target as HTMLElement).closest('[data-target]');
-			handlerFunction(e, collapsible, collapsibleIndex, dataTarget ? dataTarget.getAttribute('data-target') : null)
+			handlerFunction(e, collapsible, collapsibleIndex, dataTarget ? dataTarget.getAttribute('data-target')! : null as any)
 				.then((result) => {
 					if (result !== false) {
 						const collapsibleElement = this.getCollapsible(collapsibleIndex);
@@ -182,10 +182,9 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
             const collapsible = this.getCollapsible(collapsibleIndex);
             const dataTarget = (e.target as HTMLElement).closest('[data-target]');
             if (collapsible.cards && collapsible.cards[cardIndex]) {
-                onCardClicked(e, collapsible.cards[cardIndex], collapsible, cardIndex, collapsibleIndex, dataTarget ? dataTarget.getAttribute('data-target') : null);
+                onCardClicked(e, collapsible.cards[cardIndex], collapsible, cardIndex, collapsibleIndex, dataTarget ? dataTarget.getAttribute('data-target')! : null as any);
             } else {
-                //collasible html only
-                onCardClicked(e, null, collapsible, cardIndex, collapsibleIndex, dataTarget ? dataTarget.getAttribute('data-target') : null);
+                onCardClicked(e, null as any, collapsible, cardIndex, collapsibleIndex, dataTarget ? dataTarget.getAttribute('data-target')! : null as any);
             }
         }
 	}
@@ -210,7 +209,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 		if (formToGet && this.servoyPublic) {
 			const formCache = this.servoyPublic.getFormCacheByName(formToGet);
 			if (formCache) {
-				const style = {};
+				const style: any = {};
 				if (formCache.absolute === true) {
 					style['height'] = formCache.size.height + 'px';
 				} else if (!formCache.absolute) {
@@ -234,9 +233,9 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 	}
 
 	private notifyChange(index: number) {
-		this.collapsibles()[index].getStateHolder().getChangedKeys().add('isCollapsed');
-		this.collapsibles()[index].getStateHolder().notifyChangeListener();
-		this.collapsiblesChange.emit(this.collapsibles());
+		this.collapsibles()![index].getStateHolder().getChangedKeys().add('isCollapsed');
+		this.collapsibles()![index].getStateHolder().notifyChangeListener();
+		this.collapsiblesChange.emit(this.collapsibles()!);
 	}
 
 	/**
@@ -244,10 +243,9 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 	 */
 	private setCollapsedState(index: number, state: boolean) {
 		const collapsibleToChange = this.getCollapsible(index);
-		var accordionClosedCollapsible = [null, null];
+		var accordionClosedCollapsible: any[] = [null, null];
 		if (this.accordionMode() && state === false) {
-			//collapsible is being expanded and we are in accordionMode
-			for (let i = 0; i < this.collapsibles().length; i++) {
+			for (let i = 0; i < this.collapsibles()!.length; i++) {
 				const otherCollapse = this.getCollapsible(i);
 				//if another collapsible is open, close that
 				if (i !== index && !otherCollapse.isCollapsed) {
@@ -270,15 +268,15 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 		if (collapsibleToChange.form) {
 			if (state === false) {
 				this.servoyApi.formWillShow(collapsibleToChange.form, collapsibleToChange.relationName).then(() => {
-					this.collapsibles()[index].isCollapsed = state;
-					this.collapsibles()[index].formIsVisibleServerSide = true;
+					this.collapsibles()![index].isCollapsed = state;
+					this.collapsibles()![index].formIsVisibleServerSide = true;
 					this.cdRef.detectChanges();
 					this.notifyChange(index);
 				});
 			} else if (state === true) {
 				this.servoyApi.hideForm(collapsibleToChange.form, collapsibleToChange.relationName).then(() => {
-					this.collapsibles()[index].isCollapsed = state;
-					this.collapsibles()[index].formIsVisibleServerSide = false;
+					this.collapsibles()![index].isCollapsed = state;
+					this.collapsibles()![index].formIsVisibleServerSide = false;
 					this.cdRef.detectChanges();
 					this.notifyChange(index);
 				});
@@ -289,17 +287,16 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 		} else if (collapsibleToChange.cards) {
 			this.toggleFormVisibilityOnCards(collapsibleToChange.cards, state, index);
 		} else {
-			this.collapsibles()[index].isCollapsed = state;
+			this.collapsibles()![index].isCollapsed = state;
 			this.notifyChange(index);
 		}
 		return accordionClosedCollapsible;
 	}
     
     private toggleFormVisibilityOnCards(cards: Card[], state: boolean, index: number) {
-        //toggle form visibility on cards
         this.toggleCardVisibility(cards, state).then(() => {
-            this.collapsibles()[index].isCollapsed = state;
-			this.collapsibles()[index].formIsVisibleServerSide = !state;
+            this.collapsibles()![index].isCollapsed = state;
+			this.collapsibles()![index].formIsVisibleServerSide = !state;
             this.cdRef.detectChanges();
             this.notifyChange(index);
         }); 
@@ -310,7 +307,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 	 * return {{form: String, cards: Array}}
 	 */
 	private getCollapsible(index: number) {
-		return this.collapsibles()[index];
+		return this.collapsibles()![index];
 	}
 
 	/**
@@ -360,7 +357,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 	 */
 	private getFormState(form: string, collapsibleOrCard: Collapsible | Card, formWillShow: boolean,setFormVisibleServerSide? : boolean) {
 		if (formWillShow) {
-			this.servoyApi.formWillShow(form, ('relationName' in collapsibleOrCard) ? collapsibleOrCard.relationName : null).then(() => {
+			this.servoyApi.formWillShow(form, ('relationName' in collapsibleOrCard) ? collapsibleOrCard.relationName : null as any).then(() => {
 				let changed = false;
 				if (setFormVisibleServerSide) {
 				    (collapsibleOrCard as Collapsible).formIsVisibleServerSide = true;
@@ -379,11 +376,11 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 		}
 	}
     
-    private checkIfCollapsibleHaveUniqueIds(collapsibles): boolean {
+    private checkIfCollapsibleHaveUniqueIds(collapsibles: any): boolean {
         if (!collapsibles || collapsibles.length === 0) return false;
 
         let returnValue = false;
-        const ids = {};
+        const ids: any = {};
         for (let i = 0; i < collapsibles.length; i++) {
             if (collapsibles[i].collapsibleId) {
                 if (ids[collapsibles[i].collapsibleId]) {
@@ -406,29 +403,29 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 }
 
 export class Collapsible extends BaseCustomObject {
-	collapsibleId: string;
-	isCollapsed: boolean;
-	formIsVisibleServerSide: boolean;
-	headerHtml: string;
-	headerStyleClass: string;
-	bodyStyleClass: string;
-	collapsibleHtml: string;
-	form: string;
-	relationName: string;
-	cards: Card[];
-	styleClass: string;
-	collapsedIconName: string;
-	expandedIconName: string;
-	iconLocation: string;
-	minResponsiveHeight: number;
-	maxResponsiveHeight: number;
+	collapsibleId!: string;
+	isCollapsed!: boolean;
+	formIsVisibleServerSide!: boolean;
+	headerHtml!: string;
+	headerStyleClass!: string;
+	bodyStyleClass!: string;
+	collapsibleHtml!: string;
+	form!: string;
+	relationName!: string;
+	cards!: Card[];
+	styleClass!: string;
+	collapsedIconName!: string;
+	expandedIconName!: string;
+	iconLocation!: string;
+	minResponsiveHeight!: number;
+	maxResponsiveHeight!: number;
 }
 
 export class Card extends BaseCustomObject {
-	cardId: string;
-	contentHtml: string;
-	form: string;
-	minResponsiveHeight: number;
-	maxResponsiveHeight: number;
-	styleClass: string;
+	cardId!: string;
+	contentHtml!: string;
+	form!: string;
+	minResponsiveHeight!: number;
+	maxResponsiveHeight!: number;
+	styleClass!: string;
 }

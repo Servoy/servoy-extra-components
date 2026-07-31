@@ -13,25 +13,25 @@ export class ServoyExtraTextfieldGroup extends ServoyBaseComponent<HTMLDivElemen
     readonly input = viewChild<ElementRef<HTMLInputElement>>('input');
     readonly span = viewChild<ElementRef<HTMLSpanElement>>('span');
     
-    readonly onActionMethodID = input<(e: Event) => void>(undefined);
-    readonly onRightClickMethodID = input<(e: Event) => void>(undefined);
-    readonly onDataChangeMethodID = input<(e: Event) => void>(undefined);
-    readonly onFocusGainedMethodID = input<(e: Event) => void>(undefined);
-    readonly onFocusLostMethodID = input<(e: Event) => void>(undefined);
+    readonly onActionMethodID = input<((e: Event) => void) | undefined>(undefined);
+    readonly onRightClickMethodID = input<((e: Event) => void) | undefined>(undefined);
+    readonly onDataChangeMethodID = input<((e: Event) => void) | undefined>(undefined);
+    readonly onFocusGainedMethodID = input<((e: Event) => void) | undefined>(undefined);
+    readonly onFocusLostMethodID = input<((e: Event) => void) | undefined>(undefined);
 
     readonly dataProviderIDChange = output<any>();
-    readonly dataProviderID = input<any>(undefined);
-    readonly enabled = input<boolean>(undefined);
-    readonly format = input<Format>(undefined);
-    readonly faclass = input<string>(undefined);
-    readonly inputType = input<string>(undefined);
-    readonly inputValidation = input<string>(undefined);
-    readonly invalidEmailMessage = input<string>(undefined);
-    readonly placeholderText = input<string>(undefined);
-    readonly readOnly = input<boolean>(undefined);
-    readonly styleClass = input<string>(undefined);
-    readonly tabSeq = input<number>(undefined);
-    readonly visible = input<boolean>(undefined);
+    readonly dataProviderID = input<any>(undefined as any);
+    readonly enabled = input<boolean>(undefined as any);
+    readonly format = input<Format>(undefined as any);
+    readonly faclass = input<string>(undefined as any);
+    readonly inputType = input<string>(undefined as any);
+    readonly inputValidation = input<string>(undefined as any);
+    readonly invalidEmailMessage = input<string>(undefined as any);
+    readonly placeholderText = input<string>(undefined as any);
+    readonly readOnly = input<boolean>(undefined as any);
+    readonly styleClass = input<string>(undefined as any);
+    readonly tabSeq = input<number>(undefined as any);
+    readonly visible = input<boolean>(undefined as any);
     
     _dataProviderID = linkedSignal<any>(() => this.dataProviderID());
 
@@ -56,7 +56,7 @@ export class ServoyExtraTextfieldGroup extends ServoyBaseComponent<HTMLDivElemen
     }
     
     getFocusElement() {
-        return this.input().nativeElement;
+        return this.input()!.nativeElement;
     }
 
     requestFocus( mustExecuteOnFocusGainedMethod: boolean ) {
@@ -84,7 +84,7 @@ export class ServoyExtraTextfieldGroup extends ServoyBaseComponent<HTMLDivElemen
                         else this.renderer.removeAttribute(this.getFocusElement(), 'placeholder');
                         break;
                     case 'inputType':
-                        this.renderer.setAttribute(this.getFocusElement(), 'type', this.inputType());
+                        this.renderer.setAttribute(this.getFocusElement(), 'type', this.inputType() ?? 'text');
                         break;
                 }
             }
@@ -106,14 +106,14 @@ export class ServoyExtraTextfieldGroup extends ServoyBaseComponent<HTMLDivElemen
         if ( this.onActionMethodID() ) {
             this.renderer.listen( this.getFocusElement(), 'keydown', e => {
                 if (e.keyCode === 13) {
-                    this.pushUpdate(this.input().nativeElement.value);
-                    this.onActionMethodID()( e );
+                    this.pushUpdate(this.input()!.nativeElement.value);
+                    this.onActionMethodID()!( e );
                 }
             });
         }
         if ( this.onRightClickMethodID() ) {
             this.renderer.listen( this.getNativeElement(), 'contextmenu', e => {
-                this.onRightClickMethodID()( e ); return false;
+                this.onRightClickMethodID()!( e ); return false;
             } );
         }
     }
@@ -122,13 +122,13 @@ export class ServoyExtraTextfieldGroup extends ServoyBaseComponent<HTMLDivElemen
         if ( this.onFocusGainedMethodID() )
             this.renderer.listen( nativeElement, 'focus', ( e ) => {
                 if ( this.mustExecuteOnFocus !== false ) {
-                    this.onFocusGainedMethodID()( e );
+                    this.onFocusGainedMethodID()!( e );
                 }
                 this.mustExecuteOnFocus = true;
             } );
         if ( this.onFocusLostMethodID() )
             this.renderer.listen( nativeElement, 'blur', ( e ) => {
-                this.onFocusLostMethodID()( e );
+                this.onFocusLostMethodID()!( e );
             } );
     }
 }

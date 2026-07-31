@@ -14,33 +14,33 @@ import { Lightbox, LightboxConfig } from '@servoy/ngx-lightbox';
 })
 export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivElement> {
 
-    readonly onHoverButtonClicked = input<(e: Event, imageId: string) => void>(undefined);
+    readonly onHoverButtonClicked = input<((e: Event, imageId: string) => void) | undefined>(undefined);
 
-    readonly imagesFoundset = input<IFoundset>(undefined);
-    readonly maxImageWidth = input<number>(undefined);
-    readonly maxImageHeight = input<number>(undefined);
-    readonly albumLabel = input<string>(undefined);
-    readonly fadeDuration = input<number>(undefined);
-    readonly fitImagesInViewport = input<boolean>(undefined);
-    readonly imageFadeDuration = input<number>(undefined);
-    readonly positionFromTop = input<number>(undefined);
-    readonly resizeDuration = input<number>(undefined);
-    readonly wrapAround = input<boolean>(undefined);
-    readonly galleryVisible = input<boolean>(undefined);
-    readonly showCaptionInGallery = input<boolean>(undefined);
-    readonly showImageNumberLabel = input<boolean>(undefined);
-    readonly hoverButtonIcon = input<string>(undefined);
-    readonly buttonText = input<string>(undefined);
-    readonly buttonStyleClass = input<string>(undefined);
-    readonly enabled = input<boolean>(undefined);
-    readonly imageBatchSize = input<number>(undefined);
-    readonly responsiveHeight = input<number>(undefined);
-    readonly imagesDataset = input<Array<Image>>(undefined);
+    readonly imagesFoundset = input<IFoundset>(undefined as any);
+    readonly maxImageWidth = input<number>(undefined as any);
+    readonly maxImageHeight = input<number>(undefined as any);
+    readonly albumLabel = input<string>(undefined as any);
+    readonly fadeDuration = input<number>(undefined as any);
+    readonly fitImagesInViewport = input<boolean>(undefined as any);
+    readonly imageFadeDuration = input<number>(undefined as any);
+    readonly positionFromTop = input<number>(undefined as any);
+    readonly resizeDuration = input<number>(undefined as any);
+    readonly wrapAround = input<boolean>(undefined as any);
+    readonly galleryVisible = input<boolean>(undefined as any);
+    readonly showCaptionInGallery = input<boolean>(undefined as any);
+    readonly showImageNumberLabel = input<boolean>(undefined as any);
+    readonly hoverButtonIcon = input<string>(undefined as any);
+    readonly buttonText = input<string>(undefined as any);
+    readonly buttonStyleClass = input<string>(undefined as any);
+    readonly enabled = input<boolean>(undefined as any);
+    readonly imageBatchSize = input<number>(undefined as any);
+    readonly responsiveHeight = input<number>(undefined as any);
+    readonly imagesDataset = input<Array<Image> | undefined>(undefined);
 
     public images: Array<any> = [];
 
-    private checkNumber: number;
-    private nullImages: number;
+    private checkNumber!: number;
+    private nullImages!: number;
 
     constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, private _lightbox: Lightbox, private _lightboxConfig: LightboxConfig) {
         super(renderer, cdRef);
@@ -68,15 +68,15 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 	
 	onKeyDown(event: KeyboardEvent) {
 			if (event.code === 'ArrowRight') {
-				if (document.querySelector('.fadeIn.lightbox')) {
-					const nextBtn: HTMLElement = document.querySelector('.fadeIn.lightbox').querySelector('.lb-next');
-					if (nextBtn) nextBtn.click();
-				}
-			} else if (event.code === 'ArrowLeft') {
-				if (document.querySelector('.fadeIn.lightbox')) {
-					const prevBtn: HTMLElement = document.querySelector('.fadeIn.lightbox').querySelector('.lb-prev');
-					if (prevBtn) prevBtn.click();
-				}
+			if (document.querySelector('.fadeIn.lightbox')) {
+				const nextBtn = document.querySelector('.fadeIn.lightbox')!.querySelector('.lb-next') as HTMLElement;
+				if (nextBtn) nextBtn.click();
+			}
+		} else if (event.code === 'ArrowLeft') {
+			if (document.querySelector('.fadeIn.lightbox')) {
+				const prevBtn = document.querySelector('.fadeIn.lightbox')!.querySelector('.lb-prev') as HTMLElement;
+				if (prevBtn) prevBtn.click();
+			}
 			}
 		}
 
@@ -84,9 +84,9 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 		if (Math.abs(this.elementRef.nativeElement.scrollHeight - this.elementRef.nativeElement.clientHeight - this.elementRef.nativeElement.scrollTop) < 1) {
 			const imagesFoundset = this.imagesFoundset();
             if (imagesFoundset && imagesFoundset.serverSize > imagesFoundset.viewPort.size) {
-				imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize());
-			}
+			imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize()!);
 		}
+	}
 	}
 
 	loadMoreData() {
@@ -94,7 +94,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 			const imagesFoundset = this.imagesFoundset();
             if (imagesFoundset && imagesFoundset.serverSize > imagesFoundset.viewPort.size) {
 				if (!(this.elementRef.nativeElement.clientHeight < this.elementRef.nativeElement.scrollHeight)) {
-					imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize());
+					imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize()!);
 				}
 			}
 		}
@@ -103,17 +103,17 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
     open(index: number): void {
         const imagesFoundset = this.imagesFoundset();
         if (imagesFoundset && (this.images && this.images.length - 1 <= index) && imagesFoundset.serverSize > imagesFoundset.viewPort.size) {
-			imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize()).then(() => {
+			imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize()!).then(() => {
 				this.open(index);
 			});
 		} else {
 			if (this.images && this.images.length - 1 >= index) {
 				// open lightbox
-				this._lightboxConfig.albumLabel = this.albumLabel();
-				this._lightboxConfig.fitImageInViewPort = this.fitImagesInViewport();
-				this._lightboxConfig.positionFromTop = this.positionFromTop();
-				this._lightboxConfig.wrapAround = this.wrapAround();
-				this._lightboxConfig.showImageNumberLabel = this.showImageNumberLabel();
+				this._lightboxConfig.albumLabel = this.albumLabel()!;
+				this._lightboxConfig.fitImageInViewPort = this.fitImagesInViewport()!;
+				this._lightboxConfig.positionFromTop = this.positionFromTop()!;
+				this._lightboxConfig.wrapAround = this.wrapAround()!;
+				this._lightboxConfig.showImageNumberLabel = this.showImageNumberLabel()!;
 				this._lightboxConfig.disableKeyboardNav = true;
 				const fadeDuration = this.fadeDuration();
                 if (fadeDuration) this._lightboxConfig.fadeDuration = fadeDuration / 1000;
@@ -124,8 +124,8 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 				if (imagesFoundset && imagesFoundset.serverSize > imagesFoundset.viewPort.size) {
 					const interval = setInterval(() => {
 						if (document.querySelector('.fadeIn.lightbox')) {
-							document.querySelector('.fadeIn.lightbox').querySelector('.lb-next').addEventListener('click', this.handleClick);
-							document.querySelector('.fadeIn.lightbox').querySelector('.lb-prev').addEventListener('click', () => {
+							document.querySelector('.fadeIn.lightbox')!.querySelector('.lb-next')!.addEventListener('click', this.handleClick);
+							document.querySelector('.fadeIn.lightbox')!.querySelector('.lb-prev')!.addEventListener('click', () => {
 								this.updateTotalImages(-1);
 							});
 							setTimeout(()=>{
@@ -142,11 +142,11 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
     }
 
     updateTotalImages(page: number) {
-		let totalImages: string = (this.imagesFoundset().serverSize - this.nullImages).toString();
-		if (this.imagesFoundset().hasMoreRows) {
+		let totalImages: string = (this.imagesFoundset()!.serverSize - this.nullImages).toString();
+		if (this.imagesFoundset()!.hasMoreRows) {
 			totalImages += '+';
 		}
-		const arr = document.querySelector('.lb-number').textContent.split(' ');
+		const arr = document.querySelector('.lb-number')!.textContent!.split(' ');
 		arr[arr.length-1] = totalImages;
 		if (page === -1) {
 			// eslint-disable-next-line radix
@@ -155,17 +155,17 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 			// eslint-disable-next-line radix
 			arr[1] = (parseInt(arr[1]) + 1).toString();
 		}
-		if (document.querySelector('.lb-number').textContent.length > 0) {
-			document.querySelector('.lb-number').textContent = arr.join(' ');
+		if (document.querySelector('.lb-number')!.textContent!.length > 0) {
+			document.querySelector('.lb-number')!.textContent = arr.join(' ');
 		}
 	}
 
     handleClick = () => {
-		const currentImage = parseInt(document.querySelector('.lb-number').textContent.split(' ')[1], 10);
+		const currentImage = parseInt(document.querySelector('.lb-number')!.textContent!.split(' ')[1], 10);
 		if((currentImage + this.nullImages) === this.checkNumber){
 			const openAt = currentImage;
-			this.imagesFoundset().loadExtraRecordsAsync(this.imageBatchSize()).then(()=>{
-				document.querySelector('.lb-next').removeEventListener('click', this.handleClick);
+			this.imagesFoundset()!.loadExtraRecordsAsync(this.imageBatchSize()!).then(()=>{
+				document.querySelector('.lb-next')!.removeEventListener('click', this.handleClick);
 				this.close();
 				this.open(openAt);
 			});
@@ -174,7 +174,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 	}
 
 	getStyle = () => {
-		const style = { };
+		const style: any = { };
 		const maxImageWidth = this.maxImageWidth();
         if (maxImageWidth) {
 			if (maxImageWidth === -1) {
@@ -195,7 +195,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 	}
 
 	getCaptionStyle = () => {
-		const style = { };
+		const style: any = { };
 		const maxImageWidth = this.maxImageWidth();
         if (maxImageWidth) {
 			if (maxImageWidth === -1) {
@@ -236,8 +236,8 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
         const imagesFoundset = this.imagesFoundset();
         const imagesDataset = this.imagesDataset();
         if (imagesFoundset) {
-			if (this.imageBatchSize() > 5 && imagesFoundset.serverSize > imagesFoundset.viewPort.size && this.imageBatchSize() > imagesFoundset.viewPort.size){
-				imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize() - 5);
+			if (this.imageBatchSize()! > 5 && imagesFoundset.serverSize > imagesFoundset.viewPort.size && this.imageBatchSize()! > imagesFoundset.viewPort.size){
+				imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize()! - 5);
 			}
 			this.nullImages = 0;
             for (const row of imagesFoundset.viewPort.rows) {
@@ -272,8 +272,8 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 }
 
 export class Image extends BaseCustomObject {
-    public imageUrl: string;
-    public caption: string;
-    public thumbnailUrl: string;
-    public id: string;
+    public imageUrl!: string;
+    public caption!: string;
+    public thumbnailUrl!: string;
+    public id!: string;
 }

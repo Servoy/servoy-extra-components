@@ -12,7 +12,7 @@
           mwlResizable
           mwlResizeHandle
           [enableGhostResize]="enableColumnResize()"
-          [resizeEdges]="{ bottom: false, right: enableColumnResize() && i < columns().length-1, top: false, left: enableColumnResize() && i > 0 }"
+          [resizeEdges]="{ bottom: false, right: enableColumnResize() && i < columns()!.length-1, top: false, left: enableColumnResize() && i > 0 }"
           (click)="headerClicked($event, i)"
           (resizing)="onResizeColumn($event,i)"
           (resizeEnd)="onResizeColumnEnd()"

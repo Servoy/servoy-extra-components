@@ -12,54 +12,54 @@ import { FormattingService } from '@servoy/public';
 })
 export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
 
-    readonly onDataChangeMethodID = input(undefined);
-    readonly onDataChangeHigh = input(undefined);
-    readonly onSlideStart = input(undefined);
-    readonly onSlideEnd = input(undefined);
-    readonly onTick = input(undefined);
+    readonly onDataChangeMethodID = input<any>(undefined);
+    readonly onDataChangeHigh = input<any>(undefined);
+    readonly onSlideStart = input<any>(undefined);
+    readonly onSlideEnd = input<any>(undefined);
+    readonly onTick = input<any>(undefined);
 
-    readonly dataProvider = input(undefined);
-    readonly dataProviderHigh = input(undefined);
-    readonly numberFormat = input(undefined);
-    readonly dataChangeOnSlideEnd = input(undefined);
-    readonly ceil = input(undefined);
-    readonly floor = input(undefined);
-    readonly enabled = input(undefined);
-    readonly step = input(undefined);
-    readonly precision = input(undefined);
-    readonly minLimit = input(undefined);
-    readonly maxLimit = input(undefined);
-    readonly minRange = input(undefined);
-    readonly maxRange = input(undefined);
-    readonly enforceStep = input(undefined);
-    readonly enforceRange = input(undefined);
-    readonly pushRange = input(undefined);
-    readonly rightToLeft = input(undefined);
-    readonly noSwitching = input(undefined);
-    readonly draggableRange = input(undefined);
-    readonly draggableRangeOnly = input(undefined);
-    readonly showSelectionBar = input(undefined);
-    readonly showSelectionBarEnd = input(undefined);
-    readonly selectionBarGradient = input(undefined);
-    readonly showOuterSelectionBars = input(undefined);
-    readonly showTicks = input(undefined);
-    readonly showTicksValues = input(undefined);
-    readonly ticksInterval = input(undefined);
-    readonly ticksValuesInterval = input(undefined);
-    readonly hidePointerLabels = input(undefined);
-    readonly hideLimitLabels = input(undefined);
-    readonly autoHideLimitLabels = input(undefined);
-    readonly vertical = input(undefined);
-    readonly logScale = input(undefined);
-    readonly formattingFunction = input(undefined);
-    readonly selectionBarColorFunction = input(undefined);
-    readonly getLegendFunction = input(undefined);
-    readonly tickColorFunction = input(undefined);
-    readonly ticksTooltipFunction = input(undefined);
-    readonly ticksValuesTooltipFunction = input(undefined);
-    readonly pointerColorFunction = input(undefined);
-    readonly stepsValueList = input(undefined);
-    readonly styleClass = input(undefined);
+    readonly dataProvider = input<any>(undefined);
+    readonly dataProviderHigh = input<any>(undefined);
+    readonly numberFormat = input<any>(undefined);
+    readonly dataChangeOnSlideEnd = input<any>(undefined);
+    readonly ceil = input<any>(undefined);
+    readonly floor = input<any>(undefined);
+    readonly enabled = input<any>(undefined);
+    readonly step = input<any>(undefined);
+    readonly precision = input<any>(undefined);
+    readonly minLimit = input<any>(undefined);
+    readonly maxLimit = input<any>(undefined);
+    readonly minRange = input<any>(undefined);
+    readonly maxRange = input<any>(undefined);
+    readonly enforceStep = input<any>(undefined);
+    readonly enforceRange = input<any>(undefined);
+    readonly pushRange = input<any>(undefined);
+    readonly rightToLeft = input<any>(undefined);
+    readonly noSwitching = input<any>(undefined);
+    readonly draggableRange = input<any>(undefined);
+    readonly draggableRangeOnly = input<any>(undefined);
+    readonly showSelectionBar = input<any>(undefined);
+    readonly showSelectionBarEnd = input<any>(undefined);
+    readonly selectionBarGradient = input<any>(undefined);
+    readonly showOuterSelectionBars = input<any>(undefined);
+    readonly showTicks = input<any>(undefined);
+    readonly showTicksValues = input<any>(undefined);
+    readonly ticksInterval = input<any>(undefined);
+    readonly ticksValuesInterval = input<any>(undefined);
+    readonly hidePointerLabels = input<any>(undefined);
+    readonly hideLimitLabels = input<any>(undefined);
+    readonly autoHideLimitLabels = input<any>(undefined);
+    readonly vertical = input<any>(undefined);
+    readonly logScale = input<any>(undefined);
+    readonly formattingFunction = input<any>(undefined);
+    readonly selectionBarColorFunction = input<any>(undefined);
+    readonly getLegendFunction = input<any>(undefined);
+    readonly tickColorFunction = input<any>(undefined);
+    readonly ticksTooltipFunction = input<any>(undefined);
+    readonly ticksValuesTooltipFunction = input<any>(undefined);
+    readonly pointerColorFunction = input<any>(undefined);
+    readonly stepsValueList = input<any>(undefined);
+    readonly styleClass = input<any>(undefined);
 
     readonly dataProviderChange = output<any>();
     readonly dataProviderHighChange = output<any>();
@@ -230,10 +230,9 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
 		
     }
 
-    setNewOptions(propertyName: any, propertyValue: any): void {
-        // Due to change detection rules in Angular, we need to re-create the options object to apply the change
+    setNewOptions(propertyName: string, propertyValue: any): void {
         const newOptions: Options = Object.assign({}, this.options);
-        newOptions[propertyName] = propertyValue;
+        (newOptions as any)[propertyName] = propertyValue;
         this.options = newOptions;
     }
 
@@ -293,10 +292,10 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
         this.manualRefresh.emit();
     }
 
-    public onDataChangeCallback(event, returnval) {
+    public onDataChangeCallback(event: any, returnval: any) {
     }
 
-    public onDataChangeCallbackHigh(event, returnval) {
+    public onDataChangeCallbackHigh(event: any, returnval: any) {
     }
 
 }

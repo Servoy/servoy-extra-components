@@ -25,8 +25,8 @@ import { BGPane } from './bg_pane.component';
 export class BGSplitter implements AfterContentInit , OnChanges {
 
     readonly orientation = input('vertical');
-    readonly divSize = input<number>(undefined);
-    readonly divLocation = input<number>(undefined);
+    readonly divSize = input<number>(undefined as any);
+    readonly divLocation = input<number>(undefined as any);
 
     // eslint-disable-next-line @angular-eslint/no-output-on-prefix
     readonly onDividerChange = output<number>();
@@ -75,13 +75,13 @@ export class BGSplitter implements AfterContentInit , OnChanges {
             let styleName = 'width';
             if (this.orientation() === 'vertical') styleName = 'height';
             this.renderer.setStyle(this.handler,styleName, changes['divSize'].currentValue +'px');
-            this.adjustLocation(null, this.divLocation());
+            this.adjustLocation(undefined, this.divLocation());
         }
          if (changes['orientation']) {
-            this.renderer.addClass( this.elementRef().nativeElement, this.orientation());
+            this.renderer.addClass( this.elementRef()!.nativeElement, this.orientation());
         }
         if (changes['divLocation'] && changes['divLocation'].currentValue >= 0) {
-            this.adjustLocation(null, changes['divLocation'].currentValue);
+            this.adjustLocation(undefined, changes['divLocation'].currentValue);
         }
     }
 
@@ -90,24 +90,24 @@ export class BGSplitter implements AfterContentInit , OnChanges {
         this.panes().forEach(( item ) => {
             item.index = index++;
         } );
-        this.renderer.insertBefore( this.elementRef().nativeElement, this.handler, this.panes().at(-1)!.element.nativeElement );
+        this.renderer.insertBefore( this.elementRef()!.nativeElement, this.handler, this.panes().at(-1)!.element.nativeElement );
 
-        this.adjustLocation(null,this.divLocation());
+        this.adjustLocation(undefined,this.divLocation());
     }
 
 
     private adjustLocation(event?: PointerEvent,wantedPosition?: number) {
         const panes = this.panes();
         if (!panes || panes.length !== 2) return;
-        const bounds = this.elementRef().nativeElement.getBoundingClientRect();
+        const bounds = this.elementRef()!.nativeElement.getBoundingClientRect();
         const pos = this.getPosition(bounds, event, wantedPosition);
         if ( this.orientation() === 'vertical' ) {
             const height = bounds.bottom - bounds.top;
 
             // only check for minSize if it is adjusting because of mousemove
             if(event) {
-                if ( pos < panes.at(0)!.minSize() ) return;
-                if ( height - pos < panes.at(-1)!.minSize() ) return;
+                if ( pos! < panes.at(0)!.minSize() ) return;
+                if ( height - pos! < panes.at(-1)!.minSize() ) return;
             }
 
             this.renderer.setStyle( this.handler, 'top', pos + 'px' );
@@ -118,8 +118,8 @@ export class BGSplitter implements AfterContentInit , OnChanges {
 
             // only check for minSize if it is adjusting because of mousemove
             if(event) {
-                if ( pos < panes.at(0)!.minSize() ) return;
-                if ( width - pos < panes.at(-1)!.minSize() ) return;
+                if ( pos! < panes.at(0)!.minSize() ) return;
+                if ( width - pos! < panes.at(-1)!.minSize() ) return;
             }
             
             this.renderer.setStyle( this.handler, 'left', pos + 'px' );
@@ -132,24 +132,24 @@ export class BGSplitter implements AfterContentInit , OnChanges {
         if ( this.orientation() === 'vertical' ) {
             const height = bounds.bottom - bounds.top;
             // test for == null can't be === because must match on null or undefined
-            if ((wantedPosition < 0 || wantedPosition == null) && (event == null)) {
+            if ((wantedPosition! < 0 || wantedPosition == null) && (event == null)) {
                 return height / 2;
             } else if (event != null) {
                 return event.clientY - bounds.top;
             }
-            if (wantedPosition >= 0 && wantedPosition <= 1) {
-                return Math.round(height * wantedPosition);
+            if (wantedPosition! >= 0 && wantedPosition! <= 1) {
+                return Math.round(height * wantedPosition!);
             }
         } else {//horizontal
             const width = bounds.right - bounds.left;
             // test for == null can't be === because must match on null or undefined
-            if ((wantedPosition < 0 || wantedPosition == null) && (event == null)) {
+            if ((wantedPosition! < 0 || wantedPosition == null) && (event == null)) {
                 return width / 2;
             } else if (event != null) {
                 return event.clientX - bounds.left;
             }
-            if (wantedPosition >= 0 && wantedPosition <= 1) {
-                return Math.round(width * wantedPosition);
+            if (wantedPosition! >= 0 && wantedPosition! <= 1) {
+                return Math.round(width * wantedPosition!);
             }
         }
         return wantedPosition;

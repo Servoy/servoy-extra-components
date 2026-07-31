@@ -11,59 +11,59 @@ import { LoggerFactory, LoggerService } from '@servoy/public';
 })
 export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 
-	readonly enabled = input<boolean>(undefined);
-	readonly styleClass = input<string>(undefined);
-	readonly tabSeq = input<number>(undefined);
-	readonly sidenavWidth = input<number>(undefined);
-	readonly responsiveHeight = input<number>(undefined);
-	readonly containedForm = input<string>(undefined);
-	readonly headerForm = input<string>(undefined);
-	readonly footerForm = input<string>(undefined);
-	readonly relationName = input<string>(undefined);
-	readonly iconOpenStyleClass = input<string>(undefined);
-	readonly iconCloseStyleClass = input<string>(undefined);
-	readonly iconExpandStyleClass = input<string>(undefined);
-	readonly iconCollapseStyleClass = input<string>(undefined);
-    readonly footerFormStickyBottom = input<boolean>(undefined);
+	readonly enabled = input<boolean>(undefined as any);
+	readonly styleClass = input<string>(undefined as any);
+	readonly tabSeq = input<number>(undefined as any);
+	readonly sidenavWidth = input<number>(undefined as any);
+	readonly responsiveHeight = input<number>(undefined as any);
+	readonly containedForm = input<string>(undefined as any);
+	readonly headerForm = input<string>(undefined as any);
+	readonly footerForm = input<string>(undefined as any);
+	readonly relationName = input<string>(undefined as any);
+	readonly iconOpenStyleClass = input<string>(undefined as any);
+	readonly iconCloseStyleClass = input<string>(undefined as any);
+	readonly iconExpandStyleClass = input<string>(undefined as any);
+	readonly iconCollapseStyleClass = input<string>(undefined as any);
+    readonly footerFormStickyBottom = input<boolean>(undefined as any);
 
-	readonly slidePosition = input<string>(undefined);
-	readonly slideAnimation = input<string>(undefined);
-	readonly togglePosition = input<string>(undefined);
-	readonly scrollbarPosition = input<string>(undefined);
-	readonly open = input<boolean>(undefined);
+	readonly slidePosition = input<string>(undefined as any);
+	readonly slideAnimation = input<string>(undefined as any);
+	readonly togglePosition = input<string>(undefined as any);
+	readonly scrollbarPosition = input<string>(undefined as any);
+	readonly open = input<boolean>(undefined as any);
 	readonly openChange = output<boolean>();
-	readonly animate = input<boolean>(undefined);
+	readonly animate = input<boolean>(undefined as any);
 
-	readonly selectedIndex = input<any>(undefined);
+	readonly selectedIndex = input<any>(undefined as any);
 	readonly selectedIndexChange = output<any>();
-	readonly expandedIndex = input<any>(undefined);
+	readonly expandedIndex = input<any>(undefined as any);
 	readonly expandedIndexChange = output<any>();
-	readonly menu = input<Array<MenuItem>>(undefined);
-	readonly servoyMenu = input<IJSMenu>(undefined);
+	readonly menu = input<Array<MenuItem> | undefined>(undefined);
+	readonly servoyMenu = input<IJSMenu>(undefined as any);
 
-	readonly onMenuItemSelected = input<(menuItem: any, event: MouseEvent) => Promise<boolean>>(undefined);
-	readonly onMenuItemExpanded = input<(menuItem: any, event: MouseEvent) => Promise<boolean>>(undefined);
-	readonly onMenuItemCollapsed = input<(menuItem: any, event: MouseEvent) => Promise<boolean>>(undefined);
-	readonly onOpenToggled = input<(event: MouseEvent) => void>(undefined);
+	readonly onMenuItemSelected = input<((menuItem: any, event: MouseEvent) => Promise<boolean>) | undefined>(undefined);
+	readonly onMenuItemExpanded = input<((menuItem: any, event: MouseEvent) => Promise<boolean>) | undefined>(undefined);
+	readonly onMenuItemCollapsed = input<((menuItem: any, event: MouseEvent) => Promise<boolean>) | undefined>(undefined);
+	readonly onOpenToggled = input<((event: MouseEvent) => void) | undefined>(undefined);
 
 	readonly templateRef = contentChild(TemplateRef);
 
-    elementRef: ElementRef<HTMLDivElement>;
+    elementRef!: ElementRef<HTMLDivElement>;
     readonly elementRefSignal = viewChild<ElementRef<HTMLDivElement>>('element');
     
     _selectedIndex = signal<any>({});
     _expandedIndex = signal<any>({});
-    _open = signal<boolean>(undefined);
-    _menu = linkedSignal<Array<MenuItem>>(() => this.menu());
+    _open = signal<boolean | undefined>(undefined);
+    _menu = linkedSignal<Array<MenuItem> | undefined>(() => this.menu());
 
-	animateSlideMenuTimeout: number;
-	mouseEnterTimeout: number;
-	mouseLeaveTimeout: number;
-	private footerResizeObserver: ResizeObserver;
-	private footerMutationObserver: MutationObserver;
+	animateSlideMenuTimeout!: number;
+	mouseEnterTimeout!: number;
+	mouseLeaveTimeout!: number;
+	private footerResizeObserver!: ResizeObserver;
+	private footerMutationObserver!: MutationObserver;
 	private animateFooter = false;
 
-	public realContainedForm: string;
+	public realContainedForm!: string;
 	private realHeaderForm: any;
 	private realFooterForm: any;
 	private log: LoggerService;
@@ -134,7 +134,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 						// if only relationName is changed while containeForm remain the same, call a formWillShow with the new relation.
 						if (!changes.containedForm && containedForm) {
 							this.servoyApi.formWillShow(containedForm, this.relationName()).then(() => {
-								this.realContainedForm = this.containedForm();
+								this.realContainedForm = this.containedForm()!;
 							}).finally(() => this.cdRef.detectChanges());
 						}
 						if (!changes.headerForm && headerForm) {
@@ -150,22 +150,22 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 						break; break;
 					case 'headerForm':
 						if (change.previousValue) {
-							this.servoyApi.hideForm(change.previousValue, null, null, this.headerForm(), this.relationName()).then(() => {
+							this.servoyApi.hideForm(change.previousValue, null as any, null as any, this.headerForm(), this.relationName()).then(() => {
 								this.realHeaderForm = this.headerForm();
 							}).finally(() => this.cdRef.detectChanges());
 						} else if (change.currentValue) {
-							this.servoyApi.formWillShow(this.headerForm(), this.relationName()).then(() => {
+							this.servoyApi.formWillShow(this.headerForm()!, this.relationName()).then(() => {
 								this.realHeaderForm = this.headerForm();
 							}).finally(() => this.cdRef.detectChanges());
 						}
 						break;
 					case 'footerForm':
 						if (change.previousValue) {
-							this.servoyApi.hideForm(change.previousValue, null, null, this.footerForm(), this.relationName()).then(() => {
+							this.servoyApi.hideForm(change.previousValue, null as any, null as any, this.footerForm(), this.relationName()).then(() => {
 								this.realFooterForm = this.footerForm();
 							}).finally(() => this.cdRef.detectChanges());
 						} else if (change.currentValue) {
-							this.servoyApi.formWillShow(this.footerForm(), this.relationName()).then(() => {
+							this.servoyApi.formWillShow(this.footerForm()!, this.relationName()).then(() => {
 								this.realFooterForm = this.footerForm();
 							}).finally(() => this.cdRef.detectChanges());
 						}
@@ -200,13 +200,13 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 						} else {
 							const footerFormValue = this.footerForm();
                             if (footerFormValue) {
-								this.servoyApi.hideForm(footerFormValue, null, null, null, this.relationName()).then(() => {
+								this.servoyApi.hideForm(footerFormValue, null as any, null as any, null as any, this.relationName()).then(() => {
 									this.realFooterForm = this.footerForm();
 								}).finally(() => this.cdRef.detectChanges());
 							}
 							const headerFormValue = this.headerForm();
                             if (headerFormValue) {
-								this.servoyApi.hideForm(headerFormValue, null, null, null, this.relationName()).then(() => {
+								this.servoyApi.hideForm(headerFormValue, null as any, null as any, null as any, this.relationName()).then(() => {
 									this.realHeaderForm = this.headerForm();
 								}).finally(() => this.cdRef.detectChanges());
 							}
@@ -291,11 +291,10 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	}
 
 	getHeaderFormStyle() {
-		let style = {}
+		let style: any = {}
 		let height = 0;
 
-		// for absolute form default height is design height, for responsive form default height is 0
-		const formCache = this.servoyPublic.getFormCacheByName(this.headerForm());
+		const formCache = this.servoyPublic.getFormCacheByName(this.headerForm()!);
 		if (formCache && formCache.absolute) {
 			height = formCache.size.height;
 		}
@@ -306,11 +305,10 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	}
 
 	getFooterFormStyle() {
-		let style = {}
+		let style: any = {}
 		let height = 0;
 
-		// for absolute form default height is design height, for responsive form default height is 0
-		const formCache = this.servoyPublic.getFormCacheByName(this.footerForm());
+		const formCache = this.servoyPublic.getFormCacheByName(this.footerForm()!);
 		if (formCache && formCache.absolute) {
 			height = formCache.size.height;
 		}
@@ -348,7 +346,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	getContainerStyle() {
 		const height = this.getResponsiveHeight();
 		const width = this.getSidenavWidth();
-		const cssStyle = {
+		const cssStyle: any = {
 			position: 'relative',
 			'min-height': height + 'px'
 		};
@@ -374,24 +372,24 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         this.disconnectFooterObservers();
 
         if (!this.servoyApi.isInAbsoluteLayout() || !this._open() || !this.footerFormStickyBottom()) {
-            const sidenavDiv: HTMLElement = this.getNativeElement().querySelector('.svy-sidenav');
+            const sidenavDiv = this.getNativeElement().querySelector('.svy-sidenav') as HTMLElement;
             if (sidenavDiv) {
                 this.renderer.removeStyle(sidenavDiv, 'height');
             }
             return;
         }
 
-        const sidenavDiv: HTMLElement = this.getNativeElement().querySelector('.svy-sidenav');
-        const footerFormDiv: HTMLElement = this.getNativeElement().querySelector('#footerForm');
+        const sidenavDiv = this.getNativeElement().querySelector('.svy-sidenav') as HTMLElement;
+        const footerFormDiv = this.getNativeElement().querySelector('#footerForm') as HTMLElement;
 
         if (footerFormDiv) {
             this.observeFooterSize(sidenavDiv, footerFormDiv);
         } else {
             this.footerMutationObserver = new MutationObserver(() => {
-                const footer: HTMLElement = this.getNativeElement().querySelector('#footerForm');
+                const footer = this.getNativeElement().querySelector('#footerForm') as HTMLElement;
                 if (footer) {
                     this.footerMutationObserver.disconnect();
-                    this.footerMutationObserver = undefined;
+                    this.footerMutationObserver = undefined!;
                     this.observeFooterSize(sidenavDiv, footer);
                 }
             });
@@ -429,19 +427,19 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
     private disconnectFooterObservers() {
         if (this.footerResizeObserver) {
             this.footerResizeObserver.disconnect();
-            this.footerResizeObserver = undefined;
+            this.footerResizeObserver = undefined!;
         }
         if (this.footerMutationObserver) {
             this.footerMutationObserver.disconnect();
-            this.footerMutationObserver = undefined;
+            this.footerMutationObserver = undefined!;
         }
     }
 
-	animateSlideMenu(open: boolean) {
+	animateSlideMenu(open: any) {
 		const slidePosition = this.slidePosition();
         if (slidePosition && slidePosition !== 'static') {
 			const iconOpen = this.getNativeElement().querySelector('.svy-sidenav-action-open');
-			const sidenav = this.getNativeElement().querySelector('.svy-sidenav');
+			const sidenav = this.getNativeElement().querySelector('.svy-sidenav')!;
 			const svyextracontainer = this.getNativeElement();
 			if (open) { // open the menu when hovering
 
@@ -462,7 +460,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 						// stop remove animation clearing previous timeout
 						if (this.animateSlideMenuTimeout) {
 							window.clearTimeout(this.animateSlideMenuTimeout);
-							this.animateSlideMenuTimeout = undefined;
+							this.animateSlideMenuTimeout = undefined!;
 						}
 
 						window.requestAnimationFrame(() => {
@@ -487,11 +485,11 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 			}
 		} else {
 			this._open.set(true);
-			this.openChange.emit(this._open());
+			this.openChange.emit(this._open()!);
 		}
 	}
 
-	animateMenuHover(open: boolean) {
+	animateMenuHover(open: any) {
 		if (open === false) { // add listener when menu closed, use a delay
 			setTimeout(() => {
 				this.bindOnHover();
@@ -502,10 +500,9 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	}
 
 	bindOnHover() {
-		// register on mouse hover
 		if (this.slideAnimation() === 'collapse-menu') {
-			const sidenav = this.getNativeElement().querySelector('.svy-sidenav');
-			const nav = this.getNativeElement().querySelector('nav');
+			const sidenav = this.getNativeElement().querySelector('.svy-sidenav')!;
+			const nav = this.getNativeElement().querySelector('nav')!;
 			nav.addEventListener('mouseenter', this.onMouseEnter);
 			sidenav.addEventListener('mouseleave', this.onMouseLeave);
 		}
@@ -513,8 +510,8 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	}
 
 	unbindOnHover() {
-		const sidenav = this.getNativeElement().querySelector('.svy-sidenav');
-		const nav = this.getNativeElement().querySelector('nav');
+		const sidenav = this.getNativeElement().querySelector('.svy-sidenav')!;
+		const nav = this.getNativeElement().querySelector('nav')!;
 		nav.removeEventListener('mouseenter', this.onMouseEnter);
 		sidenav.removeEventListener('mouseleave', this.onMouseLeave);
 	}
@@ -529,9 +526,8 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		const open = this._open();
         this.animateMenuHover(open);
 		this.animateSlideMenu(open);
-		this.openChange.emit(open);
+		this.openChange.emit(open!);
 
-		// event on menu open
 		const onOpenToggled = this.onOpenToggled();
         if (onOpenToggled && wasOpen !== open) {
 			onOpenToggled(event);
@@ -573,7 +569,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 			} else { // expand the parent node if is a leaf
 				const parentNode = this.getParentNode(item.id);
 				if (parentNode) {
-					this.expandItem(level - 1, null, parentNode, event, preventExpandHandler);
+					this.expandItem(level - 1, null as any, parentNode, event, preventExpandHandler);
 				}
 			}
 
@@ -687,10 +683,10 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		return true;
 	}
 
-	getNodeById(nodeId: string | number, nodes: Array<MenuItem>): MenuItem {
+	getNodeById(nodeId: string | number, nodes: Array<MenuItem>): any {
 		if (nodes) {
 			for (const i of Object.keys(nodes)) { // search in each subtree
-				const subTree = nodes[i];
+				const subTree = (nodes as any)[i];
 				// TODO use type equality or not ?
 				if (subTree.id === nodeId) { // find the node
 					return subTree;
@@ -704,7 +700,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		return null;
 	}
 
-	getNodeByIndexPath(path: Array<number>, nodes: Array<MenuItem>): MenuItem {
+	getNodeByIndexPath(path: Array<number>, nodes: Array<MenuItem>): any {
 		let node = null;
 		if (nodes) {
 			if (path && path.length === 1) {
@@ -720,13 +716,13 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		return node;
 	}
 
-	getPathToNode(idOrNode: any, nodes: Array<MenuItem>, key?: string): Array<number> {
+	getPathToNode(idOrNode: any, nodes: Array<MenuItem>, key?: string): any {
 		if (!key) key = 'id';
 		const nodeId = idOrNode[key] ? idOrNode[key] : idOrNode;
 
 		if (nodes) { // for each node in nodes
 			for (let i = 0; i < nodes.length; i++) { // search in each subtree
-				const subTree = nodes[i];
+				const subTree = nodes[i] as any;
 				if (subTree[key] === nodeId) { // find the node
 					return [i];
 				}
@@ -740,11 +736,10 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	}
 
 	getAllNodesToNodeId(nodeId: string | number): Array<MenuItem> {
-		let nodes = this._menu();
+		let nodes: any = this._menu();
 		const pathIndex = this.getPathToNode(nodeId, nodes);
 		const anchestors = [];
 
-		// returns all the anchestors of node
 		for (let i = 0; pathIndex && i < pathIndex.length; i++) {
 			const node = nodes[pathIndex[i]];
 			anchestors.push(node);
@@ -759,7 +754,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		return anchestors;
 	}
 
-	getParentNode(nodeId: string | number): MenuItem {
+	getParentNode(nodeId: string | number): any {
 		const anchestors = this.getNodeAnchestors(nodeId);
 		if (anchestors && anchestors.length) {
 			return anchestors[anchestors.length - 1];
@@ -767,8 +762,8 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		return null;
 	}
 
-	getNodeLevel(nodeId: string | number): number {
-		const path = this.getPathToNode(nodeId, this._menu());
+	getNodeLevel(nodeId: string | number): any {
+		const path = this.getPathToNode(nodeId, this._menu()!);
 		if (path) {
 			return path.length;
 		} else {
@@ -776,7 +771,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		}
 	}
 
-	getSelectedNode(level: number): MenuItem {
+	getSelectedNode(level: number): any {
 		const levels = this._selectedIndex();
 		let maxLevel = -1;
 
@@ -788,12 +783,12 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		}
 
 		const nodeId = levels[maxLevel];
-		return this.getNodeById(nodeId, this._menu());
+		return this.getNodeById(nodeId, this._menu()!);
 	}
 
-	getSelectedIndexPath(level: number): Array<number> {
+	getSelectedIndexPath(level: number): any {
 		const selectedNode = this.getSelectedNode(level);
-		const path = this.getPathToNode(selectedNode.id, this._menu());
+		const path = this.getPathToNode(selectedNode.id, this._menu()!);
 		return path;
 	}
 
@@ -806,7 +801,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		this.clearSelectedIndex(level);
 
 		//              // update levels above selection, all anchestors
-		const newSelectedIndex = {};
+		const newSelectedIndex: any = {};
 		const anchestors = this.getNodeAnchestors(item.id);
 		for (let i = 0; i < anchestors.length; i++) {
 			if (newSelectedIndex[i + 1] !== anchestors[i].id) {
@@ -849,7 +844,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		this.clearExpandedIndex(level);
 
 		// expand all anchestors
-		const newExpandedIndex = {};
+		const newExpandedIndex: any = {};
 		const anchestors = this.getNodeAnchestors(item.id);
 		for (let i = 0; i < anchestors.length; i++) {
 			if (newExpandedIndex[i + 1] !== anchestors[i].id) {
@@ -879,22 +874,22 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		}
 	}
 
-	isDisabled = (nodeId: string | number): boolean => {
+	isDisabled = (nodeId: string | number): any => {
 		// check if menu itself is disable
 		if (this.enabled() === false) {
 			return true;
 		}
 
 		// TODO refactor: use getNodeAnchestors
-		const indexPath = this.getPathToNode(nodeId, this._menu());
-		let tree = this._menu();
+		const indexPath = this.getPathToNode(nodeId, this._menu()!);
+		let tree: any = this._menu();
 
 		if (!indexPath || !indexPath.length) {
 			return null;
 		}
 
 		for (const i of Object.keys(indexPath)) {
-			const node = tree[indexPath[i]];
+			const node = tree[indexPath[i] as any];
 			if (node.enabled === false) {
 				return true;
 			}
@@ -940,10 +935,10 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		return event;
 	}
 
-	getDOMElementByID(nodeId: string | number): Element {
-		const indexPath = this.getPathToNode(nodeId, this._menu());
+	getDOMElementByID(nodeId: string | number): any {
+		const indexPath = this.getPathToNode(nodeId, this._menu()!);
 		if (indexPath) {
-			let foundElement: Element = this.getNativeElement();
+			let foundElement: any = this.getNativeElement();
 			for (let i = 0; i < indexPath.length; i++) {
 				foundElement = foundElement.querySelector('ul.sn-level-' + (i + 1));
 				foundElement = foundElement.children.item(i);
@@ -961,9 +956,9 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	public setSelectedByIndexPath(path: Array<number>, mustExecuteOnSelectNode: boolean) {
 
 		// search node in tree
-		const node = this.getNodeByIndexPath(path, this._menu());
+		const node = this.getNodeByIndexPath(path, this._menu()!);
 		const preventSelectHandler = mustExecuteOnSelectNode === true ? false : true;
-		this.selectItem(path.length, path[path.length - 1], node, null, preventSelectHandler);
+		this.selectItem(path.length, path[path.length - 1], node, null as any, preventSelectHandler);
 		return;
 	}
 
@@ -980,7 +975,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		}
 	};
 
-	public getLocation(nodeId: string | number): { x: number; y: number } {
+	public getLocation(nodeId: string | number): any {
 		const domElement = this.getDOMElementByID(nodeId);
 		if (domElement) {
 			const position = domElement.getBoundingClientRect();
@@ -989,7 +984,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		return null;
 	}
 
-	public getSize(nodeId: string | number): { width: number; height: number } {
+	public getSize(nodeId: string | number): any {
 		const domElement = this.getDOMElementByID(nodeId);
 		if (domElement) {
 			const position = domElement.getBoundingClientRect();
@@ -1006,7 +1001,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 			if (this.mouseLeaveTimeout) {
 				this.renderer.removeClass(sidenav, 'svy-hover-remove');
 				window.clearTimeout(this.mouseLeaveTimeout);
-				this.mouseLeaveTimeout = undefined;
+				this.mouseLeaveTimeout = undefined!;
 			}
 
 
@@ -1035,7 +1030,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 			if (this.mouseEnterTimeout) {
 				this.renderer.removeClass(sidenav, 'svy-hover-add');
 				window.clearTimeout(this.mouseEnterTimeout);
-				this.mouseEnterTimeout = undefined;
+				this.mouseEnterTimeout = undefined!;
 			}
 
 			// start hover remove animation
@@ -1059,7 +1054,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
             if (expandedIndex && typeof expandedIndex == 'string') {
                 this._expandedIndex.set(JSON.parse(expandedIndex));
             }
-			const selectedNode = {};
+			const selectedNode: any = {};
 			const oldMenu = new Array();
 			if (servoyMenu.items) {
 				for (let i = 0; i < servoyMenu.items.length; i++) {
@@ -1069,7 +1064,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 			this._menu.set(oldMenu);
 			const selection = Object.keys(selectedNode);
 			if (selection && selection.length == 1) {
-				this.updateSelectedNode(selectedNode[selection[0]], this._menu(), parseInt(selection[0]));
+				this.updateSelectedNode(selectedNode[selection[0]], this._menu()!, parseInt(selection[0]));
 			}
 			this.selectedIndexChange.emit(JSON.stringify(this._selectedIndex()));
 		}
@@ -1106,7 +1101,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 			for (let i = 0; i < nodes.length; i++) {
 				const subTree = nodes[i];
 				if (subTree.id === nodeId) {
-					this.selectItem(level, i, subTree, null, true, true);
+					this.selectItem(level, i, subTree, null as any, true, true);
 					return;
 				}
 				this.updateSelectedNode(nodeId, subTree.menuItems, level);
@@ -1146,17 +1141,17 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
     }
 }
 export class MenuItem {
-	public text: string;
-	public id: string;
-	public iconStyleClass: string;
-	public styleClass: string;
-	public enabled: boolean;
+	public text!: string;
+	public id!: string;
+	public iconStyleClass!: string;
+	public styleClass!: string;
+	public enabled!: boolean;
 	public data: any;
-	public menuItems: Array<MenuItem>;
-	public isDivider: boolean;
-	public tooltip: string;
-	public badgeText: string;
-	public badgeStyleClass: string;
-	public formName: string;
-	public relationName: string;
+	public menuItems!: Array<MenuItem>;
+	public isDivider!: boolean;
+	public tooltip!: string;
+	public badgeText!: string;
+	public badgeStyleClass!: string;
+	public formName!: string;
+	public relationName!: string;
 }

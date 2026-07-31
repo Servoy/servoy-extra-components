@@ -12,28 +12,28 @@ import tinymce, { RawEditorOptions, Editor } from 'tinymce';
 export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
 
 
-    readonly onActionMethodID = input<(e: Event) => void>(undefined);
-    readonly onRightClickMethodID = input<(e: Event) => void>(undefined);
-    readonly onDataChangeMethodID = input<(e: Event) => void>(undefined);
-    readonly onFocusGainedMethodID = input<(e: Event) => void>(undefined);
-    readonly onFocusLostMethodID = input<(e: Event) => void>(undefined);
+    readonly onActionMethodID = input<((e: Event) => void) | undefined>(undefined);
+    readonly onRightClickMethodID = input<((e: Event) => void) | undefined>(undefined);
+    readonly onDataChangeMethodID = input<((e: Event) => void) | undefined>(undefined);
+    readonly onFocusGainedMethodID = input<((e: Event) => void) | undefined>(undefined);
+    readonly onFocusLostMethodID = input<((e: Event) => void) | undefined>(undefined);
 
     readonly dataProviderIDChange = output();
-    readonly dataProviderID = input<any>(undefined);
-    readonly enabled = input<boolean>(undefined);
-    readonly editable = input<boolean>(undefined);
-    readonly readOnly = input<boolean>(undefined);
-    readonly responsiveHeight = input<any>(undefined);
-    readonly styleClass = input<string>(undefined);
-    readonly tabSeq = input<number>(undefined);
-    readonly text = input<string>(undefined);
-    readonly toolTipText = input<string>(undefined);
-    readonly scrollbars = input<any>(undefined);
+    readonly dataProviderID = input<any>(undefined as any);
+    readonly enabled = input<boolean>(undefined as any);
+    readonly editable = input<boolean>(undefined as any);
+    readonly readOnly = input<boolean>(undefined as any);
+    readonly responsiveHeight = input<any>(undefined as any);
+    readonly styleClass = input<string>(undefined as any);
+    readonly tabSeq = input<number>(undefined as any);
+    readonly text = input<string>(undefined as any);
+    readonly toolTipText = input<string>(undefined as any);
+    readonly scrollbars = input<any>(undefined as any);
     
     _dataProviderID = signal<any>(undefined);
 
     mustExecuteOnFocus = true;
-    lastServerValueAsSeenByTinyMCEContent: string;
+    lastServerValueAsSeenByTinyMCEContent!: string;
     tinyValue: any;
     tinyConfig: RawEditorOptions = {
         suffix: '.min',
@@ -44,7 +44,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
         promotion: false,
         toolbar: 'fontselect fontsizeselect | bold italic underline | superscript subscript | undo redo |alignleft aligncenter alignright alignjustify | styleselect | outdent indent bullist numlist'
     };
-    editor: Editor;
+    editor!: Editor;
     
     private tabIndex = -2;
 
@@ -76,7 +76,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
         if (onActionMethodID) onActionMethodID(new MouseEvent(event.type, event));
     }
 
-    contextMenu(event) {
+    contextMenu(event: any) {
         const onRightClickMethodID = this.onRightClickMethodID();
         if (onRightClickMethodID) {
             onRightClickMethodID(new CustomEvent('contextmenu'));
@@ -84,7 +84,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
         }
     }
 
-    keyUp(event) {
+    keyUp(event: any) {
         this.getNativeElement().dispatchEvent(new KeyboardEvent('keyup', event.event));
     }
 
@@ -193,7 +193,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
     
     addShortCut(shortCut: string, callback: () => void) {
         if (this.getEditor()) {
-            this.getEditor().addShortcut(shortCut, null, callback);
+            this.getEditor().addShortcut(shortCut, '', callback);
         } else {
             setTimeout(() => this.addShortCut(shortCut, callback), 10);
         }
@@ -208,7 +208,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
         if (this.editor && this.tabIndex != -2) {
             const iframe = this.editor.getContainer().getElementsByTagName('iframe');
             if (iframe.item(0))
-                iframe.item(0).tabIndex = this.tabIndex;
+                iframe.item(0)!.tabIndex = this.tabIndex;
         }
     }
 
