@@ -240,4 +240,26 @@ describe('ServoyExtraTreeview', () => {
             });
         });
     });
+
+    it('refresh(false) should collapse all expanded nodes', () => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
+            cy.get('.expand-icon-container').first().click();
+            cy.get('.svy-treeview').contains('Subgroup').should('be.visible').then(() => {
+                wrapper.component.element.refresh(false);
+                cy.get('.svy-treeview').contains('Subgroup').should('not.exist');
+            });
+        });
+    });
+
+    it('refresh(true) should preserve expanded nodes', () => {
+        cy.mount(WrapperComponent, configWrapper).then(wrapper => {
+            applyDefaultProps(wrapper);
+            cy.get('.expand-icon-container').first().click();
+            cy.get('.svy-treeview').contains('Subgroup').should('be.visible').then(() => {
+                wrapper.component.element.refresh(true);
+                cy.get('.svy-treeview').contains('Subgroup').should('be.visible');
+            });
+        });
+    });
 });

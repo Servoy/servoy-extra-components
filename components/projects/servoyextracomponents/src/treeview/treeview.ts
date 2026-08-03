@@ -84,6 +84,9 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
                     case 'jsDataSet': {
                         this._jsDataSet.set(this.jsDataSet());
                         if (this._jsDataSet()) {
+                            if (this.isTreeReady) {
+                                this.angularGrid()!.collapseAll();
+                            }
                             this.updateTreeGridData();
                             this.isTreeReady = true;
                         }
@@ -385,6 +388,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
             if (restoreExpandedNodes) {
                 this.angularGrid()!.store.refreshDisplayData();
             } else {
+                this.angularGrid()!.collapseAll();
                 this.updateTreeGridData();
             }
             this.cdRef.detectChanges();
