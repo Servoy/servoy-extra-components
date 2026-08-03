@@ -33,29 +33,29 @@ import { BaseGauge } from './lib/base-gauge';
     standalone: false
 })
 class WrapperComponent {
-    servoyApi = signal<ServoyApi>(undefined);
+    servoyApi = signal<ServoyApi>(undefined as any);
 
-    animationOptions = signal<any>(undefined);
-    borderOptions = signal<any>(undefined);
-    colorOptions = signal<any>(undefined);
-    fontOptions = signal<any>(undefined);
-    gaugeType = signal<string>(undefined);
-    highlights = signal<any[]>(undefined);
-    linearGaugeOptions = signal<any>(undefined);
-    maxValue = signal<number>(undefined);
-    minValue = signal<number>(undefined);
-    needleOptions = signal<any>(undefined);
-    radialGaugeOptions = signal<any>(undefined);
-    ticks = signal<any>(undefined);
-    title = signal<any>(undefined);
-    units = signal<string>(undefined);
-    value = signal<number>(undefined);
-    valueBoxOptions = signal<any>(undefined);
+    animationOptions = signal<any>(undefined as any);
+    borderOptions = signal<any>(undefined as any);
+    colorOptions = signal<any>(undefined as any);
+    fontOptions = signal<any>(undefined as any);
+    gaugeType = signal<string>(undefined as any);
+    highlights = signal<any[]>(undefined as any);
+    linearGaugeOptions = signal<any>(undefined as any);
+    maxValue = signal<number>(undefined as any);
+    minValue = signal<number>(undefined as any);
+    needleOptions = signal<any>(undefined as any);
+    radialGaugeOptions = signal<any>(undefined as any);
+    ticks = signal<any>(undefined as any);
+    title = signal<any>(undefined as any);
+    units = signal<string>(undefined as any);
+    value = signal<number>(undefined as any);
+    valueBoxOptions = signal<any>(undefined as any);
 
-    @ViewChild('element') element: ServoyExtraGauge;
+    @ViewChild('element') element!: ServoyExtraGauge;
 }
 
-const defaultValues = {
+const defaultValues: Record<string, any> = {
     servoyApi: new ServoyApiTesting(),
     gaugeType: 'radial',
     minValue: 0,
@@ -75,13 +75,13 @@ const defaultValues = {
     valueBoxOptions: undefined
 };
 
-function applyDefaultProps(wrapper) {
+function applyDefaultProps(wrapper: any) {
     for (const key in defaultValues) {
         if (wrapper.component[key] && typeof wrapper.component[key].set === 'function') {
-            wrapper.component[key].set(defaultValues[key]);
+            wrapper.component[key].set((defaultValues as any)[key]);
         }
         else {
-            wrapper.component[key] = defaultValues[key];
+            wrapper.component[key] = (defaultValues as any)[key];
         }
     }
 }

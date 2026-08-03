@@ -63,64 +63,64 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
     standalone: false
 })
 class WrapperComponent {
-    servoyApi: ServoyApi;
+    servoyApi!: ServoyApi;
 
-    onDataChangeMethodID: (value: number) => void;
-    onDataChangeHigh: (value: number) => void;
-    onSlideEnd: (value: number) => void;
-    onSlideStart: (value: number) => void;
+    onDataChangeMethodID!: (value: number) => void;
+    onDataChangeHigh!: (value: number) => void;
+    onSlideEnd!: (value: number) => void;
+    onSlideStart!: (value: number) => void;
 
-    autoHideLimitLabels = signal<boolean>(undefined);
-    ceil = signal<number>(undefined);
-    dataChangeOnSlideEnd = signal<boolean>(undefined);
-    dataProvider = signal<any>(undefined);
-    dataProviderChange: (value: number) => void;
-    dataProviderHigh = signal<any>(undefined);
-    dataProviderHighChange: (value: number) => void;
-    draggableRange = signal<boolean>(undefined);
-    draggableRangeOnly = signal<boolean>(undefined);
-    enabled = signal<boolean>(undefined);
-    enforceRange = signal<boolean>(undefined);
-    enforceStep = signal<boolean>(undefined);
-    floor = signal<number>(undefined);
-    formattingFunction = signal<any>(undefined);
-    getLegendFunction = signal<any>(undefined);
-    hideLimitLabels = signal<boolean>(undefined);
-    hidePointerLabels = signal<boolean>(undefined);
-    logScale = signal<boolean>(undefined);
-    maxLimit = signal<number>(undefined);
-    maxRange = signal<number>(undefined);
-    minLimit = signal<number>(undefined);
-    minRange = signal<number>(undefined);
-    noSwitching = signal<boolean>(undefined);
-    numberFormat = signal<string>(undefined);
-    pointerColorFunction = signal<any>(undefined);
-    precision = signal<number>(undefined);
-    pushRange = signal<boolean>(undefined);
-    rightToLeft = signal<boolean>(undefined);
-    selectionBarColorFunction = signal<any>(undefined);
-    selectionBarGradient = signal<{ from: string, to: string }>(undefined);
-    showOuterSelectionBars = signal<boolean>(undefined);
-    showSelectionBar = signal<boolean>(undefined);
-    showSelectionBarEnd = signal<boolean>(undefined);
-    showTicks = signal<boolean>(undefined);
-    showTicksValues = signal<boolean>(undefined);
-    step = signal<number>(undefined);
-    stepsArray = signal<number[]>(undefined);
-    stepsValueList = signal<any[]>(undefined);
-    styleClass = signal<string>(undefined);
-    tickColorFunction = signal<any>(undefined);
-    ticksArray = signal<number[]>(undefined);
-    ticksInterval = signal<number>(undefined);
-    ticksTooltipFunction = signal<any>(undefined);
-    ticksValuesInterval = signal<number>(undefined);
-    ticksValuesTooltipFunction = signal<any>(undefined);
-    vertical = signal<boolean>(undefined);
+    autoHideLimitLabels = signal<boolean>(undefined as any);
+    ceil = signal<number>(undefined as any);
+    dataChangeOnSlideEnd = signal<boolean>(undefined as any);
+    dataProvider = signal<any>(undefined as any);
+    dataProviderChange!: (value: number) => void;
+    dataProviderHigh = signal<any>(undefined as any);
+    dataProviderHighChange!: (value: number) => void;
+    draggableRange = signal<boolean>(undefined as any);
+    draggableRangeOnly = signal<boolean>(undefined as any);
+    enabled = signal<boolean>(undefined as any);
+    enforceRange = signal<boolean>(undefined as any);
+    enforceStep = signal<boolean>(undefined as any);
+    floor = signal<number>(undefined as any);
+    formattingFunction = signal<any>(undefined as any);
+    getLegendFunction = signal<any>(undefined as any);
+    hideLimitLabels = signal<boolean>(undefined as any);
+    hidePointerLabels = signal<boolean>(undefined as any);
+    logScale = signal<boolean>(undefined as any);
+    maxLimit = signal<number>(undefined as any);
+    maxRange = signal<number>(undefined as any);
+    minLimit = signal<number>(undefined as any);
+    minRange = signal<number>(undefined as any);
+    noSwitching = signal<boolean>(undefined as any);
+    numberFormat = signal<string>(undefined as any);
+    pointerColorFunction = signal<any>(undefined as any);
+    precision = signal<number>(undefined as any);
+    pushRange = signal<boolean>(undefined as any);
+    rightToLeft = signal<boolean>(undefined as any);
+    selectionBarColorFunction = signal<any>(undefined as any);
+    selectionBarGradient = signal<{ from: string, to: string }>(undefined as any);
+    showOuterSelectionBars = signal<boolean>(undefined as any);
+    showSelectionBar = signal<boolean>(undefined as any);
+    showSelectionBarEnd = signal<boolean>(undefined as any);
+    showTicks = signal<boolean>(undefined as any);
+    showTicksValues = signal<boolean>(undefined as any);
+    step = signal<number>(undefined as any);
+    stepsArray = signal<number[]>(undefined as any);
+    stepsValueList = signal<any[]>(undefined as any);
+    styleClass = signal<string>(undefined as any);
+    tickColorFunction = signal<any>(undefined as any);
+    ticksArray = signal<number[]>(undefined as any);
+    ticksInterval = signal<number>(undefined as any);
+    ticksTooltipFunction = signal<any>(undefined as any);
+    ticksValuesInterval = signal<number>(undefined as any);
+    ticksValuesTooltipFunction = signal<any>(undefined as any);
+    vertical = signal<boolean>(undefined as any);
 
-    @ViewChild('element') element: ServoyExtraSlider;
+    @ViewChild('element') element!: ServoyExtraSlider;
 }
 
-const defaultValues = {
+const defaultValues: Record<string, any> = {
     servoyApi: new ServoyApiTesting(),
     autoHideLimitLabels: false,
     ceil: 20,
@@ -158,13 +158,13 @@ const defaultValues = {
     onSlideStart: () => { }
 };
 
-function applyDefaultProps(wrapper) {
+function applyDefaultProps(wrapper: any) {
     for (const key in defaultValues) {
         if (wrapper.component.hasOwnProperty(key) && typeof wrapper.component[key] === 'function') {
-            wrapper.component[key].set(defaultValues[key]);
+            wrapper.component[key].set((defaultValues as any)[key]);
         }
         else {
-            wrapper.component[key] = defaultValues[key];
+            wrapper.component[key] = (defaultValues as any)[key];
         }
     }
 }

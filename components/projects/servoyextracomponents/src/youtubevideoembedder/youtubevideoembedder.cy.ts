@@ -25,26 +25,26 @@ import { FormsModule } from '@angular/forms';
     standalone: false
 })
 class WrapperComponent {
-    servoyApi = signal<ServoyApi>(undefined);
+    servoyApi = signal<ServoyApi>(undefined as any);
 
-    allowFullScreen = signal<boolean>(undefined);
-    autoPlay = signal<boolean>(undefined);
-    dataProviderID = signal<any>(undefined);
-    embeddedVideoURL = signal<string>(undefined);
-    modestBranding = signal<boolean>(undefined);
-    showControls = signal<boolean>(undefined);
-    showRelatedVideosAtEnd = signal<boolean>(undefined);
-    styleClass = signal<string>(undefined);
-    tabSeq = signal<number>(undefined);
-    videoHeight = signal<number>(undefined);
-    videoWidth = signal<number>(undefined);
+    allowFullScreen = signal<boolean>(undefined as any);
+    autoPlay = signal<boolean>(undefined as any);
+    dataProviderID = signal<any>(undefined as any);
+    embeddedVideoURL = signal<string>(undefined as any);
+    modestBranding = signal<boolean>(undefined as any);
+    showControls = signal<boolean>(undefined as any);
+    showRelatedVideosAtEnd = signal<boolean>(undefined as any);
+    styleClass = signal<string>(undefined as any);
+    tabSeq = signal<number>(undefined as any);
+    videoHeight = signal<number>(undefined as any);
+    videoWidth = signal<number>(undefined as any);
 
     dataProviderIDChange = () => { };
 
-    @ViewChild('element') element: ServoyExtraYoutubeVideoEmbedder;
+    @ViewChild('element') element!: ServoyExtraYoutubeVideoEmbedder;
 }
 
-const defaultValues = {
+const defaultValues: Record<string, any> = {
     styleClass: 'youtube-test',
     tabSeq: 0,
     allowFullScreen: false,
@@ -60,13 +60,13 @@ const defaultValues = {
     dataProviderIDChange: () => { }
 };
 
-function applyDefaultProps(wrapper) {
+function applyDefaultProps(wrapper: any) {
     for (const key in defaultValues) {
         if (wrapper.component[key] && typeof wrapper.component[key].set === 'function') {
-            wrapper.component[key].set(defaultValues[key]);
+            wrapper.component[key].set((defaultValues as any)[key]);
         }
         else {
-            wrapper.component[key] = defaultValues[key];
+            wrapper.component[key] = (defaultValues as any)[key];
         }
     }
 }

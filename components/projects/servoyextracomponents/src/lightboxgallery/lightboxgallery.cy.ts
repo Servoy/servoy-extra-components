@@ -36,32 +36,32 @@ import { LightboxModule } from '@servoy/ngx-lightbox';
     standalone: false
 })
 class WrapperComponent {
-    servoyApi = signal<ServoyApi>(undefined);
+    servoyApi = signal<ServoyApi>(undefined as any);
 
     onHoverButtonClicked = () => { };
 
-    albumLabel = signal<string>(undefined);
-    buttonStyleClass = signal<string>(undefined);
-    buttonText = signal<string>(undefined);
-    enabled = signal<boolean>(undefined);
-    fadeDuration = signal<number>(undefined);
-    fitImagesInViewport = signal<boolean>(undefined);
-    galleryVisible = signal<boolean>(undefined);
-    hoverButtonIcon = signal<string>(undefined);
-    imageBatchSize = signal<number>(undefined);
-    imageFadeDuration = signal<number>(undefined);
-    imagesDataset = signal<Image[]>(undefined);
-    imagesFoundset = signal<any>(undefined);
-    maxImageHeight = signal<number>(undefined);
-    maxImageWidth = signal<number>(undefined);
-    positionFromTop = signal<number>(undefined);
-    resizeDuration = signal<number>(undefined);
-    responsiveHeight = signal<number>(undefined);
-    showCaptionInGallery = signal<boolean>(undefined);
-    showImageNumberLabel = signal<boolean>(undefined);
-    wrapAround = signal<boolean>(undefined);
+    albumLabel = signal<string>(undefined as any);
+    buttonStyleClass = signal<string>(undefined as any);
+    buttonText = signal<string>(undefined as any);
+    enabled = signal<boolean>(undefined as any);
+    fadeDuration = signal<number>(undefined as any);
+    fitImagesInViewport = signal<boolean>(undefined as any);
+    galleryVisible = signal<boolean>(undefined as any);
+    hoverButtonIcon = signal<string>(undefined as any);
+    imageBatchSize = signal<number>(undefined as any);
+    imageFadeDuration = signal<number>(undefined as any);
+    imagesDataset = signal<Image[]>(undefined as any);
+    imagesFoundset = signal<any>(undefined as any);
+    maxImageHeight = signal<number>(undefined as any);
+    maxImageWidth = signal<number>(undefined as any);
+    positionFromTop = signal<number>(undefined as any);
+    resizeDuration = signal<number>(undefined as any);
+    responsiveHeight = signal<number>(undefined as any);
+    showCaptionInGallery = signal<boolean>(undefined as any);
+    showImageNumberLabel = signal<boolean>(undefined as any);
+    wrapAround = signal<boolean>(undefined as any);
 
-    @ViewChild('element') element: ServoyExtraLightboxGallery;
+    @ViewChild('element') element!: ServoyExtraLightboxGallery;
 }
 
 const images = [];
@@ -79,7 +79,7 @@ image2.caption = 'Image 2';
 image2.id = '2';
 images.push(image2);
 
-const defaultValues = {
+const defaultValues: Record<string, any> = {
     servoyApi: new ServoyApiTesting(),
     enabled: true,
     maxImageWidth: 200,
@@ -103,13 +103,13 @@ const defaultValues = {
     onHoverButtonClicked: undefined
 };
 
-function applyDefaultProps(wrapper) {
+function applyDefaultProps(wrapper: any) {
     for (const key in defaultValues) {
         if (wrapper.component[key] && typeof wrapper.component[key].set === 'function') {
-            wrapper.component[key].set(defaultValues[key]);
+            wrapper.component[key].set((defaultValues as any)[key]);
         }
         else {
-            wrapper.component[key] = defaultValues[key];
+            wrapper.component[key] = (defaultValues as any)[key];
         }
     }
 }

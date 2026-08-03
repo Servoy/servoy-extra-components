@@ -30,39 +30,39 @@ import { FormsModule } from '@angular/forms';
     standalone: false
 })
 class WrapperComponent {
-    servoyApi: ServoyApi;
+    servoyApi!: ServoyApi;
 
-    onActionMethodID: (e: Event, data?: unknown) => void;
-    onFocusGainedMethodID: (e: Event, data?: unknown) => void;
-    onFocusLostMethodID: (e: Event, data?: unknown) => void;
-    onRightClickMethodID: (e: Event, data?: unknown) => void;
+    onActionMethodID!: (e: Event, data?: unknown) => void;
+    onFocusGainedMethodID!: (e: Event, data?: unknown) => void;
+    onFocusLostMethodID!: (e: Event, data?: unknown) => void;
+    onRightClickMethodID!: (e: Event, data?: unknown) => void;
 
-    dataProviderID = signal<any>(undefined);
-    dataProviderIDChange: (value: any) => void;
-    displayTags = signal<boolean>(undefined);
-    editable = signal<boolean>(undefined);
-    enabled = signal<boolean>(undefined);
-    format = signal<string>(undefined);
-    placeholderText = signal<string>(undefined);
-    readOnly = signal<boolean>(undefined);
-    responsiveHeight = signal<number>(undefined);
-    styleClass = signal<string>(undefined);
-    tabSeq = signal<number>(undefined);
-    text = signal<string>(undefined);
-    toolTipText = signal<string>(undefined);
-    valuelistID = signal<IValuelist>(undefined);
+    dataProviderID = signal<any>(undefined as any);
+    dataProviderIDChange!: (value: any) => void;
+    displayTags = signal<boolean>(undefined as any);
+    editable = signal<boolean>(undefined as any);
+    enabled = signal<boolean>(undefined as any);
+    format = signal<string>(undefined as any);
+    placeholderText = signal<string>(undefined as any);
+    readOnly = signal<boolean>(undefined as any);
+    responsiveHeight = signal<number>(undefined as any);
+    styleClass = signal<string>(undefined as any);
+    tabSeq = signal<number>(undefined as any);
+    text = signal<string>(undefined as any);
+    toolTipText = signal<string>(undefined as any);
+    valuelistID = signal<IValuelist>(undefined as any);
 
-    @ViewChild('element') element: ServoyExtraSpinner;
+    @ViewChild('element') element!: ServoyExtraSpinner;
 }
 
-const defaultValues = {
+const defaultValues: Record<string, any> = {
     servoyApi: new ServoyApiTesting(),
     enabled: true,
     readOnly: false,
     styleClass: 'spinner-test',
     tabSeq: 0,
     dataProviderID: 1,
-    valuelistID: null as IValuelist,
+    valuelistID: null as any,
     editable: true,
     format: '#.00',
     toolTipText: 'Test tooltip',
@@ -77,13 +77,13 @@ const defaultValues = {
     dataProviderIDChange: () => { }
 };
 
-function applyDefaultProps(wrapper) {
+function applyDefaultProps(wrapper: any) {
     for (const key in defaultValues) {
         if (wrapper.component.hasOwnProperty(key) && typeof wrapper.component[key] === 'function') {
-            wrapper.component[key].set(defaultValues[key]);
+            wrapper.component[key].set((defaultValues as any)[key]);
         }
         else {
-            wrapper.component[key] = defaultValues[key];
+            wrapper.component[key] = (defaultValues as any)[key];
         }
     }
 }

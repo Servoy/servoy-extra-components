@@ -29,24 +29,24 @@ import { BGPane } from './bg_splitter/bg_pane.component';
     standalone: false
 })
 class WrapperComponent {
-    servoyApi = signal<ServoyApi>(undefined);
-    enabled = signal<boolean>(undefined);
-    readOnly = signal<boolean>(undefined);
-    styleClass = signal<string>(undefined);
-    splitType = signal<number>(undefined);
-    tabSeq = signal<number>(undefined);
-    pane1 = signal<Pane>(undefined);
-    pane2 = signal<Pane>(undefined);
-    divLocation = signal<number>(undefined);
-    divSize = signal<number>(undefined);
-    pane1MinSize = signal<number>(undefined);
-    pane2MinSize = signal<number>(undefined);
-    resizeWeight = signal<number>(undefined);
-    responsiveHeight = signal<number>(undefined);
+    servoyApi = signal<ServoyApi>(undefined as any);
+    enabled = signal<boolean>(undefined as any);
+    readOnly = signal<boolean>(undefined as any);
+    styleClass = signal<string>(undefined as any);
+    splitType = signal<number>(undefined as any);
+    tabSeq = signal<number>(undefined as any);
+    pane1 = signal<Pane>(undefined as any);
+    pane2 = signal<Pane>(undefined as any);
+    divLocation = signal<number>(undefined as any);
+    divSize = signal<number>(undefined as any);
+    pane1MinSize = signal<number>(undefined as any);
+    pane2MinSize = signal<number>(undefined as any);
+    resizeWeight = signal<number>(undefined as any);
+    responsiveHeight = signal<number>(undefined as any);
     divLocationChange = new EventEmitter<number>();
-    onChangeMethodID = signal<(data: any, e: Event) => void>(undefined);
+    onChangeMethodID = signal<(data: any, e: Event) => void>(undefined as any);
 
-    @ViewChild('element') element: ServoyExtraSplitpane;
+    @ViewChild('element') element!: ServoyExtraSplitpane;
 }
 
 const createDefaultPanes = () => {
@@ -61,15 +61,15 @@ const createDefaultPanes = () => {
     return { pane1, pane2 };
 };
 
-const defaultValues = {
+const defaultValues: Record<string, any> = {
     servoyApi: new ServoyApiTesting(),
     enabled: true,
     readOnly: false,
     styleClass: 'splitpane-test',
     splitType: 0,
     tabSeq: 0,
-    pane1: undefined as Pane,
-    pane2: undefined as Pane,
+    pane1: undefined as any,
+    pane2: undefined as any,
     divLocation: 200,
     divSize: 5,
     pane1MinSize: 30,
@@ -79,7 +79,7 @@ const defaultValues = {
     onChangeMethodID: () => { }
 };
 
-function applyDefaultProps(wrapper) {
+function applyDefaultProps(wrapper: any) {
     const { pane1, pane2 } = createDefaultPanes();
     for (const key in defaultValues) {
         if (wrapper.component.hasOwnProperty(key) && typeof wrapper.component[key] === 'function') {
@@ -88,11 +88,11 @@ function applyDefaultProps(wrapper) {
             } else if (key === 'pane2') {
                 wrapper.component[key].set(pane2);
             } else {
-                wrapper.component[key].set(defaultValues[key]);
+                wrapper.component[key].set((defaultValues as any)[key]);
             }
         }
         else {
-            wrapper.component[key] = defaultValues[key];
+            wrapper.component[key] = (defaultValues as any)[key];
         }
     }
 }

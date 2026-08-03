@@ -23,7 +23,7 @@ import { ServoyExtraTreeviewCellRenderer } from './cellrenderer';
     standalone: false
 })
 class WrapperComponent {
-    servoyApi = signal<ServoyApi>(undefined);
+    servoyApi = signal<ServoyApi>(undefined as any);
 
     onNodeClicked = () => { };
     onNodeCollapsed = () => { };
@@ -34,15 +34,15 @@ class WrapperComponent {
     onReady = () => { };
     onRowDrop = () => { };
 
-    jsDataSet = signal<any[]>(undefined);
-    styleClass = signal<string>(undefined);
+    jsDataSet = signal<any[]>(undefined as any);
+    styleClass = signal<string>(undefined as any);
 
-    @ViewChild('element') element: ServoyExtraTreeview;
-    @ViewChild('angularGrid') angularGrid: AngularTreeGridComponent;
+    @ViewChild('element') element!: ServoyExtraTreeview;
+    @ViewChild('angularGrid') angularGrid!: AngularTreeGridComponent;
 }
 
-const defaultValues = {
-    jsDataSet: null as any[],
+const defaultValues: Record<string, any> = {
+    jsDataSet: null as any,
     styleClass: '',
     servoyApi: new ServoyApiTesting(),
     onNodeClicked: () => { },
@@ -55,13 +55,13 @@ const defaultValues = {
     onRowDrop: () => { }
 };
 
-function applyDefaultProps(wrapper) {
+function applyDefaultProps(wrapper: any) {
     for (const key in defaultValues) {
         if (wrapper.component[key] && typeof wrapper.component[key].set === 'function') {
-            wrapper.component[key].set(defaultValues[key]);
+            wrapper.component[key].set((defaultValues as any)[key]);
         }
         else {
-            wrapper.component[key] = defaultValues[key];
+            wrapper.component[key] = (defaultValues as any)[key];
         }
     }
 }

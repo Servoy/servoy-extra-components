@@ -38,37 +38,37 @@ import { of } from 'rxjs';
     standalone: false
 })
 class WrapperComponent {
-    servoyApi = signal<ServoyApi>(undefined);
+    servoyApi = signal<ServoyApi>(undefined as any);
 
     onDataChangeMethodID = () => { };
     onFocusGainedMethodID = () => { };
     onFocusLostMethodID = () => { };
 
-    allowNewEntries = signal<boolean>(undefined);
-    clearSearchTextOnSelect = signal<boolean>(undefined);
-    closeOnSelect = signal<boolean>(undefined);
-    containSearchText = signal<boolean>(undefined);
-    dataProviderID = signal<unknown>(undefined);
-    editable = signal<boolean>(undefined);
-    enabled = signal<boolean>(undefined);
-    maximumSelectionSize = signal<number>(undefined);
-    noMatchesFoundText = signal<string>(undefined);
-    openOnUnselect = signal<boolean>(undefined);
-    placeholderText = signal<string>(undefined);
-    selectOnClose = signal<boolean>(undefined);
-    styleClass = signal<string>(undefined);
-    tabSeq = signal<number>(undefined);
-    toolTipText = signal<string>(undefined);
-    valuelistID = signal<IValuelist>(undefined);
-    format = signal<Format>(undefined);
-    readOnly = signal<boolean>(undefined);
-    hideSelectedItems = signal<boolean>(undefined);
-    overlayMode = signal<boolean>(undefined);
+    allowNewEntries = signal<boolean>(undefined as any);
+    clearSearchTextOnSelect = signal<boolean>(undefined as any);
+    closeOnSelect = signal<boolean>(undefined as any);
+    containSearchText = signal<boolean>(undefined as any);
+    dataProviderID = signal<unknown>(undefined as any);
+    editable = signal<boolean>(undefined as any);
+    enabled = signal<boolean>(undefined as any);
+    maximumSelectionSize = signal<number>(undefined as any);
+    noMatchesFoundText = signal<string>(undefined as any);
+    openOnUnselect = signal<boolean>(undefined as any);
+    placeholderText = signal<string>(undefined as any);
+    selectOnClose = signal<boolean>(undefined as any);
+    styleClass = signal<string>(undefined as any);
+    tabSeq = signal<number>(undefined as any);
+    toolTipText = signal<string>(undefined as any);
+    valuelistID = signal<IValuelist>(undefined as any);
+    format = signal<Format>(undefined as any);
+    readOnly = signal<boolean>(undefined as any);
+    hideSelectedItems = signal<boolean>(undefined as any);
+    overlayMode = signal<boolean>(undefined as any);
 
     dataProviderIDChange = () => { };
 
-    @ViewChild('element') element: ServoyExtraSelect2Tokenizer;
-    @ViewChild(Select2) select2: Select2;
+    @ViewChild('element') element!: ServoyExtraSelect2Tokenizer;
+    @ViewChild(Select2) select2!: Select2;
 }
 
 const mockData = [{
@@ -88,14 +88,14 @@ const mockData = [{
     "realValue": 4
 }] as IValuelist;
 mockData.hasRealValues = () => { return true; };
-mockData.filterList = (value) => { return of(mockData.filter(item => item.displayValue.includes(value))); };
-mockData.getDisplayValue = (value) => {
+mockData.filterList = (value: any) => { return of(mockData.filter(item => item.displayValue.includes(value))); };
+mockData.getDisplayValue = (value: any) => {
     const item = mockData.find(({ realValue }) => realValue === value);
     if (item) return of(item.displayValue);
     return of(value + '');
 };
 
-const defaultValues = {
+const defaultValues: Record<string, any> = {
     servoyApi: new ServoyApiTesting(),
     allowNewEntries: true,
     clearSearchTextOnSelect: false,
@@ -122,13 +122,13 @@ const defaultValues = {
     onFocusLostMethodID: undefined
 };
 
-function applyDefaultProps(wrapper) {
+function applyDefaultProps(wrapper: any) {
     for (const key in defaultValues) {
         if (wrapper.component[key] && typeof wrapper.component[key].set === 'function') {
-            wrapper.component[key].set(defaultValues[key]);
+            wrapper.component[key].set((defaultValues as any)[key]);
         }
         else {
-            wrapper.component[key] = defaultValues[key];
+            wrapper.component[key] = (defaultValues as any)[key];
         }
     }
 }
@@ -287,7 +287,7 @@ describe('ServoyExtraSelect2Tokenizer', () => {
             cy.get('select2 ul li').should('have.attr', 'title', 'one').then(() => {
                 wrapper.component.dataProviderID.set('5');
                 expect(dataProviderIDChange).not.to.have.been.called;
-                wrapper.component.valuelistID.set([...mockData, { displayValue: '5', realValue: 5 }] as IValuelist);
+                wrapper.component.valuelistID.set([...mockData, { displayValue: '5', realValue: 5 }] as any);
             }).then(() => {
                 wrapper.component.dataProviderID.set('4');
                 wrapper.component.dataProviderID.set('5');
@@ -318,7 +318,7 @@ describe('ServoyExtraSelect2Tokenizer', () => {
                     "displayValue": "DDDD",
                     "realValue": "DDDD"
                 }] as IValuelist;
-                newValuelist.getDisplayValue = (value) => {
+                newValuelist.getDisplayValue = (value: any) => {
                     const item = mockData.find(({ realValue }) => realValue === value);
                     if (item) return of(item.displayValue);
                     return of(value);

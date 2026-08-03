@@ -24,7 +24,7 @@ import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
     standalone: false
 })
 class WrapperComponent {
-    servoyApi = signal<ServoyApi>(undefined);
+    servoyApi = signal<ServoyApi>(undefined as any);
 
     onCardClicked = () => { };
     onCollapsibleHidden = () => { };
@@ -32,16 +32,16 @@ class WrapperComponent {
     onHeaderClicked = () => { };
     onHeaderDoubleClicked = () => { };
 
-    accordionMode = signal<boolean>(undefined);
-    collapsibles = signal<Collapsible[]>(undefined);
-    expandedIndices = signal<number[]>(undefined);
-    styleClass = signal<string>(undefined);
-    tabSeq = signal<number>(undefined);
+    accordionMode = signal<boolean>(undefined as any);
+    collapsibles = signal<Collapsible[]>(undefined as any);
+    expandedIndices = signal<number[]>(undefined as any);
+    styleClass = signal<string>(undefined as any);
+    tabSeq = signal<number>(undefined as any);
 
-    @ViewChild('element') element: ServoyExtraCollapse;
+    @ViewChild('element') element!: ServoyExtraCollapse;
 }
 
-const defaultValues = {
+const defaultValues: Record<string, any> = {
     servoyApi: new ServoyApiTesting(),
     accordionMode: true,
     collapsibles: [] as Collapsible[],
@@ -96,13 +96,13 @@ function createDefaultCollapsibles(): Collapsible[] {
     return collapsibles;
 }
 
-function applyDefaultProps(wrapper) {
+function applyDefaultProps(wrapper: any) {
     for (const key in defaultValues) {
         if (wrapper.component[key] && typeof wrapper.component[key].set === 'function') {
-            wrapper.component[key].set(defaultValues[key]);
+            wrapper.component[key].set((defaultValues as any)[key]);
         }
         else {
-            wrapper.component[key] = defaultValues[key];
+            wrapper.component[key] = (defaultValues as any)[key];
         }
     }
 }

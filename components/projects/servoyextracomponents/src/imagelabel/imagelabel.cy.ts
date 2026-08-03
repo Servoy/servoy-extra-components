@@ -20,21 +20,21 @@ import { FormsModule } from '@angular/forms';
     standalone: false
 })
 class WrapperComponent {
-    servoyApi = signal<ServoyApi>(undefined);
+    servoyApi = signal<ServoyApi>(undefined as any);
 
     onActionMethodID = () => { };
     onRightClickMethodID = () => { };
 
-    centerImage = signal<boolean>(undefined);
-    enabled = signal<boolean>(undefined);
-    media = signal<any>(undefined);
-    styleClass = signal<string>(undefined);
-    tabSeq = signal<number>(undefined);
+    centerImage = signal<boolean>(undefined as any);
+    enabled = signal<boolean>(undefined as any);
+    media = signal<any>(undefined as any);
+    styleClass = signal<string>(undefined as any);
+    tabSeq = signal<number>(undefined as any);
 
-    @ViewChild('element') element: ServoyExtraImageLabel;
+    @ViewChild('element') element!: ServoyExtraImageLabel;
 }
 
-const defaultValues = {
+const defaultValues: Record<string, any> = {
     servoyApi: new ServoyApiTesting(),
     styleClass: undefined,
     enabled: true,
@@ -45,13 +45,13 @@ const defaultValues = {
     onRightClickMethodID: undefined
 };
 
-function applyDefaultProps(wrapper) {
+function applyDefaultProps(wrapper: any) {
     for (const key in defaultValues) {
         if (wrapper.component[key] && typeof wrapper.component[key].set === 'function') {
-            wrapper.component[key].set(defaultValues[key]);
+            wrapper.component[key].set((defaultValues as any)[key]);
         }
         else {
-            wrapper.component[key] = defaultValues[key];
+            wrapper.component[key] = (defaultValues as any)[key];
         }
     }
 }

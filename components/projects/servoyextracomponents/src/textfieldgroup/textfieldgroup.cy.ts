@@ -29,30 +29,30 @@ import { FormsModule } from '@angular/forms';
     standalone: false
 })
 class WrapperComponent {
-    servoyApi = signal<ServoyApi>(undefined);
+    servoyApi = signal<ServoyApi>(undefined as any);
 
-    onActionMethodID: (e: Event, data?: unknown) => void;
-    onFocusGainedMethodID: (e: Event, data?: unknown) => void;
-    onFocusLostMethodID: (e: Event, data?: unknown) => void;
-    onRightClickMethodID: (e: Event, data?: unknown) => void;
+    onActionMethodID!: (e: Event, data?: unknown) => void;
+    onFocusGainedMethodID!: (e: Event, data?: unknown) => void;
+    onFocusLostMethodID!: (e: Event, data?: unknown) => void;
+    onRightClickMethodID!: (e: Event, data?: unknown) => void;
 
-    dataProviderID = signal<unknown>(undefined);
-    dataProviderIDChange: (newData: unknown) => void;
-    enabled = signal<boolean>(undefined);
-    faclass = signal<string>(undefined);
-    format = signal<Format>(undefined);
-    inputType = signal<string>(undefined);
-    inputValidation = signal<string>(undefined);
-    invalidEmailMessage = signal<string>(undefined);
-    placeholderText = signal<string>(undefined);
-    readOnly = signal<boolean>(undefined);
-    styleClass = signal<string>(undefined);
-    tabSeq = signal<number>(undefined);
+    dataProviderID = signal<unknown>(undefined as any);
+    dataProviderIDChange!: (newData: unknown) => void;
+    enabled = signal<boolean>(undefined as any);
+    faclass = signal<string>(undefined as any);
+    format = signal<Format>(undefined as any);
+    inputType = signal<string>(undefined as any);
+    inputValidation = signal<string>(undefined as any);
+    invalidEmailMessage = signal<string>(undefined as any);
+    placeholderText = signal<string>(undefined as any);
+    readOnly = signal<boolean>(undefined as any);
+    styleClass = signal<string>(undefined as any);
+    tabSeq = signal<number>(undefined as any);
 
-    @ViewChild('element') element: ServoyExtraTextfieldGroup;
+    @ViewChild('element') element!: ServoyExtraTextfieldGroup;
 }
 
-const defaultValues = {
+const defaultValues: Record<string, any> = {
     servoyApi: new ServoyApiTesting(),
     enabled: true,
     readOnly: false,
@@ -72,13 +72,13 @@ const defaultValues = {
     dataProviderIDChange: () => { }
 };
 
-function applyDefaultProps(wrapper) {
+function applyDefaultProps(wrapper: any) {
     for (const key in defaultValues) {
         if (wrapper.component.hasOwnProperty(key) && typeof wrapper.component[key] === 'function') {
-            wrapper.component[key].set(defaultValues[key]);
+            wrapper.component[key].set((defaultValues as any)[key]);
         }
         else {
-            wrapper.component[key] = defaultValues[key];
+            wrapper.component[key] = (defaultValues as any)[key];
         }
     }
 }

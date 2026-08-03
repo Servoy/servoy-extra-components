@@ -3,6 +3,7 @@ import { ServoyApi, ServoyApiTesting, ServoyPublicTestingModule } from '@servoy/
 import { ServoyExtraMultiFileUpload } from './multifileupload';
 import { MountConfig } from 'cypress/angular';
 import { FormsModule } from '@angular/forms';
+// @ts-ignore
 import { Restrictions } from '@uppy/core/lib/Restricter';
 import { TusOpts } from '@uppy/tus';
 import type { WebcamOptions } from '@uppy/webcam';
@@ -42,7 +43,7 @@ import { DashboardComponent } from '@uppy/angular';
     standalone: false
 })
 class WrapperComponent {
-    servoyApi = signal<ServoyApi>(undefined);
+    servoyApi = signal<ServoyApi>(undefined as any);
 
     onBeforeFileAdded = () => { };
     onFileAdded = () => { };
@@ -52,32 +53,32 @@ class WrapperComponent {
     onRestrictionFailed = () => { };
     onUploadComplete = () => { };
 
-    allowMultipleUploads = signal<boolean>(undefined);
-    autoProceed = signal<boolean>(undefined);
-    closeAfterFinish = signal<boolean>(undefined);
-    disableStatusBar = signal<boolean>(undefined);
-    hideUploadButton = signal<boolean>(undefined);
-    inline = signal<boolean>(undefined);
-    language = signal<string>(undefined);
-    localeStrings = signal<any>(undefined);
-    metaFields = signal<any>(undefined);
-    note = signal<string>(undefined);
-    options = signal<any>(undefined);
-    responsiveHeight = signal<number>(undefined);
-    responsiveWidth = signal<number>(undefined);
-    restrictions = signal<Restrictions>(undefined);
-    sources = signal<string[]>(undefined);
-    styleClass = signal<string>(undefined);
-    tusOptions = signal<TusOpts<any, any>>(undefined);
-    webcamOptions = signal<WebcamOptions<any, any>>(undefined);
+    allowMultipleUploads = signal<boolean>(undefined as any);
+    autoProceed = signal<boolean>(undefined as any);
+    closeAfterFinish = signal<boolean>(undefined as any);
+    disableStatusBar = signal<boolean>(undefined as any);
+    hideUploadButton = signal<boolean>(undefined as any);
+    inline = signal<boolean>(undefined as any);
+    language = signal<string>(undefined as any);
+    localeStrings = signal<any>(undefined as any);
+    metaFields = signal<any>(undefined as any);
+    note = signal<string>(undefined as any);
+    options = signal<any>(undefined as any);
+    responsiveHeight = signal<number>(undefined as any);
+    responsiveWidth = signal<number>(undefined as any);
+    restrictions = signal<Restrictions>(undefined as any);
+    sources = signal<string[]>(undefined as any);
+    styleClass = signal<string>(undefined as any);
+    tusOptions = signal<TusOpts<any, any>>(undefined as any);
+    webcamOptions = signal<WebcamOptions<any, any>>(undefined as any);
 
-    cssPosition = signal<any>(undefined);
+    cssPosition = signal<any>(undefined as any);
 
-    @ViewChild('element') element: ServoyExtraMultiFileUpload;
-    @ViewChild(DashboardComponent) dashboard: DashboardComponent<any, any>;
+    @ViewChild('element') element!: ServoyExtraMultiFileUpload;
+    @ViewChild(DashboardComponent) dashboard!: DashboardComponent<any, any>;
 }
 
-const defaultValues = {
+const defaultValues: Record<string, any> = {
     servoyApi: new ServoyApiTesting(),
     styleClass: 'upload-test',
     responsiveHeight: 300,
@@ -113,13 +114,13 @@ const defaultValues = {
     webcamOptions: undefined
 };
 
-function applyDefaultProps(wrapper) {
+function applyDefaultProps(wrapper: any) {
     for (const key in defaultValues) {
         if (wrapper.component[key] && typeof wrapper.component[key].set === 'function') {
-            wrapper.component[key].set(defaultValues[key]);
+            wrapper.component[key].set((defaultValues as any)[key]);
         }
         else {
-            wrapper.component[key] = defaultValues[key];
+            wrapper.component[key] = (defaultValues as any)[key];
         }
     }
 }

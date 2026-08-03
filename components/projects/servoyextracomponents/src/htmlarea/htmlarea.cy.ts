@@ -29,7 +29,7 @@ import { EditorModule } from '@tinymce/tinymce-angular';
     standalone: false
 })
 class WrapperComponent {
-    servoyApi = signal<ServoyApi>(undefined);
+    servoyApi = signal<ServoyApi>(undefined as any);
 
     onActionMethodID = () => { };
     onDataChangeMethodID = () => { };
@@ -37,24 +37,24 @@ class WrapperComponent {
     onFocusLostMethodID = () => { };
     onRightClickMethodID = () => { };
 
-    dataProviderID = signal<any>(undefined);
+    dataProviderID = signal<any>(undefined as any);
     dataProviderIDChange = () => { };
 
-    editable = signal<boolean>(undefined);
-    enabled = signal<boolean>(undefined);
-    responsiveHeight = signal<number>(undefined);
-    scrollbars = signal<any>(undefined);
-    styleClass = signal<string>(undefined);
-    tabSeq = signal<number>(undefined);
-    text = signal<string>(undefined);
-    toolTipText = signal<string>(undefined);
+    editable = signal<boolean>(undefined as any);
+    enabled = signal<boolean>(undefined as any);
+    responsiveHeight = signal<number>(undefined as any);
+    scrollbars = signal<any>(undefined as any);
+    styleClass = signal<string>(undefined as any);
+    tabSeq = signal<number>(undefined as any);
+    text = signal<string>(undefined as any);
+    toolTipText = signal<string>(undefined as any);
 
-    lastServerValueAsSeenByTinyMCEContent: string;
+    lastServerValueAsSeenByTinyMCEContent!: string;
 
-    @ViewChild('element') element: ServoyExtraHtmlarea;
+    @ViewChild('element') element!: ServoyExtraHtmlarea;
 }
 
-const defaultValues = {
+const defaultValues: Record<string, any> = {
     servoyApi: new ServoyApiTesting(),
     styleClass: 'htmlarea-test',
     enabled: true,
@@ -72,13 +72,13 @@ const defaultValues = {
     onRightClickMethodID: undefined
 };
 
-function applyDefaultProps(wrapper) {
+function applyDefaultProps(wrapper: any) {
     for (const key in defaultValues) {
         if (wrapper.component[key] && typeof wrapper.component[key].set === 'function') {
-            wrapper.component[key].set(defaultValues[key]);
+            wrapper.component[key].set((defaultValues as any)[key]);
         }
         else {
-            wrapper.component[key] = defaultValues[key];
+            wrapper.component[key] = (defaultValues as any)[key];
         }
     }
 }
@@ -92,7 +92,7 @@ describe('ServoyExtraHtmlarea', () => {
     let editorContent = 'initialValue';
 
     beforeEach(() => {
-        window['tinymce'] = {
+        (window as any)['tinymce'] = {
             init: () => Promise.resolve(),
             remove: () => { },
             get: () => { }

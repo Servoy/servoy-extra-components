@@ -37,37 +37,37 @@ import { FileUploadModule } from 'ng2-file-upload';
     standalone: false
 })
 class WrapperComponent {
-    servoyApi = signal<ServoyApi>(undefined);
+    servoyApi = signal<ServoyApi>(undefined as any);
 
     onDataChangeMethodID = () => { };
     onFileUploadedMethodID = () => { };
     onFileTransferFinishedMethodID = () => { };
 
-    accept = signal<string>(undefined);
-    dataProviderID = signal<any>(undefined);
+    accept = signal<string>(undefined as any);
+    dataProviderID = signal<any>(undefined as any);
     dataProviderIDChange = () => { };
-    displaysTags = signal<boolean>(undefined);
-    enabled = signal<boolean>(undefined);
-    styleClass = signal<string>(undefined);
-    styleClassExpression = signal<string>(undefined);
-    iconStyleClass = signal<string>(undefined);
-    resultDisplayTimeout = signal<number>(undefined);
-    successIconStyleClass = signal<string>(undefined);
-    showFileName = signal<boolean>(undefined);
-    showProgress = signal<boolean>(undefined);
-    multiFileUpload = signal<boolean>(undefined);
-    uploadText = signal<string>(undefined);
-    uploadProgressText = signal<string>(undefined);
-    uploadSuccessText = signal<string>(undefined);
-    uploadCancelText = signal<string>(undefined);
-    uploadNotSupportedText = signal<string>(undefined);
-    uploadNotSupportedFileText = signal<string>(undefined);
-    toolTipText = signal<string>(undefined);
+    displaysTags = signal<boolean>(undefined as any);
+    enabled = signal<boolean>(undefined as any);
+    styleClass = signal<string>(undefined as any);
+    styleClassExpression = signal<string>(undefined as any);
+    iconStyleClass = signal<string>(undefined as any);
+    resultDisplayTimeout = signal<number>(undefined as any);
+    successIconStyleClass = signal<string>(undefined as any);
+    showFileName = signal<boolean>(undefined as any);
+    showProgress = signal<boolean>(undefined as any);
+    multiFileUpload = signal<boolean>(undefined as any);
+    uploadText = signal<string>(undefined as any);
+    uploadProgressText = signal<string>(undefined as any);
+    uploadSuccessText = signal<string>(undefined as any);
+    uploadCancelText = signal<string>(undefined as any);
+    uploadNotSupportedText = signal<string>(undefined as any);
+    uploadNotSupportedFileText = signal<string>(undefined as any);
+    toolTipText = signal<string>(undefined as any);
 
-    @ViewChild('element') element: ServoyExtraFileUpload;
+    @ViewChild('element') element!: ServoyExtraFileUpload;
 }
 
-const defaultValues = {
+const defaultValues: Record<string, any> = {
     servoyApi: new ServoyApiTesting(),
     enabled: true,
     styleClass: 'fileupload-test',
@@ -93,13 +93,13 @@ const defaultValues = {
     onFileTransferFinishedMethodID: undefined
 };
 
-function applyDefaultProps(wrapper) {
+function applyDefaultProps(wrapper: any) {
     for (const key in defaultValues) {
         if (wrapper.component[key] && typeof wrapper.component[key].set === 'function') {
-            wrapper.component[key].set(defaultValues[key]);
+            wrapper.component[key].set((defaultValues as any)[key]);
         }
         else {
-            wrapper.component[key] = defaultValues[key];
+            wrapper.component[key] = (defaultValues as any)[key];
         }
     }
 }

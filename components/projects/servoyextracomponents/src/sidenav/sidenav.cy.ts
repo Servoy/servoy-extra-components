@@ -41,48 +41,48 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     standalone: false
 })
 class WrapperComponent {
-    servoyApi = signal<ServoyApi>(undefined);
+    servoyApi = signal<ServoyApi>(undefined as any);
 
     onMenuItemCollapsed = () => { };
     onMenuItemExpanded = () => { };
     onMenuItemSelected = () => { };
     onOpenToggled = () => { };
 
-    animate = signal<boolean>(undefined);
-    containedForm = signal<string>(undefined);
-    enabled = signal<boolean>(undefined);
-    expandedIndex = signal<string>(undefined);
-    footerForm = signal<string>(undefined);
-    footerFormStickyBottom = signal<boolean>(undefined);
-    headerForm = signal<string>(undefined);
-    iconCloseStyleClass = signal<string>(undefined);
-    iconCollapseStyleClass = signal<string>(undefined);
-    iconExpandStyleClass = signal<string>(undefined);
-    iconOpenStyleClass = signal<string>(undefined);
-    menu = signal<MenuItem[]>(undefined);
-    open = signal<boolean>(undefined);
-    relationName = signal<string>(undefined);
-    responsiveHeight = signal<number>(undefined);
-    scrollbarPosition = signal<string>(undefined);
-    selectedIndex = signal<string>(undefined);
-    servoyMenu = signal<any>(undefined);
-    sidenavWidth = signal<number>(undefined);
-    slideAnimation = signal<string>(undefined);
-    slidePosition = signal<string>(undefined);
-    styleClass = signal<string>(undefined);
-    tabSeq = signal<number>(undefined);
-    togglePosition = signal<string>(undefined);
+    animate = signal<boolean>(undefined as any);
+    containedForm = signal<string>(undefined as any);
+    enabled = signal<boolean>(undefined as any);
+    expandedIndex = signal<string>(undefined as any);
+    footerForm = signal<string>(undefined as any);
+    footerFormStickyBottom = signal<boolean>(undefined as any);
+    headerForm = signal<string>(undefined as any);
+    iconCloseStyleClass = signal<string>(undefined as any);
+    iconCollapseStyleClass = signal<string>(undefined as any);
+    iconExpandStyleClass = signal<string>(undefined as any);
+    iconOpenStyleClass = signal<string>(undefined as any);
+    menu = signal<MenuItem[]>(undefined as any);
+    open = signal<boolean>(undefined as any);
+    relationName = signal<string>(undefined as any);
+    responsiveHeight = signal<number>(undefined as any);
+    scrollbarPosition = signal<string>(undefined as any);
+    selectedIndex = signal<string>(undefined as any);
+    servoyMenu = signal<any>(undefined as any);
+    sidenavWidth = signal<number>(undefined as any);
+    slideAnimation = signal<string>(undefined as any);
+    slidePosition = signal<string>(undefined as any);
+    styleClass = signal<string>(undefined as any);
+    tabSeq = signal<number>(undefined as any);
+    togglePosition = signal<string>(undefined as any);
 
-    @ViewChild('element') element: ServoyExtraSidenav;
+    @ViewChild('element') element!: ServoyExtraSidenav;
 }
 
-const defaultValues = {
+const defaultValues: Record<string, any> = {
     servoyApi: new ServoyApiTesting(),
     enabled: true,
     styleClass: 'sidenav-test',
     open: true,
     responsiveHeight: 400,
-    menu: null as MenuItem[],
+    menu: null as any,
     slidePosition: 'left',
     iconOpenStyleClass: 'custom-open',
     iconCloseStyleClass: 'custom-close',
@@ -108,13 +108,13 @@ const defaultValues = {
     onOpenToggled: undefined
 };
 
-function applyDefaultProps(wrapper) {
+function applyDefaultProps(wrapper: any) {
     for (const key in defaultValues) {
         if (wrapper.component[key] && typeof wrapper.component[key].set === 'function') {
-            wrapper.component[key].set(defaultValues[key]);
+            wrapper.component[key].set((defaultValues as any)[key]);
         }
         else {
-            wrapper.component[key] = defaultValues[key];
+            wrapper.component[key] = (defaultValues as any)[key];
         }
     }
 }
@@ -185,7 +185,7 @@ describe('ServoyExtraSidenav', () => {
                     }
                 ]
             }
-        ] as MenuItem[];
+        ] as any;
         defaultValues.menu = testMenu;
     });
 

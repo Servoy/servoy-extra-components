@@ -3,12 +3,14 @@
   "compilerOptions": {
     "outDir": "../../out-tsc/spec",
     "types": [
-    ]
+      "jasmine"
+    ],
+    "skipLibCheck": true
   },
   "files": [
   ],
   "include": [
-    "**/*.cy.ts",
+    "**/*.spec.ts",
     "**/*.d.ts"
   ]
 }

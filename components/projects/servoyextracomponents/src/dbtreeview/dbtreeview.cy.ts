@@ -22,24 +22,24 @@ import { TreeModule, TreeComponent } from '@ali-hm/angular-tree-component';
     standalone: false
 })
 class WrapperComponent {
-    servoyApi = signal<ServoyApi>(undefined);
+    servoyApi = signal<ServoyApi>(undefined as any);
 
     onDrop = () => { };
     onReady = () => { };
     onRowDrop = () => { };
 
-    autoRefresh = signal<boolean>(undefined);
-    enabled = signal<boolean>(undefined);
-    responsiveHeight = signal<number>(undefined);
-    showLoadingIndicator = signal<boolean>(undefined);
-    styleClass = signal<string>(undefined);
-    displayNodes: any[];
+    autoRefresh = signal<boolean>(undefined as any);
+    enabled = signal<boolean>(undefined as any);
+    responsiveHeight = signal<number>(undefined as any);
+    showLoadingIndicator = signal<boolean>(undefined as any);
+    styleClass = signal<string>(undefined as any);
+    displayNodes!: any[];
 
-    @ViewChild('element') element: ServoyExtraDbtreeview;
-    @ViewChild('tree') tree: TreeComponent;
+    @ViewChild('element') element!: ServoyExtraDbtreeview;
+    @ViewChild('tree') tree!: TreeComponent;
 }
 
-const defaultValues = {
+const defaultValues: Record<string, any> = {
     servoyApi: new ServoyApiTesting(),
     styleClass: 'dbtreeview-test',
     autoRefresh: true,
@@ -48,13 +48,13 @@ const defaultValues = {
     responsiveHeight: 0
 };
 
-function applyDefaultProps(wrapper) {
+function applyDefaultProps(wrapper: any) {
     for (const key in defaultValues) {
         if (wrapper.component[key] && typeof wrapper.component[key].set === 'function') {
-            wrapper.component[key].set(defaultValues[key]);
+            wrapper.component[key].set((defaultValues as any)[key]);
         }
         else {
-            wrapper.component[key] = defaultValues[key];
+            wrapper.component[key] = (defaultValues as any)[key];
         }
     }
 }
@@ -100,7 +100,7 @@ describe('ServoyExtraDbtreeview', () => {
     it('when enabled state is changed through wrapper', () => {
         cy.mount(WrapperComponent, configWrapper).then((wrapper) => {
             applyDefaultProps(wrapper);
-            cy.get('.dbtreeview-disabled').should('not.exist').then(_ => {
+            cy.get('.dbtreeview-disabled').should('not.exist').then(() => {
                 wrapper.component.enabled.set(false);
                 cy.get('.dbtreeview-disabled').should('exist');
             });
