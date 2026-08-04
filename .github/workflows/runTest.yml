@@ -43,7 +43,14 @@ jobs:
 
       - name: Lint
         working-directory: ${{ env.COMPONENT_DIR }}
-        run: npx ng lint @servoy/servoyextracomponents --force
+        run: npx ng lint @servoy/servoyextracomponents --force --format json --output-file eslint-results.json
+        continue-on-error: true
+
+      - name: Annotate lint results
+        if: always()
+        uses: ataylorme/eslint-annotate-action@v3
+        with:
+          report-json: ${{ env.COMPONENT_DIR }}/eslint-results.json
 
       - name: Test
         working-directory: ${{ env.COMPONENT_DIR }}
