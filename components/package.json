@@ -7,8 +7,9 @@
     "build_debug": "ng build @servoy/servoyextracomponents --watch",
     "build_debug_nowatch": "ng build @servoy/servoyextracomponents --watch=false",
     "make_release": "ng build --configuration production @servoy/servoyextracomponents && node scripts/build.js",
-    "cy:open": "cypress open",
-    "cy:run": "cypress run --config video=false --component --browser chrome"
+    "test": "ng test @servoy/servoyextracomponents --no-watch",
+    "test:watch": "ng test @servoy/servoyextracomponents",
+    "test:ui": "ng test @servoy/servoyextracomponents --ui"
   },
   "private": true,
   "dependencies": {
@@ -68,19 +69,20 @@
     "@angular/platform-browser-dynamic": "22.0.8",
     "@stylistic/eslint-plugin-ts": "4.4.1",
     "@types/file-saver": "2.0.7",
-    "@types/jasmine": "^6.0.0",
     "@types/lodash": "4.17.24",
+    "@types/luxon": "^3.7.3",
     "@typescript-eslint/eslint-plugin": "^8.65.0",
     "@typescript-eslint/parser": "^8.65.0",
     "@typescript-eslint/types": "^8.65.0",
     "@typescript-eslint/utils": "^8.65.0",
     "adm-zip": "^0.6.0",
-    "cypress": "^15.19.0",
     "eslint": "^10.8.0",
     "eslint-plugin-only-warn": "1.2.1",
     "eslint-plugin-prefer-arrow": "1.2.3",
+    "jsdom": "^30.0.1",
     "less": "^4.8.1",
     "ng-packagr": "22.1.0",
-    "typescript": "6.0.3"
+    "typescript": "6.0.3",
+    "vitest": "^4.1.10"
   }
 }

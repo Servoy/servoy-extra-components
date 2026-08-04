@@ -2,13 +2,12 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../out-tsc/spec",
-    "types": [
-    ]
+    "types": []
   },
-  "files": [
-  ],
+  "files": [],
   "include": [
-    "**/*.cy.ts",
-    "**/*.d.ts"
+    "src/**/*.spec.ts",
+    "src/**/*.ts",
+    "src/**/*.d.ts"
   ]
 }

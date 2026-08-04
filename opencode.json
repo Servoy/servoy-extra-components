@@ -13,6 +13,10 @@
     "migrate": {
       "description": "Migrate/modernize Angular components to newer patterns (signals, control flow, OnPush)",
       "template": "Load the 'migration' skill and run migration for: $ARGUMENTS"
+    },
+    "test-migrate": {
+      "description": "Migrate component tests from Cypress to Vitest, or clean up legacy test infrastructure",
+      "template": "Load the 'test-migration' skill and execute for: $ARGUMENTS"
     }
   },
   "mcp": {
