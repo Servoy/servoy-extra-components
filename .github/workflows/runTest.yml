@@ -48,7 +48,7 @@ jobs:
 
       - name: Annotate lint results
         if: always()
-        uses: ataylorme/eslint-annotate-action@v3
+        uses: ataylorme/eslint-annotate-action@v4
         with:
           report-json: ${{ env.COMPONENT_DIR }}/eslint-results.json
 

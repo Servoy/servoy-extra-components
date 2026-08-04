@@ -2,7 +2,7 @@
 const eslint = require('@eslint/js');
 const tseslint = require('typescript-eslint');
 const angular = require('angular-eslint');
-const stylisticTs = require('@stylistic/eslint-plugin-ts');
+const stylistic = require('@stylistic/eslint-plugin');
 const onlyWarn = require('eslint-plugin-only-warn');
 
 module.exports = tseslint.config(
@@ -10,7 +10,7 @@ module.exports = tseslint.config(
     files: ['**/*.ts'],
     plugins: {
       'only-warn': onlyWarn,
-      '@stylistic/ts': stylisticTs
+      '@stylistic': stylistic
     },
     extends: [
       eslint.configs.recommended,
@@ -54,7 +54,7 @@ module.exports = tseslint.config(
       '@angular-eslint/use-lifecycle-interface': 'off',
       '@angular-eslint/prefer-standalone': 'off',
       '@angular-eslint/prefer-inject': 'off',
-      '@stylistic/ts/quotes': ['warn', 'single', { avoidEscape: true }],
+      '@stylistic/quotes': ['warn', 'single', { avoidEscape: true }],
       '@typescript-eslint/consistent-type-definitions': 'error',
       '@typescript-eslint/dot-notation': 'off',
       '@typescript-eslint/no-wrapper-object-types': 'off',
