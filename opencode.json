@@ -1,0 +1,29 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["AGENTS.md"],
+  "command": {
+    "sdd": {
+      "description": "Run full Spec-Driven Development pipeline for a Jira issue for an angular servoy webcomponents project",
+      "template": "Load the 'sdd' skill and execute the full SDD pipeline for: $ARGUMENTS"
+    },
+    "spec-sync": {
+      "description": "Check that Servoy .spec files and Angular implementations are in sync",
+      "template": "Load the 'spec-sync' skill and check sync for: $ARGUMENTS"
+    },
+    "migrate": {
+      "description": "Migrate/modernize Angular components to newer patterns (signals, control flow, OnPush)",
+      "template": "Load the 'migration' skill and run migration for: $ARGUMENTS"
+    }
+  },
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "angular-cli": {
+      "type": "local",
+      "command": ["npx", "@angular/cli", "mcp"],
+      "cwd": "components"
+    }
+  }
+}
