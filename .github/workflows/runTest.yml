@@ -1,4 +1,4 @@
-name: Run the vitest component tests
+name: Lint and test
 
 on:
   push:
@@ -36,10 +36,15 @@ jobs:
           key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node_modules-
-          
-      - name: Install and run the vitest component tests
+
+      - name: Install dependencies
         working-directory: ${{ env.COMPONENT_DIR }}
-        run: |
-          npm install
-          npm run test
-          
+        run: npm install
+
+      - name: Lint
+        working-directory: ${{ env.COMPONENT_DIR }}
+        run: npx ng lint @servoy/servoyextracomponents --force
+
+      - name: Test
+        working-directory: ${{ env.COMPONENT_DIR }}
+        run: npm run test
