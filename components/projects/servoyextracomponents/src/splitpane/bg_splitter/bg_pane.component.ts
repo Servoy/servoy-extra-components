@@ -1,6 +1,4 @@
-import { Directive, ViewChild, ElementRef, input } from '@angular/core';
-
-import { BGSplitter } from './bg_splitter.component';
+import { Directive, ElementRef, input } from '@angular/core';
 
 @Directive({
     selector: 'bg-pane',

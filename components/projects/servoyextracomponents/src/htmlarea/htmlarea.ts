@@ -1,6 +1,6 @@
 import { Component, SimpleChanges, Renderer2, ChangeDetectorRef, ChangeDetectionStrategy, Inject, DOCUMENT, input, output, signal } from '@angular/core';
 import { ServoyBaseComponent, PropertyUtils, ServoyPublicService } from '@servoy/public';
-import tinymce, { RawEditorOptions, Editor } from 'tinymce';
+import { RawEditorOptions, Editor } from 'tinymce';
 
 
 @Component({
@@ -216,7 +216,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
         return this.editor;
     }
 
-    public onInit({ event, editor }: any) {
+    public onInit({ editor }: any) {
         this.editor = editor;
         this.lastServerValueAsSeenByTinyMCEContent = editor.getContent();
         const editable = this.editable() && !this.readOnly() && this.enabled();

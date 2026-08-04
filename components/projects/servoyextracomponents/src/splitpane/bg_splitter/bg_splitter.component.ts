@@ -44,7 +44,7 @@ export class BGSplitter implements AfterContentInit , OnChanges {
         this.renderer.addClass( this.handler, 'split-handler' );
     }
 
-    pointerup( event: PointerEvent ) {
+    pointerup( _event: PointerEvent ) {
         if ( this.drag ) {
             let dividerLocation: string;
             if(this.orientation() === 'vertical' ) {

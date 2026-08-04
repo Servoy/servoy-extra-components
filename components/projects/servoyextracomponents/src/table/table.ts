@@ -1,5 +1,5 @@
 import { Component, Renderer2, ElementRef, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy, Directive, Inject, SecurityContext, SimpleChanges, CSP_NONCE, DOCUMENT, input, viewChild, signal } from '@angular/core';
-import { BaseCustomObject, Format, IFoundset, IValuelist, ServoyBaseComponent, ViewPortRow, FoundsetChangeEvent, ChangeType, FormattingService, ViewportRowUpdates, LogLevel } from '@servoy/public';
+import { BaseCustomObject, Format, IFoundset, IValuelist, ServoyBaseComponent, ViewPortRow, FoundsetChangeEvent, ChangeType, FormattingService, ViewportRowUpdates } from '@servoy/public';
 import { LoggerFactory, LoggerService } from '@servoy/public';
 import { ResizeEvent } from 'angular-resizable-element';
 
@@ -1852,7 +1852,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         }, 0);
     }
 
-    private addColResizable(cleanPrevious: boolean) {
+    private addColResizable(_cleanPrevious: boolean) {
         // TODO
         //            const tbl = this.getNativeElement().querySelector(":first");
         //            if (cleanPrevious) {

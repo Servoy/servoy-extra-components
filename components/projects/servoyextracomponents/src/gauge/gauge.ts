@@ -1,7 +1,5 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Output, Renderer2, SimpleChanges, ViewChild, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, SimpleChanges, input, signal } from '@angular/core';
 import { ServoyBaseComponent } from '@servoy/public';
-import { BaseGauge } from './lib/base-gauge';
-import { RadialGauge } from './lib/radial-gauge';
 
 @Component({
     selector: 'servoyextra-gauge',
@@ -40,7 +38,7 @@ export class ServoyExtraGauge extends ServoyBaseComponent<HTMLDivElement> {
 
     canvasGauge: any;
 
-    onResize(event: any) {
+    onResize(_event: any) {
         if (!this.servoyApi.isInDesigner()) {
             this.canvasGauge.update({ height: this.elementRef.nativeElement.clientHeight });
             this.canvasGauge.update({ width: this.elementRef.nativeElement.clientWidth });

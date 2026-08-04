@@ -1,5 +1,5 @@
 import { Component, Renderer2, SimpleChanges, ChangeDetectorRef, ChangeDetectionStrategy, Inject, DOCUMENT, input, output, viewChild, signal } from '@angular/core';
-import { Select2Option, Select2UpdateEvent, Select2, Select2RemoveEvent } from 'ng-select2-component';
+import { Select2Option, Select2UpdateEvent, Select2 } from 'ng-select2-component';
 import { ServoyBaseComponent, IValuelist, Format, PopupStateService } from '@servoy/public';
 
 
@@ -343,7 +343,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 		}
 	}
 
-    listOpened(event: Select2) {
+    listOpened(_event: Select2) {
         this.popupStateService.activatePopup(this.getNativeElement().id);
         this.doc.addEventListener('keydown', this.handleTab, true);
 		this.userChangedValue = true;

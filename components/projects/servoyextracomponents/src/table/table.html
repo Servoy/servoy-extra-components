@@ -30,7 +30,7 @@
 </table>
 @if (isPaginationVisible()) {
   <ul #pager class="svy-pagination pagination svy-nomargin">
-    <li [class.disabled]="_currentPage() == 1" class="page-item"><a href="#" (click)="modifyPage(-1)" tabindex="-1" class="page-link">&laquo;</a></li>
+    <li [class.disabled]="_currentPage() === 1" class="page-item"><a href="#" (click)="modifyPage(-1)" tabindex="-1" class="page-link">&laquo;</a></li>
     <li class="page-item active"><span tabindex="-1" class="page-link">{{_currentPage()}}</span></li>
     <li [class.disabled]="!hasNext()" class="page-item"><a href="#" (click)="modifyPage(1)" tabindex="-1" class="page-link">&raquo;</a></li>
   </ul>

@@ -530,5 +530,3 @@ interface MetaField {
 
 type LogLevel = 'info' | 'warning' | 'error';
 
-const getTimeStamp = () => new Date();
-

@@ -292,10 +292,10 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
         this.manualRefresh.emit();
     }
 
-    public onDataChangeCallback(event: any, returnval: any) {
+    public onDataChangeCallback(_event: any, _returnval: any) {
     }
 
-    public onDataChangeCallbackHigh(event: any, returnval: any) {
+    public onDataChangeCallbackHigh(_event: any, _returnval: any) {
     }
 
 }

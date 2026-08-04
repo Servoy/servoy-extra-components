@@ -1,4 +1,4 @@
-import { Component, SimpleChanges, Renderer2, ElementRef, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy, input, output, viewChild, linkedSignal, computed } from '@angular/core';
+import { Component, SimpleChanges, Renderer2, ElementRef, ChangeDetectorRef, ChangeDetectionStrategy, input, output, viewChild, linkedSignal, computed } from '@angular/core';
 import { ServoyBaseComponent, Format } from '@servoy/public';
 
 @Component( {

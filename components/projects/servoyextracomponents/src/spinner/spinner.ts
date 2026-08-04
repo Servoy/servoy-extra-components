@@ -34,7 +34,7 @@ export class ServoyExtraSpinner extends ServoyBaseComponent<HTMLDivElement> {
 
 
 
-    constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, formattingService: FormattingService) {
+    constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, _formattingService: FormattingService) {
         super(renderer, cdRef);
     }
 
@@ -79,8 +79,8 @@ export class ServoyExtraSpinner extends ServoyBaseComponent<HTMLDivElement> {
         this.renderer.listen(this.getNativeChild(), 'scroll', e => this.scrollCallback(e));
         this.renderer.listen(this.getNativeChild(), 'keydown keypress', e => this.keydownKeypressCallback(e));
 
-        this.renderer.listen(spinnerButtons[0], 'click', e => this.increment());
-        this.renderer.listen(spinnerButtons[1], 'click', e => this.decrement());
+        this.renderer.listen(spinnerButtons[0], 'click', _e => this.increment());
+        this.renderer.listen(spinnerButtons[1], 'click', _e => this.decrement());
         
          const onActionMethodID = this.onActionMethodID();
          if (onActionMethodID)
@@ -171,13 +171,6 @@ export class ServoyExtraSpinner extends ServoyBaseComponent<HTMLDivElement> {
         for (let i = 0; i < this.valuelistID()!.length; i++) {
             const item = this.valuelistID()![i];
             if (item && item.realValue && dataProviderID === item.realValue) {
-                let displayFormat;
-                let type;
-                const format = this.format();
-                if (format && format.display)
-                    displayFormat = format.display;
-                if (format && format.type)
-                    type = format.type;
                 this.counter = i;
                 return item.displayValue;
             }

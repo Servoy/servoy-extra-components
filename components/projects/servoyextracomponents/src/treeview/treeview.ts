@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Output, SimpleChanges, Renderer2, input, viewChild, signal } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, SimpleChanges, Renderer2, input, viewChild, signal } from '@angular/core';
 import { Component } from '@angular/core';
 import { AngularTreeGridComponent } from '@servoy/angular-tree-grid';
 import { ServoyBaseComponent, ServoyPublicService, EventLike, JSEvent, LoggerFactory, LoggerService } from '@servoy/public';

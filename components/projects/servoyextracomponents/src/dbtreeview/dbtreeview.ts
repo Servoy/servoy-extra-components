@@ -67,7 +67,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
 					}
 				}
             },
-            dblClick: (_tree, node, $event) => {
+            dblClick: (_tree, node, _$event) => {
                 if (node.data && node.data.methodToCallOnDoubleClick) {
                     const doubleClick = node.data.methodToCallOnDoubleClick;
                     doubleClick(node.data.methodToCallOnDoubleClickParamValue);
@@ -269,7 +269,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
        }
     }
 
-    onTreeLoad(event: any) {
+    onTreeLoad(_event: any) {
         this._isInitialized.set(true);
         this.isInitializedChange.emit(this._isInitialized()!);
         const treenode = this.tree()!.treeModel.getNodeBy((node: any) => {

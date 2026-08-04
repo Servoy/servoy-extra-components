@@ -35,7 +35,6 @@ export class ServoyExtraYoutubeVideoEmbedder extends ServoyBaseComponent<HTMLIFr
     svyOnChanges(changes: SimpleChanges) {
         if (changes) {
             for (const property of Object.keys(changes)) {
-                const change = changes[property];
                 switch (property) {
                     case 'embeddedVideoURL':
                     case 'dataProviderID':

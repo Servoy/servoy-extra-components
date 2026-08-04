@@ -70,7 +70,8 @@ module.exports = tseslint.config(
       'id-match': 'off',
       'max-len': ['error', { code: 200 }],
       'no-underscore-dangle': 'off',
-      'valid-typeof': 'error'
+      'valid-typeof': 'error',
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }]
     }
   },
   {
