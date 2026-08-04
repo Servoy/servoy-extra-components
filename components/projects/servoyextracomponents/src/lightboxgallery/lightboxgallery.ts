@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, SimpleChanges, Renderer2, ChangeDetectionStrategy, input } from '@angular/core';
+import { Component, SimpleChanges, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { ServoyBaseComponent, IFoundset, BaseCustomObject } from '@servoy/public';
 import { Lightbox, LightboxConfig } from '@servoy/ngx-lightbox';
 
@@ -37,14 +37,13 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
     readonly responsiveHeight = input<number>(undefined as any);
     readonly imagesDataset = input<Image[] | undefined>(undefined);
 
+    private _lightbox = inject(Lightbox);
+    private _lightboxConfig = inject(LightboxConfig);
+
     public images: any[] = [];
 
     private checkNumber!: number;
     private nullImages!: number;
-
-    constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, private _lightbox: Lightbox, private _lightboxConfig: LightboxConfig) {
-        super(renderer, cdRef);
-    }
 
     svyOnInit() {
         super.svyOnInit();

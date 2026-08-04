@@ -1,5 +1,5 @@
 import { PointerType, ChangeContext, LabelType, Options } from '@angular-slider/ngx-slider';
-import { Component, SimpleChanges, Renderer2, ChangeDetectorRef, ChangeDetectionStrategy, input, output, EventEmitter } from '@angular/core';
+import { Component, SimpleChanges, ChangeDetectionStrategy, inject, input, output, EventEmitter } from '@angular/core';
 import { Format, ServoyBaseComponent } from '@servoy/public'
 
 import { FormattingService } from '@servoy/public';
@@ -65,15 +65,13 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
     readonly dataProviderHighChange = output<any>();
     manualRefresh: EventEmitter<void> = new EventEmitter<void>();
 
-    formattingFunctionParsed: any;
+    private formatService = inject(FormattingService);
 
     options: Options = {
         translate: (value: number, label: LabelType) => this.formatValue(value, label)
     };
 
-    constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, private formatService: FormattingService) {
-        super(renderer, cdRef);
-    }
+    formattingFunctionParsed: any;
 
     ngOnInit() {
         super.ngOnInit();

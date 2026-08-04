@@ -1,4 +1,4 @@
-import { Component, TemplateRef, ChangeDetectorRef, SimpleChanges, Renderer2, ChangeDetectionStrategy, input, output, contentChild, signal } from '@angular/core';
+import { Component, TemplateRef, SimpleChanges, ChangeDetectionStrategy, input, output, contentChild, signal } from '@angular/core';
 
 import { BaseCustomObject, ServoyBaseComponent } from '@servoy/public';
 
@@ -47,10 +47,6 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
     private leftTab: Pane | undefined;
     private rightTab: Pane | undefined;
 
-    constructor(renderer: Renderer2, cdRef: ChangeDetectorRef) {
-        super(renderer, cdRef);
-    }
-	
 	resizeCalc = () => {
 		const elementWidth = this.getInternalWidth();
 		const elementHeight = this.getInternalHeight();

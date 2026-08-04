@@ -1,4 +1,4 @@
-import { Component, SimpleChanges, Renderer2, ElementRef, ChangeDetectorRef, ChangeDetectionStrategy, input, output, viewChild, linkedSignal, computed } from '@angular/core';
+import { Component, SimpleChanges, ElementRef, ChangeDetectionStrategy, input, output, viewChild, linkedSignal, computed } from '@angular/core';
 import { ServoyBaseComponent, Format } from '@servoy/public';
 
 @Component( {
@@ -45,10 +45,6 @@ export class ServoyExtraTextfieldGroup extends ServoyBaseComponent<HTMLDivElemen
     });
     
     mustExecuteOnFocus = true;
-
-    constructor( renderer: Renderer2, cdRef: ChangeDetectorRef ) {
-        super( renderer, cdRef );
-    }
 
     svyOnInit() {
         super.svyOnInit();

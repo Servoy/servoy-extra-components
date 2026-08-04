@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, SimpleChanges, Renderer2, input, viewChild, signal } from '@angular/core';
+import { ChangeDetectionStrategy, SimpleChanges, inject, input, viewChild, signal } from '@angular/core';
 import { Component } from '@angular/core';
 import { AngularTreeGridComponent } from '@servoy/angular-tree-grid';
-import { ServoyBaseComponent, ServoyPublicService, EventLike, JSEvent, LoggerFactory, LoggerService } from '@servoy/public';
+import { ServoyBaseComponent, ServoyPublicService, EventLike, JSEvent, LoggerFactory } from '@servoy/public';
 import { ServoyExtraTreeviewCellRenderer } from './cellrenderer';
 
 @Component({
@@ -32,8 +32,10 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     dblClickTimeout: any = null;
     rowID = null;
 
+    private servoyPublicService = inject(ServoyPublicService);
+    log = inject(LoggerFactory).getLogger('Treeview');
+
     columnWidth = 'auto';
-    log: LoggerService;
 
     data: IRowData[] = [];
 
@@ -66,14 +68,8 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     folderImgPath = './assets/images/folder.png';
     fileImgPath = './assets/images/file.png';
 
-    //map internal name of the column to the original name as received in the jsDataSet
     columnNameMap: Record<string, string> = {};
     columnNameMapIndex: Record<number, string> = {};
-
-    constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, private servoyPublicService: ServoyPublicService, logFactory: LoggerFactory) {
-        super(renderer, cdRef);
-        this.log = logFactory.getLogger('Treeview');
-    }
 
 
     svyOnChanges(changes: SimpleChanges) {

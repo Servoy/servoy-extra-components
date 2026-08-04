@@ -1,4 +1,4 @@
-import { Directive, ElementRef, input } from '@angular/core';
+import { Directive, ElementRef, inject, input } from '@angular/core';
 
 /* eslint-disable @angular-eslint/directive-selector */
 @Directive({
@@ -15,7 +15,5 @@ export class BGPane{
 
     index!: number;
 
-    constructor(public element: ElementRef) {
-
-    }
+    element = inject(ElementRef);
 }

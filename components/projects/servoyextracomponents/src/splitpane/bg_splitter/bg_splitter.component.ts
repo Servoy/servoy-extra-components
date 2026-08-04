@@ -1,12 +1,12 @@
 import {
   ChangeDetectionStrategy, Component, OnChanges, SimpleChanges, AfterContentInit,
-  Renderer2, ViewEncapsulation, ElementRef, Inject,
-  DOCUMENT,
+  ViewEncapsulation, inject,
   input,
   output,
   contentChildren,
   viewChild
 } from '@angular/core';
+import { Renderer2, ElementRef, DOCUMENT } from '@angular/core';
 
 import { BGPane } from './bg_pane.component';
 /* eslint-disable @angular-eslint/component-selector */
@@ -37,10 +37,13 @@ export class BGSplitter implements AfterContentInit , OnChanges {
 
     private readonly elementRef = viewChild<ElementRef>('element');
 
+    private readonly renderer = inject(Renderer2);
+    private doc = inject(DOCUMENT);
+
     private drag = false;
     private handler;
 
-    constructor( private readonly renderer: Renderer2, @Inject(DOCUMENT) private doc: Document) {
+    constructor() {
         this.handler = this.renderer.createElement( 'div' );
         this.renderer.addClass( this.handler, 'split-handler' );
     }

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-import { Input, NgZone, ElementRef, OnInit, AfterViewInit, Directive, output, viewChild } from '@angular/core';
+import { Input, NgZone, ElementRef, OnInit, AfterViewInit, Directive, output, viewChild, inject } from '@angular/core';
 // @ts-expect-error untyped module
 import * as CanvasGauges from '@servoy/canvas-gauges';
 // @ts-expect-error untyped module
@@ -86,13 +86,8 @@ export abstract class BaseGauge<T extends CanvasGauges.BaseGauge, T2 extends Can
     private domListener!: MutationObserver | null;
 
 
-    /**
-     *
-     * @param el - reference to the element of the whole component, used to scrape options declared on the component itself
-     * @param zone - required to redraw gauge outside of Angular, due to animation lags caused by the ovewritten function of the ngZone
-     */
-    constructor(private el: ElementRef, public zone: NgZone) {
-    }
+    private el = inject(ElementRef);
+    public zone = inject(NgZone);
 
 
     /**

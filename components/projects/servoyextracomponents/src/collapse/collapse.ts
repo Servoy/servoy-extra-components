@@ -1,6 +1,7 @@
-import { Component, Renderer2, SimpleChanges, ChangeDetectorRef, ChangeDetectionStrategy, TemplateRef, Inject, DOCUMENT, input, output, contentChild } from '@angular/core';
+import { Component, SimpleChanges, ChangeDetectionStrategy, TemplateRef, inject, input, output, contentChild } from '@angular/core';
 import { BaseCustomObject, ServoyBaseComponent } from '@servoy/public';
 import { ServoyPublicService } from '@servoy/public';
+import { DOCUMENT } from '@angular/common';
 
 
 @Component({
@@ -34,12 +35,11 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 	timer: any;
 	delay!: Number;
 
-	constructor(
-		renderer: Renderer2,
-		cdRef: ChangeDetectorRef,
-		@Inject(DOCUMENT) private document: Document,
-		private servoyPublic: ServoyPublicService) {
-		super(renderer, cdRef);
+	private document = inject(DOCUMENT);
+	private servoyPublic = inject(ServoyPublicService);
+
+	constructor() {
+		super();
 	}
 
 	svyOnInit() {

@@ -1,6 +1,7 @@
-import { Component, Renderer2, SimpleChanges, ChangeDetectorRef, ChangeDetectionStrategy, Inject, DOCUMENT, input, output, viewChild, signal } from '@angular/core';
+import { Component, SimpleChanges, ChangeDetectionStrategy, inject, input, output, viewChild, signal } from '@angular/core';
 import { Select2Option, Select2UpdateEvent, Select2 } from 'ng-select2-component';
 import { ServoyBaseComponent, IValuelist, Format, PopupStateService } from '@servoy/public';
+import { DOCUMENT } from '@angular/common';
 
 
 @Component({
@@ -56,10 +57,13 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     listPosition: 'above' | 'below' | 'auto' = 'auto';
     mustExecuteOnFocus = true;
 
+    private doc = inject(DOCUMENT);
+    protected popupStateService = inject(PopupStateService);
+
     userChangedValue = false;
 
-    constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, @Inject(DOCUMENT) private doc: Document, protected popupStateService: PopupStateService) {
-        super(renderer, cdRef);
+    constructor() {
+        super();
     }
 
     handleKeyDown(event: KeyboardEvent) {

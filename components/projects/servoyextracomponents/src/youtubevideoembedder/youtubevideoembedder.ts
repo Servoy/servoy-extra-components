@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, SimpleChanges, Renderer2, ChangeDetectorRef, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, SimpleChanges, inject, input } from '@angular/core';
 import { ServoyBaseComponent } from '@servoy/public';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
@@ -25,12 +25,8 @@ export class ServoyExtraYoutubeVideoEmbedder extends ServoyBaseComponent<HTMLIFr
     readonly embeddedVideoURL = input<string>(undefined as any);
     readonly dataProviderID = input<string>(undefined as any);
 
-    public fullYoutubeURL: SafeResourceUrl;
-
-    constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, private sanitizer: DomSanitizer) {
-        super(renderer, cdRef);
-         this.fullYoutubeURL = this.sanitizer.bypassSecurityTrustResourceUrl('');
-    }
+    private sanitizer = inject(DomSanitizer);
+    public fullYoutubeURL: SafeResourceUrl = this.sanitizer.bypassSecurityTrustResourceUrl('');
 
     svyOnChanges(changes: SimpleChanges) {
         if (changes) {

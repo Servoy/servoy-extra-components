@@ -1,8 +1,9 @@
-import { Component, SimpleChanges, Renderer2, ChangeDetectorRef, ChangeDetectionStrategy, Inject, ElementRef, DOCUMENT, input, output, viewChild } from '@angular/core';
+import { Component, SimpleChanges, ChangeDetectionStrategy, ElementRef, inject, input, output, viewChild } from '@angular/core';
 import { ServoyBaseComponent, ServoyPublicService } from '@servoy/public';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 
-import { LoggerFactory, LoggerService } from '@servoy/public';
+import { LoggerFactory } from '@servoy/public';
+import { DOCUMENT } from '@angular/common';
 import {FileTypesUtilsService} from './lib/filetypes';
 
 @Component({
@@ -49,14 +50,11 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
     customText!: string;
     acceptFiles = '*/*';
     private ready = true;
-    private log: LoggerService;
+    private servoyService = inject(ServoyPublicService);
+    private doc = inject(DOCUMENT);
+    private log = inject(LoggerFactory).getLogger('FileUpload');
+    private fileutilsService = inject(FileTypesUtilsService);
     private hideProgressTimer: any;
-
-    constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, private servoyService: ServoyPublicService, @Inject(DOCUMENT) private doc: Document, 
-        logFactory: LoggerFactory,private fileutilsService: FileTypesUtilsService) {
-        super(renderer, cdRef);
-        this.log = logFactory.getLogger('FileUpload');
-    }
 
     public fileOverBase(e: any): void {
         this.hasBaseDropZoneOver = e;

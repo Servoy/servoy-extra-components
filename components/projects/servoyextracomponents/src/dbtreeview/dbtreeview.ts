@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, Renderer2, SimpleChanges, input, output, viewChild, effect, signal } from '@angular/core';
-import { LoggerService, LoggerFactory, ServoyBaseComponent, BaseCustomObject, IFoundsetTree, ServoyPublicService, EventLike, JSEvent } from '@servoy/public';
+import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, SimpleChanges, inject, input, output, viewChild, effect, signal } from '@angular/core';
+import { LoggerFactory, ServoyBaseComponent, BaseCustomObject, IFoundsetTree, ServoyPublicService, EventLike, JSEvent } from '@servoy/public';
 import { IActionMapping, ITreeOptions, TreeComponent, TreeNode } from '@ali-hm/angular-tree-component';
 
 
@@ -42,7 +42,8 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     _selection = signal<string[] | undefined>(undefined);
     _isInitialized = signal<boolean | undefined>(undefined);
 
-    log: LoggerService;
+    private servoyPublicService = inject(ServoyPublicService);
+    log = inject(LoggerFactory).getLogger('ServoyExtraDbtreeview');
     folderImgPath = './assets/images/folder.png';
     fileImgPath = './assets/images/file.png';
     expandedNodes: string[] = [];
@@ -91,10 +92,8 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
 		scrollOnActivate: false
     };
 
-    constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, logFactory: LoggerFactory,
-        private servoyPublicService: ServoyPublicService) {
-        super(renderer, cdRef);
-        this.log = logFactory.getLogger('ServoyExtraDbtreeview');
+    constructor() {
+        super();
         effect(() => {
             const el = this.elementRefSignal();
             if (el) {

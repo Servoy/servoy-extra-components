@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-import { ChangeDetectionStrategy, Component, NgZone, ElementRef, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { BaseGauge } from './base-gauge';
 // @ts-expect-error untyped module
 import * as CanvasGauges from '@servoy/canvas-gauges';
@@ -41,9 +41,6 @@ export { RadialGaugeOptions } from '@servoy/canvas-gauges';
     standalone: false
 })
 export class RadialGauge extends BaseGauge<CanvasGauges.RadialGauge, CanvasGauges.RadialGaugeOptions> implements OnInit {
-    constructor(el: ElementRef, zone: NgZone) {
-        super(el, zone);
-    }
 
     ngOnInit() {
         this.gauge = new CanvasGauges.RadialGauge(this.options).draw();

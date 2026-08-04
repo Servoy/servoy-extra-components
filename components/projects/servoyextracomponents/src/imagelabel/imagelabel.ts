@@ -1,4 +1,4 @@
-import { Component, SimpleChanges, Renderer2, ChangeDetectorRef, ChangeDetectionStrategy, input } from '@angular/core';
+import { Component, SimpleChanges, ChangeDetectionStrategy, input } from '@angular/core';
 import { ServoyBaseComponent } from '@servoy/public';
 
 @Component( {
@@ -23,9 +23,6 @@ export class ServoyExtraImageLabel extends ServoyBaseComponent<HTMLImageElement>
 
     designerURL = 'servoyextra/imagelabel/label.png';
     
-    constructor( renderer: Renderer2, cdRef: ChangeDetectorRef) {
-        super( renderer, cdRef );
-    }
 
     svyOnInit() {
         super.svyOnInit();

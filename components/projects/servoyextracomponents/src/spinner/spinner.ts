@@ -1,5 +1,5 @@
-import { Component, Renderer2, SimpleChanges, ChangeDetectorRef, ChangeDetectionStrategy, input, output, signal } from '@angular/core';
-import { Format, FormattingService, ServoyBaseComponent, IValuelist } from '@servoy/public';
+import { Component, SimpleChanges, ChangeDetectionStrategy, input, output, signal } from '@angular/core';
+import { Format, ServoyBaseComponent, IValuelist } from '@servoy/public';
 
 @Component({
     selector: 'servoyextra-spinner',
@@ -31,12 +31,6 @@ export class ServoyExtraSpinner extends ServoyBaseComponent<HTMLDivElement> {
        
     selection: any;
     private counter = 0;
-
-
-
-    constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, _formattingService: FormattingService) {
-        super(renderer, cdRef);
-    }
 
     svyOnInit() {
         this._dataProviderID.set(this.dataProviderID());

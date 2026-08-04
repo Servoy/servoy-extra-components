@@ -1,5 +1,5 @@
-import { Component, SimpleChanges, Renderer2, ChangeDetectorRef, ChangeDetectionStrategy, input, viewChild } from '@angular/core';
-import { JSEvent, LoggerFactory, LoggerService, ServoyBaseComponent, ServoyPublicService } from '@servoy/public';
+import { Component, SimpleChanges, ChangeDetectionStrategy, inject, input, viewChild } from '@angular/core';
+import { JSEvent, LoggerFactory, ServoyBaseComponent, ServoyPublicService } from '@servoy/public';
 import { Uppy, UppyFile, UppyOptions,Restrictions } from '@uppy/core';
 import { FileProgress } from '@uppy/utils';
 import { DashboardComponent } from '@uppy/angular';
@@ -59,14 +59,13 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
         proudlyDisplayPoweredByUppy: false,
         inline: false
     };
-    log: LoggerService;
+    private servoyService = inject(ServoyPublicService);
+    log = inject(LoggerFactory).getLogger('ServoyExtraMultiFileUpload');
 
     private plugins: Record<string, () => Promise<void>> = {};
 
-    constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, private servoyService: ServoyPublicService,
-        logFactory: LoggerFactory) {
-        super(renderer, cdRef);
-        this.log = logFactory.getLogger('ServoyExtraMultiFileUpload');
+    constructor() {
+        super();
         this.plugins.Webcam = this.installWebcam;
         this.plugins.ScreenCapture = this.installScreenCapture;
         this.loadUppyLocale();

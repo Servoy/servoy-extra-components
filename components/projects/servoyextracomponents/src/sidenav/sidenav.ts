@@ -1,10 +1,11 @@
 import {
-    ChangeDetectionStrategy, Component, SimpleChanges, Renderer2, ChangeDetectorRef,
-    TemplateRef, ElementRef, Inject, DOCUMENT, input, output, contentChild, viewChild, effect, signal, linkedSignal
+    ChangeDetectionStrategy, Component, SimpleChanges,
+    TemplateRef, ElementRef, inject, input, output, contentChild, viewChild, effect, signal, linkedSignal
 } from '@angular/core';
 import { ServoyBaseComponent, ServoyPublicService, IJSMenu, IJSMenuItem } from '@servoy/public';
 
-import { LoggerFactory, LoggerService } from '@servoy/public';
+import { LoggerFactory } from '@servoy/public';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
 	selector: 'servoyextra-sidenav',
@@ -69,11 +70,12 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	public realContainedForm!: string;
 	private realHeaderForm: any;
 	private realFooterForm: any;
-	private log: LoggerService;
+	private servoyPublic = inject(ServoyPublicService);
+	private doc = inject(DOCUMENT);
+	private log = inject(LoggerFactory).getLogger('SideNav');
 
-	constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, private servoyPublic: ServoyPublicService, @Inject(DOCUMENT) private doc: Document, logFactory: LoggerFactory) {
-		super(renderer, cdRef);
-		this.log = logFactory.getLogger('SideNav');
+	constructor() {
+		super();
         effect(() => {
             const el = this.elementRefSignal();
             if (el) {

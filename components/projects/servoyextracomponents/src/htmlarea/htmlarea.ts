@@ -1,6 +1,7 @@
-import { Component, SimpleChanges, Renderer2, ChangeDetectorRef, ChangeDetectionStrategy, Inject, DOCUMENT, input, output, signal } from '@angular/core';
+import { Component, SimpleChanges, ChangeDetectionStrategy, inject, input, output, signal } from '@angular/core';
 import { ServoyBaseComponent, PropertyUtils, ServoyPublicService } from '@servoy/public';
 import { RawEditorOptions, Editor } from 'tinymce';
+import { DOCUMENT } from '@angular/common';
 
 
 @Component({
@@ -46,11 +47,10 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
     };
     editor!: Editor;
     
+    protected servoyPublicService = inject(ServoyPublicService);
+    private document = inject(DOCUMENT);
+    
     private tabIndex = -2;
-
-    constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, protected servoyPublicService: ServoyPublicService, @Inject(DOCUMENT) private document: Document) {
-        super(renderer, cdRef);
-    }
 
     focus() {
         const onFocusGainedMethodID = this.onFocusGainedMethodID();

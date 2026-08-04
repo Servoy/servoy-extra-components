@@ -1,11 +1,11 @@
 import {
-    Component, Renderer2, ElementRef, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy,
-    Directive, Inject, SecurityContext, SimpleChanges, CSP_NONCE, DOCUMENT, input, viewChild, signal
+    Component, ElementRef, OnDestroy, ChangeDetectionStrategy,
+    Directive, SecurityContext, SimpleChanges, CSP_NONCE, inject, input, viewChild, signal
 } from '@angular/core';
 import { BaseCustomObject, Format, IFoundset, IValuelist, ServoyBaseComponent, ViewPortRow, FoundsetChangeEvent, ChangeType, FormattingService, ViewportRowUpdates } from '@servoy/public';
-import { LoggerFactory, LoggerService } from '@servoy/public';
+import { LoggerFactory } from '@servoy/public';
 import { ResizeEvent } from 'angular-resizable-element';
-
+import { DOCUMENT } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Directive({
@@ -18,8 +18,7 @@ export class TableRow {
 
     readonly svyTableRow = input<number>(undefined as any);
 
-    constructor(public elRef: ElementRef) {
-    }
+    elRef = inject(ElementRef);
 }
 const instanceOfValuelist = (obj: any): obj is IValuelist =>
     obj != null && (obj).filterList instanceof Function;
@@ -92,8 +91,12 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         fastScrollLoadThresholdFactor: number;
     } | undefined>(undefined);
 
+    private log = inject(LoggerFactory).getLogger('Table');
+    private sanitizer = inject(DomSanitizer);
+    private doc = inject(DOCUMENT);
+    private formatter = inject(FormattingService);
+    private nonce = inject(CSP_NONCE, { optional: true });
     private skipOnce = false;
-    private log: LoggerService;
     private sortColumnIndex = -1;
     // RENDERED bounds (relative to foundset start (so not to any viewport)): the rendered rows are actually present in DOM with all data in them;
     // rendered rows can be only a part of the LOADED viewport (so what model.foundset.viewport has);
@@ -140,12 +143,6 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     private layoutStyle: { height?: string; maxHeight?: string; position?: string } = {};
     private tableStyle: { width?: string } = {};
     private tHeadStyle: { cursor?: string; left?: string } = {};
-
-    constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, logFactory: LoggerFactory, private sanitizer: DomSanitizer,
-        @Inject(DOCUMENT) private doc: Document, private formatter: FormattingService, @Inject(CSP_NONCE) private nonce: string) {
-        super(renderer, cdRef);
-        this.log = logFactory.getLogger('Table');
-    }
 
     windowResizeHandler() {
         if (this.resizeTimeout) clearTimeout(this.resizeTimeout);
@@ -1427,7 +1424,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
             if (!this.columnCSSRules[columnIndex]) {
                 if (!targetStyleSheet) {
                     const styleElement = this.doc.createElement('style');
-                    styleElement.nonce = this.nonce;
+                    styleElement.nonce = this.nonce!;
                     styleElement.type = 'text/css';
                     this.doc.getElementsByTagName('head')[0].appendChild(styleElement);
                     targetStyleSheet = styleElement.sheet!;
