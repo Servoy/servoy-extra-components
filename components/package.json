@@ -9,7 +9,8 @@
     "make_release": "ng build --configuration production @servoy/servoyextracomponents && node scripts/build.js",
     "test": "ng test @servoy/servoyextracomponents --no-watch",
     "test:watch": "ng test @servoy/servoyextracomponents",
-    "test:ui": "ng test @servoy/servoyextracomponents --ui"
+    "test:ui": "ng test @servoy/servoyextracomponents --ui",
+    "lint": "ng lint @servoy/servoyextracomponents"
   },
   "private": true,
   "dependencies": {
