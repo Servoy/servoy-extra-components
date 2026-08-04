@@ -31,6 +31,15 @@
             "buildTarget": "dummy:build",
             "runnerConfig": "vitest-base.config.ts"
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/servoyextracomponents/**/*.ts",
+              "projects/servoyextracomponents/**/*.html"
+            ]
+          }
         }
       }
     },
