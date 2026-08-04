@@ -69,6 +69,7 @@
     "@types/file-saver": "2.0.7",
     "@types/lodash": "4.17.25",
     "@types/luxon": "^3.7.3",
+    "@types/node": "^26.1.2",
     "adm-zip": "^0.6.0",
     "angular-eslint": "^22.1.0",
     "eslint": "^10.8.0",
