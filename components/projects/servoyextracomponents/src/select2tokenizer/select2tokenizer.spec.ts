@@ -23,8 +23,12 @@ const mockData = [{
     'displayValue': 'four',
     'realValue': 4
 }] as IValuelist;
-mockData.hasRealValues = () => { return true; };
-mockData.filterList = (value: any) => { return of(mockData.filter(item => item.displayValue.includes(value))); };
+mockData.hasRealValues = () => {
+    return true; 
+};
+mockData.filterList = (value: any) => {
+ return of(mockData.filter(item => item.displayValue.includes(value))); 
+};
 mockData.getDisplayValue = (value: any) => {
     const item = mockData.find(({ realValue }) => realValue === value);
     if (item) return of(item.displayValue);

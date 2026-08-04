@@ -8,9 +8,9 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
 
 beforeAll(() => {
     globalThis.ResizeObserver = class {
-        observe() {}
-        unobserve() {}
-        disconnect() {}
+        observe() { /* noop */ }
+        unobserve() { /* noop */ }
+        disconnect() { /* noop */ }
     } as any;
 });
 

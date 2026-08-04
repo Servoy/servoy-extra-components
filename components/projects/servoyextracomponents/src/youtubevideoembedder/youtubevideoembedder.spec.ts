@@ -1,13 +1,12 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { ServoyApiTesting, ServoyPublicTestingModule } from '@servoy/public';
 import { ServoyExtraYoutubeVideoEmbedder } from './youtubevideoembedder';
 
 describe('ServoyExtraYoutubeVideoEmbedder', () => {
     let fixture: ComponentFixture<ServoyExtraYoutubeVideoEmbedder>;
-    let component: ServoyExtraYoutubeVideoEmbedder;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -17,7 +16,6 @@ describe('ServoyExtraYoutubeVideoEmbedder', () => {
         }).compileComponents();
 
         fixture = TestBed.createComponent(ServoyExtraYoutubeVideoEmbedder);
-        component = fixture.componentInstance;
 
         fixture.componentRef.setInput('servoyApi', new ServoyApiTesting());
         fixture.componentRef.setInput('enabled', true);

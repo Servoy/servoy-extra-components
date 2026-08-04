@@ -99,7 +99,7 @@ describe('ServoyExtraFileUpload', () => {
         multiFixture.componentRef.setInput('uploadText', 'Upload File');
         multiFixture.componentRef.setInput('uploadSuccessText', 'Success!');
         multiFixture.componentRef.setInput('uploadNotSupportedFileText', 'File type not supported');
-        multiFixture.componentRef.setInput('onFileUploadedMethodID', () => {});
+        multiFixture.componentRef.setInput('onFileUploadedMethodID', () => { /* noop */ });
         multiFixture.detectChanges();
         await multiFixture.whenStable();
         const input = multiFixture.nativeElement.querySelector('input[type="file"]');

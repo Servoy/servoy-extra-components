@@ -8,7 +8,6 @@ const onlyWarn = require('eslint-plugin-only-warn');
 module.exports = tseslint.config(
   {
     files: ['**/*.ts'],
-    ignores: ['**/*.spec.ts'],
     plugins: {
       'only-warn': onlyWarn,
       '@stylistic/ts': stylisticTs

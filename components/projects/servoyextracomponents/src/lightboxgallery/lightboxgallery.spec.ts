@@ -1,11 +1,13 @@
-import { TestBed, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { NO_ERRORS_SCHEMA, SimpleChange } from '@angular/core';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ServoyApiTesting, ServoyPublicTestingModule } from '@servoy/public';
 
 vi.mock('@servoy/ngx-lightbox', () => {
-    class MockLightbox { open = vi.fn(); close = vi.fn(); }
+    class MockLightbox {
+ open = vi.fn(); close = vi.fn(); 
+}
     class MockLightboxConfig {}
     class MockLightboxModule {}
     return { Lightbox: MockLightbox, LightboxConfig: MockLightboxConfig, LightboxModule: MockLightboxModule };
