@@ -24,7 +24,7 @@ Read `AGENTS.md` for testing approach and conventions.
 
 ### 3. Find the tests
 
-Use `grep` and `glob` to locate Cypress test files (`.cy.ts`) related to the
+Use `grep` and `glob` to locate Vitest test files (`.spec.ts`) related to the
 feature. Read each test file in full.
 
 ### 4. Spec coverage matrix
@@ -42,18 +42,20 @@ exercises it:
 For each test file:
 
 **Assertions**
-- [ ] Every `it` block has at least one meaningful assertion (`.should()`)
-- [ ] Assertions are specific (exact values, not just `.should('exist')`)
+- [ ] Every `it` block has at least one meaningful assertion (`expect(...)`)
+- [ ] Assertions are specific (exact values, not just `toBeTruthy()`)
 
 **Independence**
 - [ ] Tests do not share mutable state between `it` blocks
 - [ ] Each test can run in isolation and in any order
 - [ ] `beforeEach` / `afterEach` used correctly for setup/teardown
 
-**WrapperComponent pattern**
-- [ ] Uses the established WrapperComponent pattern from this project
-- [ ] Signal-based properties used correctly
-- [ ] `fixture.detectChanges()` called after signal updates
+**Direct component pattern**
+- [ ] Uses direct `TestBed.createComponent(TheComponent)` (NOT WrapperComponent)
+- [ ] Uses `fixture.componentRef.setInput()` for signal inputs
+- [ ] `fixture.detectChanges()` + `await fixture.whenStable()` called after input changes
+- [ ] Uses `NO_ERRORS_SCHEMA` to suppress unknown directive warnings
+- [ ] Does NOT import `ServoyExtraComponentsModule`
 
 **Naming & readability**
 - [ ] `describe` and `it` descriptions are clear and specific
@@ -63,11 +65,15 @@ For each test file:
 - [ ] Null / undefined inputs tested where applicable
 - [ ] Empty collections tested (empty arrays, empty strings)
 - [ ] Boundary values tested
-- [ ] Signal reactivity tested (value changes after mount)
+- [ ] Input changes tested (value changes after initial render)
 
 **DOM assertions**
 - [ ] Tests verify rendered DOM, not implementation internals
 - [ ] Selectors are stable (not relying on generated class names)
+
+**Handler/output testing**
+- [ ] Handlers set via `setInput('onHandler', vi.fn())` and verified with `toHaveBeenCalled()`
+- [ ] Outputs tested via `component.outputName.subscribe(spy)` pattern
 
 ### 6. Output
 
