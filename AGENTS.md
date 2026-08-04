@@ -183,8 +183,11 @@ servoy-extra-components/
 
 After making code changes, always verify:
 1. `npm run build` — must compile without errors
-2. `npx ng lint` — check for lint warnings
+2. `npm run lint` — check for lint warnings
 3. Run relevant tests: `npm run test` or target a specific component
+4. If `package.json` dependencies were changed, verify distribution package is in sync:
+   compare `components/package.json` dependencies with
+   `components/projects/servoyextracomponents/package.json` peer/dependencies
 
 ### Commit message format
 

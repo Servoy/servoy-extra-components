@@ -28,6 +28,47 @@ function validateCommitMessage(message: string, options: CommitLintOptions = {})
   return errors
 }
 
+function validatePackageSync(rootPkg: any, distPkg: any): string[] {
+  const errors: string[] = []
+  const rootDeps = rootPkg.dependencies || {}
+  const distDeps = distPkg.dependencies || {}
+  const distPeerDeps = distPkg.peerDependencies || {}
+
+  const angularPackages = [
+    "@angular/animations", "@angular/common", "@angular/core", "@angular/forms",
+    "@angular/cdk"
+  ]
+
+  for (const pkg of angularPackages) {
+    const rootVersion = rootDeps[pkg]
+    const distVersion = distPeerDeps[pkg] || distDeps[pkg]
+    if (rootVersion && distVersion) {
+      const rootMajor = rootVersion.replace(/[^0-9]/g, "").substring(0, 2)
+      const distMajor = distVersion.replace(/[^0-9]/g, "").substring(0, 2)
+      if (rootMajor !== distMajor) {
+        errors.push(
+          `${pkg}: root has ${rootVersion} but distribution has ${distVersion} — major versions must match`
+        )
+      }
+    }
+  }
+
+  for (const [pkg, distVersion] of Object.entries(distDeps)) {
+    if (rootDeps[pkg]) {
+      const rootVersion = rootDeps[pkg] as string
+      const rootMajor = rootVersion.replace(/[~^>=<]/g, "").split(".")[0]
+      const distMajorStr = (distVersion as string).replace(/[~^>=<]/g, "").split(".")[0]
+      if (rootMajor && distMajorStr && parseInt(rootMajor) > parseInt(distMajorStr) + 1) {
+        errors.push(
+          `${pkg}: root has ${rootVersion} but distribution has ${distVersion} — may be out of sync`
+        )
+      }
+    }
+  }
+
+  return errors
+}
+
 let requireJiraKey = false
 
 export default (async () => {
