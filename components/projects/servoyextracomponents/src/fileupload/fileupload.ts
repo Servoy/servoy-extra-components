@@ -79,8 +79,8 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
             const options: FileUploaderOptions = { url }
             const accept = this.accept();
             if (accept && '*/*' != accept) {
-                const acceptedFiles = new Array();
-                const acceptedMimeTypes = new Array();
+                const acceptedFiles: any[] = [];
+                const acceptedMimeTypes: any[] = [];
                 accept.split(',').forEach(value => {
                     // library wants mime type here, so try to guess it
                     value = value.trim();
@@ -105,10 +105,9 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
                         if (value.indexOf('.') >= 0) value = value.substring(value.indexOf('.') + 1);
                         const mime = this.fileutilsService.mimeFor(value);
                         if (!mime) {
-                            console.warn("Cannot set accept value for fileupload component, cannot determine mime type from: " + value);
+                            console.warn('Cannot set accept value for fileupload component, cannot determine mime type from: ' + value);
                             acceptedFiles.push('.' + value);
-                        }
-                        else {
+                        } else {
                             acceptedFiles.push(mime);
                             acceptedMimeTypes.push(mime);
                         }
@@ -148,8 +147,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
                     }
                 });
                 this.uploader = new FileUploader(options);
-            }
-            else this.uploader = new FileUploader(options);
+            } else this.uploader = new FileUploader(options);
             this.uploader.onProgressItem = () => {
                 this.cdRef.detectChanges();
             };
@@ -209,7 +207,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
                              this.customText = this.uploadText() ?? '';
                         } else{
                             this.renderer.setAttribute(this.getFocusElement(), 'disabled', 'disabled');
-                            if (!this.servoyApi.isInDesigner()) this.customText = "Component disabled, cannot upload file.";
+                            if (!this.servoyApi.isInDesigner()) this.customText = 'Component disabled, cannot upload file.';
                         }
                         break;
                     case 'uploadText':

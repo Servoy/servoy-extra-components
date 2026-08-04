@@ -52,7 +52,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     tabIndex!: number;
 
     data: Select2Option[] = [];
-    filteredDataProviderId!: Array<any>;
+    filteredDataProviderId!: any[];
     listPosition: 'above' | 'below' | 'auto' = 'auto';
     mustExecuteOnFocus = true;
 
@@ -155,7 +155,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                             // only refresh once, after the last one resolves
                             if (counter === 0) {
 								// workaround for library issue, must also change the value otherwise is not refreshed
-								var oldFilteredDataProviderId = this.filteredDataProviderId;
+								const oldFilteredDataProviderId = this.filteredDataProviderId;
 								this.filteredDataProviderId = [];
                                 this.cdRef.detectChanges();
 								this.data = [...opt];
@@ -422,11 +422,11 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     }
 
     private isTypeString() {
-        return this.format()!.type === "TEXT";
+        return this.format()!.type === 'TEXT';
     }
 
     private isTypeNumber() {
-        return this.format()!.type === "INTEGER";
+        return this.format()!.type === 'INTEGER';
     }
 
     private isTypeBoolean() {

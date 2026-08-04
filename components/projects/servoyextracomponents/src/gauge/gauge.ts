@@ -112,10 +112,10 @@ export class ServoyExtraGauge extends ServoyBaseComponent<HTMLDivElement> {
         if (fontOptions) Object.assign(canvasGaugeOptions, fontOptions);
 
         const gaugeType = this.gaugeType();
-        if (gaugeType == "radial") {
+        if (gaugeType == 'radial') {
             const radialGaugeOptions = this.radialGaugeOptions();
             if (radialGaugeOptions) Object.assign(canvasGaugeOptions, radialGaugeOptions);
-        } else if (gaugeType == "linear") {
+        } else if (gaugeType == 'linear') {
             const linearGaugeOptions = this.linearGaugeOptions();
             if (linearGaugeOptions) Object.assign(canvasGaugeOptions, linearGaugeOptions);
         }

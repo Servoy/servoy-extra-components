@@ -52,7 +52,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
 
     showDashboard = false;
 
-    filesToBeAdded: Array<string> = [];
+    filesToBeAdded: string[] = [];
 
     uppy: Uppy = new Uppy();
     properties: DashboardOptions<any,any> = {
@@ -158,8 +158,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
                 this.showDashboard = true;
                 this.cdRef.detectChanges();
             });
-        }
-        else {
+        } else {
             this.showDashboard = true;
         }
     }
@@ -369,8 +368,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
 					width: this.cssPosition()!.width,
 					height: this.cssPosition()!.height
 				}
-			}
-			else{
+			} else{
 				const wrapper = this.elementRef.nativeElement.closest('.svy-wrapper') as HTMLDivElement;
 				return {
 					width: wrapper.offsetWidth,
@@ -520,7 +518,7 @@ interface BaseFile {
 }
 
 interface UploadFile extends BaseFile {
-    metaFields: { [key: string]: MetaField };
+    metaFields: Record<string, MetaField>;
 }
 
 interface MetaField {

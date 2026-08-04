@@ -243,7 +243,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 	 */
 	private setCollapsedState(index: number, state: boolean) {
 		const collapsibleToChange = this.getCollapsible(index);
-		var accordionClosedCollapsible: any[] = [null, null];
+		let accordionClosedCollapsible: any[] = [null, null];
 		if (this.accordionMode() && state === false) {
 			for (let i = 0; i < this.collapsibles()!.length; i++) {
 				const otherCollapse = this.getCollapsible(i);

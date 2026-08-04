@@ -35,9 +35,9 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
     readonly enabled = input<boolean>(undefined as any);
     readonly imageBatchSize = input<number>(undefined as any);
     readonly responsiveHeight = input<number>(undefined as any);
-    readonly imagesDataset = input<Array<Image> | undefined>(undefined);
+    readonly imagesDataset = input<Image[] | undefined>(undefined);
 
-    public images: Array<any> = [];
+    public images: any[] = [];
 
     private checkNumber!: number;
     private nullImages!: number;
@@ -149,10 +149,10 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 		const arr = document.querySelector('.lb-number')!.textContent!.split(' ');
 		arr[arr.length-1] = totalImages;
 		if (page === -1) {
-			// eslint-disable-next-line radix
+			 
 			arr[1] = (parseInt(arr[1]) - 1).toString();
 		} else if (page === 1) {
-			// eslint-disable-next-line radix
+			 
 			arr[1] = (parseInt(arr[1]) + 1).toString();
 		}
 		if (document.querySelector('.lb-number')!.textContent!.length > 0) {

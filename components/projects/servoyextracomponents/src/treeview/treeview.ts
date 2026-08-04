@@ -35,7 +35,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     columnWidth = 'auto';
     log: LoggerService;
 
-    data: Array<IRowData> = [];
+    data: IRowData[] = [];
 
     configs: any = {
         id_field: 'id',
@@ -67,8 +67,8 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     fileImgPath = './assets/images/file.png';
 
     //map internal name of the column to the original name as received in the jsDataSet
-    columnNameMap: { [key: string]: string } = {};
-    columnNameMapIndex: { [key: number]: string } = {};
+    columnNameMap: Record<string, string> = {};
+    columnNameMapIndex: Record<number, string> = {};
 
     constructor(renderer: Renderer2, cdRef: ChangeDetectorRef, private servoyPublicService: ServoyPublicService, logFactory: LoggerFactory) {
         super(renderer, cdRef);
@@ -94,13 +94,13 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
                     }
                     case 'styleClass': {
                         if (change.previousValue) {
-                            const array: Array<string> = (change.previousValue as string).trim().split(' ');
+                            const array: string[] = (change.previousValue as string).trim().split(' ');
                             array.filter((elementStyleClass: string) => elementStyleClass !== '').forEach(
                                 (elementStyleClass: string) => this.renderer.removeClass(this.getNativeElement(), elementStyleClass)
                             );
                         }
                         if (change.currentValue) {
-                            const array: Array<string> = (change.currentValue as string).trim().split(' ');
+                            const array: string[] = (change.currentValue as string).trim().split(' ');
                             array.filter((elementStyleClass: string) => elementStyleClass !== '').forEach(
                                 (elementStyleClass: string) => this.renderer.addClass(this.getNativeElement(), elementStyleClass)
                             );
@@ -131,8 +131,8 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         this.data = [];
         this.columnNameMap = {};
         this.columnNameMapIndex = {};
-        const ids: Array<number | string> = [];
-        const pids: Array<number | string> = [];
+        const ids: (number | string)[] = [];
+        const pids: (number | string)[] = [];
 
         let isFAIcon = false;
         const idIdx = this._jsDataSet()[0].indexOf('id');
@@ -215,10 +215,10 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         }
     }
     
-    addOrUpdateRowData(rowArray: Array<any>) {
+    addOrUpdateRowData(rowArray: any[]) {
         const jsDataSet = this._jsDataSet();
         if (!jsDataSet || rowArray.length !== jsDataSet[0].length) {
-            console.warn(`Either jsDataSet is missing or the row data provided doesn't align with the component's dataset structure. No changes were made.`);
+            console.warn('Either jsDataSet is missing or the row data provided doesn\'t align with the component\'s dataset structure. No changes were made.');
             return;
         }
         const headerRow = jsDataSet[0];
@@ -267,8 +267,8 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         this.cdRef.detectChanges();
     }
     
-    checkIfAllParentsExist(data: Array<IRowData>, ids: Array<number | string>) {
-        const itemsToRemove: Array<IRowData> = [];
+    checkIfAllParentsExist(data: IRowData[], ids: (number | string)[]) {
+        const itemsToRemove: IRowData[] = [];
         for (let i = 0; i < data.length; i++) {
             const row: IRowData = data[i];
             if (!ids.includes(row.pid) && (row.pid !== null && row.pid !== '')) {
@@ -283,7 +283,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         }
     }
 
-    addDefaultIconsIfNeeded(data: Array<IRowData>, ids: Array<number | string>, pids: Array<number | string>) {
+    addDefaultIconsIfNeeded(data: IRowData[], ids: (number | string)[], pids: (number | string)[]) {
         ids.forEach(id => {
             const row = data.filter(row => row.id === id);
             if (row.length === 1 && !row[0].treeColumn.isFAIcon && row[0].treeColumn.icon === '') {
@@ -591,7 +591,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
      * @return child nodes of node
      */
     getChildNodes(nodeId: any) {
-        const childNodesId = new Array();
+        const childNodesId: any[] = [];
         if (this.isTreeReady) {
             const displayData = this.angularGrid()!.store.getDisplayData();
             const childNodes = this.angularGrid()!.store.findChildren(displayData, nodeId, this.configs);
@@ -659,7 +659,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
      * @return array of root nodes
      */
     getRootNodes() {
-        const rootNodesId = new Array();
+        const rootNodesId: any[] = [];
         if (this.isTreeReady) {
             const displayData = this.angularGrid()!.store.getDisplayData();
             displayData.forEach(data => {

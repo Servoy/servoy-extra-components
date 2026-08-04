@@ -34,13 +34,11 @@ export { RadialGaugeOptions } from '@servoy/canvas-gauges';
  * Implements Radial Gauge from the original library
  */
 @Component({
-    // tslint:disable-next-line:component-selector
-    selector: 'radial-gauge',
+       selector: 'radial-gauge',
     template: '<canvas #gauge></canvas>',
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: false
 })
-// tslint:disable-next-line:component-class-suffix
 export class RadialGauge extends BaseGauge<CanvasGauges.RadialGauge, CanvasGauges.RadialGaugeOptions> implements OnInit {
     constructor(el: ElementRef, zone: NgZone) {
         super(el, zone);

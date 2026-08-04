@@ -38,7 +38,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	readonly selectedIndexChange = output<any>();
 	readonly expandedIndex = input<any>(undefined as any);
 	readonly expandedIndexChange = output<any>();
-	readonly menu = input<Array<MenuItem> | undefined>(undefined);
+	readonly menu = input<MenuItem[] | undefined>(undefined);
 	readonly servoyMenu = input<IJSMenu>(undefined as any);
 
 	readonly onMenuItemSelected = input<((menuItem: any, event: MouseEvent) => Promise<boolean>) | undefined>(undefined);
@@ -54,7 +54,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
     _selectedIndex = signal<any>({});
     _expandedIndex = signal<any>({});
     _open = signal<boolean | undefined>(undefined);
-    _menu = linkedSignal<Array<MenuItem> | undefined>(() => this.menu());
+    _menu = linkedSignal<MenuItem[] | undefined>(() => this.menu());
 
 	animateSlideMenuTimeout!: number;
 	mouseEnterTimeout!: number;
@@ -215,8 +215,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 					case 'expandedIndex':
 						if (!change.currentValue) {
 							this._expandedIndex.set({});
-						}
-						else if (typeof expandedIndex == 'string') {
+						} else if (typeof expandedIndex == 'string') {
 							this._expandedIndex.set(JSON.parse(expandedIndex));
 						}
                         this.cdRef.markForCheck();
@@ -224,8 +223,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 					case 'selectedIndex':
 						if (!change.currentValue) {
 							this._selectedIndex.set({});
-						}
-						else if (typeof selectedIndex == 'string') {
+						} else if (typeof selectedIndex == 'string') {
 							this._selectedIndex.set(JSON.parse(selectedIndex));
 						}
                         this.cdRef.markForCheck();
@@ -238,8 +236,8 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		}
 	}
 
-	getSidenavClass(): { [key: string]: boolean } {
-		const cls: { [key: string]: boolean } = {
+	getSidenavClass(): Record<string, boolean> {
+		const cls: Record<string, boolean> = {
 			'svy-sidenav-right': this.slidePosition() === 'right',
 			'svy-sidenav-static': this.slidePosition() === 'static',
 			'svy-sidenav-left': this.slidePosition() === 'left',
@@ -256,7 +254,8 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		return cls;
 	}
 
-	isDesignTime() {		return this.servoyApi.isInDesigner();
+	isDesignTime() {
+		return this.servoyApi.isInDesigner();
 	}
 
 	getForm() {
@@ -291,7 +290,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	}
 
 	getHeaderFormStyle() {
-		let style: any = {}
+		const style: any = {}
 		let height = 0;
 
 		const formCache = this.servoyPublic.getFormCacheByName(this.headerForm()!);
@@ -305,7 +304,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	}
 
 	getFooterFormStyle() {
-		let style: any = {}
+		const style: any = {}
 		let height = 0;
 
 		const formCache = this.servoyPublic.getFormCacheByName(this.footerForm()!);
@@ -683,7 +682,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		return true;
 	}
 
-	getNodeById(nodeId: string | number, nodes: Array<MenuItem>): any {
+	getNodeById(nodeId: string | number, nodes: MenuItem[]): any {
 		if (nodes) {
 			for (const i of Object.keys(nodes)) { // search in each subtree
 				const subTree = (nodes as any)[i];
@@ -700,7 +699,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		return null;
 	}
 
-	getNodeByIndexPath(path: Array<number>, nodes: Array<MenuItem>): any {
+	getNodeByIndexPath(path: number[], nodes: MenuItem[]): any {
 		let node = null;
 		if (nodes) {
 			if (path && path.length === 1) {
@@ -716,7 +715,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		return node;
 	}
 
-	getPathToNode(idOrNode: any, nodes: Array<MenuItem>, key?: string): any {
+	getPathToNode(idOrNode: any, nodes: MenuItem[], key?: string): any {
 		if (!key) key = 'id';
 		const nodeId = idOrNode[key] ? idOrNode[key] : idOrNode;
 
@@ -735,7 +734,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		return null;
 	}
 
-	getAllNodesToNodeId(nodeId: string | number): Array<MenuItem> {
+	getAllNodesToNodeId(nodeId: string | number): MenuItem[] {
 		let nodes: any = this._menu();
 		const pathIndex = this.getPathToNode(nodeId, nodes);
 		const anchestors = [];
@@ -748,7 +747,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		return anchestors;
 	}
 
-	getNodeAnchestors(nodeId: string | number): Array<MenuItem> {
+	getNodeAnchestors(nodeId: string | number): MenuItem[] {
 		const anchestors = this.getAllNodesToNodeId(nodeId);
 		anchestors.pop();
 		return anchestors;
@@ -953,7 +952,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	**************************************************************/
 
 
-	public setSelectedByIndexPath(path: Array<number>, mustExecuteOnSelectNode: boolean) {
+	public setSelectedByIndexPath(path: number[], mustExecuteOnSelectNode: boolean) {
 
 		// search node in tree
 		const node = this.getNodeByIndexPath(path, this._menu()!);
@@ -1055,7 +1054,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
                 this._expandedIndex.set(JSON.parse(expandedIndex));
             }
 			const selectedNode: any = {};
-			const oldMenu = new Array();
+			const oldMenu: any[] = [];
 			if (servoyMenu.items) {
 				for (let i = 0; i < servoyMenu.items.length; i++) {
 					this.copyServoyMenuItem(oldMenu, servoyMenu.items[i], 1, selectedNode);
@@ -1070,7 +1069,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		}
 	}
 
-	private copyServoyMenuItem(destination: Array<MenuItem>, source: IJSMenuItem, level: number, selectedNode: any) {
+	private copyServoyMenuItem(destination: MenuItem[], source: IJSMenuItem, level: number, selectedNode: any) {
 		const menuItem = {} as MenuItem;
 		menuItem.text = source.menuText;
 		menuItem.id = source.itemID;
@@ -1088,7 +1087,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 			selectedNode[level] = source.itemID;
 		}
 		if (source.items && source.items.length > 0) {
-			menuItem.menuItems = new Array();
+			menuItem.menuItems = [];
 			for (let i = 0; i < source.items.length; i++) {
 				this.copyServoyMenuItem(menuItem.menuItems, source.items[i], level + 1, selectedNode);
 			}
@@ -1096,7 +1095,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		destination.push(menuItem);
 	}
 
-	updateSelectedNode(nodeId: string, nodes: Array<MenuItem>, level: number) {
+	updateSelectedNode(nodeId: string, nodes: MenuItem[], level: number) {
 		if (nodes) {
 			for (let i = 0; i < nodes.length; i++) {
 				const subTree = nodes[i];
@@ -1113,7 +1112,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         const duplicateIds = this.findDuplicateIds(menu);
         if (duplicateIds.length > 0) {
             const formName = this.servoyApi.getFormName();
-            console.warn("In form " + String(formName) + ", the sidenav component contains duplicate IDs: " + duplicateIds.join(', ') + ". IDs must be unique for proper functioning of the component.");
+            console.warn('In form ' + String(formName) + ', the sidenav component contains duplicate IDs: ' + duplicateIds.join(', ') + '. IDs must be unique for proper functioning of the component.');
             return false;
         }
         return true;
@@ -1147,7 +1146,7 @@ export class MenuItem {
 	public styleClass!: string;
 	public enabled!: boolean;
 	public data: any;
-	public menuItems!: Array<MenuItem>;
+	public menuItems!: MenuItem[];
 	public isDivider!: boolean;
 	public tooltip!: string;
 	public badgeText!: string;

@@ -199,10 +199,10 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
                         break;
                     case 'stepsValueList':
                         if (change.currentValue) {
-                            let stepsArray = [];
+                            const stepsArray = [];
                             for (let vl = 0; vl < change.currentValue.length; vl++) {
                                 /** @type {{displayValue: String, realValue: Object}} */
-                                let item = change.currentValue[vl];
+                                const item = change.currentValue[vl];
                                 if (item.realValue == item.displayValue) {
                                     //no "legend"                                       
                                     stepsArray.push({ value: item.realValue });
@@ -253,14 +253,14 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
     onUserChangeStart(changeContext: ChangeContext) {
         const onSlideStart = this.onSlideStart();
         if (onSlideStart) {
-            onSlideStart(null, changeContext.value, changeContext.highValue, changeContext.pointerType == PointerType.Min ? "value" : "high");
+            onSlideStart(null, changeContext.value, changeContext.highValue, changeContext.pointerType == PointerType.Min ? 'value' : 'high');
         }
     }
 
     onUserChange(changeContext: ChangeContext) {
         const onTick = this.onTick();
         if (onTick) {
-            onTick(changeContext.value, changeContext.highValue, changeContext.pointerType == PointerType.Min ? "value" : "high", this.rightToLeft());
+            onTick(changeContext.value, changeContext.highValue, changeContext.pointerType == PointerType.Min ? 'value' : 'high', this.rightToLeft());
         }
         if (!this.dataChangeOnSlideEnd()) {
             this.dataProviderChange.emit(changeContext.value);
@@ -273,7 +273,7 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
         this.dataProviderHighChange.emit(changeContext.highValue);
         const onSlideEnd = this.onSlideEnd();
         if (onSlideEnd) {
-            onSlideEnd(null, changeContext.value, changeContext.highValue, changeContext.pointerType == PointerType.Min ? "value" : "high");
+            onSlideEnd(null, changeContext.value, changeContext.highValue, changeContext.pointerType == PointerType.Min ? 'value' : 'high');
         }
     }
 

@@ -1,6 +1,6 @@
 <div #element class="svy-extra-sidenav">
   <div class="svy-sidenav"
-    [dir] = "scrollbarPosition() == 'rtl' ? 'rtl' : $any(null)"
+    [dir] = "scrollbarPosition() === 'rtl' ? 'rtl' : $any(null)"
         [class]="getSidenavClass()">
     <div class="svy-sidenav-header">
       <i (click)="slideMenu($event)" class="svy-sidenav-action-open"></i>
@@ -177,9 +177,9 @@
           @if (realContainedForm != null) {
             <div class="svy-sidenav-tablesspanel"
               [ngStyle]="getContainerStyle()"
-              [class.svy-sidenav-right]="slidePosition() == 'right'"
-              [class.svy-sidenav-static]="slidePosition() == 'static'"
-              [class.svy-sidenav-left]="slidePosition() == 'left'"
+              [class.svy-sidenav-right]="slidePosition() === 'right'"
+              [class.svy-sidenav-static]="slidePosition() === 'static'"
+              [class.svy-sidenav-left]="slidePosition() === 'left'"
               [sabloTabseq]="tabSeq()"
               [sabloTabseqConfig]="{container: true, reservedGap: 50}">
               <ng-template [ngTemplateOutlet]="templateRef()" [ngTemplateOutletContext]="{name:getForm()}"></ng-template>

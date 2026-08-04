@@ -37,13 +37,13 @@ export class ServoyExtraYoutubeVideoEmbedder extends ServoyBaseComponent<HTMLIFr
             for (const property of Object.keys(changes)) {
                 const change = changes[property];
                 switch (property) {
-                    case "embeddedVideoURL":
-                    case "dataProviderID":
-                    case "allowFullScreen":
-                    case "autoPlay":
-                    case "showControls":
-                    case "modestBranding":
-                    case "showRelatedVideosAtEnd":
+                    case 'embeddedVideoURL':
+                    case 'dataProviderID':
+                    case 'allowFullScreen':
+                    case 'autoPlay':
+                    case 'showControls':
+                    case 'modestBranding':
+                    case 'showRelatedVideosAtEnd':
                         this.updateYoutubeURL();
                         break;
                 }
@@ -55,16 +55,16 @@ export class ServoyExtraYoutubeVideoEmbedder extends ServoyBaseComponent<HTMLIFr
     private updateYoutubeURL() {
         let urlWithParams = this.dataProviderID() || this.embeddedVideoURL();
         if (!urlWithParams) return;
-        let params = "";
+        let params = '';
 
         // in these if's we rely on YouTube defaults as well; we only set them when non-default
-        if (!this.allowFullScreen()) params += "&fs=0";
-        if (!this.showControls()) params += "&controls=0";
-        if (this.modestBranding()) params += "&modestbranding=1";
-        if (this.autoPlay()) params += "&autoplay=1&mute=1"; // autoplay requires mute
-        if (!this.showRelatedVideosAtEnd()) params += "&rel=0";
+        if (!this.allowFullScreen()) params += '&fs=0';
+        if (!this.showControls()) params += '&controls=0';
+        if (this.modestBranding()) params += '&modestbranding=1';
+        if (this.autoPlay()) params += '&autoplay=1&mute=1'; // autoplay requires mute
+        if (!this.showRelatedVideosAtEnd()) params += '&rel=0';
 
-        if (params.length > 0) urlWithParams += "?" + params.substr(1);
+        if (params.length > 0) urlWithParams += '?' + params.substr(1);
         this.fullYoutubeURL = this.sanitizer.bypassSecurityTrustResourceUrl(urlWithParams);
     }
 

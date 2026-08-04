@@ -10,7 +10,7 @@ import { DomSanitizer } from '@angular/platform-browser';
     selector: '[svyTableRow]',
     standalone: false
 })
-// eslint-disable-next-line @angular-eslint/directive-class-suffix
+ 
 export class TableRow {
 
     readonly svyTableRow = input<number>(undefined as any);
@@ -38,7 +38,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     readonly tableRef = viewChild<ElementRef<HTMLTableElement>>('table');
 
     readonly foundset = input<IFoundset>(undefined as any);
-    readonly columns = input<Array<Column> | undefined>(undefined);
+    readonly columns = input<Column[] | undefined>(undefined);
     readonly currentPage = input(1);
     readonly sortDirection = input<string>(undefined as any);
     readonly enableSort = input(true);
@@ -98,7 +98,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     // the number rendered rows
     private renderedSize = -1;
     private componentWidth = -1;
-    private autoColumns!: { columns: Array<boolean>; minWidth: Array<number>; autoResize: Array<boolean>; count: number };
+    private autoColumns!: { columns: boolean[]; minWidth: number[]; autoResize: boolean[]; count: number };
     private tableWidth!: number;
     private scrollWidth = 0;
     private tableLeftOffset = 0;
@@ -123,13 +123,13 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     private magicRenderBatchQ = 1.5;
     private magicLoadBatchQ = 3;
     private needToUpdateAutoColumnsWidth = false;
-    private columnStyleClasses: Array<string> = [];
-    private columnCSSRules: Array<CSSStyleRule> = [];
+    private columnStyleClasses: string[] = [];
+    private columnCSSRules: CSSStyleRule[] = [];
     private onTBodyScrollListener!: () => void;
     private removeFoundsetListenerFunction!: (() => void) | null;
     private extraWidth!: number;
     private extraWidthColumnIdx!: number;
-    private currentIdForFoundset: Array<string> = [];
+    private currentIdForFoundset: string[] = [];
     private currentColumnLength!: number;
     private resizeTimeout: any;
     private templateTimeout: any;
@@ -401,7 +401,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     }
 
     public keyPressed(event: KeyboardEvent) {
-        const fs = this.foundset()!!;
+        const fs = this.foundset()!;
         if (fs.selectedRowIndexes && fs.selectedRowIndexes.length > 0) {
             let selectionChanged = false;
             const oldSelectedIdxs = fs.selectedRowIndexes.slice();
@@ -732,7 +732,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                 //                   if($scope.model.foundset.multiSelect) {
                 const foundsetValue = this.foundset()!;
                 if (event.ctrlKey) {
-                    const foundset = this.foundset()!!;
+                    const foundset = this.foundset()!;
                     newSelection = foundset.selectedRowIndexes ? foundset.selectedRowIndexes.slice() : [];
                     const idxInSelected = newSelection.indexOf(idxInFs);
                     if (idxInSelected === -1) {
@@ -845,7 +845,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     }
 
     private setColumnsToInitalWidthAndInitAutoColumns() {
-        const newAutoColumns: { columns: Array<boolean>; minWidth: Array<number>; autoResize: Array<boolean>; count: number } =
+        const newAutoColumns: { columns: boolean[]; minWidth: number[]; autoResize: boolean[]; count: number } =
             { columns: [], minWidth: [], autoResize: [], count: 0 };
         const columns = this.columns();
         if (columns) {
@@ -883,7 +883,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         // => so now that this IncomingMessageHandlingDoneTask is called we can just ignore it as it's no longer relevant (directive/scope destroyed)
 
         let shouldCheckSelection = false;
-        let oldSelectedIdxs: Array<number> = undefined!;
+        let oldSelectedIdxs: number[] = undefined!;
         let shouldGenerateWholeTemplate = false;
         if (foundsetChanges.fullValueChanged) {
             // full foundSet update (changed by reference); start over, see if we need to scroll to selection
@@ -1001,7 +1001,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         if (!tbody || !this.scrollToSelectionNeeded) return;
 
         // we do not scroll to selection if there is no selected record (serverSize is probably 0) or we have multi-select with more then one or 0 selected records
-        const foundset = this.foundset()!!;
+        const foundset = this.foundset()!;
         const firstSelected = foundset.selectedRowIndexes.length === 1 ? foundset.selectedRowIndexes[0] : -1;
 
         if (firstSelected >= 0) {
@@ -1522,7 +1522,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                 const vp = this.foundset()!.viewPort;
                 const renderedStartIndexInLoaded = this.renderedStartIndex - vp.startIndex; // so relative to loaded viewport, not to start of foundset
                 const renderedSizeBefore = this.renderedSize;
-                let visibleViewport: Array<number>;
+                let visibleViewport: number[];
 
                 //on viewport changed
                 const vpStart = this.getVisibleArea()[0];
@@ -1721,7 +1721,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         this.onTableRendered(isNewTBody);
     }
 
-    private createTableRow(columns: Array<Column>, idxInLoaded: number) {
+    private createTableRow(columns: Column[], idxInLoaded: number) {
         const tr = document.createElement('TR');
         const rowStyleClassDataprovider = this.rowStyleClassDataprovider();
         if (rowStyleClassDataprovider && (rowStyleClassDataprovider as any)[idxInLoaded]) {
@@ -1763,9 +1763,9 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     }
 
     private onTableRendered(isNewTBody: boolean) {
-        var tbl = document.getElementById('table_'+this.servoyApi.getMarkupId());
+        const tbl = document.getElementById('table_'+this.servoyApi.getMarkupId());
         if(this.enableMobileView())
-        tbl!.classList.add("mobileview");
+        tbl!.classList.add('mobileview');
         this.updateSelection(this.foundset()!.selectedRowIndexes, null as any);
         this.scrollToSelectionIfNeeded();
         //this.adjustLoadedRowsIfNeeded();
@@ -2315,7 +2315,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         return newLoadingPromise;
     }
 
-    private selectedIndexesChanged(newSelectedIdxs: Array<number>, oldSelectedIdxs: Array<number>, noScrollToSelection?: boolean) {
+    private selectedIndexesChanged(newSelectedIdxs: number[], oldSelectedIdxs: number[], noScrollToSelection?: boolean) {
         if (newSelectedIdxs.length > 0) {
             const lastSelectionFirstElement = this._lastSelectionFirstElement();
             if (newSelectedIdxs !== oldSelectedIdxs || lastSelectionFirstElement !== newSelectedIdxs[0]) {
@@ -2330,7 +2330,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         } else this._lastSelectionFirstElement.set(-1);
     }
 
-    private updateSelection(newValue: Array<number>, oldValue: Array<number>) {
+    private updateSelection(newValue: number[], oldValue: number[]) {
         if (oldValue) {
             const toUnselect = oldValue.filter((i) => !newValue || newValue.indexOf(i) < 0);
             this.updateTableRowSelectionClass(toUnselect, '');
@@ -2341,7 +2341,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         }
     }
 
-    private updateTableRowSelectionClass(rowsFoundsetIdxArray: Array<number>, rowSelectionClass: string) {
+    private updateTableRowSelectionClass(rowsFoundsetIdxArray: number[], rowSelectionClass: string) {
         const tbody = this.tbody();
         if (!tbody) return;
         const trChildren = tbody.nativeElement.children;
@@ -2790,7 +2790,7 @@ export class Column extends BaseCustomObject {
     styleClassDataprovider!: LinkedDataproviders;
     dataprovider!: LinkedDataproviders;
     autoResize!: boolean;
-    valuelist!: IValuelist | Array<IValuelist>;
+    valuelist!: IValuelist | IValuelist[];
     width!: string;
     initialWidth!: string;
     format!: Format;

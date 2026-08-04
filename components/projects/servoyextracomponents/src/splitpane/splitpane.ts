@@ -33,7 +33,7 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
     
     _divLocation = signal<number | undefined>(undefined);
 	
-	previousValue: number = -1;
+	previousValue = -1;
 	resizeTimeout: ReturnType<typeof setTimeout> | null = null;
 
     readonly templateRef = contentChild(TemplateRef);

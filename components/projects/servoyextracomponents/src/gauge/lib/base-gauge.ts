@@ -119,8 +119,7 @@ export abstract class BaseGauge<T extends CanvasGauges.BaseGauge, T2 extends Can
         }
 
         // merge preOptons with attribute-based properties
-        // tslint:disable-next-line:forin
-        for (const prop in this.preInitOptions) {
+               for (const prop in this.preInitOptions) {
             (options as any)[prop] = (this.preInitOptions as any)[prop];
         }
 
@@ -185,10 +184,11 @@ export abstract class BaseGauge<T extends CanvasGauges.BaseGauge, T2 extends Can
 
         // map all options onto this element's attributes
         // Then attribute changes will be detected and pushed to the gauge.update()
-        if (!newOptions) { return; }
+        if (!newOptions) {
+ return; 
+}
 
-        // tslint:disable-next-line:forin
-        for (const prop of Object.keys(newOptions)) {
+               for (const prop of Object.keys(newOptions)) {
             const val = (newOptions as any)[prop].toString();
 
             if (prop === 'value') {

@@ -34,13 +34,11 @@ export { LinearGaugeOptions } from '@servoy/canvas-gauges';
  * Implements Linear Gauge from the original library
  */
 @Component({
-    // tslint:disable-next-line:component-selector
-    selector: 'linear-gauge',
+       selector: 'linear-gauge',
     template: '<canvas #gauge></canvas>',
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: false
 })
-// tslint:disable-next-line:component-class-suffix
 export class LinearGauge extends BaseGauge<CanvasGauges.LinearGauge, CanvasGauges.LinearGaugeOptions> implements OnInit {
 
     constructor(el: ElementRef, zone: NgZone) {
