@@ -446,7 +446,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
                     const localeString = localeStrings[key];
                     if (key.indexOf('.') !== -1) {
                         const keyParts = key.split('.');
-                        if (!locale.strings.hasOwnProperty(keyParts[0])) {
+                        if (!Object.hasOwn(locale.strings, keyParts[0])) {
                             locale.strings[keyParts[0]] = {};
                         }
                         locale.strings[keyParts[0]][keyParts[1]] = localeString;

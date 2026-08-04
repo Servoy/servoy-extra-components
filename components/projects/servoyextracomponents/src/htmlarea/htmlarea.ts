@@ -108,7 +108,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
                 }
             }
             for (const key in defaultConfiguration) {
-                if (defaultConfiguration.hasOwnProperty(key)) {
+                if (Object.hasOwn(defaultConfiguration, key)) {
                     this.tinyConfig[key] = defaultConfiguration[key];
                 }
             }
@@ -129,7 +129,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
                 }
             }
             for (const key in configuration) {
-                if (configuration.hasOwnProperty(key)) {
+                if (Object.hasOwn(configuration, key)) {
                     this.tinyConfig[key] = configuration[key];
                 }
             }
@@ -165,7 +165,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
                         break;
                     case 'editable':
                     case 'readOnly':
-                    case 'enabled':
+                    case 'enabled': {
                         const editable = this.editable() && !this.readOnly() && this.enabled();
                         if (this.getEditor() && !change.firstChange) {
                             if (editable) {
@@ -175,6 +175,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
                             }
                         }
                         break;
+                    }
                     case 'dataProviderID':
                         this._dataProviderID.set(this.dataProviderID());
                         this.tinyValue = this._dataProviderID();

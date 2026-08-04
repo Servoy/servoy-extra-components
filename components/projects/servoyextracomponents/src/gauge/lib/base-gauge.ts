@@ -23,15 +23,15 @@
  */
 
 import { Input, NgZone, ElementRef, OnInit, AfterViewInit, Directive, output, viewChild } from '@angular/core';
-// @ts-ignore
+// @ts-expect-error untyped module
 import * as CanvasGauges from '@servoy/canvas-gauges';
-// @ts-ignore
+// @ts-expect-error untyped module
 import * as Rx from 'rx-dom-html';
 
 
 
 // String utils
-const toCamelCase = (str: string) => str.replace(/(\-\w)/g, (matches) => matches[1].toUpperCase());
+const toCamelCase = (str: string) => str.replace(/(-\w)/g, (matches) => matches[1].toUpperCase());
 
 const toKebabCase = (str: string) => str.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
 
@@ -60,6 +60,7 @@ export abstract class BaseGauge<T extends CanvasGauges.BaseGauge, T2 extends Can
      */
     protected gauge!: T;
 
+    // eslint-disable-next-line @angular-eslint/no-output-on-prefix
     readonly onGaugeReady = output<T>();
 
     /**
@@ -180,7 +181,7 @@ export abstract class BaseGauge<T extends CanvasGauges.BaseGauge, T2 extends Can
      *
      * @param newOptions  - the options to update the gauge
      */
-    public update(newOptions: T2 | {}) {
+    public update(newOptions: T2 | Record<string, never>) {
 
         // map all options onto this element's attributes
         // Then attribute changes will be detected and pushed to the gauge.update()
@@ -266,7 +267,7 @@ export abstract class BaseGauge<T extends CanvasGauges.BaseGauge, T2 extends Can
         }
 
         // init options.renderTo if needed
-        if (!options.hasOwnProperty('renderTo') || !options.renderTo) {
+        if (!Object.hasOwn(options, 'renderTo') || !options.renderTo) {
             (options as any).renderTo = this.canvas()!.nativeElement;
         }
 

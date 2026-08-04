@@ -381,12 +381,12 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 
         let returnValue = false;
         const ids: any = {};
-        for (let i = 0; i < collapsibles.length; i++) {
-            if (collapsibles[i].collapsibleId) {
-                if (ids[collapsibles[i].collapsibleId]) {
-                    ids[collapsibles[i].collapsibleId] = false;
+        for (const collapsible of collapsibles) {
+            if (collapsible.collapsibleId) {
+                if (ids[collapsible.collapsibleId]) {
+                    ids[collapsible.collapsibleId] = false;
                 } else {
-                    ids[collapsibles[i].collapsibleId] = true;
+                    ids[collapsible.collapsibleId] = true;
                 }
             }
         }

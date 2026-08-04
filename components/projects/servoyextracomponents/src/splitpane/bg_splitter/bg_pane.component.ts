@@ -1,5 +1,6 @@
 import { Directive, ElementRef, input } from '@angular/core';
 
+/* eslint-disable @angular-eslint/directive-selector */
 @Directive({
     selector: 'bg-pane',
     host: {

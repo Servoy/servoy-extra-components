@@ -250,7 +250,9 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
             if (valuelistID!.length && typeof valuelistID![valuelistID!.length - 1].realValue === 'number') {
                 // convert items to numbers if valuelistID and valuelistID ends with a numeric realValue
 				helper.forEach((item,index) => {
-					!isNaN(item) && (helper[index] = Number(item));
+					if (!isNaN(item)) {
+						helper[index] = Number(item);
+					}
 				});
 			} else if (this.data?.length) {
                 // otherwise, check against data options and convert matching strings to numbers

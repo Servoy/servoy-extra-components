@@ -57,22 +57,32 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
 		let delta  = 0;
 		const splitType = this.splitType();
         if (splitType === 1) {
-			this.previousValue === -1 && (this.previousValue = elementHeight);
+			if (this.previousValue === -1) {
+				this.previousValue = elementHeight;
+			}
 			delta = elementHeight - this.previousValue;
 		} else if (splitType === 0) {
-			this.previousValue === -1 && (this.previousValue = elementWidth);
+			if (this.previousValue === -1) {
+				this.previousValue = elementWidth;
+			}
 			delta = elementWidth - this.previousValue;
 		}
 		
 		if (delta !== 0) {
 			let newLocation = this._divLocation();
-			(newLocation! > 0 && newLocation! < 1) && (newLocation = splitType === 1 ? (this._divLocation()! * this.previousValue) : (this._divLocation()! * this.previousValue));
+			if (newLocation! > 0 && newLocation! < 1) {
+				newLocation = splitType === 1 ? (this._divLocation()! * this.previousValue) : (this._divLocation()! * this.previousValue);
+			}
 			newLocation! += Math.round(delta * this.resizeWeight()!);
 			this.divLocationChange.emit(newLocation!);
 		}
 									
-		splitType === 1 && (this.previousValue = elementHeight); 
-		splitType === 0 && (this.previousValue = elementWidth); 
+		if (splitType === 1) {
+			this.previousValue = elementHeight;
+		}
+		if (splitType === 0) {
+			this.previousValue = elementWidth;
+		}
 	}
 	
 	onResize() {

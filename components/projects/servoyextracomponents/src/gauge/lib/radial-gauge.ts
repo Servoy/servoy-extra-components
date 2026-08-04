@@ -24,15 +24,16 @@
 
 import { ChangeDetectionStrategy, Component, NgZone, ElementRef, OnInit } from '@angular/core';
 import { BaseGauge } from './base-gauge';
-// @ts-ignore
+// @ts-expect-error untyped module
 import * as CanvasGauges from '@servoy/canvas-gauges';
 
-// @ts-ignore
+// @ts-expect-error untyped module
 export { RadialGaugeOptions } from '@servoy/canvas-gauges';
 
 /**
  * Implements Radial Gauge from the original library
  */
+/* eslint-disable @angular-eslint/component-selector */
 @Component({
        selector: 'radial-gauge',
     template: '<canvas #gauge></canvas>',

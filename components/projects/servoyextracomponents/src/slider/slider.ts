@@ -200,9 +200,7 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
                     case 'stepsValueList':
                         if (change.currentValue) {
                             const stepsArray = [];
-                            for (let vl = 0; vl < change.currentValue.length; vl++) {
-                                /** @type {{displayValue: String, realValue: Object}} */
-                                const item = change.currentValue[vl];
+                            for (const item of change.currentValue) {
                                 if (item.realValue == item.displayValue) {
                                     //no "legend"                                       
                                     stepsArray.push({ value: item.realValue });
@@ -293,9 +291,11 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     public onDataChangeCallback(_event: any, _returnval: any) {
+        /* noop */
     }
 
     public onDataChangeCallbackHigh(_event: any, _returnval: any) {
+        /* noop */
     }
 
 }

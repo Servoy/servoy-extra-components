@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 
 import { BGPane } from './bg_pane.component';
+/* eslint-disable @angular-eslint/component-selector */
 @Component( {
     selector: 'bg-splitter',
     template: '<div class="split-panes" #element><ng-content></ng-content></div>',

@@ -1,4 +1,7 @@
-import { Component, Renderer2, ElementRef, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy, Directive, Inject, SecurityContext, SimpleChanges, CSP_NONCE, DOCUMENT, input, viewChild, signal } from '@angular/core';
+import {
+    Component, Renderer2, ElementRef, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy,
+    Directive, Inject, SecurityContext, SimpleChanges, CSP_NONCE, DOCUMENT, input, viewChild, signal
+} from '@angular/core';
 import { BaseCustomObject, Format, IFoundset, IValuelist, ServoyBaseComponent, ViewPortRow, FoundsetChangeEvent, ChangeType, FormattingService, ViewportRowUpdates } from '@servoy/public';
 import { LoggerFactory, LoggerService } from '@servoy/public';
 import { ResizeEvent } from 'angular-resizable-element';
@@ -300,6 +303,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                             // so not initial value && old value did have listener; unregister it
                             if (this.removeFoundsetListenerFunction) this.removeFoundsetListenerFunction();
                             if (newValue) {
+                                // eslint-disable-next-line max-len
                                 this.removeFoundsetListenerFunction = newValue.addChangeListener(this.foundsetListener); // either a value changed happened or it is the initial value of the watch; do register the listener
                                 if (!oldValue) {
                                     // either old value was nothing (so it didn't have listeners that would already have been triggered (due to a full value change); just simulate a full value change)
@@ -1352,10 +1356,8 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
 
         childrenListChanged = this.updateTopAndBottomEmptySpace() || childrenListChanged;
         topEmptySpaceRowCount = (this.topSpaceDiv ? 1 : 0);
-        bottomEmptySpaceRowCount = (this.bottomSpaceDiv ? 1 : 0);
 
         if (childrenListChanged) {
-            childrenListChanged = false;
             children = tbody.nativeElement.children;
         }
 

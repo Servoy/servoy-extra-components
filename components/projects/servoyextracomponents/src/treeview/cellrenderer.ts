@@ -13,6 +13,7 @@ import { ServoyExtraTreeview } from './treeview';
       <span class="treeLabel" [style]="setStyle()" [class]="getFilterClass()" [innerHtml]="getLabel()"></span>
     </div>
     `,
+    // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
     changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })

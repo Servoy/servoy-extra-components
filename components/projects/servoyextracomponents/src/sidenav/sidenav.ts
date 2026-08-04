@@ -1,4 +1,7 @@
-import { ChangeDetectionStrategy, Component, SimpleChanges, Renderer2, ChangeDetectorRef, TemplateRef, ElementRef, Inject, DOCUMENT, input, output, contentChild, viewChild, effect, signal, linkedSignal } from '@angular/core';
+import {
+    ChangeDetectionStrategy, Component, SimpleChanges, Renderer2, ChangeDetectorRef,
+    TemplateRef, ElementRef, Inject, DOCUMENT, input, output, contentChild, viewChild, effect, signal, linkedSignal
+} from '@angular/core';
 import { ServoyBaseComponent, ServoyPublicService, IJSMenu, IJSMenuItem } from '@servoy/public';
 
 import { LoggerFactory, LoggerService } from '@servoy/public';
@@ -111,16 +114,17 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
                     case 'footerFormStickyBottom':
                         this.addRemoveStickyStyle();
                         break;
-					case 'enabled':
-						const nav = this.getNativeElement().querySelector('nav');
-						if (change.currentValue) {
-							this.renderer.removeAttribute(nav, 'disabled');
-							this.renderer.removeClass(nav, 'svy-sidenav-disabled');
-						} else {
-							this.renderer.setAttribute(nav, 'disabled', 'disabled');
-							this.renderer.addClass(nav, 'svy-sidenav-disabled');
-						}
-						break;
+				case 'enabled': {
+					const nav = this.getNativeElement().querySelector('nav');
+					if (change.currentValue) {
+						this.renderer.removeAttribute(nav, 'disabled');
+						this.renderer.removeClass(nav, 'svy-sidenav-disabled');
+					} else {
+						this.renderer.setAttribute(nav, 'disabled', 'disabled');
+						this.renderer.addClass(nav, 'svy-sidenav-disabled');
+					}
+					break;
+				}
 				case 'containedForm':
 						if (change.currentValue) {
 							this.renderer.addClass(this.getNativeElement(), 'has-panel');
@@ -1056,8 +1060,8 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 			const selectedNode: any = {};
 			const oldMenu: any[] = [];
 			if (servoyMenu.items) {
-				for (let i = 0; i < servoyMenu.items.length; i++) {
-					this.copyServoyMenuItem(oldMenu, servoyMenu.items[i], 1, selectedNode);
+				for (const item of servoyMenu.items) {
+					this.copyServoyMenuItem(oldMenu, item, 1, selectedNode);
 				}
 			}
 			this._menu.set(oldMenu);
@@ -1088,8 +1092,8 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		}
 		if (source.items && source.items.length > 0) {
 			menuItem.menuItems = [];
-			for (let i = 0; i < source.items.length; i++) {
-				this.copyServoyMenuItem(menuItem.menuItems, source.items[i], level + 1, selectedNode);
+			for (const item of source.items) {
+				this.copyServoyMenuItem(menuItem.menuItems, item, level + 1, selectedNode);
 			}
 		}
 		destination.push(menuItem);
@@ -1112,7 +1116,8 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
         const duplicateIds = this.findDuplicateIds(menu);
         if (duplicateIds.length > 0) {
             const formName = this.servoyApi.getFormName();
-            console.warn('In form ' + String(formName) + ', the sidenav component contains duplicate IDs: ' + duplicateIds.join(', ') + '. IDs must be unique for proper functioning of the component.');
+            console.warn('In form ' + String(formName) + ', the sidenav component contains duplicate IDs: '
+                + duplicateIds.join(', ') + '. IDs must be unique for proper functioning of the component.');
             return false;
         }
         return true;

@@ -40,7 +40,7 @@
     "@servoy/ngx-lightbox": "^4.0.0",
     "rx-dom-html": "<8",
     "tinymce": "<7",
-    "tinymce-i18n": ">=24",
+    "tinymce-i18n": ">=26",
     "tslib": "*"
   },
   "license": "MIT",

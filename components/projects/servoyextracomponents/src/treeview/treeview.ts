@@ -200,7 +200,9 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
                 (row as any)['column' + c] = jsDataSet[i][columnsIdx[c - 1]];
             }
             ids.push(jsDataSet[i][idIdx]);
-            !['', null].includes(jsDataSet[i][pidIdx]) && pids.push(jsDataSet[i][pidIdx]);
+            if (!['', null].includes(jsDataSet[i][pidIdx])) {
+                pids.push(jsDataSet[i][pidIdx]);
+            }
             this.data.push(row);
         }
 
@@ -269,8 +271,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     
     checkIfAllParentsExist(data: IRowData[], ids: (number | string)[]) {
         const itemsToRemove: IRowData[] = [];
-        for (let i = 0; i < data.length; i++) {
-            const row: IRowData = data[i];
+        for (const row of data) {
             if (!ids.includes(row.pid) && (row.pid !== null && row.pid !== '')) {
                 itemsToRemove.push(row);
             }
@@ -358,7 +359,9 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
                 this.lastSelectedNode = event.data.id;
             }
         }
-        this.rowID != event.data.id && this.onclick(event);
+        if (this.rowID != event.data.id) {
+            this.onclick(event);
+        }
         this.rowID = null;
     }
 
@@ -450,8 +453,12 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
      */
     expandNode(nodeId: any) {
         if (this.isTreeReady) {
-            this.nodeExist(nodeId) && this.angularGrid()!.expandRow(isNaN(nodeId) ? nodeId.toString() : nodeId);
-            !this.nodeExist(nodeId) && this.log.warn(`You have used a node id "${nodeId}" that doesn't exist!`);
+            if (this.nodeExist(nodeId)) {
+                this.angularGrid()!.expandRow(isNaN(nodeId) ? nodeId.toString() : nodeId);
+            }
+            if (!this.nodeExist(nodeId)) {
+                this.log.warn(`You have used a node id "${nodeId}" that doesn't exist!`);
+            }
             this.cdRef.detectChanges();
         }
     }
