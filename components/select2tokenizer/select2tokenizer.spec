@@ -47,7 +47,7 @@
         "clearSearchTextOnSelect": {"type": "boolean", "default": false, "tags": {"scope" : "design"}}, 
         "containSearchText" : {"type": "boolean", "default": false, "tags": {"scope" : "design"}},
         "noMatchesFoundText": {"type": "tagstring", "default": "No matches found", "tags": {"scope" : "design"}},
-        "searchingText": {"type": "tagstring", "default": "Searching…", "tags": {"scope" : "design"}},
+        "searchingText": {"type": "tagstring", "default": "Searching…", "tags": { "serveronly": true,"scope" : "design"}},
         "tabSeq" : {"type" :"tabseq", "tags": { "scope" :"design" }}, 
         "placeholderText" : {"type": "tagstring", "default" : "Select...", "tags": {"scope" : "design"}}, 
         "toolTipText" : {"type" : "tagstring"}, 
@@ -56,7 +56,7 @@
         "readOnly" : { "type": "protected", "blockingOn": true, "default": false,"for": ["dataProviderID","onDataChangeMethodID"], "tags": { "scope" :"runtime" } },
         "editable" : { "type": "protected", "blockingOn": false, "default": true,"for": ["dataProviderID","onDataChangeMethodID"] },
         "maximumSelectionSize": {"type": "int", "tags": { "scope" :"design" }},
-        "valueSeparator" : {"type" :"string", "tags" : {"scope" :"private"}, "values" : [{"NEW_LINE":"new_line"}, {"COMMA": "comma"}], "default" : "new_line"},    
+        "valueSeparator" : {"type" :"string", "tags" : { "serveronly": true,"scope" :"private"}, "values" : [{"NEW_LINE":"new_line"}, {"COMMA": "comma"}], "default" : "new_line"},    
         "hideSelectedItems": {"type": "boolean", "default": false},
         "overlayMode": {"type": "boolean", "default": true, "tags": {"scope" : "design"}}
 	},

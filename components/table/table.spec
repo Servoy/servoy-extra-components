@@ -28,7 +28,7 @@
 		"minRowHeight": { "type": "string", "default": "25px","tags": { "scope": "design" } },
 		"sortupClass": { "type": "styleclass", "default": "table-servoyextra-sort-up " },
 		"sortdownClass": { "type": "styleclass", "default": "table-servoyextra-sort-down " },
-		"sortColumnIndex": { "type": "int", "default": -1, "tags": { "scope": "runtime" }, "pushToServer": "shallow" },
+		"sortColumnIndex": { "type": "int", "default": -1, "tags": { "serveronly": true, "scope": "runtime" }, "pushToServer": "shallow" },
 		"sortDirection": { "type": "string", "tags": { "scope": "runtime" }, "pushToServer": "shallow" },
 		"lastSelectionFirstElement": { "type": "int", "default": -1, "tags": { "scope": "private", "allowaccess": "visible" }, "pushToServer": "shallow" },
 		"performanceSettings" : { "type": "settings", "tags": { "scope": "design","doc" :"Settings for incremental scrolling, see github wiki for more details." } },

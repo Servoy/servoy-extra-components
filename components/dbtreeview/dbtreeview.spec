@@ -17,7 +17,7 @@
 	"model":
 	{
 		"foundsettree" : {"type": "foundsettree", "default" : [], "tags": { "scope": "private" }, "pushToServer": "allow"},
-		"roots": {"type":"foundsetref[]", "tags": { "scope": "private" }},
+		"roots": {"type":"foundsetref[]", "tags": { "serveronly": true, "scope": "private" }},
 	    "bindings" : {"type":"binding[]", "tags": { "scope": "private" }},
 	    "allowDrag" : {"type":"object", "tags": { "scope": "runtime", "doc": "Can be used to enable dragging of nodes. Can either be a boolean value or a clientfunction that is executed in browser. Default value is false." }},
 	    "allowDrop" : {"type":"object", "tags": { "scope": "runtime", "doc": "Can be used to enable dropping of nodes. Can either be a boolean value or a clientfunction that is executed in browser. Default value is false." }},
