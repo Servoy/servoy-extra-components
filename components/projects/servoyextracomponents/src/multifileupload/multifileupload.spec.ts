@@ -1,9 +1,17 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { NO_ERRORS_SCHEMA, Component, input } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ServoyApiTesting, ServoyPublicTestingModule } from '@servoy/public';
 import { ServoyExtraMultiFileUpload } from './multifileupload';
+import { DashboardComponent } from '@uppy/angular';
+
+/* eslint-disable @angular-eslint/component-selector */
+@Component({ selector: 'uppy-dashboard', template: '', standalone: true })
+class MockDashboardComponent {
+    readonly uppy = input<any>(undefined);
+    readonly props = input<any>(undefined);
+}
 
 describe('ServoyExtraMultiFileUpload', () => {
     let fixture: ComponentFixture<ServoyExtraMultiFileUpload>;
@@ -11,9 +19,11 @@ describe('ServoyExtraMultiFileUpload', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ServoyExtraMultiFileUpload],
-            imports: [ServoyPublicTestingModule, FormsModule],
+            imports: [ServoyPublicTestingModule, FormsModule, ServoyExtraMultiFileUpload],
             schemas: [NO_ERRORS_SCHEMA]
+        }).overrideComponent(ServoyExtraMultiFileUpload, {
+            remove: { imports: [DashboardComponent] },
+            add: { imports: [MockDashboardComponent] }
         }).compileComponents();
 
         fixture = TestBed.createComponent(ServoyExtraMultiFileUpload);

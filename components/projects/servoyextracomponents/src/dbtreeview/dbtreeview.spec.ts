@@ -14,8 +14,7 @@ describe('ServoyExtraDbtreeview', () => {
         servoyApi = new ServoyApiTesting();
 
         await TestBed.configureTestingModule({
-            declarations: [ServoyExtraDbtreeview],
-            imports: [ServoyPublicTestingModule, FormsModule],
+            imports: [ServoyPublicTestingModule, FormsModule, ServoyExtraDbtreeview],
             schemas: [NO_ERRORS_SCHEMA]
         }).compileComponents();
 

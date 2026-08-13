@@ -12,34 +12,20 @@ import { ServoyExtraMultiFileUpload } from './multifileupload/multifileupload';
 import { ServoyExtraSelect2Tokenizer } from './select2tokenizer/select2tokenizer';
 import { ServoyExtraYoutubeVideoEmbedder } from './youtubevideoembedder/youtubevideoembedder';
 import { ServoyExtraSidenav } from './sidenav/sidenav';
-import { ServoyPublicModule, SpecTypesService } from '@servoy/public';
-import { BidiModule } from '@angular/cdk/bidi';
-import { ScrollingModule } from '@angular/cdk/scrolling';
-import { ResizableModule } from 'angular-resizable-element';
-import { FormsModule } from '@angular/forms';
-import { CommonModule, AsyncPipe } from '@angular/common';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { FileUploadModule } from 'ng2-file-upload';
+import { SpecTypesService } from '@servoy/public';
 import { BGPane } from './splitpane/bg_splitter/bg_pane.component';
 import { BGSplitter } from './splitpane/bg_splitter/bg_splitter.component';
-import { Select2 } from 'ng-select2-component';
-import { LightboxModule } from '@servoy/ngx-lightbox';
 import { ServoyExtraCollapse } from './collapse/collapse';
 import { Binding, Callback, LevelVisibilityType, RelationInfo, ServoyExtraDbtreeview } from './dbtreeview/dbtreeview';
-import { TreeModule } from '@ali-hm/angular-tree-component';
-import { EditorModule , TINYMCE_SCRIPT_SRC} from '@tinymce/tinymce-angular';
 import { ServoyExtraTreeview } from './treeview/treeview';
-import { AngularTreeGridComponent } from '@servoy/angular-tree-grid';
 import { ServoyExtraTreeviewCellRenderer } from './treeview/cellrenderer';
 import { ServoyExtraGauge } from './gauge/gauge';
 import { LinearGauge } from './gauge/lib/linear-gauge';
 import { RadialGauge } from './gauge/lib/radial-gauge';
-import { DashboardComponent } from '@uppy/angular';
 import {FileTypesUtilsService} from './fileupload/lib/filetypes';
-import { NgxSliderModule } from '@angular-slider/ngx-slider';
 
 @NgModule({
-    declarations: [
+    imports: [
         ServoyExtraTable,
         TableRow,
         ServoyExtraHtmlarea,
@@ -49,9 +35,9 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
         ServoyExtraLightboxGallery,
         ServoyExtraSlider,
         ServoyExtraSpinner,
-		ServoyExtraSplitpane,
+        ServoyExtraSplitpane,
         ServoyExtraMultiFileUpload,
-		ServoyExtraSelect2Tokenizer,
+        ServoyExtraSelect2Tokenizer,
         ServoyExtraYoutubeVideoEmbedder,
         ServoyExtraSidenav,
         ServoyExtraCollapse,
@@ -59,30 +45,12 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
         ServoyExtraTreeview,
         ServoyExtraTreeviewCellRenderer,
         ServoyExtraGauge,
-		BGSplitter,
-    	BGPane,
+        BGSplitter,
+        BGPane,
         LinearGauge,
         RadialGauge
     ],
-    imports: [
-        ServoyPublicModule,
-        CommonModule,
-        FormsModule,
-        ResizableModule,
-        BidiModule,
-        ScrollingModule,
-        NgbModule,
-        FileUploadModule,
-        NgxSliderModule,
-		Select2,
-        LightboxModule,
-        TreeModule,
-        EditorModule,
-        AngularTreeGridComponent,
-        DashboardComponent
-    ],
-    providers: [AsyncPipe,
-            { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+    providers: [
             FileTypesUtilsService
     ],
     exports: [ServoyExtraTable,

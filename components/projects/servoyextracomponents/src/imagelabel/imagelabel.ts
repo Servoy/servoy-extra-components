@@ -1,12 +1,13 @@
 import { Component, SimpleChanges, ChangeDetectionStrategy, input } from '@angular/core';
-import { ServoyBaseComponent } from '@servoy/public';
+import { ServoyBaseComponent, ServoyPublicModule } from '@servoy/public';
 
 @Component( {
     selector: 'servoyextra-imagelabel',
     templateUrl: './imagelabel.html',
     styleUrls: ['./imagelabel.css'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    standalone: true,
+    imports: [ServoyPublicModule]
 } )
 export class ServoyExtraImageLabel extends ServoyBaseComponent<HTMLImageElement> {
 

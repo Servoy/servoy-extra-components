@@ -12,7 +12,8 @@ import type { WebcamOptions } from '@uppy/webcam';
     selector: 'servoyextra-multifileupload',
     templateUrl: './multifileupload.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    standalone: true,
+    imports: [DashboardComponent]
 })
 export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivElement> {
 

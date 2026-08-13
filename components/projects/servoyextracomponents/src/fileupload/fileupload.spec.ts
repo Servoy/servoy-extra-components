@@ -12,8 +12,7 @@ describe('ServoyExtraFileUpload', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ServoyExtraFileUpload],
-            imports: [ServoyPublicTestingModule, FormsModule, FileUploadModule],
+            imports: [ServoyPublicTestingModule, FormsModule, FileUploadModule, ServoyExtraFileUpload],
             schemas: [NO_ERRORS_SCHEMA]
         }).compileComponents();
 

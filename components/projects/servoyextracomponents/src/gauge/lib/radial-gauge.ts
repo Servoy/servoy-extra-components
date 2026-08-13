@@ -38,7 +38,7 @@ export { RadialGaugeOptions } from '@servoy/canvas-gauges';
        selector: 'radial-gauge',
     template: '<canvas #gauge></canvas>',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    standalone: true
 })
 export class RadialGauge extends BaseGauge<CanvasGauges.RadialGauge, CanvasGauges.RadialGaugeOptions> implements OnInit {
 

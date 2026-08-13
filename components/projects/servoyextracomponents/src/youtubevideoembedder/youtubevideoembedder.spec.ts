@@ -10,8 +10,7 @@ describe('ServoyExtraYoutubeVideoEmbedder', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ServoyExtraYoutubeVideoEmbedder],
-            imports: [ServoyPublicTestingModule, FormsModule],
+            imports: [ServoyPublicTestingModule, FormsModule, ServoyExtraYoutubeVideoEmbedder],
             schemas: [NO_ERRORS_SCHEMA]
         }).compileComponents();
 

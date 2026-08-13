@@ -3,6 +3,12 @@ Ant-Version: Apache Ant 1.8.4
 NG2-CSS-ClientLibs: ~@servoy/servoyextracomponents/assets/servoyextra.css
 NPM-PackageName: @servoy/servoyextracomponents
 NG2-Module: ServoyExtraComponentsModule
+NG2-Components: ServoyExtraTable,ServoyExtraHtmlarea,ServoyExtraImageLabel,Se
+ rvoyExtraFileUpload,ServoyExtraTextfieldGroup,ServoyExtraLightboxGallery,Ser
+ voyExtraSlider,ServoyExtraSpinner,ServoyExtraSplitpane,ServoyExtraMultiFileU
+ pload,ServoyExtraSelect2Tokenizer,ServoyExtraYoutubeVideoEmbedder,ServoyExtr
+ aSidenav,ServoyExtraCollapse,ServoyExtraDbtreeview,ServoyExtraTreeview,Servo
+ yExtraGauge
 Entry-Point: dist/servoy/servoyextracomponents
 CSS-ClientLibs: servoyextra/lib/css/skin-win8/ui.fancytree.css;name=ui
  .fancytree.css";version=2.9.0

@@ -2,7 +2,8 @@ import {
     ChangeDetectionStrategy, Component, SimpleChanges,
     TemplateRef, ElementRef, inject, input, output, contentChild, viewChild, effect, signal, linkedSignal
 } from '@angular/core';
-import { ServoyBaseComponent, ServoyPublicService, IJSMenu, IJSMenuItem } from '@servoy/public';
+import { NgStyle, NgTemplateOutlet } from '@angular/common';
+import { ServoyBaseComponent, ServoyPublicService, IJSMenu, IJSMenuItem, ServoyPublicModule } from '@servoy/public';
 
 import { LoggerFactory } from '@servoy/public';
 import { DOCUMENT } from '@angular/common';
@@ -11,7 +12,8 @@ import { DOCUMENT } from '@angular/common';
 	selector: 'servoyextra-sidenav',
 	templateUrl: './sidenav.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	standalone: false
+	standalone: true,
+	imports: [NgStyle, NgTemplateOutlet, ServoyPublicModule]
 })
 export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 

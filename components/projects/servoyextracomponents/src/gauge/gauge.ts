@@ -1,11 +1,14 @@
 import { ChangeDetectionStrategy, Component, SimpleChanges, input, signal } from '@angular/core';
 import { ServoyBaseComponent } from '@servoy/public';
+import { LinearGauge } from './lib/linear-gauge';
+import { RadialGauge } from './lib/radial-gauge';
 
 @Component({
     selector: 'servoyextra-gauge',
     templateUrl: './gauge.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false,
+    standalone: true,
+    imports: [LinearGauge, RadialGauge],
     host: {
         '(window:resize)': 'onResize($event)'
     }

@@ -24,8 +24,7 @@ describe('ServoyExtraSplitpane', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ServoyExtraSplitpane],
-            imports: [ServoyPublicTestingModule, FormsModule],
+            imports: [ServoyPublicTestingModule, FormsModule, ServoyExtraSplitpane],
             schemas: [NO_ERRORS_SCHEMA]
         }).compileComponents();
 

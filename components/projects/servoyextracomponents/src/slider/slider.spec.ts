@@ -20,8 +20,7 @@ describe('ServoyExtraSlider', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ServoyExtraSlider],
-            imports: [ServoyPublicTestingModule, FormsModule, NgxSliderModule],
+            imports: [ServoyPublicTestingModule, FormsModule, NgxSliderModule, ServoyExtraSlider],
             schemas: [NO_ERRORS_SCHEMA]
         }).compileComponents();
 

@@ -1,5 +1,6 @@
 import { PointerType, ChangeContext, LabelType, Options } from '@angular-slider/ngx-slider';
 import { Component, SimpleChanges, ChangeDetectionStrategy, inject, input, output, EventEmitter } from '@angular/core';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { Format, ServoyBaseComponent } from '@servoy/public'
 
 import { FormattingService } from '@servoy/public';
@@ -8,7 +9,8 @@ import { FormattingService } from '@servoy/public';
     selector: 'servoyextra-slider',
     templateUrl: './slider.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    standalone: true,
+    imports: [NgxSliderModule]
 })
 export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
 

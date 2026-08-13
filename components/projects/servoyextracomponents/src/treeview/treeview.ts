@@ -8,7 +8,8 @@ import { ServoyExtraTreeviewCellRenderer } from './cellrenderer';
     selector: 'servoyextra-treeview',
     templateUrl: './treeview.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    standalone: true,
+    imports: [AngularTreeGridComponent]
 })
 export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
 

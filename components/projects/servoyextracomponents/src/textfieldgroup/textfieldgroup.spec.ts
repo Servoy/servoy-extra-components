@@ -11,8 +11,7 @@ describe('ServoyExtraTextfieldGroup', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ServoyExtraTextfieldGroup],
-            imports: [ServoyPublicTestingModule, FormsModule],
+            imports: [ServoyPublicTestingModule, FormsModule, ServoyExtraTextfieldGroup],
             schemas: [NO_ERRORS_SCHEMA]
         }).compileComponents();
 

@@ -38,7 +38,7 @@ export { LinearGaugeOptions } from '@servoy/canvas-gauges';
        selector: 'linear-gauge',
     template: '<canvas #gauge></canvas>',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    standalone: true
 })
 export class LinearGauge extends BaseGauge<CanvasGauges.LinearGauge, CanvasGauges.LinearGaugeOptions> implements OnInit {
 

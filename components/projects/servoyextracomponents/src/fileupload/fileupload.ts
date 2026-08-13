@@ -1,6 +1,7 @@
 import { Component, SimpleChanges, ChangeDetectionStrategy, ElementRef, inject, input, output, viewChild } from '@angular/core';
-import { ServoyBaseComponent, ServoyPublicService } from '@servoy/public';
+import { ServoyBaseComponent, ServoyPublicService, ServoyPublicModule } from '@servoy/public';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
+import { FileUploadModule } from 'ng2-file-upload';
 
 import { LoggerFactory } from '@servoy/public';
 import { DOCUMENT } from '@angular/common';
@@ -11,7 +12,8 @@ import {FileTypesUtilsService} from './lib/filetypes';
     templateUrl: './fileupload.html',
     styleUrls: ['./fileupload.css'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    standalone: true,
+    imports: [FileUploadModule, ServoyPublicModule]
 })
 export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
 

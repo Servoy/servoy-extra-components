@@ -1,6 +1,8 @@
 import { Component, SimpleChanges, ChangeDetectionStrategy, TemplateRef, inject, input, output, contentChild } from '@angular/core';
-import { BaseCustomObject, ServoyBaseComponent } from '@servoy/public';
+import { NgStyle, NgTemplateOutlet } from '@angular/common';
+import { BaseCustomObject, ServoyBaseComponent, ServoyPublicModule } from '@servoy/public';
 import { ServoyPublicService } from '@servoy/public';
+import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
 import { DOCUMENT } from '@angular/common';
 
 
@@ -8,7 +10,8 @@ import { DOCUMENT } from '@angular/common';
     selector: 'servoyextra-collapse',
     templateUrl: './collapse.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    standalone: true,
+    imports: [NgStyle, NgTemplateOutlet, NgbCollapse, ServoyPublicModule]
 })
 
 export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{

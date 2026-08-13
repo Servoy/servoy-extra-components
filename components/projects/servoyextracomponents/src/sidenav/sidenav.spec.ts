@@ -78,8 +78,7 @@ describe('ServoyExtraSidenav', () => {
         ];
 
         await TestBed.configureTestingModule({
-            declarations: [ServoyExtraSidenav],
-            imports: [ServoyPublicTestingModule, FormsModule],
+            imports: [ServoyPublicTestingModule, FormsModule, ServoyExtraSidenav],
             schemas: [NO_ERRORS_SCHEMA]
         }).compileComponents();
 

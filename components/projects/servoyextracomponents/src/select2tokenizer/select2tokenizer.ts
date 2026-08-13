@@ -1,6 +1,6 @@
 import { Component, SimpleChanges, ChangeDetectionStrategy, inject, input, output, viewChild, signal } from '@angular/core';
 import { Select2Option, Select2UpdateEvent, Select2 } from 'ng-select2-component';
-import { ServoyBaseComponent, IValuelist, Format, PopupStateService } from '@servoy/public';
+import { ServoyBaseComponent, IValuelist, Format, PopupStateService, ServoyPublicModule } from '@servoy/public';
 import { DOCUMENT } from '@angular/common';
 
 
@@ -8,7 +8,8 @@ import { DOCUMENT } from '@angular/common';
     selector: 'servoyextra-select2tokenizer',
     templateUrl: './select2tokenizer.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false,
+    standalone: true,
+    imports: [Select2, ServoyPublicModule],
     host: {
         '(keydown)': 'handleKeyDown($event)'
     }

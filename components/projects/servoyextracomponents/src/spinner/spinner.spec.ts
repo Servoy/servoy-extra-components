@@ -17,8 +17,7 @@ describe('ServoyExtraSpinner', () => {
         ] as IValuelist;
 
         await TestBed.configureTestingModule({
-            declarations: [ServoyExtraSpinner],
-            imports: [ServoyPublicTestingModule, FormsModule]
+            imports: [ServoyPublicTestingModule, FormsModule, ServoyExtraSpinner]
         }).compileComponents();
 
         fixture = TestBed.createComponent(ServoyExtraSpinner);

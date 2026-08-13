@@ -65,8 +65,7 @@ describe('ServoyExtraSelect2Tokenizer', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ServoyExtraSelect2Tokenizer],
-            imports: [ServoyPublicTestingModule, FormsModule, Select2],
+            imports: [ServoyPublicTestingModule, FormsModule, Select2, ServoyExtraSelect2Tokenizer],
             schemas: [NO_ERRORS_SCHEMA]
         }).compileComponents();
 

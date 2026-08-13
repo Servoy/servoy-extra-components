@@ -16,7 +16,7 @@ import { BGPane } from './bg_pane.component';
     styleUrls: ['./bg_splitter.css'],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false,
+    standalone: true,
     host: {
         '(document:pointerup)': 'pointerup($event)',
         '(pointermove)': 'pointermove($event)',

@@ -2,16 +2,20 @@ import {
     Component, ElementRef, OnDestroy, ChangeDetectionStrategy,
     Directive, SecurityContext, SimpleChanges, CSP_NONCE, inject, input, viewChild, signal
 } from '@angular/core';
-import { BaseCustomObject, Format, IFoundset, IValuelist, ServoyBaseComponent, ViewPortRow, FoundsetChangeEvent, ChangeType, FormattingService, ViewportRowUpdates } from '@servoy/public';
+import { NgStyle } from '@angular/common';
+import {
+    BaseCustomObject, Format, IFoundset, IValuelist, ServoyBaseComponent,
+    ViewPortRow, FoundsetChangeEvent, ChangeType, FormattingService, ViewportRowUpdates, ServoyPublicModule
+} from '@servoy/public';
 import { LoggerFactory } from '@servoy/public';
-import { ResizeEvent } from 'angular-resizable-element';
+import { ResizeEvent, ResizableModule } from 'angular-resizable-element';
 import { DOCUMENT } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Directive({
     // eslint-disable-next-line @angular-eslint/directive-selector
     selector: '[svyTableRow]',
-    standalone: false
+    standalone: true
 })
  
 export class TableRow {
@@ -28,7 +32,8 @@ const instanceOfValuelist = (obj: any): obj is IValuelist =>
     selector: 'servoyextra-table',
     templateUrl: './table.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false,
+    standalone: true,
+    imports: [NgStyle, ResizableModule, ServoyPublicModule],
     host: {
         '(window:resize)': 'windowResizeHandler()'
     }

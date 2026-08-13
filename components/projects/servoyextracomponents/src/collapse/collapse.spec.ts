@@ -52,8 +52,7 @@ describe('ServoyExtraCollapse', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ServoyExtraCollapse],
-            imports: [ServoyPublicTestingModule, FormsModule],
+            imports: [ServoyPublicTestingModule, FormsModule, ServoyExtraCollapse],
             schemas: [NO_ERRORS_SCHEMA]
         }).compileComponents();
 

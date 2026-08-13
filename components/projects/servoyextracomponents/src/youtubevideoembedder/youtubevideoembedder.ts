@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, SimpleChanges, inject, input } from '@angular/core';
-import { ServoyBaseComponent } from '@servoy/public';
+import { ServoyBaseComponent, ServoyPublicModule } from '@servoy/public';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
@@ -7,7 +7,8 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
     templateUrl: './youtubevideoembedder.html',
     styleUrls: ['./youtubevideoembedder.css'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    standalone: true,
+    imports: [ServoyPublicModule]
 })
 export class ServoyExtraYoutubeVideoEmbedder extends ServoyBaseComponent<HTMLIFrameElement> {
 

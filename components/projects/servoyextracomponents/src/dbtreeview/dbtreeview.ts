@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, SimpleChanges, inject, input, output, viewChild, effect, signal } from '@angular/core';
 import { LoggerFactory, ServoyBaseComponent, BaseCustomObject, IFoundsetTree, ServoyPublicService, EventLike, JSEvent } from '@servoy/public';
 import { IActionMapping, ITreeOptions, TreeComponent, TreeNode } from '@ali-hm/angular-tree-component';
+import { TreeModule } from '@ali-hm/angular-tree-component';
 
 
 
@@ -9,7 +10,8 @@ import { IActionMapping, ITreeOptions, TreeComponent, TreeNode } from '@ali-hm/a
     templateUrl: './dbtreeview.html',
     styleUrls: ['./dbtreeview.css'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    standalone: true,
+    imports: [TreeModule]
 })
 
 export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> implements OnDestroy {

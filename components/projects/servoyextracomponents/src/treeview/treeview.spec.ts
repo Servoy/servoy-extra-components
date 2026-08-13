@@ -21,8 +21,7 @@ describe('ServoyExtraTreeview', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ServoyExtraTreeview, ServoyExtraTreeviewCellRenderer],
-            imports: [ServoyPublicTestingModule, FormsModule],
+            imports: [ServoyPublicTestingModule, FormsModule, ServoyExtraTreeview, ServoyExtraTreeviewCellRenderer],
             schemas: [NO_ERRORS_SCHEMA]
         }).compileComponents();
 

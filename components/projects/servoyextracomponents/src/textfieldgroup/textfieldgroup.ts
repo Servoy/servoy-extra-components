@@ -1,12 +1,14 @@
 import { Component, SimpleChanges, ElementRef, ChangeDetectionStrategy, input, output, viewChild, linkedSignal, computed } from '@angular/core';
-import { ServoyBaseComponent, Format } from '@servoy/public';
+import { FormsModule } from '@angular/forms';
+import { ServoyBaseComponent, Format, ServoyPublicModule } from '@servoy/public';
 
 @Component( {
     selector: 'servoyextra-textfieldgroup',
     styleUrls: ['./textfieldgroup.css'],
     templateUrl: './textfieldgroup.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    standalone: true,
+    imports: [FormsModule, ServoyPublicModule]
 } )
 export class ServoyExtraTextfieldGroup extends ServoyBaseComponent<HTMLDivElement> {
 

@@ -7,7 +7,7 @@ import { Lightbox, LightboxConfig } from '@servoy/ngx-lightbox';
     templateUrl: './lightboxgallery.html',
     styleUrls: ['./lightboxgallery.css'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false,
+    standalone: true,
     host: {
         '(document:keydown)': 'onKeyDown($event)'
     }

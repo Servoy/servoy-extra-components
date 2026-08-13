@@ -1,12 +1,14 @@
 import { Component, SimpleChanges, ChangeDetectionStrategy, input, output, signal } from '@angular/core';
-import { Format, ServoyBaseComponent, IValuelist } from '@servoy/public';
+import { FormsModule } from '@angular/forms';
+import { Format, ServoyBaseComponent, IValuelist, ServoyPublicModule } from '@servoy/public';
 
 @Component({
     selector: 'servoyextra-spinner',
     templateUrl: './spinner.html',
     styleUrls: ['./spinner.css'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    standalone: true,
+    imports: [FormsModule, ServoyPublicModule]
 })
 export class ServoyExtraSpinner extends ServoyBaseComponent<HTMLDivElement> {
     readonly onDataChangeMethodID = input<((e: Event, data?: any) => void) | undefined>(undefined);

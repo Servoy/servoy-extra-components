@@ -1,7 +1,7 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { ServoyApiTesting, ServoyPublicTestingModule } from '@servoy/public';
 import { ServoyExtraGauge } from './gauge';
 
@@ -9,22 +9,48 @@ describe('ServoyExtraGauge', () => {
     let fixture: ComponentFixture<ServoyExtraGauge>;
     let component: ServoyExtraGauge;
     let servoyApi: ServoyApiTesting;
+    let originalGetContext: typeof HTMLCanvasElement.prototype.getContext;
 
     beforeEach(async () => {
+        originalGetContext = HTMLCanvasElement.prototype.getContext;
+        HTMLCanvasElement.prototype.getContext = vi.fn().mockReturnValue({
+            translate: vi.fn(),
+            rotate: vi.fn(),
+            save: vi.fn(),
+            restore: vi.fn(),
+            beginPath: vi.fn(),
+            closePath: vi.fn(),
+            arc: vi.fn(),
+            fill: vi.fn(),
+            stroke: vi.fn(),
+            moveTo: vi.fn(),
+            lineTo: vi.fn(),
+            clearRect: vi.fn(),
+            fillRect: vi.fn(),
+            strokeRect: vi.fn(),
+            measureText: vi.fn().mockReturnValue({ width: 0 }),
+            fillText: vi.fn(),
+            strokeText: vi.fn(),
+            createLinearGradient: vi.fn().mockReturnValue({ addColorStop: vi.fn() }),
+            createRadialGradient: vi.fn().mockReturnValue({ addColorStop: vi.fn() }),
+            setTransform: vi.fn(),
+            drawImage: vi.fn(),
+            clip: vi.fn(),
+            quadraticCurveTo: vi.fn(),
+            bezierCurveTo: vi.fn(),
+            rect: vi.fn(),
+            scale: vi.fn(),
+            canvas: { width: 200, height: 200 }
+        }) as any;
+
         await TestBed.configureTestingModule({
-            declarations: [ServoyExtraGauge],
-            imports: [ServoyPublicTestingModule, FormsModule],
+            imports: [ServoyPublicTestingModule, FormsModule, ServoyExtraGauge],
             schemas: [NO_ERRORS_SCHEMA]
         }).compileComponents();
 
         fixture = TestBed.createComponent(ServoyExtraGauge);
         component = fixture.componentInstance;
         servoyApi = new ServoyApiTesting();
-
-        component.canvasGauge = {
-            update: vi.fn(),
-            draw: vi.fn()
-        };
 
         fixture.componentRef.setInput('servoyApi', servoyApi);
         fixture.componentRef.setInput('gaugeType', 'radial');
@@ -37,12 +63,15 @@ describe('ServoyExtraGauge', () => {
         await fixture.whenStable();
     });
 
+    afterEach(() => {
+        HTMLCanvasElement.prototype.getContext = originalGetContext;
+    });
+
     it('should mount and register the component', async () => {
         const api = new ServoyApiTesting();
         const registerSpy = vi.spyOn(api, 'registerComponent');
 
         const f = TestBed.createComponent(ServoyExtraGauge);
-        f.componentInstance.canvasGauge = { update: vi.fn(), draw: vi.fn() };
         f.componentRef.setInput('servoyApi', api);
         f.componentRef.setInput('gaugeType', 'radial');
         f.componentRef.setInput('minValue', 0);

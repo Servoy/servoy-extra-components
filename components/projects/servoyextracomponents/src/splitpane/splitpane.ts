@@ -1,12 +1,15 @@
 import { Component, TemplateRef, SimpleChanges, ChangeDetectionStrategy, input, output, contentChild, signal } from '@angular/core';
-
-import { BaseCustomObject, ServoyBaseComponent } from '@servoy/public';
+import { NgStyle, NgTemplateOutlet } from '@angular/common';
+import { BaseCustomObject, ServoyBaseComponent, ServoyPublicModule } from '@servoy/public';
+import { BGSplitter } from './bg_splitter/bg_splitter.component';
+import { BGPane } from './bg_splitter/bg_pane.component';
 
 @Component( {
     selector: 'servoyextra-splitpane',
     templateUrl: './splitpane.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false,
+    standalone: true,
+    imports: [NgStyle, NgTemplateOutlet, ServoyPublicModule, BGSplitter, BGPane],
     host: {
         '(window:resize)': 'onResize()'
     }

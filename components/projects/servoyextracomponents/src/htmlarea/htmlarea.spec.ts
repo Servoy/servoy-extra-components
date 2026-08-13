@@ -16,8 +16,7 @@ describe('ServoyExtraHtmlarea', () => {
         }
 
         await TestBed.configureTestingModule({
-            declarations: [ServoyExtraHtmlarea],
-            imports: [ServoyPublicTestingModule],
+            imports: [ServoyPublicTestingModule, ServoyExtraHtmlarea],
             schemas: [NO_ERRORS_SCHEMA]
         }).compileComponents();
 

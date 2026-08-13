@@ -1,6 +1,8 @@
 import { Component, SimpleChanges, ChangeDetectionStrategy, inject, input, output, signal } from '@angular/core';
-import { ServoyBaseComponent, PropertyUtils, ServoyPublicService } from '@servoy/public';
+import { FormsModule } from '@angular/forms';
+import { ServoyBaseComponent, PropertyUtils, ServoyPublicService, ServoyPublicModule } from '@servoy/public';
 import { RawEditorOptions, Editor } from 'tinymce';
+import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import { DOCUMENT } from '@angular/common';
 
 
@@ -8,7 +10,9 @@ import { DOCUMENT } from '@angular/common';
     selector: 'servoyextra-htmlarea',
     templateUrl: './htmlarea.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    standalone: true,
+    imports: [FormsModule, EditorModule, ServoyPublicModule],
+    providers: [{ provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }]
 })
 export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
 

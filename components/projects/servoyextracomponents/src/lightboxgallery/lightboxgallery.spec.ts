@@ -43,8 +43,7 @@ describe('ServoyExtraLightboxGallery', () => {
         servoyApi = new ServoyApiTesting();
 
         await TestBed.configureTestingModule({
-            declarations: [ServoyExtraLightboxGallery],
-            imports: [ServoyPublicTestingModule, FormsModule],
+            imports: [ServoyPublicTestingModule, FormsModule, ServoyExtraLightboxGallery],
             providers: [
                 { provide: Lightbox, useValue: { open: vi.fn(), close: vi.fn() } },
                 { provide: LightboxConfig, useValue: {} }

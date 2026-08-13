@@ -11,8 +11,7 @@ describe('ServoyExtraImageLabel', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ServoyExtraImageLabel],
-            imports: [ServoyPublicTestingModule, FormsModule],
+            imports: [ServoyPublicTestingModule, FormsModule, ServoyExtraImageLabel],
             schemas: [NO_ERRORS_SCHEMA]
         }).compileComponents();
 
