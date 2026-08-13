@@ -14,11 +14,7 @@ import { TreeModule } from '@ali-hm/angular-tree-component';
     imports: [TreeModule]
 })
 
-export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> implements OnDestroy {
-
-    elementRef!: ElementRef<HTMLDivElement>;
-    readonly elementRefSignal = viewChild<ElementRef<HTMLDivElement>>('element');
-    readonly tree = viewChild<TreeComponent>('tree');
+export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> implements OnDestroy {    readonly tree = viewChild<TreeComponent>('tree');
 
     readonly foundsettree = input<IFoundsetTree>(undefined as any);
     readonly autoRefresh = input<boolean>(undefined as any);
@@ -95,14 +91,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     };
 
     constructor() {
-        super();
-        effect(() => {
-            const el = this.elementRefSignal();
-            if (el) {
-                this.elementRef = el;
-            }
-        });
-    }
+        super();    }
 
     svyOnInit() {
         super.svyOnInit();
@@ -132,10 +121,10 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
             }
             for (const property of Object.keys(changes)) {
                 const change = changes[property];
-                const elementRef = this.elementRefSignal();
+                const elementRef = this.elementRef();
                 switch (property) {
                     case 'responsiveHeight':
-                        if (elementRef && this.servoyApi.isInAbsoluteLayout() && change.currentValue) {
+                        if (elementRef && this.servoyApi().isInAbsoluteLayout() && change.currentValue) {
                             this.renderer.setStyle(elementRef, 'height', change.currentValue + 'px');
                         }
                         break;
@@ -179,7 +168,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
                         break;
                     }
                     case 'enabled': {
-                        const elementRefValue = this.elementRefSignal();
+                        const elementRefValue = this.elementRef();
                         if (change.previousValue !== change.currentValue && elementRefValue) {
                             if (change.currentValue) {
                                 this.renderer.removeClass(elementRefValue.nativeElement, 'dbtreeview-disabled');
@@ -266,7 +255,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
        const onDrop = this.onDrop();
        if (onDrop){
            onDrop(this.getNodePKPath(event.node), this.getNodePKPath(event.to.parent), event.to.index,
-                this.servoyPublicService.createJSEvent({ target: this.elementRefSignal()!.nativeElement } as EventLike, 'onDrop'));
+                this.servoyPublicService.createJSEvent({ target: this.elementRef()!.nativeElement } as EventLike, 'onDrop'));
        }
     }
 
@@ -286,7 +275,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
         this.expandNodes(this.displayNodes);
         const onReady = this.onReady();
         if (onReady) {
-            onReady(this.servoyPublicService.createJSEvent({ target: this.elementRefSignal()!.nativeElement } as EventLike, 'onReady'));
+            onReady(this.servoyPublicService.createJSEvent({ target: this.elementRef()!.nativeElement } as EventLike, 'onReady'));
         }
     }
 
@@ -558,12 +547,12 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     }
 	
 	private getAction(action: HTMLElement): Action {
-		return this.actions()!.filter((item) => [...(this.elementRefSignal()!.nativeElement as HTMLElement).querySelectorAll(item.name)].includes(action))[0];
+		return this.actions()!.filter((item) => [...(this.elementRef()!.nativeElement as HTMLElement).querySelectorAll(item.name)].includes(action))[0];
 	}
 
     private initTree(): void {
         this.displayNodes = [];
-        if (this.servoyApi.isInDesigner()) {
+        if (this.servoyApi().isInDesigner()) {
             this.displayNodes.push({ name: 'node1', image: this.fileImgPath },
                 { name: 'node2', image: this.fileImgPath },
                 { name: 'node3', image: this.fileImgPath });

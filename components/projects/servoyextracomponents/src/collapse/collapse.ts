@@ -229,7 +229,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 	}
 
 	isTrustedHTML(): boolean {
-		if (this.servoyApi.trustAsHtml()) {
+		if (this.servoyApi().trustAsHtml()) {
 			return true;
 		}
 		return false;
@@ -256,7 +256,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 					this.collapse(i, true);  //$NON-NLS-1$
 					if (otherCollapse.form) {
 						//a form needs to be hidden
-						this.servoyApi.hideForm(otherCollapse.form, otherCollapse.relationName);
+						this.servoyApi().hideForm(otherCollapse.form, otherCollapse.relationName);
 						this.notifyChange(index);
 					} else if (otherCollapse.cards) {
 						//maybe cards have forms to hide
@@ -270,14 +270,14 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 		//toggle form visibility
 		if (collapsibleToChange.form) {
 			if (state === false) {
-				this.servoyApi.formWillShow(collapsibleToChange.form, collapsibleToChange.relationName).then(() => {
+				this.servoyApi().formWillShow(collapsibleToChange.form, collapsibleToChange.relationName).then(() => {
 					this.collapsibles()![index].isCollapsed = state;
 					this.collapsibles()![index].formIsVisibleServerSide = true;
 					this.cdRef.detectChanges();
 					this.notifyChange(index);
 				});
 			} else if (state === true) {
-				this.servoyApi.hideForm(collapsibleToChange.form, collapsibleToChange.relationName).then(() => {
+				this.servoyApi().hideForm(collapsibleToChange.form, collapsibleToChange.relationName).then(() => {
 					this.collapsibles()![index].isCollapsed = state;
 					this.collapsibles()![index].formIsVisibleServerSide = false;
 					this.cdRef.detectChanges();
@@ -327,9 +327,9 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 	private toggleFormVisibility(card: Card, state: boolean) {
 		if (card.form) {
 			if (state === false) {
-				return this.servoyApi.formWillShow(card.form);
+				return this.servoyApi().formWillShow(card.form);
 			} else {
-				return this.servoyApi.hideForm(card.form);
+				return this.servoyApi().hideForm(card.form);
 			}
 		} else {
 			return true;
@@ -351,7 +351,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 		if (!(index >= 0)) {
 			index = 0;
 		}
-		const myElem = this.document.getElementById(this.servoyApi.getMarkupId() + '-' + index + '-' + suffix); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$;
+		const myElem = this.document.getElementById(this.servoyApi().getMarkupId() + '-' + index + '-' + suffix); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$;
 		return myElem;
 	}
 
@@ -360,7 +360,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 	 */
 	private getFormState(form: string, collapsibleOrCard: Collapsible | Card, formWillShow: boolean,setFormVisibleServerSide? : boolean) {
 		if (formWillShow) {
-			this.servoyApi.formWillShow(form, ('relationName' in collapsibleOrCard) ? collapsibleOrCard.relationName : null as any).then(() => {
+			this.servoyApi().formWillShow(form, ('relationName' in collapsibleOrCard) ? collapsibleOrCard.relationName : null as any).then(() => {
 				let changed = false;
 				if (setFormVisibleServerSide) {
 				    (collapsibleOrCard as Collapsible).formIsVisibleServerSide = true;

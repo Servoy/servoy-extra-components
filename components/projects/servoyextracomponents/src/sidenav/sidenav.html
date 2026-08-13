@@ -5,7 +5,7 @@
     <div class="svy-sidenav-header">
       <i (click)="slideMenu($event)" class="svy-sidenav-action-open"></i>
     </div>
-    <nav [id]="servoyApi.getMarkupId()" class="svy-sidenav-content">
+    <nav [id]="servoyApi().getMarkupId()" class="svy-sidenav-content">
       <!-- The main menu -->
       <ul class="svy-sidenav-menu sn-level-1 svy-sidenav-collapsed" dir="ltr">
         @if (headerForm() !== null && open()) {

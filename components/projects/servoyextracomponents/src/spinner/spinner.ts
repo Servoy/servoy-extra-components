@@ -55,7 +55,7 @@ export class ServoyExtraSpinner extends ServoyBaseComponent<HTMLDivElement> {
                     this.selection = this.getSelectionFromDataprovider();
                     break;
                 case 'responsiveHeight':
-                    if (!this.servoyApi.isInAbsoluteLayout()) {
+                    if (!this.servoyApi().isInAbsoluteLayout()) {
                         this.getNativeElement().style.minHeight = this.responsiveHeight() + 'px';
                         this.getNativeElement().style.position = 'relative';
                     }

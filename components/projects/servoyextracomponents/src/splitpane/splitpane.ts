@@ -93,7 +93,7 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
 	
     svyOnInit() {
         this._divLocation.set(this.divLocation());
-        if (!this.servoyApi.isInAbsoluteLayout()) {
+        if (!this.servoyApi().isInAbsoluteLayout()) {
             (this.containerStyle as any)['min-height'] = this.responsiveHeight() + 'px';
             (this.containerStyle as any)['position'] = 'relative';
         }
@@ -147,11 +147,11 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     private getInternalHeight() {
-		return this.elementRef.nativeElement.getBoundingClientRect().height;
+		return this.elementRef()!.nativeElement.getBoundingClientRect().height;
 	}
 	
 	private getInternalWidth() {
-		return this.elementRef.nativeElement.getBoundingClientRect().width;
+		return this.elementRef()!.nativeElement.getBoundingClientRect().width;
 	}
 }
 

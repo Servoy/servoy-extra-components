@@ -1,5 +1,5 @@
 <div #element class="tablewrapper" [ngStyle]="getLayoutStyle()">
-  <table #table [id]="'table_'+servoyApi.getMarkupId()"
+  <table #table [id]="'table_'+servoyApi().getMarkupId()"
     [ngStyle]="getTableStyle()"
     class='svy-table'
     [class]="styleClass()"

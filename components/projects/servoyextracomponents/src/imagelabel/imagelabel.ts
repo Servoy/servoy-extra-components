@@ -28,7 +28,7 @@ export class ServoyExtraImageLabel extends ServoyBaseComponent<HTMLImageElement>
     svyOnInit() {
         super.svyOnInit();
         this.attachHandlers();
-        if (this.servoyApi.isInDesigner()){
+        if (this.servoyApi().isInDesigner()){
             this.imageURL = this.designerURL;
         }
     }
@@ -49,7 +49,7 @@ export class ServoyExtraImageLabel extends ServoyBaseComponent<HTMLImageElement>
                         break;
                     case 'centerImage':
 						this.renderer.removeClass(this.getNativeElement(), 'svy-extra-imagelabel-center');
-						if (change.currentValue && !this.servoyApi.isInDesigner()) {
+						if (change.currentValue && !this.servoyApi().isInDesigner()) {
 							this.renderer.addClass(this.getNativeElement(), 'svy-extra-imagelabel-center');
 						}
                 }
@@ -63,7 +63,7 @@ export class ServoyExtraImageLabel extends ServoyBaseComponent<HTMLImageElement>
     }
 
     private updateImageURL( media: any ) {
-        if (!this.servoyApi.isInDesigner()){
+        if (!this.servoyApi().isInDesigner()){
             this.imageURL = media;
         }
     }

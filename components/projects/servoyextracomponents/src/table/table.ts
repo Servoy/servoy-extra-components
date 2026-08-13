@@ -298,7 +298,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                         break;
                     }
                     case 'foundset': {
-                        if (!this.servoyApi || this.servoyApi.isInDesigner()) return;
+                        if (!this.servoyApi || this.servoyApi().isInDesigner()) return;
                         const oldValue = change.previousValue as IFoundset;
                         const newValue = change.currentValue as IFoundset;
                         if (oldValue !== newValue) {
@@ -334,7 +334,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
                         break;
                     }
                     case 'pageSize': {
-                        if (!this.servoyApi || this.servoyApi.isInDesigner()) return;
+                        if (!this.servoyApi || this.servoyApi().isInDesigner()) return;
                         const foundset = this.foundset()!;
                         if (change.previousValue !== change.currentValue) {
                             // start over with renderedSize
@@ -668,7 +668,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
         return columnStyle;
     }
     public getLayoutStyle() {
-        if (this.servoyApi.isInAbsoluteLayout()) { // TODO can we always rely on the fact that $parent is the one to look at?
+        if (this.servoyApi().isInAbsoluteLayout()) { // TODO can we always rely on the fact that $parent is the one to look at?
             this.layoutStyle.position = 'absolute';
             this.layoutStyle.height = '100%';
         } else {
@@ -1410,7 +1410,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     private updateTableColumnStyleClass(columnIndex: number, style: { overflow?: string; minWidth?: string; width?: string; maxWidth?: string }) {
         if (!this.columnCSSRules[columnIndex]) {
             const ss = this.doc.styleSheets;
-            const clsName = '#table_' + this.servoyApi.getMarkupId() + ' .c' + columnIndex;
+            const clsName = '#table_' + this.servoyApi().getMarkupId() + ' .c' + columnIndex;
             let targetStyleSheet: CSSStyleSheet | undefined;
 
             for (const styleSheet of ss) {
@@ -1767,7 +1767,7 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     }
 
     private onTableRendered(isNewTBody: boolean) {
-        const tbl = document.getElementById('table_'+this.servoyApi.getMarkupId());
+        const tbl = document.getElementById('table_'+this.servoyApi().getMarkupId());
         if(this.enableMobileView())
         tbl!.classList.add('mobileview');
         this.updateSelection(this.foundset()!.selectedRowIndexes, null as any);

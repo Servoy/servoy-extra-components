@@ -26,7 +26,7 @@
     "@servoy/angular-tree-grid": "8.0.1",
     "@servoy/canvas-gauges": "2.1.8",
     "@servoy/ngx-lightbox": "^4.0.0",
-    "@servoy/public": "2026.9.1",
+    "@servoy/public": "^2026.9.2",
     "@tinymce/tinymce-angular": "<8",
     "@uppy/angular": "1.1.0",
     "@uppy/companion-client": "5.1.1",

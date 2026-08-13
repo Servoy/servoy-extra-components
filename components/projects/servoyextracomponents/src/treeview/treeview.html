@@ -1,4 +1,4 @@
-<div [id]="servoyApi.getMarkupId()" #element class="svy-treeview" (dragover)="onRowDragOverEvent($event)" (drop)="onRowDropEvent($event)">
+<div [id]="servoyApi().getMarkupId()" #element class="svy-treeview" (dragover)="onRowDragOverEvent($event)" (drop)="onRowDropEvent($event)">
   @if (isTreeReady) {
     <db-angular-tree-grid #angularGrid
       (cellclick)="onclick($event)"

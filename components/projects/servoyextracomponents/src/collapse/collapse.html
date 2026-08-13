@@ -1,23 +1,23 @@
 <div #element
   class="svy-collapse {{ styleClass() }}"
-  [id]="servoyApi.getMarkupId()"
+  [id]="servoyApi().getMarkupId()"
   [sabloTabseq]='tabSeq()'
   [sabloTabseqConfig]="{container: true, reservedGap: 100}">
   <!-- //collapsibles -->
   @for (collapsible of collapsibles(); track collapsible; let idx = $index) {
     <div
       class="svy-collapse-collapsible {{collapsible.styleClass ? collapsible.styleClass : ''}}"
-      id="{{servoyApi.getMarkupId()}}-{{idx}}"
+      id="{{servoyApi().getMarkupId()}}-{{idx}}"
       [sabloTabseq]="idx+1" [sabloTabseqConfig]="{container: true}"
       >
       <!-- //header -->
       <div
         class="svy-collapse-header {{collapsible.isCollapsed ? 'collapsed' : ''}} {{collapsible.headerStyleClass}}"
-        id="{{servoyApi.getMarkupId()}}-{{idx}}-header"
+        id="{{servoyApi().getMarkupId()}}-{{idx}}-header"
         (click)="onClick($event)"
         (dblclick)="onDoubleClick($event)"
-        attr.data-target="#{{servoyApi.getMarkupId()}}-{{idx}}-collapsible"
-        attr.aria-controls="{{servoyApi.getMarkupId()}}-{{idx}}-collapsible"
+        attr.data-target="#{{servoyApi().getMarkupId()}}-{{idx}}-collapsible"
+        attr.aria-controls="{{servoyApi().getMarkupId()}}-{{idx}}-collapsible"
         role="button" >
         <div class="svy-collapse-header-container">
           @if (collapsible.isCollapsed && collapsible.iconLocation === 'LEFT') {
@@ -43,12 +43,12 @@
       <!-- //form collapsible.isCollapsed == true mean hide form-->
       @if (collapsible.form && !collapsible.isCollapsed) {
         <div
-          id="{{servoyApi.getMarkupId()}}-{{idx}}-collapsible"
+          id="{{servoyApi().getMarkupId()}}-{{idx}}-collapsible"
           class="svy-collapse-collapsible-container collapse {{collapsible.isCollapsed ? '' : 'in'}}"
           [ngbCollapse]="collapsible.isCollapsed">
           <div
             class="svy-collapse-card-body {{collapsible.bodyStyleClass}}"
-            id="{{servoyApi.getMarkupId()}}-{{idx}}-collapsible-body" >
+            id="{{servoyApi().getMarkupId()}}-{{idx}}-collapsible-body" >
             <div
               class="svy-collapse-card-body-container"
               [ngStyle]="getFormStyle(collapsible.form)" >
@@ -61,20 +61,20 @@
       <!-- //cards -->
       @if (collapsible.cards && collapsible.cards.length > 0) {
         <div
-          id="{{servoyApi.getMarkupId()}}-{{idx}}-collapsible"
+          id="{{servoyApi().getMarkupId()}}-{{idx}}-collapsible"
           class="svy-collapse-collapsible-container collapse {{collapsible.isCollapsed ? '' : 'in'}}"
           [ngbCollapse]="collapsible.isCollapsed" >
           @for (card of collapsible.cards; track card; let myIdx = $index) {
             <div
               class="svy-collapse-card-body {{collapsible.bodyStyleClass}}"
-              id="{{servoyApi.getMarkupId()}}-{{idx}}-collapsible-body-{{myIdx}}" >
+              id="{{servoyApi().getMarkupId()}}-{{idx}}-collapsible-body-{{myIdx}}" >
               @if (!card.form) {
                 <div
                   [innerHTML]="card.contentHtml | htmlFilter | trustAsHtml:isTrustedHTML()"
                   [class]="card.styleClass"
                   (click)="onCardClick($event, myIdx, idx)"
                   class="svy-collapse-card-body-container"
-                  id="{{servoyApi.getMarkupId()}}-{{idx}}-collapsible-card-container-{{myIdx}}" >
+                  id="{{servoyApi().getMarkupId()}}-{{idx}}-collapsible-card-container-{{myIdx}}" >
                 </div>
               }
               @if (card.form) {
@@ -83,7 +83,7 @@
                   [ngStyle]="getFormStyle(card.form)"
                   class="svy-collapse-card-body-container"
                   [sabloTabseq]='myIdx+1' sablo-tabseq-config="{container: true}"
-                  id="{{servoyApi.getMarkupId()}}-{{idx}}-collapsible-card-container-{{myIdx}}" >
+                  id="{{servoyApi().getMarkupId()}}-{{idx}}-collapsible-card-container-{{myIdx}}" >
                   <ng-template [ngTemplateOutlet]="templateRef()" [ngTemplateOutletContext]="{name:getCardFormIfVisible(collapsible, card)}"></ng-template>
                 </div>
               }
@@ -95,17 +95,17 @@
       <!-- //collapsibleHtml -->
       @if (collapsible.collapsibleHtml && !collapsible.isCollapsed) {
         <div
-          id="{{servoyApi.getMarkupId()}}-{{idx}}-collapsible"
+          id="{{servoyApi().getMarkupId()}}-{{idx}}-collapsible"
           class="svy-collapse-collapsible-container collapse {{collapsible.isCollapsed ? '' : 'in'}}"
           [ngbCollapse]="collapsible.isCollapsed" >
           <div
             class="svy-collapse-card-body {{collapsible.bodyStyleClass}}"
-            id="{{servoyApi.getMarkupId()}}-{{idx}}-collapsible-body"
+            id="{{servoyApi().getMarkupId()}}-{{idx}}-collapsible-body"
             (click)="onCardClick($event, -1, idx)" >
             <div
               [innerHTML]="collapsible.collapsibleHtml | htmlFilter | trustAsHtml:isTrustedHTML()"
               class="svy-collapse-card-body-container"
-              id="{{servoyApi.getMarkupId()}}-{{idx}}--collapsible-card-container">
+              id="{{servoyApi().getMarkupId()}}-{{idx}}--collapsible-card-container">
             </div>
           </div>
         </div>

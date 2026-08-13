@@ -1,16 +1,16 @@
-@if (!servoyApi.isInDesigner()) {
+@if (!servoyApi().isInDesigner()) {
   <iframe
     #element
     [width]="videoWidth()"
     [height]="videoHeight()"
     [class]="styleClass()"
     [sabloTabseq]="tabSeq()"
-    [id]="servoyApi.getMarkupId()"
+    [id]="servoyApi().getMarkupId()"
     [src]="fullYoutubeURL"
     allowfullscreen
   ></iframe>
 }
-@if (servoyApi.isInDesigner()) {
+@if (servoyApi().isInDesigner()) {
   <div  #element class="youtubevideoembedder-designer-container" [style.width.px]="videoWidth()" [style.height.px]="videoHeight()">
     <i class="fab fa-youtube fa-10x youtubevideoembedder-designer-icon"></i>
   </div>

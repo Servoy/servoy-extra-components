@@ -52,11 +52,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	readonly onMenuItemCollapsed = input<((menuItem: any, event: MouseEvent) => Promise<boolean>) | undefined>(undefined);
 	readonly onOpenToggled = input<((event: MouseEvent) => void) | undefined>(undefined);
 
-	readonly templateRef = contentChild(TemplateRef);
-
-    elementRef!: ElementRef<HTMLDivElement>;
-    readonly elementRefSignal = viewChild<ElementRef<HTMLDivElement>>('element');
-    
+	readonly templateRef = contentChild(TemplateRef);    
     _selectedIndex = signal<any>({});
     _expandedIndex = signal<any>({});
     _open = signal<boolean | undefined>(undefined);
@@ -77,14 +73,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	private log = inject(LoggerFactory).getLogger('SideNav');
 
 	constructor() {
-		super();
-        effect(() => {
-            const el = this.elementRefSignal();
-            if (el) {
-                this.elementRef = el;
-            }
-        });
-	}
+		super();	}
 
 	ngOnDestroy() {
 		super.ngOnDestroy();
@@ -141,39 +130,39 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 					case 'relationName':
 						// if only relationName is changed while containeForm remain the same, call a formWillShow with the new relation.
 						if (!changes.containedForm && containedForm) {
-							this.servoyApi.formWillShow(containedForm, this.relationName()).then(() => {
+							this.servoyApi().formWillShow(containedForm, this.relationName()).then(() => {
 								this.realContainedForm = this.containedForm()!;
 							}).finally(() => this.cdRef.detectChanges());
 						}
 						if (!changes.headerForm && headerForm) {
-							this.servoyApi.formWillShow(headerForm, this.relationName()).then(() => {
+							this.servoyApi().formWillShow(headerForm, this.relationName()).then(() => {
 								this.realHeaderForm = this.headerForm();
 							}).finally(() => this.cdRef.detectChanges());
 						}
 						if (!changes.footerForm && footerForm) {
-							this.servoyApi.formWillShow(footerForm, this.relationName()).then(() => {
+							this.servoyApi().formWillShow(footerForm, this.relationName()).then(() => {
 								this.realFooterForm = this.footerForm();
 							}).finally(() => this.cdRef.detectChanges());
 						}
 						break; break;
 					case 'headerForm':
 						if (change.previousValue) {
-							this.servoyApi.hideForm(change.previousValue, null as any, null as any, this.headerForm(), this.relationName()).then(() => {
+							this.servoyApi().hideForm(change.previousValue, null as any, null as any, this.headerForm(), this.relationName()).then(() => {
 								this.realHeaderForm = this.headerForm();
 							}).finally(() => this.cdRef.detectChanges());
 						} else if (change.currentValue) {
-							this.servoyApi.formWillShow(this.headerForm()!, this.relationName()).then(() => {
+							this.servoyApi().formWillShow(this.headerForm()!, this.relationName()).then(() => {
 								this.realHeaderForm = this.headerForm();
 							}).finally(() => this.cdRef.detectChanges());
 						}
 						break;
 					case 'footerForm':
 						if (change.previousValue) {
-							this.servoyApi.hideForm(change.previousValue, null as any, null as any, this.footerForm(), this.relationName()).then(() => {
+							this.servoyApi().hideForm(change.previousValue, null as any, null as any, this.footerForm(), this.relationName()).then(() => {
 								this.realFooterForm = this.footerForm();
 							}).finally(() => this.cdRef.detectChanges());
 						} else if (change.currentValue) {
-							this.servoyApi.formWillShow(this.footerForm()!, this.relationName()).then(() => {
+							this.servoyApi().formWillShow(this.footerForm()!, this.relationName()).then(() => {
 								this.realFooterForm = this.footerForm();
 							}).finally(() => this.cdRef.detectChanges());
 						}
@@ -191,7 +180,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 						if (open) {
 							const footerFormValue = this.footerForm();
                             if (footerFormValue) {
-								this.servoyApi.formWillShow(footerFormValue, this.relationName()).then(() => {
+								this.servoyApi().formWillShow(footerFormValue, this.relationName()).then(() => {
 									this.realFooterForm = this.footerForm();
 								}).finally(() => this.cdRef.detectChanges());
                                 if (!change.firstChange) {
@@ -201,20 +190,20 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 							}
 							const headerFormValue = this.headerForm();
                             if (headerFormValue) {
-								this.servoyApi.formWillShow(headerFormValue, this.relationName()).then(() => {
+								this.servoyApi().formWillShow(headerFormValue, this.relationName()).then(() => {
 									this.realHeaderForm = this.headerForm();
 								}).finally(() => this.cdRef.detectChanges());
 							}
 						} else {
 							const footerFormValue = this.footerForm();
                             if (footerFormValue) {
-								this.servoyApi.hideForm(footerFormValue, null as any, null as any, null as any, this.relationName()).then(() => {
+								this.servoyApi().hideForm(footerFormValue, null as any, null as any, null as any, this.relationName()).then(() => {
 									this.realFooterForm = this.footerForm();
 								}).finally(() => this.cdRef.detectChanges());
 							}
 							const headerFormValue = this.headerForm();
                             if (headerFormValue) {
-								this.servoyApi.hideForm(headerFormValue, null as any, null as any, null as any, this.relationName()).then(() => {
+								this.servoyApi().hideForm(headerFormValue, null as any, null as any, null as any, this.relationName()).then(() => {
 									this.realHeaderForm = this.headerForm();
 								}).finally(() => this.cdRef.detectChanges());
 							}
@@ -263,7 +252,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	}
 
 	isDesignTime() {
-		return this.servoyApi.isInDesigner();
+		return this.servoyApi().isInDesigner();
 	}
 
 	getForm() {
@@ -281,7 +270,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 
 	getResponsiveHeight() {
 		let height = 0;
-		if (!this.servoyApi.isInAbsoluteLayout()) {
+		if (!this.servoyApi().isInAbsoluteLayout()) {
 			const containedForm = this.containedForm();
             const responsiveHeight = this.responsiveHeight();
             if (responsiveHeight) {
@@ -329,7 +318,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		const sidenavWidth = this.sidenavWidth();
         if (sidenavWidth) {
 			// if value is set and there is a responsiveForm or a containedForm. Note should react also if containeForm is set later
-			if (!this.servoyApi.isInAbsoluteLayout() || this.containedForm()) {
+			if (!this.servoyApi().isInAbsoluteLayout() || this.containedForm()) {
 				return sidenavWidth;
 			}
 		}
@@ -372,13 +361,13 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	}
     
     stickyBottom() {
-        return this.servoyApi.isInAbsoluteLayout() && this.footerFormStickyBottom();
+        return this.servoyApi().isInAbsoluteLayout() && this.footerFormStickyBottom();
     }
 
     addRemoveStickyStyle() {
         this.disconnectFooterObservers();
 
-        if (!this.servoyApi.isInAbsoluteLayout() || !this._open() || !this.footerFormStickyBottom()) {
+        if (!this.servoyApi().isInAbsoluteLayout() || !this._open() || !this.footerFormStickyBottom()) {
             const sidenavDiv = this.getNativeElement().querySelector('.svy-sidenav') as HTMLElement;
             if (sidenavDiv) {
                 this.renderer.removeStyle(sidenavDiv, 'height');
@@ -585,7 +574,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
             if (itm.formName && !isItemAlreadySelected) {
                 const formToHide = this.containedForm();
                 const menuIDToShow = itm.id;
-                this.servoyApi.callServerSideApi('showForm', [formToHide, menuIDToShow]);
+                this.servoyApi().callServerSideApi('showForm', [formToHide, menuIDToShow]);
             }
 		};
 
@@ -1119,7 +1108,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
     hasUniqueIds(menu: MenuItem[]): boolean {
         const duplicateIds = this.findDuplicateIds(menu);
         if (duplicateIds.length > 0) {
-            const formName = this.servoyApi.getFormName();
+            const formName = this.servoyApi().getFormName();
             console.warn('In form ' + String(formName) + ', the sidenav component contains duplicate IDs: '
                 + duplicateIds.join(', ') + '. IDs must be unique for proper functioning of the component.');
             return false;

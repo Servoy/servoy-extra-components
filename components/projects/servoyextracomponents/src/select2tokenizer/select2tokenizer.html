@@ -3,7 +3,7 @@
         [multiple]="true"
         [hideSelectedItems]="hideSelectedItems()"
         [data]="data"
-        [id]="servoyApi.getMarkupId()"
+        [id]="servoyApi().getMarkupId()"
         [svyTooltip]="toolTipText()"
         [value]="filteredDataProviderId"
         (update)="updateValue($event)"

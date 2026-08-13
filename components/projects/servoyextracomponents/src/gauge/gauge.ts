@@ -42,9 +42,9 @@ export class ServoyExtraGauge extends ServoyBaseComponent<HTMLDivElement> {
     canvasGauge: any;
 
     onResize(_event: any) {
-        if (!this.servoyApi.isInDesigner()) {
-            this.canvasGauge.update({ height: this.elementRef.nativeElement.clientHeight });
-            this.canvasGauge.update({ width: this.elementRef.nativeElement.clientWidth });
+        if (!this.servoyApi().isInDesigner() && this.elementRef() && this.canvasGauge) {
+            this.canvasGauge.update({ height: this.elementRef()!.nativeElement.clientHeight });
+            this.canvasGauge.update({ width: this.elementRef()!.nativeElement.clientWidth });
             this.canvasGauge.draw();
         }
     }
@@ -80,8 +80,8 @@ export class ServoyExtraGauge extends ServoyBaseComponent<HTMLDivElement> {
         this._canvasGaugeOptions.set({
             minValue: this.minValue(),
             maxValue: this.maxValue(),
-            width: this.elementRef.nativeElement.clientWidth,
-            height: this.elementRef.nativeElement.clientHeight,
+            width: this.elementRef()!.nativeElement.clientWidth,
+            height: this.elementRef()!.nativeElement.clientHeight,
             value: (value == null || value == undefined) ? 0 : value
         });
 

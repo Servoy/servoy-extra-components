@@ -135,7 +135,7 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
         });
         const tusOptionsValue = this.tusOptions();
         const tusOptions: TusOpts<any,any> = Object.assign({} as TusOpts<any,any>, tusOptionsValue ? tusOptionsValue : {});
-        tusOptions.endpoint = this.servoyService.generateUploadUrl(this.servoyApi.getFormName(), this.name, 'onFileUploaded', true);
+        tusOptions.endpoint = this.servoyService.generateUploadUrl(this.servoyApi().getFormName(), this.name(), 'onFileUploaded', true);
         if (!tusOptions.retryDelays) tusOptions.retryDelays = [0, 1000, 3000, 5000];
         if (tusOptions.removeFingerprintOnSuccess === undefined) tusOptions.removeFingerprintOnSuccess = true;
         this.uppy.use(Tus, tusOptions);
@@ -362,14 +362,14 @@ export class ServoyExtraMultiFileUpload extends ServoyBaseComponent<HTMLDivEleme
     }
 	
 	getSize() {
-		if (this.servoyApi.isInAbsoluteLayout()) {
+		if (this.servoyApi().isInAbsoluteLayout()) {
 			if (this.cssPosition()){
 				return {
 					width: this.cssPosition()!.width,
 					height: this.cssPosition()!.height
 				}
 			} else{
-				const wrapper = this.elementRef.nativeElement.closest('.svy-wrapper') as HTMLDivElement;
+				const wrapper = this.elementRef()!.nativeElement.closest('.svy-wrapper') as HTMLDivElement;
 				return {
 					width: wrapper.offsetWidth,
 					height: wrapper.offsetHeight

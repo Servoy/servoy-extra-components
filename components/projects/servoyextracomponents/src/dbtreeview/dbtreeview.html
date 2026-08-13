@@ -1,4 +1,4 @@
-<div [id]="servoyApi.getMarkupId()" class="dbtreeview" (dragover)="onRowDragOverEvent($event)" (drop)="onRowDropEvent($event)" #element>
+<div [id]="servoyApi().getMarkupId()" class="dbtreeview" (dragover)="onRowDragOverEvent($event)" (drop)="onRowDropEvent($event)" #element>
   <tree-root #tree [nodes]="displayNodes" [options]="options"
     (toggleExpanded)="onNodeExpanded($event)"
     (initialized)="onTreeLoad($event)"

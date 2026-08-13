@@ -111,7 +111,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     svyOnInit(): void {
-        if (this.servoyApi.isInDesigner()) {
+        if (this.servoyApi().isInDesigner()) {
             this._jsDataSet.set([['id', 'pid', 'treeColumn', 'icon'],
             [1, null, 'Main group', this.folderImgPath],
             [2, null, 'Second group', this.folderImgPath],
@@ -209,7 +209,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         if (this.onReady()) {
             setTimeout(() => {
                 // delay so that form is completely loaded, just like dbtreeview does
-                this.onReady()!(this.servoyPublicService.createJSEvent({ target: this.elementRef.nativeElement } as EventLike, 'onReady'));
+                this.onReady()!(this.servoyPublicService.createJSEvent({ target: this.elementRef()!.nativeElement } as EventLike, 'onReady'));
             });
         }
     }
@@ -311,7 +311,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         setTimeout(() => {
             this.isTreeReady = true;
             this.cdRef.detectChanges();
-            const table: HTMLElement = this.elementRef.nativeElement.querySelector('table.db-tree-view')!;
+            const table: HTMLElement = this.elementRef()!.nativeElement.querySelector('table.db-tree-view')!;
             if (table) table.style.display = 'unset';
         });
     }
@@ -534,7 +534,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         if (!this.isNodeExpanded(nodeId)) {
             this.expandNode(nodeId);
         }
-        const node = this.elementRef.nativeElement.querySelector('div[cell-id="' + nodeId + '"]');
+        const node = this.elementRef()!.nativeElement.querySelector('div[cell-id="' + nodeId + '"]');
         if (node) {
             node.closest('td')!.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }

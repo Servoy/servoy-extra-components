@@ -80,7 +80,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 		}
 
     onScroll() {
-		if (Math.abs(this.elementRef.nativeElement.scrollHeight - this.elementRef.nativeElement.clientHeight - this.elementRef.nativeElement.scrollTop) < 1) {
+		if (Math.abs(this.elementRef()!.nativeElement.scrollHeight - this.elementRef()!.nativeElement.clientHeight - this.elementRef()!.nativeElement.scrollTop) < 1) {
 			const imagesFoundset = this.imagesFoundset();
             if (imagesFoundset && imagesFoundset.serverSize > imagesFoundset.viewPort.size) {
 			imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize()!);
@@ -92,7 +92,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 		if (this.maxImageHeight() || this.maxImageWidth()) {
 			const imagesFoundset = this.imagesFoundset();
             if (imagesFoundset && imagesFoundset.serverSize > imagesFoundset.viewPort.size) {
-				if (!(this.elementRef.nativeElement.clientHeight < this.elementRef.nativeElement.scrollHeight)) {
+				if (!(this.elementRef()!.nativeElement.clientHeight < this.elementRef()!.nativeElement.scrollHeight)) {
 					imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize()!);
 				}
 			}
@@ -220,12 +220,12 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
     }
 
     setHeight() {
-        if (!this.servoyApi.isInAbsoluteLayout()) {
+        if (!this.servoyApi().isInAbsoluteLayout()) {
             const responsiveHeight = this.responsiveHeight();
             if (responsiveHeight) {
-                this.elementRef.nativeElement.style.height = responsiveHeight + 'px';
+                this.elementRef()!.nativeElement.style.height = responsiveHeight + 'px';
             } else {
-                this.elementRef.nativeElement.style.height = '100%';
+                this.elementRef()!.nativeElement.style.height = '100%';
             }
         }
     }

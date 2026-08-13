@@ -119,7 +119,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
         }
 
         // element level configuration
-        let configuration = this.servoyApi.getClientProperty('config');
+        let configuration = this.servoyApi().getClientProperty('config');
         if (configuration) {
             if (typeof configuration === 'string') {
                 try {
@@ -186,7 +186,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
                         this.lastServerValueAsSeenByTinyMCEContent = this.tinyValue;
                         break;
                     case 'responsiveHeight':
-                        if (!this.servoyApi.isInAbsoluteLayout()) {
+                        if (!this.servoyApi().isInAbsoluteLayout()) {
                             this.getNativeElement().style.minHeight = this.responsiveHeight() + 'px';
                         }
                         break;

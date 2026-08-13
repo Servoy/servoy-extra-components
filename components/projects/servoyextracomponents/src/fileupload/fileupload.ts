@@ -26,7 +26,6 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
     readonly displaysTags = input<boolean>(undefined as any);
     readonly accept = input<string>(undefined as any);
     readonly enabled = input<boolean>(undefined as any);
-    name!: string;
     readonly styleClass = input<string>(undefined as any);
     readonly styleClassExpression = input<string>(undefined as any);
     readonly iconStyleClass = input<string>(undefined as any);
@@ -74,8 +73,8 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
             if (multiFileUpload && !onFileUploadedMethodID) {
                 this.log.warn('Multifile upload without onFileUploaded Method isn\'t supported. To upload multi file start using onFileUploaded Method');
             }
-            const url = onFileUploadedMethodID ? this.servoyService.generateUploadUrl(this.servoyApi.getFormName(), this.name, 'onFileUploadedMethodID') :
-                this.servoyService.generateUploadUrl(this.servoyApi.getFormName(), this.name, 'dataProviderID');
+            const url = onFileUploadedMethodID ? this.servoyService.generateUploadUrl(this.servoyApi().getFormName(), this.name(), 'onFileUploadedMethodID') :
+                this.servoyService.generateUploadUrl(this.servoyApi().getFormName(), this.name(), 'dataProviderID');
             const options: FileUploaderOptions = { url }
             const accept = this.accept();
             if (accept && '*/*' != accept) {
@@ -207,7 +206,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
                              this.customText = this.uploadText() ?? '';
                         } else{
                             this.renderer.setAttribute(this.getFocusElement(), 'disabled', 'disabled');
-                            if (!this.servoyApi.isInDesigner()) this.customText = 'Component disabled, cannot upload file.';
+                            if (!this.servoyApi().isInDesigner()) this.customText = 'Component disabled, cannot upload file.';
                         }
                         break;
                     case 'uploadText':
@@ -231,4 +230,3 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
         if(this.hideProgressTimer) clearTimeout(this.hideProgressTimer);
     }
 }
-
