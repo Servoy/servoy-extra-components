@@ -14,7 +14,6 @@
 	"keywords": ["step", "move"],
 	"model":
 	{
-		"size"							: { "type": "dimension", "default": {"width": 400, "height": 70} },
 		
 		"dataProvider" 					: { "type": "dataprovider", "pushToServer": "allow", "ondatachange": { "onchange":"onDataChangeMethodID", "callback":"onDataChangeCallback"}, "tags": { "wizard": true, "doc": "The dataProvider for the slider value", "basic": true } },
 		"dataProviderHigh" 				: { "type": "dataprovider", "pushToServer": "allow", "ondatachange": { "onchange":"onDataChangeHigh", "callback":"onDataChangeCallback"}, "tags": { "wizard": true, "doc": "The dataProvider for a range slider's maximum value", "basic": true } },

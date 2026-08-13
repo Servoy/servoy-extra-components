@@ -21,8 +21,7 @@
 		
         "styleClass": { "type" :"styleclass", "default": "youtubevideoembedder" }, 
         "tabSeq": { "type" :"tabseq", "tags": { "scope": "design" } }, 
-        "visible": "visible",
+        "visible": "visible"
         
-        "size" : {"type": "dimension", "default": { "width": 426, "height": 240 }, "pushToServer": "deep"}
 	}
 }

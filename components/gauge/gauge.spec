@@ -56,13 +56,6 @@
 				"basic": true
 			}
 		},
-
-		"size": 
-		{
-			"type": "dimension",
-			"pushToServer": "deep"
-		},
-
 		"title": 
 		{
 			"type": "TitleOptions"

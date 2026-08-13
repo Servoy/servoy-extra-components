@@ -15,8 +15,6 @@
 	        "dataProviderID" 			: { "type" : "dataprovider", "pushToServer": "allow", "tags": { "wizard": true, "scope": "design", "typeName": "mediaDataprovider", "basic": true }, "ondatachange": { "onchange":"onDataChangeMethodID"}, "displayTagsPropertyName" : "displaysTags"},
 			"displaysTags" 				: { "type" : "boolean", "tags": { "scope" : "design" } },
 	        "enabled" 					: { "type" : "enabled", "blockingOn": false, "default": true, "for": ["onActionMethodID","onDoubleClickMethodID","onRightClickMethodID"] }, 
-	        "location" 					: { "type" : "point" }, 
-	        "size" 						: { "type" : "dimension",  "default" : {"width":80, "height":20} }, 
 	        "accept"					: { "type" : "string", "default": "*/*", "tags": { "doc" :"Html accept attribute - defines accepted files to be uploaded. Default is all files."} },
 	        "styleClass" 				: { "type" : "styleclass", "tags": { "scope" :"design" }, "values" :[] }, 
 	        "styleClassExpression" 		: { "type" : "dataprovider", "tags": { "scope" :"design" }}, 

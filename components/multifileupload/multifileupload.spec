@@ -31,7 +31,6 @@
         "metaFields": 					{ "type": "metaField[]", "tags": { "doc": "An array of UI field objects that will be shown when a user clicks the 'edit' button on that file" } },
         "language": 					{ "type": "string", "default": null, "values": ["English", "Spanish", "German", "French", "Dutch", "Italian", "Chinese", "Czech", "Danish", "Finnish", "Greek", "Hungarian", "Japanese", "Persian", "Russian", "Swedish", "Turkish"], "tags": { "doc": "One of the language packs shipped. If you need to provide your own translations, use the localeStrings property."} },
         "localeStrings":				{ "type": "map", "tags": { "doc": "Any number of key/value pairs to translate single strings in the component, overriding the ones provided by the language pack selected." } }, 
-        "size": 						{ "type": "dimension", "default": { "width": 290, "height": 450 } },
         "responsiveWidth": 				{ "type": "string", "default": "290", "tags": { "scope" : "design", "doc": "Width to be set in a responsive form. Can be a number (in pixels) or a percent." } },
         "responsiveHeight": 			{ "type": "int", "default": 450, "tags": { "scope" : "design", "doc": "Height (in pixels) to be set in a responsive form."} },
         "options": 						{ "type": "map" },
@@ -157,7 +156,6 @@
             "name": 				{"type": "string"},
             "extension": 			{"type": "string"},
             "type": 				{"type": "string"},
-            "size": 				{"type": "int"},
             "metaFields": 			{"type": "object"},
             "progress": 			{"type": "progress"},
             "error": 				{"type": "string"}

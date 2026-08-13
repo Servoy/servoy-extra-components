@@ -39,8 +39,6 @@
 		"animate"						: {"type" :"boolean", "default" : true, "tags": { "scope" :"design" }},
 		"footerFormStickyBottom"		: {"type" :"boolean", "default" : false, "pushToServer": "allow", "tags": { "doc" :"It will apply exclusively to CSS Position forms."}},
 		
-		"size" 							: {"type" :"dimension",  "default" : {"width":260, "height":300}},
-		"location" 						: "point", 
 		"visible"						: "visible"
 	},
 	

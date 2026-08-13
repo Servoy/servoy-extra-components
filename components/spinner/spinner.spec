@@ -18,7 +18,6 @@
 	        "placeholderText" : { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags" }, 
 	        "readOnly" : { "type" : "readOnly", "oppositeOf" : "editable"}, 
 	        "styleClass" : { "type" :"styleclass", "tags": { "scope" :"design" }, "values" :[]},
-	        "size" : {"type" :"dimension",  "default" : {"width":140, "height":30}}, 
 	        "tabSeq" : {"type" :"tabseq", "tags": { "scope" :"design" }}, 
 	        "text" : { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags" }, 
 	        "toolTipText" : { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags" },
