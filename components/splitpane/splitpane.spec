@@ -21,7 +21,7 @@
 	        "styleClass" : { "type" :"styleclass", "tags": { "scope" :"design" }, "values" :[]}, 
 	        "splitType" : {"type" :"int", "tags": { "scope" :"design" }, "default":0, "values" :[{"HORIZONTAL":0}, {"VERTICAL":1}]}, 
 	        "tabSeq" : {"type" :"tabseq", "tags": { "scope" :"design" }}, 
-	        "panes" : {"type":"pane[]", "pushToServer": "allow", "deprecated" : "use pane1 and pane2 instead", "droppable":true},
+	        "panes" : {"type":"pane[]", "pushToServer": "allow", "deprecated" : "use pane1 and pane2 instead", "droppable":true, "tags": { "serveronly": true }},
 	        "pane1" : {"type":"pane", "pushToServer": "allow", "droppable":true, "tags": { "basic": true }},
 	        "pane2" : {"type":"pane", "pushToServer": "allow", "droppable":true, "tags": { "basic": true }},
 	        "visible" : "visible",

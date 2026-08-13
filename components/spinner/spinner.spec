@@ -16,7 +16,7 @@
 	        "findmode" : { "type":"findmode", "tags":{ "serveronly": true,"scope":"private"}, "for" : {"editable":true}}, 
 	        "format" : {"for":["valuelistID","dataProviderID"] , "type" :"format", "tags": { "basic": true }},
 	        "placeholderText" : { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags" }, 
-	        "readOnly" : { "type" : "readOnly", "oppositeOf" : "editable"}, 
+	        "readOnly" : { "type" : "readOnly", "oppositeOf" : "editable", "tags": { "serveronly": true }}, 
 	        "styleClass" : { "type" :"styleclass", "tags": { "scope" :"design" }, "values" :[]},
 	        "tabSeq" : {"type" :"tabseq", "tags": { "scope" :"design" }}, 
 	        "text" : { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags" }, 
