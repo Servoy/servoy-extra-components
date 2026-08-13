@@ -19,7 +19,7 @@
 	        "readOnly" : { "type" : "readOnly", "oppositeOf" : "editable", "tags": { "serveronly": true }}, 
 	        "styleClass" : { "type" :"styleclass", "tags": { "scope" :"design" }, "values" :[]},
 	        "tabSeq" : {"type" :"tabseq", "tags": { "scope" :"design" }}, 
-	        "text" : { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags" }, 
+	        "text" : { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags", "tags": { "serveronly": true }}, 
 	        "toolTipText" : { "type" : "tagstring", "displayTagsPropertyName" : "displaysTags" },
 	        "valuelistID" : { "type" : "valuelist",  "for": "dataProviderID", "tags": { "basic": true }}, 
 	        "visible" : "visible",
