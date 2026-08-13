@@ -69,6 +69,12 @@ Work through every changed file:
 - [ ] Template bindings are type-safe (strictTemplates)
 - [ ] No direct DOM manipulation where Angular patterns suffice
 
+
+**Spec ↔ Angular alignment (component packages only)**
+- [ ] Every model property in a `.spec` file has a corresponding `@Input` (signal input) in the Angular component, OR is tagged `"serveronly": true`
+- [ ] Properties tagged `"serveronly": true` are NOT declared as `@Input` in the Angular component
+- [ ] No `size` or `location` properties in specs unless the Angular component explicitly uses them as `@Input`
+
 ### 6. Output
 
 Your response **must begin** with exactly one of:
