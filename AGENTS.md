@@ -257,8 +257,16 @@ When changing component properties, handlers, or API:
 
 - **`.spec` files are NOT tests.** They're Servoy component specification JSON files.
 - **Signal inputs, not decorators.** Use `input<T>()` / `output<T>()`, not `@Input()` / `@Output()`.
+- **Signal inputs with defaults:** Servoy form templates bind ALL model properties (`[prop]="model.prop"`). If the server never sends a value, the expression evaluates to `undefined`, overriding `input(30)`. Use a transform to preserve defaults:
+  ```typescript
+  readonly pane1MinSize = input(30, { transform: (v: any) => v ?? 30 });
+  ```
 - **OnPush everywhere.** All components use `ChangeDetectionStrategy.OnPush`.
 - **@servoy/public version coupling.** Must match the target Servoy runtime version.
 - **Legacy files still active.** The AngularJS files in top-level dirs are still used by
   older Servoy runtimes. Don't delete them.
 - **No standalone components.** All are `standalone: false`, declared in the shared module.
+
+## Cross-Session Knowledge
+
+At the start of a new session, list stored memory keys (`memory_listMemories`) to discover reusable migration patterns, conventions, and lessons learned from previous sessions on Servoy Angular projects.
