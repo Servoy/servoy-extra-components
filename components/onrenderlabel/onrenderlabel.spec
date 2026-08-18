@@ -11,6 +11,7 @@
 	"libraries": [{"name":"onrenderlabel-css", "version":"1.0", "url":"servoyextra/onrenderlabel/onrenderlabel.css", "mimetype":"text/css"}],
 	"model":
 	{
+	        "designsize" : {"type" :"dimension", "tags": {"serveronly": true}, "default" : {"width":80, "height":20}},
 	        "dataProviderID" : { "type":"dataprovider", "tags": { "wizard": true, "scope": "design", "main": true}, "displayTagsPropertyName" : "displaysTags"}, 
 	        "displaysTags" : { "type" : "boolean", "tags": { "scope" : "design" } }, 
 	        "enabled" : { "type": "enabled", "blockingOn": false, "default": true, "for": ["onActionMethodID","onDoubleClickMethodID","onRightClickMethodID"] }, 

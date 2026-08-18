@@ -12,6 +12,7 @@
 	"keywords": ["left", "right", "navigation"],
 	"model":
 	{
+		"designsize" : {"type" :"dimension", "tags": {"serveronly": true}, "default" : {"width":260, "height":300}},
 		"menu"							: {"type" :"MenuItem[]", "default" : [], "pushToServer": "reject","tags": { "basic": true }},
 		"servoyMenu"                    : {"type" :"JSMenu", "pushToServer" : "allow","tags": { "basic": true }, "extraPropertiesCategory" : "Sidenav","extraProperties": { "badgeText": "tagstring","badgeStyleClass": {"type" : "styleclass", "default": "badge text-bg-secondary"}, "formName": "form", "relationName": "relation", "isDivider": "boolean","data" : "object" }},
 		"selectedIndex"					: {"type" :"string", "tags": { "scope" :"private" }, "pushToServer" : "deep"},

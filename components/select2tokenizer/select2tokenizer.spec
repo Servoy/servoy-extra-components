@@ -35,6 +35,7 @@
 	"keywords": [],
 	"model":
 	{
+		"designsize" : {"type" :"dimension", "tags": {"serveronly": true}, "default" : {"width":140, "height":32}},
 		"dataProviderID": { "type":"dataprovider", "pushToServer": "allow","tags": { "wizard": true, "scope" :"design", "basic": true }, "ondatachange": { "onchange":"onDataChangeMethodID" , "callback":"onDataChangeCallback"}},
 		"format" : {"for":["dataProviderID"] , "type" :"format", "tags": { "scope" :"private" }}, 
 		"valuelistID": { "type" : "valuelist", "tags": {  "logWhenOverMax" : false, "autoResetFilter": false, "basic": true },"config": "valuelistConfig", "for": "dataProviderID", "default":"autoVL" , "max" : 100},

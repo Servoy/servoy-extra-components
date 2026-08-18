@@ -9,6 +9,7 @@
 	"libraries": [{"name":"svy-spinner", "version":"1", "url":"servoyextra/spinner/spinner.css", "mimetype":"text/css"}],
 	"model":
 	{
+	        "designsize" : {"type" :"dimension", "tags": {"serveronly": true}, "default" : {"width":140, "height":30}},
 	        "dataProviderID" : { "type":"dataprovider", "pushToServer": "allow", "tags": { "wizard": true, "scope": "design", "basic": true }, "ondatachange": { "onchange":"onDataChangeMethodID"}, "displayTagsPropertyName" : "displaysTags"}, 
 	        "displaysTags" : { "type" : "boolean", "tags": { "serveronly": true, "scope" : "design" } }, 
 	        "editable" : { "type": "protected", "blockingOn": false, "default": true,"for": ["dataProviderID","onDataChangeMethodID"] }, 
