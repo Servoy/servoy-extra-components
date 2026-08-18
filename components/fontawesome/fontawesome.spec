@@ -12,7 +12,7 @@
 	"replacement": "bootstrapcomponents-label",
 	"model":
 	{
-		"designsize" : {"type" :"dimension", "tags": {"serveronly": true}, "default" : {"width":25, "height":25}},
+		"designsize" : {"type" :"dimension", "tags": {"serveronly": true, "scope": "private"}, "default" : {"width":25, "height":25}},
 		"faclass"      	: {"type":"string", "default": "fa", "tags": { "replacement":"imageStyleClass", "doc": "Example 'fas fa-search' <br/>If you want to use Font Awesome classes you need to enable the Font Awesome service from the Servoy Package Manager. "}},
 		"enabled" 		: {"type": "enabled", "blockingOn": false, "default": true, "for": ["dataProviderID","onActionMethodID"] },
 		"styleclass"   	: {"type": "styleclass"},

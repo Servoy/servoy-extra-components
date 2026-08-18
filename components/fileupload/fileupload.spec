@@ -12,7 +12,7 @@
 	"keywords": ["transfer"],
 	"model":
 	{
-	        "designsize" : {"type" :"dimension", "tags": {"serveronly": true}, "default" : {"width":80, "height":20}},
+	        "designsize" : {"type" :"dimension", "tags": {"serveronly": true, "scope": "private"}, "default" : {"width":80, "height":20}},
 	        "dataProviderID" 			: { "type" : "dataprovider", "pushToServer": "allow", "tags": { "wizard": true, "scope": "design", "typeName": "mediaDataprovider", "basic": true }, "ondatachange": { "onchange":"onDataChangeMethodID"}, "displayTagsPropertyName" : "displaysTags"},
 			"displaysTags" 				: { "type" : "boolean", "tags": { "scope" : "design" } },
 	        "enabled" 					: { "type" : "enabled", "blockingOn": false, "default": true, "for": ["onActionMethodID","onDoubleClickMethodID","onRightClickMethodID"] }, 

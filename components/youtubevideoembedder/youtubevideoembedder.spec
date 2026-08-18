@@ -9,7 +9,7 @@
     "icon": "servoyextra/youtubevideoembedder/youtubevideoembedder.png",
 	"keywords": ["video", "google", "streaming"],
 	"model": {
-        "designsize" : {"type" :"dimension", "tags": {"serveronly": true}, "default" : {"width":426, "height":240}},
+        "designsize" : {"type" :"dimension", "tags": {"serveronly": true, "scope": "private"}, "default" : {"width":426, "height":240}},
         "embeddedVideoURL": { "type": "string", "tags": { "doc" :"The youtube url can be provided as dataprovider (using dataProviderID property) or as text (using embeddedVideoURL property).", "basic": true } },
         "dataProviderID": { "type":"dataprovider", "tags": { "wizard": true, "scope": "design","doc" :"The youtube url can be provided as dataprovider (using dataProviderID property) or as text (using embeddedVideoURL property).", "basic": true }},
 		"videoWidth": { "type": "int", "default": 426 },

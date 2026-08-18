@@ -17,7 +17,7 @@
     ],
     "keywords": ["multiple"],
     "model": {
-        "designsize" : {"type" :"dimension", "tags": {"serveronly": true}, "default" : {"width":290, "height":450}},
+        "designsize" : {"type" :"dimension", "tags": {"serveronly": true, "scope": "private"}, "default" : {"width":290, "height":450}},
         "autoProceed": 					{ "type": "boolean", "default": false, "tags": { "doc": "By default the component will wait for an upload button to be pressed in the UI, or the upload() method to be called, before starting an upload. Setting this to autoProceed: true will start uploading automatically after the first file is selected."} },
         "allowMultipleUploads": 		{ "type": "boolean", "default": true, "tags": { "doc": "Should not be used together with closeAfterFinish (so both properties to be true)"} },
         "hideUploadButton": 			{ "type": "boolean", "default": false, "tags": { "doc": "Hide the upload button. Use this if you are providing a custom upload button somewhere, and using the upload() API." } },
