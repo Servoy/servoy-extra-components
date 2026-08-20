@@ -227,4 +227,21 @@ describe('ServoyExtraLightboxGallery', () => {
         const style = component.getCaptionStyle();
         expect(style['maxWidth']).toBe('none');
     });
+
+    it('should update images signal when imagesDataset changes', async () => {
+        populateImages();
+        await fixture.whenStable();
+        expect(component.images().length).toBe(2);
+
+        fixture.componentRef.setInput('imagesDataset', [
+            { imageUrl: 'new1.jpg', caption: 'New 1', thumbnailUrl: 'thumb1.jpg', id: '10' }
+        ]);
+        fixture.detectChanges();
+        (component as any).createImages();
+        (component as any).cdRef.markForCheck();
+        fixture.detectChanges();
+        await fixture.whenStable();
+        expect(component.images().length).toBe(1);
+        expect(component.images()[0].src).toBe('new1.jpg');
+    });
 });

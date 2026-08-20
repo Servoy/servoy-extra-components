@@ -110,4 +110,15 @@ describe('ServoyExtraImageLabel', () => {
         await fixture.whenStable();
         expect(onRightClick).toHaveBeenCalled();
     });
+
+    it('should update imageURL signal when media changes', async () => {
+        fixture.componentRef.setInput('media', 'http://example.com/image.png');
+        fixture.detectChanges();
+        await fixture.whenStable();
+        expect(component.imageURL()).toBe('http://example.com/image.png');
+        fixture.componentRef.setInput('media', 'http://example.com/other.png');
+        fixture.detectChanges();
+        await fixture.whenStable();
+        expect(component.imageURL()).toBe('http://example.com/other.png');
+    });
 });

@@ -184,4 +184,8 @@ describe('ServoyExtraMultiFileUpload', () => {
         component.ngOnDestroy();
         expect(destroySpy).toHaveBeenCalled();
     });
+
+    it('should set showDashboard signal to true after init', async () => {
+        expect(component.showDashboard()).toBe(true);
+    });
 });

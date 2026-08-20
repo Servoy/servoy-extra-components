@@ -130,4 +130,17 @@ describe('ServoyExtraTreeview', () => {
         expect(component.data()[1].treeColumn.text).toBe('Second group');
         expect(component.data()[2].treeColumn.text).toBe('Subgroup');
     });
+
+    it('should update configs columns via signal on data refresh', async () => {
+        const initialColumns = component.configs().columns;
+        fixture.componentRef.setInput('jsDataSet', [
+            ['id', 'pid', 'treeColumn'],
+            ['1', null, 'Root'],
+            ['2', '1', 'Child']
+        ]);
+        fixture.detectChanges();
+        await fixture.whenStable();
+        expect(component.configs().columns).not.toBe(initialColumns);
+        expect(component.configs().columns.length).toBeGreaterThan(0);
+    });
 });

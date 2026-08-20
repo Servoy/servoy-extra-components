@@ -315,4 +315,12 @@ describe('ServoyExtraSelect2Tokenizer', () => {
         component.setTabIndex(5);
         expect(component.tabIndex()).toBe(5);
     });
+
+    it('should update tabIndex signal reactively', async () => {
+        setDefaultInputs(fixture);
+        fixture.detectChanges();
+        await fixture.whenStable();
+        component.setTabIndex(10);
+        expect(component.tabIndex()).toBe(10);
+    });
 });
