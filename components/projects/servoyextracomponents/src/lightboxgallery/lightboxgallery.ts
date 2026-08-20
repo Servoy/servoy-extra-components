@@ -1,4 +1,4 @@
-import { Component, SimpleChanges, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, SimpleChanges, ChangeDetectionStrategy, inject, input, signal } from '@angular/core';
 import { ServoyBaseComponent, IFoundset, BaseCustomObject } from '@servoy/public';
 import { Lightbox, LightboxConfig } from '@servoy/ngx-lightbox';
 
@@ -40,7 +40,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
     private _lightbox = inject(Lightbox);
     private _lightboxConfig = inject(LightboxConfig);
 
-    public images: any[] = [];
+    public readonly images = signal<any[]>([]);
 
     private checkNumber!: number;
     private nullImages!: number;
@@ -101,12 +101,12 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 
     open(index: number): void {
         const imagesFoundset = this.imagesFoundset();
-        if (imagesFoundset && (this.images && this.images.length - 1 <= index) && imagesFoundset.serverSize > imagesFoundset.viewPort.size) {
+        if (imagesFoundset && (this.images() && this.images().length - 1 <= index) && imagesFoundset.serverSize > imagesFoundset.viewPort.size) {
 			imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize()!).then(() => {
 				this.open(index);
 			});
 		} else {
-			if (this.images && this.images.length - 1 >= index) {
+			if (this.images() && this.images().length - 1 >= index) {
 				// open lightbox
 				this._lightboxConfig.albumLabel = this.albumLabel()!;
 				this._lightboxConfig.fitImageInViewPort = this.fitImagesInViewport()!;
@@ -119,7 +119,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 				const resizeDuration = this.resizeDuration();
                 if (resizeDuration) this._lightboxConfig.resizeDuration = resizeDuration / 1000;
 
-				this._lightbox.open(this.images, index);
+				this._lightbox.open(this.images(), index);
 				if (imagesFoundset && imagesFoundset.serverSize > imagesFoundset.viewPort.size) {
 					const interval = setInterval(() => {
 						if (document.querySelector('.fadeIn.lightbox')) {
@@ -231,7 +231,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
     }
 
     private createImages = () => {
-        this.images = [];
+        const newImages: any[] = [];
         const imagesFoundset = this.imagesFoundset();
         const imagesDataset = this.imagesDataset();
         if (imagesFoundset) {
@@ -249,17 +249,16 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
 
                 if (!row.image) this.nullImages += 1;
 
-                //check if using url strings instead of media/blob
                 image.src = typeof row.image == 'string' ? row.image : image.src;
                 image.thumb = typeof row.thumbnail == 'string' ? row.thumbnail : image.thumb;
 
                 if (!image.src) continue;
-                this.images.push(image);
+                newImages.push(image);
             }
-            this.checkNumber = this.images.length + this.nullImages - 1;
+            this.checkNumber = newImages.length + this.nullImages - 1;
         } else if (imagesDataset?.length) {
             for (const { imageUrl, caption, thumbnailUrl, id } of imagesDataset) {
-                this.images.push({
+                newImages.push({
                     src: imageUrl ?? null,
                     caption: caption ?? null,
                     thumb: thumbnailUrl ?? null,
@@ -267,6 +266,7 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
                 });
             }
         }
+        this.images.set(newImages);
     };
 }
 

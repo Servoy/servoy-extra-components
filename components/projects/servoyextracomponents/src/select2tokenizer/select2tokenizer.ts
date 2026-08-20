@@ -51,12 +51,12 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     
     _dataProviderID = signal<any>(undefined);
 
-    tabIndex!: number;
+    readonly tabIndex = signal<number>(undefined as any);
 
-    data: Select2Option[] = [];
-    filteredDataProviderId!: any[];
-    listPosition: 'above' | 'below' | 'auto' = 'auto';
-    mustExecuteOnFocus = true;
+    readonly data = signal<Select2Option[]>([]);
+    readonly filteredDataProviderId = signal<any[]>([]);
+    readonly listPosition = signal<'above' | 'below' | 'auto'>('auto');
+    readonly mustExecuteOnFocus = signal(true);
 
     private doc = inject(DOCUMENT);
     protected popupStateService = inject(PopupStateService);
@@ -84,10 +84,10 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     attachFocusListeners(nativeElement: HTMLDivElement) {
         if (this.onFocusGainedMethodID()) {
             this.select2()!.open.subscribe(() => {
-                if (this.mustExecuteOnFocus !== false) {
+                if (this.mustExecuteOnFocus() !== false) {
                     this.onFocusGainedMethodID()!(new CustomEvent('open'));
                 }
-                this.mustExecuteOnFocus = true;
+                this.mustExecuteOnFocus.set(true);
             });
             /* used for triggering a focus gained when the component is not editable
              * fix for SVYX-210 */
@@ -113,7 +113,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     }
 
     requestFocus(mustExecuteOnFocusGainedMethod: boolean) {
-        this.mustExecuteOnFocus = mustExecuteOnFocusGainedMethod;
+        this.mustExecuteOnFocus.set(mustExecuteOnFocusGainedMethod);
         this.getNativeElement().focus();
         this.select2()!.toggleOpenAndClose();
     }
@@ -140,41 +140,37 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                     label: value.displayValue
                 });
             }
-            if (this.filteredDataProviderId?.length) {
-                let counter = this.filteredDataProviderId.length;
-                this.filteredDataProviderId.forEach(realValue => {
+            if (this.filteredDataProviderId()?.length) {
+                let counter = this.filteredDataProviderId().length;
+                this.filteredDataProviderId().forEach(realValue => {
                     const found = opt.find(item => item.value === realValue);
                     if (!found) {
                         const option: Select2Option = {
                             id: realValue,
                             value: realValue,
-                            label: realValue + '' // convert to string  
+                            label: realValue + ''
                         }
                         opt.push(option);
                         this.valuelistID()!.getDisplayValue(realValue).subscribe((val) => {
                             if (val) {
                                 option.label = val;
                             }
-                            // decrement counter
                             counter--;
-                            // only refresh once, after the last one resolves
                             if (counter === 0) {
-								// workaround for library issue, must also change the value otherwise is not refreshed
-								const oldFilteredDataProviderId = this.filteredDataProviderId;
-								this.filteredDataProviderId = [];
+								const oldFilteredDataProviderId = this.filteredDataProviderId();
+								this.filteredDataProviderId.set([]);
                                 this.cdRef.detectChanges();
-								this.data = [...opt];
-								this.filteredDataProviderId = oldFilteredDataProviderId;
+								this.data.set([...opt]);
+								this.filteredDataProviderId.set(oldFilteredDataProviderId);
 								this.cdRef.detectChanges();
                             }
                         });
                     } else {
-                        // if already found, decrement immediately
                         counter--;
                     }
                 });
             }
-            this.data = opt;
+            this.data.set(opt);
         }
     }
 
@@ -192,20 +188,20 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     updateValue(event: Select2UpdateEvent<any>) {
 		if (!this.userChangedValue) return;
 
-        if (!this.compareArrays(this.filteredDataProviderId, event.value)) {
+        if (!this.compareArrays(this.filteredDataProviderId(), event.value)) {
             const dataProviderID = this._dataProviderID();
             if (event.value.length > 0) {
                 if (event.value.length > 1 && this.isTypeString()) {
-                    this.filteredDataProviderId = event.value;
+                    this.filteredDataProviderId.set(event.value);
                     this._dataProviderID.set(event.value.join('\n'));
                 } else if (event.value.length === 1 || this.isTypeNumber() || this.isTypeBoolean()) {
-                    this.filteredDataProviderId = event.value;
-                    this._dataProviderID.set(this.filteredDataProviderId[0]);
+                    this.filteredDataProviderId.set(event.value);
+                    this._dataProviderID.set(this.filteredDataProviderId()[0]);
                 } else {
                     console.log('Warning dataProviderID typeof ' + typeof dataProviderID + ' not allowed');
                 }
             } else {
-				this.filteredDataProviderId = [];
+				this.filteredDataProviderId.set([]);
                 this._dataProviderID.set(null);
             }
             this.dataProviderIDChange.emit(this._dataProviderID());
@@ -245,7 +241,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
     }
     
     setFilteredDataProviderId() {
-        this.filteredDataProviderId = [];
+        this.filteredDataProviderId.set([]);
         this.cdRef.detectChanges();
 		const dataProviderID = this.dataProviderID();
         this._dataProviderID.set(dataProviderID);
@@ -259,9 +255,8 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 						helper[index] = Number(item);
 					}
 				});
-			} else if (this.data?.length) {
-                // otherwise, check against data options and convert matching strings to numbers
-                this.data.forEach(option => {
+			} else if (this.data()?.length) {
+                this.data().forEach(option => {
                     helper.forEach((item, index) => {
                         if (typeof option.value === 'number' && !isNaN(item) && Number(item) === option.value) {
                             helper[index] = option.value;
@@ -269,7 +264,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                     });
                 });
             }
-            this.filteredDataProviderId = helper;
+            this.filteredDataProviderId.set(helper);
             this.cdRef.detectChanges();
 		}
 	}
@@ -311,7 +306,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                         break;
                     }
                 }
-                if (found && this.filteredDataProviderId.indexOf(realValue) < 0) {
+                if (found && this.filteredDataProviderId().indexOf(realValue) < 0) {
                     event.select({
                         id: realValue,
                         value: realValue,
@@ -372,13 +367,13 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                                     	label: newValue
                                 	};
                                     if (!prevValue) {
-                                        this.data = [option, ...this.data];
+                                        this.data.set([option, ...this.data()]);
                                     } else if (newValue === '') {
-                                        this.data = [...this.data.slice(1)];
+                                        this.data.set([...this.data().slice(1)]);
                                     } else {
-                                        const valueExists = this.data.some(item => item.value === newValue);
+                                        const valueExists = this.data().some(item => item.value === newValue);
                                         if (!valueExists) {
-                                            this.data = [option, ...this.data.slice(1)];
+                                            this.data.set([option, ...this.data().slice(1)]);
                                         }
                                     }
                                 	prevValue = newValue;
@@ -408,7 +403,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
 	}
 
     setTabIndex(tabIndex: number) {
-        this.tabIndex = tabIndex;
+        this.tabIndex.set(tabIndex);
     }
 
     /**

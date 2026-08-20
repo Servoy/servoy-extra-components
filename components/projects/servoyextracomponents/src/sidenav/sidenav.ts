@@ -1,6 +1,6 @@
 import {
     ChangeDetectionStrategy, Component, SimpleChanges,
-    TemplateRef, ElementRef, inject, input, output, contentChild, viewChild, effect, signal, linkedSignal
+    TemplateRef, inject, input, output, contentChild, signal, linkedSignal
 } from '@angular/core';
 import { NgStyle, NgTemplateOutlet } from '@angular/common';
 import { ServoyBaseComponent, ServoyPublicService, IJSMenu, IJSMenuItem, ServoyPublicModule } from '@servoy/public';
@@ -65,7 +65,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	private footerMutationObserver!: MutationObserver;
 	private animateFooter = false;
 
-	public realContainedForm!: string;
+	public readonly realContainedForm = signal<string>(undefined as any);
 	private realHeaderForm: any;
 	private realFooterForm: any;
 	private servoyPublic = inject(ServoyPublicService);
@@ -73,7 +73,8 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	private log = inject(LoggerFactory).getLogger('SideNav');
 
 	constructor() {
-		super();	}
+		super();
+	}
 
 	ngOnDestroy() {
 		super.ngOnDestroy();
@@ -125,13 +126,13 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 							this.renderer.removeClass(this.getNativeElement(), 'has-panel');
 						}
 						// do we still need realConttainedForm?
-						this.realContainedForm = change.currentValue;
+						this.realContainedForm.set(change.currentValue);
 						break;
 					case 'relationName':
 						// if only relationName is changed while containeForm remain the same, call a formWillShow with the new relation.
 						if (!changes.containedForm && containedForm) {
 							this.servoyApi().formWillShow(containedForm, this.relationName()).then(() => {
-								this.realContainedForm = this.containedForm()!;
+								this.realContainedForm.set(this.containedForm()!);
 							}).finally(() => this.cdRef.detectChanges());
 						}
 						if (!changes.headerForm && headerForm) {
@@ -256,7 +257,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	}
 
 	getForm() {
-		return this.realContainedForm;
+		return this.realContainedForm();
 	}
 
 	getHeaderForm() {

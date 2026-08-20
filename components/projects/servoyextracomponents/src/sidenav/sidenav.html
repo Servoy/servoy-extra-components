@@ -174,7 +174,7 @@
             <span class="svy-sidenav-item sn-level-1 svy-sidenav-item-text">{{containedForm()}}</span>
           </div>
         } @else {
-          @if (realContainedForm !== null) {
+          @if (realContainedForm() !== null) {
             <div class="svy-sidenav-tablesspanel"
               [ngStyle]="getContainerStyle()"
               [class.svy-sidenav-right]="slidePosition() === 'right'"

@@ -1,15 +1,15 @@
-<div #element (focus)="requestFocus(mustExecuteOnFocus)" class="svy-select2-autotokenizer" [class]="styleClass()"> 
+<div #element (focus)="requestFocus(mustExecuteOnFocus())" class="svy-select2-autotokenizer" [class]="styleClass()"> 
     <select2  
         [multiple]="true"
         [hideSelectedItems]="hideSelectedItems()"
-        [data]="data"
+        [data]="data()"
         [id]="servoyApi().getMarkupId()"
         [svyTooltip]="toolTipText()"
-        [value]="filteredDataProviderId"
+        [value]="filteredDataProviderId()"
         (update)="updateValue($event)"
         [minCountForSearch]="0"
 		[placeholder]="placeholderText()"
-		[listPosition]="listPosition"
+		[listPosition]="listPosition()"
         [disabled]="!isEnabled()"
         [readonly]="!isEditable()"
         [noResultMessage]="noMatchesFoundText()"
@@ -17,7 +17,7 @@
         [overlay]="overlayMode()"
         [sabloTabseq]="tabSeq()"
         [sabloTabseqConfig]="{container: false, tabSeqSetter: this}"
-        [tabIndex]="tabIndex"
+        [tabIndex]="tabIndex()"
         (removeOption)="removedOption($event)"
         (close)="listClosed($event)"
         (open)="listOpened($event)" 

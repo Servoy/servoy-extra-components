@@ -41,10 +41,10 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
 
     readonly templateRef = contentChild(TemplateRef);
 
-    containerStyle = {
+    readonly containerStyle = signal({
         width: '100%',
         height: '100%'
-    };
+    });
 
 
     private leftTab: Pane | undefined;
@@ -94,8 +94,7 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
     svyOnInit() {
         this._divLocation.set(this.divLocation());
         if (!this.servoyApi().isInAbsoluteLayout()) {
-            (this.containerStyle as any)['min-height'] = this.responsiveHeight() + 'px';
-            (this.containerStyle as any)['position'] = 'relative';
+            this.containerStyle.update(s => ({...s, 'min-height': this.responsiveHeight() + 'px', 'position': 'relative'}));
         }
 		this.resizeCalc();
         super.svyOnInit();

@@ -1,12 +1,12 @@
 <div [id]="servoyApi().getMarkupId()" #element class="svy-treeview" (dragover)="onRowDragOverEvent($event)" (drop)="onRowDropEvent($event)">
-  @if (isTreeReady) {
+  @if (isTreeReady()) {
     <db-angular-tree-grid #angularGrid
       (cellclick)="onclick($event)"
       (rowselect)="onselect($event)"
       (expand)="onexpand($event)"
       (collapse)="oncollapse($event)"
-      [data]="data"
-      [configs]="configs">
+      [data]="data()"
+      [configs]="configs()">
     </db-angular-tree-grid>
   }
 </div>

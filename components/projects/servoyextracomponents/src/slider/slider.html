@@ -5,7 +5,7 @@
 	<ngx-slider class="svy-slider bts-extra-slider" 
 				[value]="dataProvider()"
 				[highValue]="dataProviderHigh()" 
-				[options]="options"
+				[options]="options()"
 				[manualRefresh]="manualRefresh"
 				(userChangeStart)="onUserChangeStart($event)"
 	            (userChangeEnd)="onUserChangeEnd($event)" 

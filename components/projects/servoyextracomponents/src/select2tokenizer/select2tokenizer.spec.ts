@@ -172,9 +172,9 @@ describe('ServoyExtraSelect2Tokenizer', () => {
         setDefaultInputs(fixture);
         fixture.detectChanges();
         await fixture.whenStable();
-        expect(component.data.length).toBeGreaterThan(0);
-        expect(component.data.find(d => d.label === 'one')).toBeTruthy();
-        expect(component.data.find(d => d.label === 'two')).toBeTruthy();
+        expect(component.data().length).toBeGreaterThan(0);
+        expect(component.data().find(d => d.label === 'one')).toBeTruthy();
+        expect(component.data().find(d => d.label === 'two')).toBeTruthy();
     });
 
     it('should set filteredDataProviderId from dataProviderID', async () => {
@@ -182,7 +182,7 @@ describe('ServoyExtraSelect2Tokenizer', () => {
         fixture.componentRef.setInput('dataProviderID', '2');
         fixture.detectChanges();
         await fixture.whenStable();
-        expect(component.filteredDataProviderId).toContain(2);
+        expect(component.filteredDataProviderId()).toContain(2);
     });
 
     it('should handle multiselect dataprovider (newline-separated)', async () => {
@@ -190,8 +190,8 @@ describe('ServoyExtraSelect2Tokenizer', () => {
         fixture.componentRef.setInput('dataProviderID', '2\n3');
         fixture.detectChanges();
         await fixture.whenStable();
-        expect(component.filteredDataProviderId).toContain(2);
-        expect(component.filteredDataProviderId).toContain(3);
+        expect(component.filteredDataProviderId()).toContain(2);
+        expect(component.filteredDataProviderId()).toContain(3);
     });
 
     it('should not emit dataProviderIDChange on programmatic dataprovider change', async () => {
@@ -305,7 +305,7 @@ describe('ServoyExtraSelect2Tokenizer', () => {
         fixture.detectChanges();
         await fixture.whenStable();
         expect(spy).not.toHaveBeenCalled();
-        expect(component.filteredDataProviderId).toContain('AAAA');
+        expect(component.filteredDataProviderId()).toContain('AAAA');
     });
 
     it('should set tabIndex via setTabIndex', async () => {
@@ -313,6 +313,6 @@ describe('ServoyExtraSelect2Tokenizer', () => {
         fixture.detectChanges();
         await fixture.whenStable();
         component.setTabIndex(5);
-        expect(component.tabIndex).toBe(5);
+        expect(component.tabIndex()).toBe(5);
     });
 });

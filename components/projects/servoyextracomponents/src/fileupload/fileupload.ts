@@ -1,4 +1,4 @@
-import { Component, SimpleChanges, ChangeDetectionStrategy, ElementRef, inject, input, output, viewChild } from '@angular/core';
+import { Component, SimpleChanges, ChangeDetectionStrategy, ElementRef, inject, input, output, viewChild, signal } from '@angular/core';
 import { ServoyBaseComponent, ServoyPublicService, ServoyPublicModule } from '@servoy/public';
 import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { FileUploadModule } from 'ng2-file-upload';
@@ -47,9 +47,9 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
     readonly fileInput = viewChild<ElementRef>('fileInputSingleUpload');
 
     uploader!: FileUploader;
-    hasBaseDropZoneOver = false;
-    customText!: string;
-    acceptFiles = '*/*';
+    readonly hasBaseDropZoneOver = signal(false);
+    readonly customText = signal<string>(undefined as any);
+    readonly acceptFiles = signal('*/*');
     private ready = true;
     private servoyService = inject(ServoyPublicService);
     private doc = inject(DOCUMENT);
@@ -58,7 +58,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
     private hideProgressTimer: any;
 
     public fileOverBase(e: any): void {
-        this.hasBaseDropZoneOver = e;
+        this.hasBaseDropZoneOver.set(e);
     }
 
     public fileInputClick(): void {
@@ -115,7 +115,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
                         }
                     }
                 });
-                this.acceptFiles = acceptedFiles.join(',');
+                this.acceptFiles.set(acceptedFiles.join(','));
                 if (acceptedMimeTypes.length > 0){
                     options.allowedMimeType = acceptedMimeTypes;
                 }
@@ -153,7 +153,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
 
             this.uploader.onCompleteAll = this.onComplete;
             this.uploader.onWhenAddingFileFailed = this.onWhenAddingFileFailed;
-            this.customText = this.uploadText() ?? '';
+            this.customText.set(this.uploadText() ?? '');
         }
     }
 
@@ -161,7 +161,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
         this.ready = true;
         const onFileTransferFinishedMethodID = this.onFileTransferFinishedMethodID();
         if (onFileTransferFinishedMethodID) onFileTransferFinishedMethodID(new CustomEvent('onFileTransferFinishedMethodID'));
-        this.customText = this.uploadSuccessText() ?? '';
+        this.customText.set(this.uploadSuccessText() ?? '');
         const fileInput = this.fileInput();
         if (fileInput){
             fileInput.nativeElement.value = null;
@@ -172,12 +172,10 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
 
     onWhenAddingFileFailed = (item: any, filter: any, options: any) => {
         if (filter.name === 'fileSize') {
-            // File size exceeded the limit            
-            this.customText = `File size (${item.size}) exceeds the maximum allowed size (${options.maxFileSize})`;
-            this.log.warn(`File ${item.name} rejected: ${this.customText}`);
+            this.customText.set(`File size (${item.size}) exceeds the maximum allowed size (${options.maxFileSize})`);
+            this.log.warn(`File ${item.name} rejected: ${this.customText()}`);
         } else {
-            // Other validation failure
-            this.customText = this.uploadNotSupportedFileText() ?? '';
+            this.customText.set(this.uploadNotSupportedFileText() ?? '');
         }
         this.cdRef.detectChanges();
         this.hideProgress();
@@ -189,7 +187,7 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
             this.hideProgressTimer = setTimeout(() =>  {
                 this.hideProgressTimer = null;
                 this.uploader.progress = 0;
-                this.customText = this.uploadText() ?? '';
+                this.customText.set(this.uploadText() ?? '');
                 this.cdRef.detectChanges();
             } , this.resultDisplayTimeout());
         }
@@ -203,15 +201,15 @@ export class ServoyExtraFileUpload extends ServoyBaseComponent<HTMLDivElement> {
                     case 'enabled':
                         if (change.currentValue){
                              this.renderer.removeAttribute(this.getFocusElement(), 'disabled');
-                             this.customText = this.uploadText() ?? '';
+                             this.customText.set(this.uploadText() ?? '');
                         } else{
                             this.renderer.setAttribute(this.getFocusElement(), 'disabled', 'disabled');
-                            if (!this.servoyApi().isInDesigner()) this.customText = 'Component disabled, cannot upload file.';
+                            if (!this.servoyApi().isInDesigner()) this.customText.set('Component disabled, cannot upload file.');
                         }
                         break;
                     case 'uploadText':
                         if (!change.isFirstChange()){
-                             this.customText = this.uploadText() ?? '';
+                             this.customText.set(this.uploadText() ?? '');
                              this.cdRef.detectChanges();
                         }
                         break;    

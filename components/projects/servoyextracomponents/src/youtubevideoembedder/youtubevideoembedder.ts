@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, SimpleChanges, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, SimpleChanges, inject, input, signal } from '@angular/core';
 import { ServoyBaseComponent, ServoyPublicModule } from '@servoy/public';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
@@ -27,7 +27,7 @@ export class ServoyExtraYoutubeVideoEmbedder extends ServoyBaseComponent<HTMLIFr
     readonly dataProviderID = input<string>(undefined as any);
 
     private sanitizer = inject(DomSanitizer);
-    public fullYoutubeURL: SafeResourceUrl = this.sanitizer.bypassSecurityTrustResourceUrl('');
+    public readonly fullYoutubeURL = signal<SafeResourceUrl>(this.sanitizer.bypassSecurityTrustResourceUrl(''));
 
     svyOnChanges(changes: SimpleChanges) {
         if (changes) {
@@ -61,7 +61,7 @@ export class ServoyExtraYoutubeVideoEmbedder extends ServoyBaseComponent<HTMLIFr
         if (!this.showRelatedVideosAtEnd()) params += '&rel=0';
 
         if (params.length > 0) urlWithParams += '?' + params.substr(1);
-        this.fullYoutubeURL = this.sanitizer.bypassSecurityTrustResourceUrl(urlWithParams);
+        this.fullYoutubeURL.set(this.sanitizer.bypassSecurityTrustResourceUrl(urlWithParams));
     }
 
 }

@@ -1,5 +1,5 @@
 import { PointerType, ChangeContext, LabelType, Options } from '@angular-slider/ngx-slider';
-import { Component, SimpleChanges, ChangeDetectionStrategy, inject, input, output, EventEmitter } from '@angular/core';
+import { Component, SimpleChanges, ChangeDetectionStrategy, inject, input, output, EventEmitter, signal } from '@angular/core';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { Format, ServoyBaseComponent } from '@servoy/public'
 
@@ -69,9 +69,9 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
 
     private formatService = inject(FormattingService);
 
-    options: Options = {
+    readonly options = signal<Options>({
         translate: (value: number, label: LabelType) => this.formatValue(value, label)
-    };
+    });
 
     formattingFunctionParsed: any;
 
@@ -229,9 +229,9 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     setNewOptions(propertyName: string, propertyValue: any): void {
-        const newOptions: Options = Object.assign({}, this.options);
+        const newOptions: Options = Object.assign({}, this.options());
         (newOptions as any)[propertyName] = propertyValue;
-        this.options = newOptions;
+        this.options.set(newOptions);
     }
 
     formatValue(value: number, label: LabelType): string {

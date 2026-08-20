@@ -129,10 +129,10 @@ describe('ServoyExtraHtmlarea', () => {
     });
 
     it('should have default tinyConfig values', async () => {
-        expect(component.tinyConfig.height).toBe('100%');
-        expect(component.tinyConfig.menubar).toBe(false);
-        expect(component.tinyConfig.statusbar).toBe(false);
-        expect(component.tinyConfig.readonly).toBe(false);
+        expect(component.tinyConfig().height).toBe('100%');
+        expect(component.tinyConfig().menubar).toBe(false);
+        expect(component.tinyConfig().statusbar).toBe(false);
+        expect(component.tinyConfig().readonly).toBe(false);
     });
 
     it('should call pushUpdate which emits dataProviderIDChange', async () => {

@@ -93,15 +93,15 @@ describe('ServoyExtraLightboxGallery', () => {
         populateImages();
         await fixture.whenStable();
 
-        expect(component.images.length).toBe(2);
-        expect(component.images[0].src).toBe(images[0].imageUrl);
-        expect(component.images[1].src).toBe(images[1].imageUrl);
-        expect(component.images[0].thumb).toBe(images[0].thumbnailUrl);
-        expect(component.images[1].thumb).toBe(images[1].thumbnailUrl);
-        expect(component.images[0].caption).toBe('Image 1');
-        expect(component.images[1].caption).toBe('Image 2');
-        expect(component.images[0].imageId).toBe('1');
-        expect(component.images[1].imageId).toBe('2');
+        expect(component.images().length).toBe(2);
+        expect(component.images()[0].src).toBe(images[0].imageUrl);
+        expect(component.images()[1].src).toBe(images[1].imageUrl);
+        expect(component.images()[0].thumb).toBe(images[0].thumbnailUrl);
+        expect(component.images()[1].thumb).toBe(images[1].thumbnailUrl);
+        expect(component.images()[0].caption).toBe('Image 1');
+        expect(component.images()[1].caption).toBe('Image 2');
+        expect(component.images()[0].imageId).toBe('1');
+        expect(component.images()[1].imageId).toBe('2');
     });
 
     it('should show gallery when galleryVisible is true', async () => {

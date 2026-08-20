@@ -40,7 +40,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
     mustExecuteOnFocus = true;
     lastServerValueAsSeenByTinyMCEContent!: string;
     tinyValue: any;
-    tinyConfig: RawEditorOptions = {
+    readonly tinyConfig = signal<RawEditorOptions>({
         suffix: '.min',
         height: '100%',
         menubar: false,
@@ -48,7 +48,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
         readonly: false,
         promotion: false,
         toolbar: 'fontselect fontsizeselect | bold italic underline | superscript subscript | undo redo |alignleft aligncenter alignright alignjustify | styleselect | outdent indent bullist numlist'
-    };
+    });
     editor!: Editor;
     
     protected servoyPublicService = inject(ServoyPublicService);
@@ -96,10 +96,10 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
         super.ngOnInit();
 
         if (this.servoyPublicService.getLocaleObject()) {
-            this.tinyConfig['language'] = this.servoyPublicService.getLocaleObject().language;
+            this.tinyConfig.update(c => ({...c, language: this.servoyPublicService.getLocaleObject().language}));
         }
 
-        this.tinyConfig['base_url'] = this.document.head.getElementsByTagName('base')[0].href + 'tinymce';
+        this.tinyConfig.update(c => ({...c, base_url: this.document.head.getElementsByTagName('base')[0].href + 'tinymce'}));
 
         // app level configuration
         let defaultConfiguration = this.servoyPublicService.getUIProperty('config');
@@ -113,7 +113,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
             }
             for (const key in defaultConfiguration) {
                 if (Object.hasOwn(defaultConfiguration, key)) {
-                    this.tinyConfig[key] = defaultConfiguration[key];
+                    this.tinyConfig.update(c => ({...c, [key]: defaultConfiguration[key]}));
                 }
             }
         }
@@ -134,7 +134,7 @@ export class ServoyExtraHtmlarea extends ServoyBaseComponent<HTMLDivElement> {
             }
             for (const key in configuration) {
                 if (Object.hasOwn(configuration, key)) {
-                    this.tinyConfig[key] = configuration[key];
+                    this.tinyConfig.update(c => ({...c, [key]: configuration[key]}));
                 }
             }
         }

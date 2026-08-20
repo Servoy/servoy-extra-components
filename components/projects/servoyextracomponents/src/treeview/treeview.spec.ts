@@ -36,7 +36,7 @@ describe('ServoyExtraTreeview', () => {
 
     it('should create and register the component', async () => {
         expect(component).toBeTruthy();
-        expect(component.isTreeReady).toBe(true);
+        expect(component.isTreeReady()).toBe(true);
     });
 
     it('should apply a style class', async () => {
@@ -112,22 +112,22 @@ describe('ServoyExtraTreeview', () => {
 
     it('addOrUpdateRowData should update existing node text', async () => {
         component.addOrUpdateRowData(['2', null, 'Changed group', null]);
-        const updatedRow = component.data.find(r => r.id === '2');
+        const updatedRow = component.data().find(r => r.id === '2');
         expect(updatedRow!.treeColumn.text).toBe('Changed group');
     });
 
     it('addOrUpdateRowData should add a new node', async () => {
-        const initialLength = component.data.length;
+        const initialLength = component.data().length;
         component.addOrUpdateRowData(['6', null, 'New node', null]);
-        expect(component.data.length).toBe(initialLength + 1);
-        const newRow = component.data.find(r => r.id === '6');
+        expect(component.data().length).toBe(initialLength + 1);
+        const newRow = component.data().find(r => r.id === '6');
         expect(newRow!.treeColumn.text).toBe('New node');
     });
 
     it('should parse tree data correctly', async () => {
-        expect(component.data.length).toBe(5);
-        expect(component.data[0].treeColumn.text).toBe('Main group');
-        expect(component.data[1].treeColumn.text).toBe('Second group');
-        expect(component.data[2].treeColumn.text).toBe('Subgroup');
+        expect(component.data().length).toBe(5);
+        expect(component.data()[0].treeColumn.text).toBe('Main group');
+        expect(component.data()[1].treeColumn.text).toBe('Second group');
+        expect(component.data()[2].treeColumn.text).toBe('Subgroup');
     });
 });

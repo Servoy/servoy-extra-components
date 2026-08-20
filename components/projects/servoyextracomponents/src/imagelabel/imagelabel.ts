@@ -1,4 +1,4 @@
-import { Component, SimpleChanges, ChangeDetectionStrategy, input } from '@angular/core';
+import { Component, SimpleChanges, ChangeDetectionStrategy, input, signal } from '@angular/core';
 import { ServoyBaseComponent, ServoyPublicModule } from '@servoy/public';
 
 @Component( {
@@ -20,7 +20,7 @@ export class ServoyExtraImageLabel extends ServoyBaseComponent<HTMLImageElement>
     readonly media = input<any>(undefined as any);
     readonly centerImage = input<boolean>(undefined as any);
 
-    imageURL = 'servoyextra/imagelabel/empty.gif';
+    readonly imageURL = signal('servoyextra/imagelabel/empty.gif');
 
     designerURL = 'servoyextra/imagelabel/label.png';
     
@@ -29,7 +29,7 @@ export class ServoyExtraImageLabel extends ServoyBaseComponent<HTMLImageElement>
         super.svyOnInit();
         this.attachHandlers();
         if (this.servoyApi().isInDesigner()){
-            this.imageURL = this.designerURL;
+            this.imageURL.set(this.designerURL);
         }
     }
 
@@ -64,7 +64,7 @@ export class ServoyExtraImageLabel extends ServoyBaseComponent<HTMLImageElement>
 
     private updateImageURL( media: any ) {
         if (!this.servoyApi().isInDesigner()){
-            this.imageURL = media;
+            this.imageURL.set(media);
         }
     }
 
