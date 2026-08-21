@@ -1,6 +1,6 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { NO_ERRORS_SCHEMA, Component, input } from '@angular/core';
+import { NO_ERRORS_SCHEMA, Component, input, provideZonelessChangeDetection } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ServoyApiTesting, ServoyPublicTestingModule } from '@servoy/public';
 import { ServoyExtraMultiFileUpload } from './multifileupload';
@@ -20,6 +20,7 @@ describe('ServoyExtraMultiFileUpload', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [ServoyPublicTestingModule, FormsModule, ServoyExtraMultiFileUpload],
+            providers: [provideZonelessChangeDetection()],
             schemas: [NO_ERRORS_SCHEMA]
         }).overrideComponent(ServoyExtraMultiFileUpload, {
             remove: { imports: [DashboardComponent] },
@@ -46,6 +47,11 @@ describe('ServoyExtraMultiFileUpload', () => {
 
     it('should create the component', async () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should return a valid native element from getNativeElement()', () => {
+        expect(component.getNativeElement()).not.toBeNull();
+        expect(component.getNativeElement()).toBeInstanceOf(HTMLElement);
     });
 
     it('should register the component with servoyApi', async () => {

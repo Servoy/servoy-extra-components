@@ -104,6 +104,11 @@ describe('ServoyExtraLightboxGallery', () => {
         expect(component.images()[1].imageId).toBe('2');
     });
 
+    it('should return a valid native element from getNativeElement()', () => {
+        expect(component.getNativeElement()).not.toBeNull();
+        expect(component.getNativeElement()).toBeInstanceOf(HTMLElement);
+    });
+
     it('should show gallery when galleryVisible is true', async () => {
         const el: HTMLElement = fixture.nativeElement;
         const gallery = el.querySelector('.svyextra-lightboxgallery');

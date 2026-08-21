@@ -39,6 +39,11 @@ describe('ServoyExtraHtmlarea', () => {
         expect(component).toBeTruthy();
     });
 
+    it('should return a valid native element from getNativeElement()', () => {
+        expect(component.getNativeElement()).not.toBeNull();
+        expect(component.getNativeElement()).toBeInstanceOf(HTMLElement);
+    });
+
     it('should initialize dataProviderID via svyOnInit', async () => {
         component.svyOnInit();
         expect(component._dataProviderID()).toBe('initialValue');

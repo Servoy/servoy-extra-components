@@ -40,6 +40,11 @@ describe('ServoyExtraYoutubeVideoEmbedder', () => {
         expect(iframe.className).toContain('youtube-test');
     });
 
+    it('should return a valid native element from getNativeElement()', () => {
+        expect(fixture.componentInstance.getNativeElement()).not.toBeNull();
+        expect(fixture.componentInstance.getNativeElement()).toBeInstanceOf(HTMLElement);
+    });
+
     it('should show a style class', async () => {
         const iframe = fixture.nativeElement.querySelector('iframe');
         expect(iframe.className).toContain('youtube-test');

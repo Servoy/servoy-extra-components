@@ -4,7 +4,7 @@
   [sabloTabseq]='tabSeq()'
   [sabloTabseqConfig]="{container: true, reservedGap: 100}">
   <!-- //collapsibles -->
-  @for (collapsible of collapsibles(); track collapsible; let idx = $index) {
+  @for (collapsible of collapsibles(); track collapsible.collapsibleId; let idx = $index) {
     <div
       class="svy-collapse-collapsible {{collapsible.styleClass ? collapsible.styleClass : ''}}"
       id="{{servoyApi().getMarkupId()}}-{{idx}}"
@@ -64,7 +64,7 @@
           id="{{servoyApi().getMarkupId()}}-{{idx}}-collapsible"
           class="svy-collapse-collapsible-container collapse {{collapsible.isCollapsed ? '' : 'in'}}"
           [ngbCollapse]="collapsible.isCollapsed" >
-          @for (card of collapsible.cards; track card; let myIdx = $index) {
+          @for (card of collapsible.cards; track card.cardId; let myIdx = $index) {
             <div
               class="svy-collapse-card-body {{collapsible.bodyStyleClass}}"
               id="{{servoyApi().getMarkupId()}}-{{idx}}-collapsible-body-{{myIdx}}" >

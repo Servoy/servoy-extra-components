@@ -80,6 +80,14 @@ describe('ServoyExtraSelect2Tokenizer', () => {
         expect(component).toBeTruthy();
     });
 
+    it('should return a valid native element from getNativeElement()', async () => {
+        setDefaultInputs(fixture);
+        fixture.detectChanges();
+        await fixture.whenStable();
+        expect(component.getNativeElement()).not.toBeNull();
+        expect(component.getNativeElement()).toBeInstanceOf(HTMLElement);
+    });
+
     it('should register the component with servoyApi', async () => {
         const servoyApi = new ServoyApiTesting();
         const registerSpy = vi.spyOn(servoyApi, 'registerComponent');

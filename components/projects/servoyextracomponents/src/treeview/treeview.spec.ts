@@ -39,6 +39,11 @@ describe('ServoyExtraTreeview', () => {
         expect(component.isTreeReady()).toBe(true);
     });
 
+    it('should return a valid native element from getNativeElement()', () => {
+        expect(component.getNativeElement()).not.toBeNull();
+        expect(component.getNativeElement()).toBeInstanceOf(HTMLElement);
+    });
+
     it('should apply a style class', async () => {
         const el: HTMLElement = fixture.nativeElement.querySelector('.svy-treeview');
         expect(el.classList.contains('mystyleclass')).toBe(false);

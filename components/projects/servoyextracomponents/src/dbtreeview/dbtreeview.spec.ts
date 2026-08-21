@@ -38,6 +38,11 @@ describe('ServoyExtraDbtreeview', () => {
         expect(servoyApi.registerComponent).toBeTruthy();
     });
 
+    it('should return a valid native element from getNativeElement()', () => {
+        expect(component.getNativeElement()).not.toBeNull();
+        expect(component.getNativeElement()).toBeInstanceOf(HTMLElement);
+    });
+
     it('should apply a style class', async () => {
         const nativeEl = fixture.nativeElement as HTMLElement;
         const treeDiv = nativeEl.querySelector('.dbtreeview');

@@ -106,6 +106,11 @@ describe('ServoyExtraSidenav', () => {
         expect(fixture.nativeElement.querySelector('.svy-sidenav')).toBeTruthy();
     });
 
+    it('should return a valid native element from getNativeElement()', () => {
+        expect(component.getNativeElement()).not.toBeNull();
+        expect(component.getNativeElement()).toBeInstanceOf(HTMLElement);
+    });
+
     it('should apply style class to svy-sidenav', async () => {
         const sidenav = fixture.nativeElement.querySelector('.svy-sidenav');
         expect(sidenav.classList.contains('sidenav-test')).toBe(true);
@@ -313,11 +318,14 @@ describe('ServoyExtraSidenav', () => {
     });
 
     it('should detect duplicate ids', async () => {
+        const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
         const dupeMenu = [
             { id: 'a', text: 'A', enabled: true },
             { id: 'a', text: 'A2', enabled: true }
         ] as MenuItem[];
         expect(component.hasUniqueIds(dupeMenu)).toBe(false);
+        expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('duplicate IDs'));
+        consoleSpy.mockRestore();
     });
 
     it('should pass unique id check with valid menu', async () => {

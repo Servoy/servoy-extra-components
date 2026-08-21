@@ -56,9 +56,7 @@
             "outputPath": "dist/dummy",
             "index": "projects/dummy/src/index.html",
             "browser": "projects/dummy/src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": [],
             "tsConfig": "projects/dummy/tsconfig.app.json",
             "assets": [
               {

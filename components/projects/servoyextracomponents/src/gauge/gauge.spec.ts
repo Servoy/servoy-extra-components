@@ -84,6 +84,11 @@ describe('ServoyExtraGauge', () => {
         expect(registerSpy).toHaveBeenCalled();
     });
 
+    it('should return a valid native element from getNativeElement()', () => {
+        expect(component.getNativeElement()).not.toBeNull();
+        expect(component.getNativeElement()).toBeInstanceOf(HTMLElement);
+    });
+
     it('should handle gauge type change', async () => {
         fixture.componentRef.setInput('gaugeType', 'linear');
         fixture.detectChanges();

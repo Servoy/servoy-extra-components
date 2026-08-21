@@ -43,6 +43,11 @@ describe('ServoyExtraTextfieldGroup', () => {
         expect(component).toBeTruthy();
     });
 
+    it('should return a valid native element from getNativeElement()', () => {
+        expect(component.getNativeElement()).not.toBeNull();
+        expect(component.getNativeElement()).toBeInstanceOf(HTMLElement);
+    });
+
     it('should mount and register the component', async () => {
         const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
         expect(input).not.toBeNull();

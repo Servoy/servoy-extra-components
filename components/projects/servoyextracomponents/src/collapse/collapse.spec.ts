@@ -80,6 +80,11 @@ describe('ServoyExtraCollapse', () => {
         expect(el).not.toBeNull();
     });
 
+    it('should return a valid native element from getNativeElement()', () => {
+        expect(component.getNativeElement()).not.toBeNull();
+        expect(component.getNativeElement()).toBeInstanceOf(HTMLElement);
+    });
+
     it('should show a style class', async () => {
         const el = fixture.nativeElement.querySelector('.svy-collapse');
         expect(el.classList.contains('mystyleclass')).toBe(false);

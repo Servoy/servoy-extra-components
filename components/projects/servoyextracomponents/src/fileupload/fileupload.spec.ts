@@ -46,6 +46,11 @@ describe('ServoyExtraFileUpload', () => {
         expect(fixture.nativeElement.querySelector('.svy-extra-fileupload')).toBeTruthy();
     });
 
+    it('should return a valid native element from getNativeElement()', () => {
+        expect(component.getNativeElement()).not.toBeNull();
+        expect(component.getNativeElement()).toBeInstanceOf(HTMLElement);
+    });
+
     it('should show style class', async () => {
         const el = fixture.nativeElement.querySelector('.svy-extra-fileupload');
         expect(el.classList.contains('fileupload-test')).toBe(true);
