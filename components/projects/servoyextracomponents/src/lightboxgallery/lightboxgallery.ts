@@ -1,6 +1,6 @@
 import { Component, SimpleChanges, ChangeDetectionStrategy, inject, input, signal } from '@angular/core';
 import { ServoyBaseComponent, IFoundset, BaseCustomObject } from '@servoy/public';
-import { Lightbox, LightboxConfig } from '@servoy/ngx-lightbox';
+import { Lightbox, LightboxConfig, LightboxEvent, LightboxWindowRef } from '@servoy/ngx-lightbox';
 
 @Component({
     selector: 'servoyextra-lightboxgallery',
@@ -8,6 +8,7 @@ import { Lightbox, LightboxConfig } from '@servoy/ngx-lightbox';
     styleUrls: ['./lightboxgallery.css'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
+    providers: [Lightbox, LightboxConfig, LightboxEvent, LightboxWindowRef],
     host: {
         '(document:keydown)': 'onKeyDown($event)'
     }
@@ -65,28 +66,28 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
         super.svyOnChanges(changes);
     }
 	
-	onKeyDown(event: KeyboardEvent) {
-			if (event.code === 'ArrowRight') {
-			if (document.querySelector('.fadeIn.lightbox')) {
-				const nextBtn = document.querySelector('.fadeIn.lightbox')!.querySelector('.lb-next') as HTMLElement;
-				if (nextBtn) nextBtn.click();
-			}
-		} else if (event.code === 'ArrowLeft') {
-			if (document.querySelector('.fadeIn.lightbox')) {
-				const prevBtn = document.querySelector('.fadeIn.lightbox')!.querySelector('.lb-prev') as HTMLElement;
-				if (prevBtn) prevBtn.click();
-			}
-			}
-		}
+    onKeyDown(event: KeyboardEvent) {
+        if (event.code === 'ArrowRight') {
+            if (document.querySelector('.fadeIn.lightbox')) {
+                const nextBtn = document.querySelector('.fadeIn.lightbox')!.querySelector('.lb-next') as HTMLElement;
+                if (nextBtn) nextBtn.click();
+            }
+        } else if (event.code === 'ArrowLeft') {
+            if (document.querySelector('.fadeIn.lightbox')) {
+                const prevBtn = document.querySelector('.fadeIn.lightbox')!.querySelector('.lb-prev') as HTMLElement;
+                if (prevBtn) prevBtn.click();
+            }
+        }
+    }
 
     onScroll() {
-		if (Math.abs(this.elementRef()!.nativeElement.scrollHeight - this.elementRef()!.nativeElement.clientHeight - this.elementRef()!.nativeElement.scrollTop) < 1) {
-			const imagesFoundset = this.imagesFoundset();
+        if (Math.abs(this.elementRef()!.nativeElement.scrollHeight - this.elementRef()!.nativeElement.clientHeight - this.elementRef()!.nativeElement.scrollTop) < 1) {
+            const imagesFoundset = this.imagesFoundset();
             if (imagesFoundset && imagesFoundset.serverSize > imagesFoundset.viewPort.size) {
-			imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize()!);
-		}
-	}
-	}
+                imagesFoundset.loadExtraRecordsAsync(this.imageBatchSize()!);
+            }
+        }
+    }
 
 	loadMoreData() {
 		if (this.maxImageHeight() || this.maxImageWidth()) {
