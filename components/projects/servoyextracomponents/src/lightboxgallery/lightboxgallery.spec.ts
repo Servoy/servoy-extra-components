@@ -9,8 +9,10 @@ vi.mock('@servoy/ngx-lightbox', () => {
  open = vi.fn(); close = vi.fn(); 
 }
     class MockLightboxConfig {}
+    class MockLightboxEvent {}
+    class MockLightboxWindowRef {}
     class MockLightboxModule {}
-    return { Lightbox: MockLightbox, LightboxConfig: MockLightboxConfig, LightboxModule: MockLightboxModule };
+    return { Lightbox: MockLightbox, LightboxConfig: MockLightboxConfig, LightboxEvent: MockLightboxEvent, LightboxWindowRef: MockLightboxWindowRef, LightboxModule: MockLightboxModule };
 });
 
 import { Lightbox, LightboxConfig } from '@servoy/ngx-lightbox';
