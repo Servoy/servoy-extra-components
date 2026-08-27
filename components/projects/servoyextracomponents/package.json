@@ -1,13 +1,6 @@
 {
   "name": "@servoy/servoyextracomponents",
   "version": "2026.9.0",
-  "peerDependencies": {
-    "@angular/animations": "^22",
-    "@angular/common": "^22",
-    "@angular/core": "^22",
-    "@angular/forms": "^22",
-    "lodash-es": "<5"
-  },
   "dependencies": {
     "@angular/cdk": "^22",
     "@angular-slider/ngx-slider": "^22",
