@@ -46,7 +46,7 @@
     "file-saver": "2.0.5",
     "lodash-es": "4.18.1",
     "ng-select2-component": "^19.0.2",
-    "ng2-file-upload": "9.0.0",
+    "@servoy/ng2-file-upload": "22.0.0",
     "ngx-filesaver": "21.0.0",
     "rx-dom-html": "7.0.3",
     "rxjs": "7.8.2",

@@ -4,7 +4,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ServoyApiTesting, ServoyPublicTestingModule } from '@servoy/public';
 import { ServoyExtraFileUpload } from './fileupload';
-import { FileUploadModule } from 'ng2-file-upload';
+import { FileUploadModule } from '@servoy/ng2-file-upload';
 
 describe('ServoyExtraFileUpload', () => {
     let fixture: ComponentFixture<ServoyExtraFileUpload>;

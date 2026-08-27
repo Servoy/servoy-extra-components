@@ -1,7 +1,7 @@
 import { Component, SimpleChanges, ChangeDetectionStrategy, ElementRef, inject, input, output, viewChild, signal } from '@angular/core';
 import { ServoyBaseComponent, ServoyPublicService, ServoyPublicModule } from '@servoy/public';
-import { FileUploader, FileUploaderOptions } from 'ng2-file-upload';
-import { FileUploadModule } from 'ng2-file-upload';
+import { FileUploader, FileUploaderOptions } from '@servoy/ng2-file-upload';
+import { FileUploadModule } from '@servoy/ng2-file-upload';
 
 import { LoggerFactory } from '@servoy/public';
 import { DOCUMENT } from '@angular/common';
