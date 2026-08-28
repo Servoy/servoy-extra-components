@@ -19,17 +19,19 @@ import { Lightbox, LightboxConfig } from '@servoy/ngx-lightbox';
 import { ServoyExtraLightboxGallery, Image } from './lightboxgallery';
 
 const createImages = (): Image[] => {
-    const image1 = new Image();
-    image1.imageUrl = 'https://cdn.pixabay.com/photo/2014/03/06/13/08/tester-280809_1280.jpg';
-    image1.thumbnailUrl = 'https://cdn.pixabay.com/photo/2014/03/06/13/08/tester-280809_1280.jpg';
-    image1.caption = 'Image 1';
-    image1.id = '1';
+    const image1 = {
+        imageUrl: 'https://cdn.pixabay.com/photo/2014/03/06/13/08/tester-280809_1280.jpg',
+        thumbnailUrl: 'https://cdn.pixabay.com/photo/2014/03/06/13/08/tester-280809_1280.jpg',
+        caption: 'Image 1',
+        id: '1'
+    } as Image;
 
-    const image2 = new Image();
-    image2.imageUrl = 'https://cdn.pixabay.com/photo/2023/01/20/05/23/checklist-7730756_1280.jpg';
-    image2.thumbnailUrl = 'https://cdn.pixabay.com/photo/2023/01/20/05/23/checklist-7730756_1280.jpg';
-    image2.caption = 'Image 2';
-    image2.id = '2';
+    const image2 = {
+        imageUrl: 'https://cdn.pixabay.com/photo/2023/01/20/05/23/checklist-7730756_1280.jpg',
+        thumbnailUrl: 'https://cdn.pixabay.com/photo/2023/01/20/05/23/checklist-7730756_1280.jpg',
+        caption: 'Image 2',
+        id: '2'
+    } as Image;
 
     return [image1, image2];
 };

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, SimpleChanges, inject, input, output, viewChild, signal } from '@angular/core';
-import { LoggerFactory, ServoyBaseComponent, BaseCustomObject, IFoundsetTree, ServoyPublicService, EventLike, JSEvent } from '@servoy/public';
+import { LoggerFactory, ServoyBaseComponent, IFoundsetTree, ServoyPublicService, EventLike, JSEvent } from '@servoy/public';
 import { IActionMapping, ITreeOptions, TreeComponent, TreeNode } from '@ali-hm/angular-tree-component';
 import { TreeModule } from '@ali-hm/angular-tree-component';
 
@@ -717,34 +717,34 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
     }
 }
 
-export class Binding extends BaseCustomObject {
-    public datasource!: string;
-    public callbackinfo!: Callback;
-    public methodToCallOnCheckBoxChange!: Callback;
-    public methodToCallOnDoubleClick!: Callback;
-    public methodToCallOnRightClick!: Callback;
+export interface Binding {
+    datasource: string;
+    callbackinfo: Callback;
+    methodToCallOnCheckBoxChange: Callback;
+    methodToCallOnDoubleClick: Callback;
+    methodToCallOnRightClick: Callback;
 }
 
-export class Callback extends BaseCustomObject {
-    public f!: () => void;
-    public param!: string;
+export interface Callback {
+    f: () => void;
+    param: string;
 }
 
-export class RelationInfo extends BaseCustomObject {
-    public label!: string;
-    public nRelationName!: string;
+export interface RelationInfo {
+    label: string;
+    nRelationName: string;
 }
 
-export class LevelVisibilityType extends BaseCustomObject {
-    public value!: boolean;
-    public level!: number;
+export interface LevelVisibilityType {
+    value: boolean;
+    level: number;
 }
 
-export class Action extends BaseCustomObject {
-	public datasource!: number;
-    public callbackfunction!: (param?: string) => void;
-    public param!: string;
-	public name!: string;
+export interface Action {
+	datasource: number;
+    callbackfunction: (param?: string) => void;
+    param: string;
+	name: string;
 }
 
 class ChildNode {

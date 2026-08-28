@@ -4,7 +4,7 @@ import {
 } from '@angular/core';
 import { NgStyle } from '@angular/common';
 import {
-    BaseCustomObject, Format, IFoundset, IValuelist, ServoyBaseComponent,
+    Format, IFoundset, IValuelist, ServoyBaseComponent,
     ViewPortRow, FoundsetChangeEvent, ChangeType, FormattingService, ViewportRowUpdates, ServoyPublicModule
 } from '@servoy/public';
 import { LoggerFactory } from '@servoy/public';
@@ -2785,29 +2785,29 @@ export class ServoyExtraTable extends ServoyBaseComponent<HTMLDivElement> implem
     }
 }
 
-export class Column extends BaseCustomObject {
-    id!: string;
-    showAs!: string;
-    headerText!: string;
-    headerStyleClass!: string;
-    styleClass!: string;
-    styleClassDataprovider!: LinkedDataproviders;
-    dataprovider!: LinkedDataproviders;
-    autoResize!: boolean;
-    valuelist!: IValuelist | IValuelist[];
-    width!: string;
-    initialWidth!: string;
-    format!: Format;
+export interface Column {
+    id: string;
+    showAs: string;
+    headerText: string;
+    headerStyleClass: string;
+    styleClass: string;
+    styleClassDataprovider: LinkedDataproviders;
+    dataprovider: LinkedDataproviders;
+    autoResize: boolean;
+    valuelist: IValuelist | IValuelist[];
+    width: string;
+    initialWidth: string;
+    format: Format;
 }
 
-export class KeycodeSettings extends BaseCustomObject {
-    arrowUp!: boolean;
-    arrowDown!: boolean;
-    end!: boolean;
-    enter!: boolean;
-    home!: boolean;
-    pageDown!: boolean;
-    pageUp!: boolean;
+export interface KeycodeSettings {
+    arrowUp: boolean;
+    arrowDown: boolean;
+    end: boolean;
+    enter: boolean;
+    home: boolean;
+    pageDown: boolean;
+    pageUp: boolean;
 }
 
 class LinkedDataproviders extends Array<any>{

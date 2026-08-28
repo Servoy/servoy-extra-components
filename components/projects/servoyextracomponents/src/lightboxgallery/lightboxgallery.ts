@@ -1,5 +1,5 @@
 import { Component, SimpleChanges, ChangeDetectionStrategy, inject, input, signal } from '@angular/core';
-import { ServoyBaseComponent, IFoundset, BaseCustomObject } from '@servoy/public';
+import { ServoyBaseComponent, IFoundset } from '@servoy/public';
 import { Lightbox, LightboxConfig, LightboxEvent, LightboxWindowRef } from '@servoy/ngx-lightbox';
 
 @Component({
@@ -271,9 +271,9 @@ export class ServoyExtraLightboxGallery extends ServoyBaseComponent<HTMLDivEleme
     };
 }
 
-export class Image extends BaseCustomObject {
-    public imageUrl!: string;
-    public caption!: string;
-    public thumbnailUrl!: string;
-    public id!: string;
+export interface Image {
+    imageUrl: string;
+    caption: string;
+    thumbnailUrl: string;
+    id: string;
 }

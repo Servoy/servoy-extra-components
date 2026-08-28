@@ -18,4 +18,4 @@ export * from './table/table';
 export * from './textfieldgroup/textfieldgroup';
 export * from './treeview/treeview';
 export * from './youtubevideoembedder/youtubevideoembedder';
-export * from './servoyextra.module';
+

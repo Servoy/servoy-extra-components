@@ -1,6 +1,6 @@
 import { Component, TemplateRef, SimpleChanges, ChangeDetectionStrategy, input, output, contentChild, signal } from '@angular/core';
 import { NgStyle, NgTemplateOutlet } from '@angular/common';
-import { BaseCustomObject, ServoyBaseComponent, ServoyPublicModule } from '@servoy/public';
+import { ServoyBaseComponent, ServoyPublicModule } from '@servoy/public';
 import { BGSplitter } from './bg_splitter/bg_splitter.component';
 import { BGPane } from './bg_splitter/bg_pane.component';
 
@@ -154,7 +154,7 @@ export class ServoyExtraSplitpane extends ServoyBaseComponent<HTMLDivElement> {
 	}
 }
 
-export class Pane extends BaseCustomObject {
-	containsFormId!: string;
-	relationName!: string;
+export interface Pane {
+	containsFormId: string;
+	relationName: string;
 }

@@ -11,13 +11,8 @@ describe('ServoyExtraSplitpane', () => {
     let servoyApi: ServoyApiTesting;
 
     const createDefaultPanes = () => {
-        const pane1 = new Pane();
-        pane1.containsFormId = 'form1';
-        pane1.relationName = 'relation1';
-
-        const pane2 = new Pane();
-        pane2.containsFormId = 'form2';
-        pane2.relationName = 'relation2';
+        const pane1 = { containsFormId: 'form1', relationName: 'relation1' } as Pane;
+        const pane2 = { containsFormId: 'form2', relationName: 'relation2' } as Pane;
 
         return { pane1, pane2 };
     };

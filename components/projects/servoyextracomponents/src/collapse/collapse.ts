@@ -1,6 +1,6 @@
 import { Component, SimpleChanges, ChangeDetectionStrategy, TemplateRef, inject, input, output, contentChild } from '@angular/core';
 import { NgStyle, NgTemplateOutlet } from '@angular/common';
-import { BaseCustomObject, ServoyBaseComponent, ServoyPublicModule } from '@servoy/public';
+import { ServoyBaseComponent, ServoyPublicModule } from '@servoy/public';
 import { ServoyPublicService } from '@servoy/public';
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
 import { DOCUMENT } from '@angular/common';
@@ -236,8 +236,8 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 	}
 
 	private notifyChange(index: number) {
-		this.collapsibles()![index].getStateHolder().getChangedKeys().add('isCollapsed');
-		this.collapsibles()![index].getStateHolder().notifyChangeListener();
+		(this.collapsibles()![index] as any).getStateHolder().getChangedKeys().add('isCollapsed');
+		(this.collapsibles()![index] as any).getStateHolder().notifyChangeListener();
 		this.collapsiblesChange.emit(this.collapsibles()!);
 	}
 
@@ -405,30 +405,30 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
     }
 }
 
-export class Collapsible extends BaseCustomObject {
-	collapsibleId!: string;
-	isCollapsed!: boolean;
-	formIsVisibleServerSide!: boolean;
-	headerHtml!: string;
-	headerStyleClass!: string;
-	bodyStyleClass!: string;
-	collapsibleHtml!: string;
-	form!: string;
-	relationName!: string;
-	cards!: Card[];
-	styleClass!: string;
-	collapsedIconName!: string;
-	expandedIconName!: string;
-	iconLocation!: string;
-	minResponsiveHeight!: number;
-	maxResponsiveHeight!: number;
+export interface Collapsible {
+	collapsibleId: string;
+	isCollapsed: boolean;
+	formIsVisibleServerSide: boolean;
+	headerHtml: string;
+	headerStyleClass: string;
+	bodyStyleClass: string;
+	collapsibleHtml: string;
+	form: string;
+	relationName: string;
+	cards: Card[];
+	styleClass: string;
+	collapsedIconName: string;
+	expandedIconName: string;
+	iconLocation: string;
+	minResponsiveHeight: number;
+	maxResponsiveHeight: number;
 }
 
-export class Card extends BaseCustomObject {
-	cardId!: string;
-	contentHtml!: string;
-	form!: string;
-	minResponsiveHeight!: number;
-	maxResponsiveHeight!: number;
-	styleClass!: string;
+export interface Card {
+	cardId: string;
+	contentHtml: string;
+	form: string;
+	minResponsiveHeight: number;
+	maxResponsiveHeight: number;
+	styleClass: string;
 }

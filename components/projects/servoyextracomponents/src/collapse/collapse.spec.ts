@@ -6,9 +6,13 @@ import { ServoyApiTesting, ServoyPublicTestingModule } from '@servoy/public';
 import { ServoyExtraCollapse, Collapsible } from './collapse';
 
 function createDefaultCollapsibles(): Collapsible[] {
+    const mockStateHolder = {
+        getChangedKeys: () => new Set(),
+        notifyChangeListener: () => {}
+    };
     const collapsibles = [
-        new Collapsible(),
-        new Collapsible()
+        { getStateHolder: () => mockStateHolder } as any as Collapsible,
+        { getStateHolder: () => mockStateHolder } as any as Collapsible
     ];
 
     collapsibles[0].collapsibleId = '1';
