@@ -318,6 +318,7 @@ describe('ServoyExtraSidenav', () => {
     });
 
     it('should detect duplicate ids', async () => {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
         const dupeMenu = [
             { id: 'a', text: 'A', enabled: true },

@@ -6,7 +6,6 @@
     "@angular-slider/ngx-slider": "^22",
     "@ali-hm/angular-tree-component": "^22",
     "@ng-bootstrap/ng-bootstrap": "^21",
-	"@popperjs/core": "<3",
     "bootstrap": "<6",
     "@servoy/canvas-gauges": "<3",
     "@tinymce/tinymce-angular": "<8",
