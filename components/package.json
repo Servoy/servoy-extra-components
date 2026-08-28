@@ -23,7 +23,7 @@
     "@angular/forms": "22.1.4",
     "@ng-bootstrap/ng-bootstrap": "21.0.0",
     "@popperjs/core": "2.11.8",
-    "@servoy/angular-tree-grid": "8.0.1",
+    "@servoy/angular-tree-grid": "8.0.2",
     "@servoy/canvas-gauges": "2.1.8",
     "@servoy/ng2-file-upload": "22.0.0",
     "@servoy/ngx-lightbox": "4.0.1",

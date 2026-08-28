@@ -60,10 +60,10 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         columns: []
     });
 
-    filterText = '';
+    filterText = signal('');
     isBranchFilter = false;
-    filterMatchedNodes!: any[];
-    filterPartNodes!: any[];
+    filterMatchedNodes = signal<any[]>([]);
+    filterPartNodes = signal<any[]>([]);
     lastSelectedNode!: number;
 
     folderImgPath = './assets/images/folder.png';
@@ -159,7 +159,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
             type: 'custom',
             component: ServoyExtraTreeviewCellRenderer,
             filter_function: (record: any) =>
-                this.filterText.length === 0 || (this.filterMatchedNodes.indexOf(record.id) !== -1 || this.filterPartNodes.indexOf(record.id) !== -1)
+                this.filterText().length === 0 || (this.filterMatchedNodes().indexOf(record.id) !== -1 || this.filterPartNodes().indexOf(record.id) !== -1)
         });
 
         this.columnNameMap['treeColumn'] = jsDataSet[0][treeColumnIdx];
@@ -736,10 +736,10 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     applyFilter(text: any, options: any) {
-        this.filterText = text;
+        this.filterText.set(text);
         if (this.isTreeReady()) {
             this.getFilteredNodes();
-            this.angularGrid()!.store.filterBy([this.configs().columns[0]], this.filterText);
+            this.angularGrid()!.store.filterBy([this.configs().columns[0]], this.filterText());
             if (options && options.autoExpand) {
             this.angularGrid()!.expandAll();
             }
@@ -748,39 +748,41 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     getFilteredNodes() {
-        this.filterMatchedNodes = [];
-        this.filterPartNodes = [];
+        const matchedNodes: any[] = [];
+        const partNodes: any[] = [];
 
-        if (this.filterText.length !== 0) {
+        if (this.filterText().length !== 0) {
             const filterMatchedNodesPaths: string[] = [];
-            const filterTextLC = this.filterText.toLowerCase();
+            const filterTextLC = this.filterText().toLowerCase();
             const processedData = this.angularGrid()!.store.getProcessedData();
             processedData.forEach(data => {
                 if (!data.treeColumn.text) return;
                 const nodeTextLC = data.treeColumn.text.toLowerCase();
                 if (nodeTextLC.indexOf(filterTextLC) !== -1) {
-                    if (this.filterMatchedNodes.indexOf(data.id) === -1) {
-                        this.filterMatchedNodes.push(data.id);
+                    if (matchedNodes.indexOf(data.id) === -1) {
+                        matchedNodes.push(data.id);
                         filterMatchedNodesPaths.push(data.pathx);
                     }
                     const pathA = data.pathx.split('.');
                     pathA.splice(pathA.length - 1, 1);
                     pathA.forEach((element: any) => {
-                        if (this.filterPartNodes.indexOf(element) === -1) {
-                            this.filterPartNodes.push(Number(element));
+                        if (partNodes.indexOf(element) === -1) {
+                            partNodes.push(Number(element));
                         }
                     });
                 } else if (this.isBranchFilter) {
                     filterMatchedNodesPaths.forEach(element => {
                         if (data.pathx.indexOf(element) === 0) {
-                            if (this.filterPartNodes.indexOf(data.id) === -1) {
-                                this.filterPartNodes.push(data.id);
+                            if (partNodes.indexOf(data.id) === -1) {
+                                partNodes.push(data.id);
                             }
                         }
                     });
                 }
             });
         }
+        this.filterMatchedNodes.set(matchedNodes);
+        this.filterPartNodes.set(partNodes);
     }
 
     onRowDragOverEvent($event: any) {
