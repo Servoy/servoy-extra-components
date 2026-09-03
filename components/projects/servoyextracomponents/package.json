@@ -1,6 +1,6 @@
 {
   "name": "@servoy/servoyextracomponents",
-  "version": "2026.9.0",
+  "version": "2026.9.1",
   "dependencies": {
     "@angular/cdk": "^22",
     "@angular-slider/ngx-slider": "^22",
