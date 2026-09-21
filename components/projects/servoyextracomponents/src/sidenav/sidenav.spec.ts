@@ -332,4 +332,122 @@ describe('ServoyExtraSidenav', () => {
     it('should pass unique id check with valid menu', async () => {
         expect(component.hasUniqueIds(testMenu)).toBe(true);
     });
+
+    describe('autoSelectFirstChildNode (SVY-21389)', () => {
+        it('should default autoSelectFirstChildNode to false when input not set', () => {
+            expect(component.autoSelectFirstChildNode()).toBe(false);
+        });
+
+        it('should NOT mark the first child when autoSelectFirstChildNode is false (default)', () => {
+            const event = new MouseEvent('click');
+            component.selectItem(1, 1, testMenu[1], event);
+
+            const selected = component['_selectedIndex']();
+            expect(selected[1]).toBe('users');
+            expect(selected[2]).toBeUndefined();
+        });
+
+        it('should mark the first child when autoSelectFirstChildNode is true', async () => {
+            fixture.componentRef.setInput('autoSelectFirstChildNode', true);
+            fixture.detectChanges();
+            await fixture.whenStable();
+
+            const event = new MouseEvent('click');
+            component.selectItem(1, 1, testMenu[1], event);
+
+            const selected = component['_selectedIndex']();
+            expect(selected[1]).toBe('users');
+            expect(selected[2]).toBe('user_list');
+        });
+
+        it('should NOT auto-show the first child form when autoSelectFirstChildNode is false (default)', () => {
+            const servoyApi = component.servoyApi();
+            const spy = vi.spyOn(servoyApi, 'callServerSideApi');
+            const event = new MouseEvent('click');
+
+            component.selectItem(1, 1, testMenu[1], event);
+
+            const showFormCalls = spy.mock.calls.filter(c => c[0] === 'showForm');
+            expect(showFormCalls.length).toBe(0);
+            spy.mockRestore();
+        });
+
+        it('should auto-show the first child form when autoSelectFirstChildNode is true', async () => {
+            fixture.componentRef.setInput('autoSelectFirstChildNode', true);
+            fixture.detectChanges();
+            await fixture.whenStable();
+
+            const servoyApi = component.servoyApi();
+            const spy = vi.spyOn(servoyApi, 'callServerSideApi');
+            const event = new MouseEvent('click');
+
+            component.selectItem(1, 1, testMenu[1], event);
+
+            expect(spy).toHaveBeenCalledWith('showForm', [undefined, 'user_list']);
+            spy.mockRestore();
+        });
+
+        it('should fire onMenuItemSelected only for the clicked node when autoSelectFirstChildNode is false', async () => {
+            const spy = vi.fn().mockResolvedValue(true);
+            fixture.componentRef.setInput('onMenuItemSelected', spy);
+            fixture.detectChanges();
+
+            const event = new MouseEvent('click');
+            component.selectItem(1, 1, testMenu[1], event);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+            expect(spy).toHaveBeenCalledWith('users', event);
+        });
+
+        it('should fire onMenuItemSelected only for the clicked node when autoSelectFirstChildNode is true', async () => {
+            const spy = vi.fn().mockResolvedValue(true);
+            fixture.componentRef.setInput('onMenuItemSelected', spy);
+            fixture.componentRef.setInput('autoSelectFirstChildNode', true);
+            fixture.detectChanges();
+
+            const event = new MouseEvent('click');
+            component.selectItem(1, 1, testMenu[1], event);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+            expect(spy).toHaveBeenCalledWith('users', event);
+        });
+
+        it('should not apply svy-navitem-selected to the first child when autoSelectFirstChildNode is false', async () => {
+            fixture.componentRef.setInput('expandedIndex', JSON.stringify({ 1: 'users' }));
+            fixture.detectChanges();
+
+            const event = new MouseEvent('click');
+            component.selectItem(1, 1, testMenu[1], event);
+            fixture.detectChanges();
+            await fixture.whenStable();
+
+            const subItems = fixture.nativeElement.querySelectorAll('.svy-sidenav-dropdown.sn-level-2');
+            const selectedChildren = Array.from(subItems).filter((el: any) => el.classList.contains('svy-navitem-selected'));
+            expect(selectedChildren.length).toBe(0);
+        });
+
+        it('should apply svy-navitem-selected to the first child when autoSelectFirstChildNode is true', async () => {
+            fixture.componentRef.setInput('autoSelectFirstChildNode', true);
+            fixture.componentRef.setInput('expandedIndex', JSON.stringify({ 1: 'users' }));
+            fixture.detectChanges();
+
+            const event = new MouseEvent('click');
+            component.selectItem(1, 1, testMenu[1], event);
+            fixture.detectChanges();
+            await fixture.whenStable();
+
+            const subItems = fixture.nativeElement.querySelectorAll('.svy-sidenav-dropdown.sn-level-2');
+            const selectedChildren = Array.from(subItems).filter((el: any) => el.classList.contains('svy-navitem-selected'));
+            expect(selectedChildren.length).toBe(1);
+        });
+
+        it('should leave leaf-node selection unchanged regardless of the flag', () => {
+            const event = new MouseEvent('click');
+            component.selectItem(1, 0, testMenu[0], event);
+
+            const selected = component['_selectedIndex']();
+            expect(selected[1]).toBe('dashboard');
+            expect(selected[2]).toBeUndefined();
+        });
+    });
 });

@@ -31,6 +31,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	readonly iconExpandStyleClass = input<string>(undefined as any);
 	readonly iconCollapseStyleClass = input<string>(undefined as any);
     readonly footerFormStickyBottom = input<boolean>(undefined as any);
+	readonly autoSelectFirstChildNode = input(false, { transform: (v: any) => v ?? false });
 
 	readonly slidePosition = input<string>(undefined as any);
 	readonly slideAnimation = input<string>(undefined as any);
@@ -85,8 +86,10 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		super.svyOnInit();
 		this._selectedIndex.set(this.selectedIndex()??{});
         this._expandedIndex.set(this.expandedIndex()??{});
-        this._open.set(this.open());
-		this.copyServoyMenu();
+		this._open.set(this.open());
+		if (this.servoyMenu()) {
+			Promise.resolve().then(() => this.copyServoyMenu());
+		}
         const menu = this._menu();
         if (menu && menu.length > 0 && !this.servoyMenu()) {
             this.hasUniqueIds(menu);
@@ -227,7 +230,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
                         this.cdRef.markForCheck();
 						break;
 					case 'servoyMenu':
-						this.copyServoyMenu();
+						Promise.resolve().then(() => this.copyServoyMenu());
 						break;
 				}
 			}
@@ -571,7 +574,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 			}
 
             // change containedForm
-            const itm = item.menuItems?.length && item.menuItems[0].formName ? item.menuItems[0] : item;
+            const itm = this.autoSelectFirstChildNode() && item.menuItems?.length && item.menuItems[0].formName ? item.menuItems[0] : item;
             if (itm.formName && !isItemAlreadySelected) {
                 const formToHide = this.containedForm();
                 const menuIDToShow = itm.id;
@@ -814,7 +817,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		} else {
 			newSelectedIndex[level] = item.id;
 		}
-        if (item.menuItems?.length) {
+        if (this.autoSelectFirstChildNode() && item.menuItems?.length) {
             newSelectedIndex[level + 1] = item.menuItems[0].id; // select first child
         }
 		this._selectedIndex.set(newSelectedIndex);
@@ -1064,6 +1067,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 				this.updateSelectedNode(selectedNode[selection[0]], this._menu()!, parseInt(selection[0]));
 			}
 			this.selectedIndexChange.emit(JSON.stringify(this._selectedIndex()));
+			this.cdRef.detectChanges();
 		}
 	}
 

@@ -907,7 +907,9 @@ function selectItem(level, index, item, event, preventSelectHandler, preventExpa
 		// expand the item
 		if (item.menuItems && item.menuItems.length > 0 ) { // expand the node if not leaf
 			expandItem(level, index, item, event, preventExpandHandler); // TODO add collapsed argument
-			newContainedForm = item.menuItems[0].formName;
+			if ($scope.model.autoSelectFirstChildNode) {
+				newContainedForm = item.menuItems[0].formName;
+			}
 		} else { // expand the parent node if is a leaf
 			var parentNode = $scope.api.getParentMenuItem(item.id);
 			if (parentNode) {
@@ -961,7 +963,7 @@ function setSelectedIndex(level, index, item) {
 	} else {
 		newSelectedIndex[level] = item.id;
 	}
-	if (item.menuItems && item.menuItems.length) {
+	if ($scope.model.autoSelectFirstChildNode && item.menuItems && item.menuItems.length) {
 		newSelectedIndex[level + 1] = item.menuItems[0].id; // select first child
 	}
 
