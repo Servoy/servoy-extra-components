@@ -25,6 +25,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	readonly iconExpandStyleClass = input<string>(undefined);
 	readonly iconCollapseStyleClass = input<string>(undefined);
     readonly footerFormStickyBottom = input<boolean>(undefined);
+	readonly autoSelectFirstChildNode = input(false, { transform: (v: any) => v ?? false });
 
 	readonly slidePosition = input<string>(undefined);
 	readonly slideAnimation = input<string>(undefined);
@@ -578,7 +579,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 			}
 
             // change containedForm
-            const itm = item.menuItems?.length && item.menuItems[0].formName ? item.menuItems[0] : item;
+            const itm = this.autoSelectFirstChildNode() && item.menuItems?.length && item.menuItems[0].formName ? item.menuItems[0] : item;
             if (itm.formName && !isItemAlreadySelected) {
                 const formToHide = this.containedForm();
                 const menuIDToShow = itm.id;
@@ -822,7 +823,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		} else {
 			newSelectedIndex[level] = item.id;
 		}
-        if (item.menuItems?.length) {
+        if (this.autoSelectFirstChildNode() && item.menuItems?.length) {
             newSelectedIndex[level + 1] = item.menuItems[0].id; // select first child
         }
 		this._selectedIndex.set(newSelectedIndex);

@@ -38,6 +38,7 @@
 		"enabled"						: {"type" :"enabled", "default" : true, "blockingOn": false, "for": ["onMenuItemSelected","onMenuItemExpanded","onMenuItemCollapsed"]},
 		"animate"						: {"type" :"boolean", "default" : true, "tags": { "scope" :"design" }},
 		"footerFormStickyBottom"		: {"type" :"boolean", "default" : false, "pushToServer": "allow", "tags": { "doc" :"It will apply exclusively to CSS Position forms."}},
+		"autoSelectFirstChildNode"		: {"type" :"boolean", "default" : false, "tags": { "doc" :"When true, selecting a parent node auto-selects/marks its first child and shows that child's form. When false (default), selecting a parent marks/expands only the parent; no child is marked selected and no child form is auto-shown. Note: onMenuItemSelected still fires only for the node the user clicked, regardless of this flag."}},
 		
 		"size" 							: {"type" :"dimension",  "default" : {"width":260, "height":300}},
 		"location" 						: "point", 
