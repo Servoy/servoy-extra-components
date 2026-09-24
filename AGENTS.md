@@ -74,6 +74,10 @@ npx ng test @servoy/servoyextracomponents --no-watch --include "projects/servoye
 - Import `ServoyPublicTestingModule` from `@servoy/public`
 - DO NOT import `ServoyExtraComponentsModule` in tests (causes dependency issues)
 
+### Notable tests
+
+- **SVY-21433 textfieldgroup data-cy on focus element:** `projects/servoyextracomponents/src/textfieldgroup/textfieldgroup.spec.ts` (`describe('data-cy on the focus element (SVY-21433)')`) — tests `ServoyExtraTextfieldGroup.applyAttributesToFocusElement()`: no `data-cy` on the `<input>` when `servoyAttributes` is unset (testing mode off); `data-cy` copied onto the `<input>` with a `-input` suffix (`DATA_CY_INPUT_SUFFIX`) distinct from the wrapper's own `data-cy`, avoiding a Cypress "multiple elements matched" ambiguity error; non-`data-cy` `servoyAttributes` keys copied unchanged; no double-`setAttribute` call on initial mount (mutation-tested: fails if the `!change.firstChange` guard in `svyOnChanges()` is removed); and the input's copy stays in sync (added/removed) when `servoyAttributes` changes after init. See `docs/SVY-21433-triage.md` and `docs/SVY-21433-composite-component-data-cy.spec.md` for why a shared base-class fix in `servoy-eclipse`'s `ServoyBaseComponent` was considered and explicitly not taken in favor of this single-component fix.
+
 ### Critical: Global Mocking Rules
 
 - **NEVER** use `vi.stubGlobal('document', ...)` or `vi.stubGlobal('window', ...)` — this replaces the entire jsdom DOM and breaks ALL subsequent tests in the same fork/thread. The error manifests as `this.doc.querySelector is not a function` in Angular's renderer.
