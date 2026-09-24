@@ -223,4 +223,85 @@ describe('ServoyExtraTextfieldGroup', () => {
         const errorEl = fixture.nativeElement.querySelector('.textfieldgroup-msg-error');
         expect(errorEl).toBeNull();
     });
+
+    describe('data-cy on the focus element (SVY-21433)', () => {
+
+        it('should not set data-cy on the input when servoyAttributes is not provided', async () => {
+            fixture.detectChanges();
+            await fixture.whenStable();
+            const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+            expect(input.hasAttribute('data-cy')).toBe(false);
+        });
+
+        it('should copy data-cy onto the input with a "-input" suffix when servoyAttributes is set', async () => {
+            fixture.componentRef.setInput('servoyAttributes', { 'data-cy': 'main.textboxgroup_1' });
+            fixture.detectChanges();
+            await fixture.whenStable();
+            const wrapper = fixture.nativeElement.querySelector('.input-group') as HTMLDivElement;
+            const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+            expect(wrapper.getAttribute('data-cy')).toBe('main.textboxgroup_1');
+            expect(input.getAttribute('data-cy')).toBe('main.textboxgroup_1-input');
+        });
+
+        it('should keep the wrapper and input data-cy values unique from each other', async () => {
+            fixture.componentRef.setInput('servoyAttributes', { 'data-cy': 'main.textboxgroup_1' });
+            fixture.detectChanges();
+            await fixture.whenStable();
+            const wrapper = fixture.nativeElement.querySelector('.input-group') as HTMLDivElement;
+            const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+            expect(input.getAttribute('data-cy')).not.toBe(wrapper.getAttribute('data-cy'));
+        });
+
+        it('should copy non-data-cy servoyAttributes onto the input unchanged', async () => {
+            fixture.componentRef.setInput('servoyAttributes', { 'data-cy': 'main.textboxgroup_1', 'aria-label': 'group label' });
+            fixture.detectChanges();
+            await fixture.whenStable();
+            const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+            expect(input.getAttribute('aria-label')).toBe('group label');
+        });
+
+        it('should not apply the same attribute value twice on initial mount', async () => {
+            const freshFixture = TestBed.createComponent(ServoyExtraTextfieldGroup);
+            const freshComponent = freshFixture.componentInstance;
+
+            freshFixture.componentRef.setInput('servoyApi', new ServoyApiTesting());
+            freshFixture.componentRef.setInput('dataProviderID', 'initialValue');
+            freshFixture.componentRef.setInput('servoyAttributes', { 'data-cy': 'main.textboxgroup_1' });
+
+            const setAttributeSpy = vi.spyOn(freshComponent.getRenderer(), 'setAttribute');
+
+            freshFixture.detectChanges();
+            await freshFixture.whenStable();
+
+            const input = freshFixture.nativeElement.querySelector('input') as HTMLInputElement;
+            const dataCyCallsOnInput = setAttributeSpy.mock.calls.filter(
+                call => call[0] === input && call[1] === 'data-cy'
+            );
+            expect(dataCyCallsOnInput.length).toBe(1);
+            expect(input.getAttribute('data-cy')).toBe('main.textboxgroup_1-input');
+        });
+
+        it('should update the input data-cy when servoyAttributes changes after init', async () => {
+            fixture.componentRef.setInput('servoyAttributes', { 'data-cy': 'main.textboxgroup_1' });
+            fixture.detectChanges();
+            await fixture.whenStable();
+            fixture.componentRef.setInput('servoyAttributes', { 'data-cy': 'main.textboxgroup_2' });
+            fixture.detectChanges();
+            await fixture.whenStable();
+            const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+            expect(input.getAttribute('data-cy')).toBe('main.textboxgroup_2-input');
+        });
+
+        it('should remove a servoyAttributes key from the input when it is no longer present', async () => {
+            fixture.componentRef.setInput('servoyAttributes', { 'data-cy': 'main.textboxgroup_1', 'aria-label': 'group label' });
+            fixture.detectChanges();
+            await fixture.whenStable();
+            fixture.componentRef.setInput('servoyAttributes', { 'data-cy': 'main.textboxgroup_1' });
+            fixture.detectChanges();
+            await fixture.whenStable();
+            const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+            expect(input.hasAttribute('aria-label')).toBe(false);
+            expect(input.getAttribute('data-cy')).toBe('main.textboxgroup_1-input');
+        });
+    });
 });

@@ -12,6 +12,12 @@ import { ServoyBaseComponent, Format, ServoyPublicModule } from '@servoy/public'
 } )
 export class ServoyExtraTextfieldGroup extends ServoyBaseComponent<HTMLDivElement> {
 
+    /**
+     * Suffix appended to the copied data-cy value on the focus element, so it
+     * stays a distinct, unique selector from the wrapper's data-cy.
+     */
+    private static readonly DATA_CY_INPUT_SUFFIX = '-input';
+
     readonly input = viewChild<ElementRef<HTMLInputElement>>('input');
     readonly span = viewChild<ElementRef<HTMLSpanElement>>('span');
     
@@ -51,10 +57,30 @@ export class ServoyExtraTextfieldGroup extends ServoyBaseComponent<HTMLDivElemen
     svyOnInit() {
         super.svyOnInit();
         this.attachHandlers();
+        this.applyAttributesToFocusElement();
     }
     
     getFocusElement() {
         return this.input()!.nativeElement;
+    }
+
+    /**
+     * servoyAttributes (including data-cy, when servoy.ngclient.testingMode is
+     * enabled) is applied by the base class to #element (the wrapper div), which
+     * is not the element a test needs to interact with. Copy the same attributes
+     * onto the actual focusable <input> as well, so it also gets a stable, unique
+     * data-cy selector instead of only the auto-generated markup id.
+     * data-cy is suffixed with "-input" on the inner element so it stays a
+     * distinct, unique selector from the wrapper's data-cy (which a test may
+     * still use to target the group as a whole).
+     */
+    protected applyAttributesToFocusElement() {
+        const attributes = this.servoyAttributes();
+        if (!attributes) return;
+        for (const key of Object.keys(attributes)) {
+            const value = key === 'data-cy' ? attributes[key] + ServoyExtraTextfieldGroup.DATA_CY_INPUT_SUFFIX : attributes[key];
+            this.renderer.setAttribute(this.getFocusElement(), key, value);
+        }
     }
 
     requestFocus( mustExecuteOnFocusGainedMethod: boolean ) {
@@ -83,6 +109,19 @@ export class ServoyExtraTextfieldGroup extends ServoyBaseComponent<HTMLDivElemen
                         break;
                     case 'inputType':
                         this.renderer.setAttribute(this.getFocusElement(), 'type', this.inputType() ?? 'text');
+                        break;
+                    case 'servoyAttributes':
+                        // svyOnInit() -> applyAttributesToFocusElement() already applied the
+                        // initial value; skip the redundant re-application on firstChange,
+                        // matching the guard the base class uses for the same signal.
+                        if (!change.firstChange) {
+                            if (change.previousValue) {
+                                for (const key of Object.keys(change.previousValue)) {
+                                    this.renderer.removeAttribute(this.getFocusElement(), key);
+                                }
+                            }
+                            this.applyAttributesToFocusElement();
+                        }
                         break;
                 }
             }
