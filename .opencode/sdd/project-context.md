@@ -15,7 +15,6 @@ ng-packagr and deployed as a Servoy web package.
 | Linting | ESLint 10.x with @angular-eslint + @typescript-eslint |
 | Module system | ES modules (moduleResolution: "bundler") |
 | Package name | @servoy/servoyextracomponents |
-| Version | 2026.6.0 |
 
 ## Architecture: Dual-Layer Component Structure
 
