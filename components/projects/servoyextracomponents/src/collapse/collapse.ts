@@ -209,23 +209,48 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 	}
 
 	getFormStyle(formToGet: string) {
+		const style: any = {};
 		if (formToGet && this.servoyPublic) {
 			const formCache = this.servoyPublic.getFormCacheByName(formToGet);
 			if (formCache) {
-				const style: any = {};
 				if (formCache.absolute === true) {
 					style['height'] = formCache.size.height + 'px';
 				} else if (!formCache.absolute) {
-					//responsive layout; possibly add min- and/or max-height
-					if (formCache.size != null) {
-						style['min-height'] = formCache.size.height + 'px;';
-						style['max-height'] = formCache.size.height + 'px;';
+					//responsive layout: the form sizes to its content at runtime, so the design-time
+					//height can legitimately be 0. Only impose a fixed min-/max-height when the form
+					//cache reports a real (non-zero) height. When it is 0 we leave the container
+					//unconstrained so content (e.g. a data grid) is not clipped to fewer rows.
+					if (formCache.size != null && formCache.size.height > 0) {
+						style['min-height'] = formCache.size.height + 'px';
+						style['max-height'] = formCache.size.height + 'px';
 					}
 				}
-				return style;
 			}
 		}
-		return null;
+		//return a cached reference when the computed style is unchanged, so [ngStyle] does not
+		//see a new object every change-detection pass (avoids ExpressionChangedAfterItHasBeenCheckedError)
+		return this.getCachedFormStyle(formToGet, style);
+	}
+
+	private formStyleCache = new Map<string, any>();
+
+	private getCachedFormStyle(formToGet: string, style: any) {
+		const key = formToGet || '';
+		const cached = this.formStyleCache.get(key);
+		if (cached && this.isSameStyle(cached, style)) {
+			return cached;
+		}
+		this.formStyleCache.set(key, style);
+		return style;
+	}
+
+	private isSameStyle(a: any, b: any): boolean {
+		const aKeys = Object.keys(a);
+		const bKeys = Object.keys(b);
+		if (aKeys.length !== bKeys.length) {
+			return false;
+		}
+		return aKeys.every((k) => a[k] === b[k]);
 	}
 
 	isTrustedHTML(): boolean {
