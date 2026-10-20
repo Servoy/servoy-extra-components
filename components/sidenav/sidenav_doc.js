@@ -8,7 +8,12 @@
 var menu;
 
 /**
- * A JSMenu object representing the Servoy menu with extra properties (badgeText, badgeStyleClass, formName, relationName, etc.).
+ * A JSMenu object representing the Servoy menu with extra properties (badgeText, badgeStyleClass, formName, relationName, isDivider, etc.).
+ *
+ * These extra properties (including isDivider) must be set on each JSMenuItem under the "Sidenav"
+ * category, e.g. jsMenuItem.putExtraProperty('Sidenav', 'isDivider', true) or, in the raw .mnu JSON,
+ * customProperties.extraProperties.Sidenav.isDivider. Setting isDivider at the top level of a .mnu
+ * menu item (sibling of "name"/"typeid") is silently ignored by this component.
  */
 var servoyMenu;
 
@@ -257,6 +262,12 @@ function getSize(menuItemId) {
  *  enabled: false
  *  }];
  *  elements.sideNavigation.setRootMenuItems(menu);
+ *
+ * Note: this top-level 'isDivider' placement only applies to plain MenuItem objects passed to
+ * setRootMenuItems/setSubMenuItems. For menu items coming from a design-time menu (the 'servoyMenu'
+ * property, backed by a .mnu file), 'isDivider' instead goes under that item's
+ * customProperties.extraProperties.Sidenav.isDivider — see the 'servoyMenu' property doc. Setting
+ * 'isDivider' at the top level of a .mnu item is accepted as valid JSON but ignored by the component.
  */
 function setRootMenuItems(menuItems) {
 }
