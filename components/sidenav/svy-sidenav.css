@@ -156,6 +156,20 @@
     margin-right: 20px;
 }
 
+/* Heading: non-interactive section label, always expanded, no caret */
+.svy-sidenav-heading {
+	display: block;
+	color: #999;
+	font-size: 11px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	padding: 8px 15px;
+	margin-right: 20px;
+	cursor: default;
+	user-select: none;
+}
+
 /* Disabled */
 .svy-sidenav-disabled {
 	

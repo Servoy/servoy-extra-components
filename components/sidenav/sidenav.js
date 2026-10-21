@@ -87,7 +87,8 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 * enabled: Boolean=,
 				 * data: Object=,
 				 * menuItems: Array=,
-				 * isDivider : Boolean=}}
+				 * isDivider : Boolean=,
+				 * isHeading : Boolean=}}
 				 *
 				 * @SuppressWarnings("unused")
 				 * */

@@ -542,8 +542,8 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 			event = this.createJSEvent();
 		}
 
-		// prevent selection if item is disabled
-		if (this.isDisabled(item.id)) {
+		// prevent selection if item is disabled or is a non-interactive heading
+		if (item.isHeading || this.isDisabled(item.id)) {
 			return false;
 		}
 
@@ -620,8 +620,8 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 			return true;
 		}
 
-		// prevent selection if item is disabled
-		if (this.isDisabled(item.id)) {
+		// prevent expansion if item is disabled or is a non-interactive heading
+		if (item.isHeading || this.isDisabled(item.id)) {
 			return false;
 		}
 
@@ -657,8 +657,8 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 			return true;
 		}
 
-		// prevent selection if item is disabled
-		if (this.isDisabled(item.id)) {
+		// prevent collapsing if item is disabled or is a non-interactive heading
+		if (item.isHeading || this.isDisabled(item.id)) {
 			return false;
 		}
 
@@ -1080,6 +1080,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		menuItem.enabled = source.enabled;
 		menuItem.data = source.extraProperties?.Sidenav?.data;
 		menuItem.isDivider = source.extraProperties?.Sidenav?.isDivider;
+		menuItem.isHeading = source.extraProperties?.Sidenav?.isHeading;
 		menuItem.tooltip = source.tooltipText;
 		menuItem.badgeText = source.extraProperties?.Sidenav?.badgeText;
 		menuItem.badgeStyleClass = source.extraProperties?.Sidenav?.badgeStyleClass;
@@ -1151,6 +1152,7 @@ export class MenuItem {
 	public data: any;
 	public menuItems!: MenuItem[];
 	public isDivider!: boolean;
+	public isHeading!: boolean;
 	public tooltip!: string;
 	public badgeText!: string;
 	public badgeStyleClass!: string;

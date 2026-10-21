@@ -450,4 +450,91 @@ describe('ServoyExtraSidenav', () => {
             expect(selected[2]).toBeUndefined();
         });
     });
+
+    describe('isHeading non-interactive section labels (SVY-21636)', () => {
+        let headingMenu: MenuItem[];
+
+        beforeEach(async () => {
+            headingMenu = [
+                {
+                    id: 'sales_heading',
+                    text: 'SALES',
+                    isHeading: true,
+                    enabled: true,
+                    menuItems: [
+                        {
+                            id: 'leads',
+                            text: 'Leads',
+                            formName: 'leadsForm',
+                            enabled: true
+                        } as unknown as MenuItem,
+                        {
+                            id: 'orders',
+                            text: 'Orders',
+                            formName: 'ordersForm',
+                            enabled: true
+                        } as unknown as MenuItem
+                    ]
+                } as unknown as MenuItem,
+                {
+                    id: 'catalog_heading',
+                    text: 'CATALOG',
+                    isHeading: true,
+                    enabled: true,
+                    menuItems: [
+                        {
+                            id: 'products',
+                            text: 'Products',
+                            formName: 'productsForm',
+                            enabled: true
+                        } as unknown as MenuItem
+                    ]
+                } as unknown as MenuItem
+            ];
+
+            fixture.componentRef.setInput('menu', headingMenu);
+            fixture.detectChanges();
+            await fixture.whenStable();
+        });
+
+        it('should render a heading item without an anchor', () => {
+            const headings = fixture.nativeElement.querySelectorAll('.svy-sidenav-heading.sn-level-1');
+            expect(headings.length).toBe(2);
+            expect(headings[0].querySelector('a')).toBeNull();
+            expect(headings[0].textContent).toContain('SALES');
+        });
+
+        it('should not render a collapse/expand caret for a heading item', () => {
+            const headings = fixture.nativeElement.querySelectorAll('.svy-sidenav-heading.sn-level-1');
+            expect(headings[0].querySelector('.svy-sidenav-collapse-icon')).toBeNull();
+        });
+
+        it('should show all children of a heading without requiring expandedIndex', () => {
+            const subItems = fixture.nativeElement.querySelectorAll('.svy-sidenav-item.sn-level-2');
+            // 2 children under SALES + 1 under CATALOG, all visible without any expandedIndex set
+            expect(subItems.length).toBe(3);
+        });
+
+        it('should not select a heading item on selectItem', () => {
+            const event = new MouseEvent('click');
+            const result = component.selectItem(1, 0, headingMenu[0], event);
+            expect(result).toBe(false);
+
+            const selected = component['_selectedIndex']();
+            expect(selected[1]).toBeUndefined();
+        });
+
+        it('should not expand a heading item via expandItem', () => {
+            const event = new MouseEvent('click');
+            expect(component.expandItem(1, 0, headingMenu[0], event)).toBe(false);
+            expect(component.isMenuItemExpanded('sales_heading')).toBe(false);
+        });
+
+        it('should not collapse an already-expanded heading item via collapseItem', () => {
+            component._expandedIndex.set({ 1: 'sales_heading' });
+            const event = new MouseEvent('click');
+            expect(component.collapseItem(1, 0, headingMenu[0], event)).toBe(false);
+            expect(component.isMenuItemExpanded('sales_heading')).toBe(true);
+        });
+    });
 });

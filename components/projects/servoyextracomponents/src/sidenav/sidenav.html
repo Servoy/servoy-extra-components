@@ -30,8 +30,14 @@
             class="svy-sidenav-dropdown sn-level-1"
             [class.svy-navitem-selected]="item.id !== null && _selectedIndex()[1] === item.id"
             [class.svy-navitem-disabled]="item.enabled === false">
+            <!-- Heading (non-interactive, always expanded, no caret) -->
+            @if (item.isHeading) {
+              <span class="svy-sidenav-heading sn-level-1" [class]="item.styleClass">
+                <span class="svy-sidenav-item-text">{{item.text}}</span>
+              </span>
+            }
             <!-- Main Menu Items -->
-            @if (!item.isDivider) {
+            @if (!item.isDivider && !item.isHeading) {
               <a class="svy-sidenav-item sn-level-1" [class]="item.styleClass" (click)="selectItem(1, $index, item, $event)" [svyTooltip]="item.tooltip">
                 <i class="svy-sidenav-item-icon" [class]="item.iconStyleClass"></i>
                 <span class="svy-sidenav-item-text"> {{item.text}}@if (item.badgeText) {
@@ -44,7 +50,7 @@
               </a>
             }
             <!-- Second List -->
-            @if (_expandedIndex()[1] === item.id) {
+            @if (_expandedIndex()[1] === item.id || item.isHeading) {
               <ul class="svy-sidenav-menu sn-level-2"
                 [class.svy-sidenav-collapsed]="_expandedIndex()[1] === item.id"
                 >
@@ -53,8 +59,14 @@
                     class="svy-sidenav-dropdown sn-level-2"
                     [class.svy-navitem-selected]="item2.id !== null && _selectedIndex()[2] === item2.id"
                     [class.svy-navitem-disabled]="item.enabled === false || item2.enabled === false">
+                    <!-- Heading (non-interactive, always expanded, no caret) -->
+                    @if (item2.isHeading) {
+                      <span class="svy-sidenav-heading sn-level-2" [class]="item2.styleClass">
+                        <span class="svy-sidenav-item-text">{{item2.text}}</span>
+                      </span>
+                    }
                     <!-- Second Menu Items -->
-                    @if (!item2.isDivider) {
+                    @if (!item2.isDivider && !item2.isHeading) {
                       <a class="svy-sidenav-item sn-level-2" [class]="item2.styleClass" (click)="selectItem(2, $index, item2, $event)" [svyTooltip]="item2.tooltip">
                         <i class="svy-sidenav-item-icon" [class]="item2.iconStyleClass"></i>
                         <span class="svy-sidenav-item-text"> {{item2.text}}@if (item2.badgeText) {
@@ -67,7 +79,7 @@
                       </a>
                     }
                     <!-- Third List -->
-                    @if (_expandedIndex()[2] === item2.id) {
+                    @if (_expandedIndex()[2] === item2.id || item2.isHeading) {
                       <ul class="svy-sidenav-menu sn-level-3" [class.svy-sidenav-collapsed]="_expandedIndex()[2] === item2.id"
                         >
                         @for (item3 of item2.menuItems; track (item3.id ? ("id_" + item3.id) : ("index_" + $index))) {
@@ -75,8 +87,14 @@
                             class="svy-sidenav-dropdown sn-level-3"
                             [class.svy-navitem-selected]="item3.id !== null && _selectedIndex()[3] === item3.id"
                             [class.svy-navitem-disabled]="item.enabled === false || item2.enabled === false || item3.enabled === false">
+                            <!-- Heading (non-interactive, always expanded, no caret) -->
+                            @if (item3.isHeading) {
+                              <span class="svy-sidenav-heading sn-level-3" [class]="item3.styleClass">
+                                <span class="svy-sidenav-item-text">{{item3.text}}</span>
+                              </span>
+                            }
                             <!-- Third Menu Items -->
-                            @if (!item3.isDivider) {
+                            @if (!item3.isDivider && !item3.isHeading) {
                               <a class="svy-sidenav-item sn-level-3" [class]="item3.styleClass" (click)="selectItem(3, $index, item3, $event)" [svyTooltip]="item3.tooltip">
                                 <i class="svy-sidenav-item-icon" [class]="item3.iconStyleClass"></i>
                                 <span class="svy-sidenav-item-text"> {{item3.text}}@if (item3.badgeText) {
@@ -89,7 +107,7 @@
                               </a>
                             }
                             <!-- Fourth List -->
-                            @if (_expandedIndex()[3] === item3.id) {
+                            @if (_expandedIndex()[3] === item3.id || item3.isHeading) {
                               <ul class="svy-sidenav-menu sn-level-4" [class.svy-sidenav-collapsed]="_expandedIndex()[3] === item3.id"
                                 >
                                 @for (item4 of item3.menuItems; track (item4.id ? ("id_" + item4.id) : ("index_" + $index))) {
@@ -97,8 +115,14 @@
                                     class="svy-sidenav-dropdown sn-level-4"
                                     [class.svy-navitem-selected]="item4.id !== null && _selectedIndex()[4] === item4.id"
                                     [class.svy-navitem-disabled]="item.enabled === false || item2.enabled === false || item3.enabled === false || item4.enabled === false">
+                                    <!-- Heading (non-interactive, always expanded, no caret) -->
+                                    @if (item4.isHeading) {
+                                      <span class="svy-sidenav-heading sn-level-4" [class]="item4.styleClass">
+                                        <span class="svy-sidenav-item-text">{{item4.text}}</span>
+                                      </span>
+                                    }
                                     <!-- Second Menu Items -->
-                                    @if (!item4.isDivider) {
+                                    @if (!item4.isDivider && !item4.isHeading) {
                                       <a class="svy-sidenav-item sn-level-4" [class]="item4.styleClass" (click)="selectItem(4, $index, item4, $event)" [svyTooltip]="item4.tooltip">
                                         <i class="svy-sidenav-item-icon" [class]="item4.iconStyleClass"></i>
                                         <span class="svy-sidenav-item-text"> {{item4.text}}@if (item4.badgeText) {

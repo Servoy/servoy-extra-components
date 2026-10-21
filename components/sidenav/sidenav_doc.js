@@ -8,11 +8,11 @@
 var menu;
 
 /**
- * A JSMenu object representing the Servoy menu with extra properties (badgeText, badgeStyleClass, formName, relationName, isDivider, etc.).
+ * A JSMenu object representing the Servoy menu with extra properties (badgeText, badgeStyleClass, formName, relationName, isDivider, isHeading, etc.).
  *
- * These extra properties (including isDivider) must be set on each JSMenuItem under the "Sidenav"
+ * These extra properties (including isDivider and isHeading) must be set on each JSMenuItem under the "Sidenav"
  * category, e.g. jsMenuItem.putExtraProperty('Sidenav', 'isDivider', true) or, in the raw .mnu JSON,
- * customProperties.extraProperties.Sidenav.isDivider. Setting isDivider at the top level of a .mnu
+ * customProperties.extraProperties.Sidenav.isDivider. Setting isDivider or isHeading at the top level of a .mnu
  * menu item (sibling of "name"/"typeid") is silently ignored by this component.
  */
 var servoyMenu;
@@ -234,9 +234,9 @@ function getSize(menuItemId) {
  *
  * @public
  * @param {Array<CustomType<servoyextra-sidenav.MenuItem>>} menuItems is an array of MenuItem objects.
- *               A MenuItem type is like this {{id: String|Number, text: String=, styleClass: String=, iconStyleClass: String=, enabled: Boolean=, data: Object=, menuItems: Array=, isDivider : Boolean=}} 
+ *               A MenuItem type is like this {{id: String|Number, text: String=, styleClass: String=, iconStyleClass: String=, enabled: Boolean=, data: Object=, menuItems: Array=, isDivider : Boolean=, isHeading : Boolean=}} 
  *               Each MenuItem object should set the required properties 'id', which uniquely identifies the menuItem object in menu, and 'text' property.
- *               The MenuItem may contain the optional properties 'styleClass', 'iconStyleClass', 'data', 'enabled', 'menuItems', 'isDivider'
+ *               The MenuItem may contain the optional properties 'styleClass', 'iconStyleClass', 'data', 'enabled', 'menuItems', 'isDivider', 'isHeading'
  *
  * @example var menu = [{
  *  id: 1,
@@ -263,11 +263,15 @@ function getSize(menuItemId) {
  *  }];
  *  elements.sideNavigation.setRootMenuItems(menu);
  *
- * Note: this top-level 'isDivider' placement only applies to plain MenuItem objects passed to
+ * Note: this top-level 'isDivider'/'isHeading' placement only applies to plain MenuItem objects passed to
  * setRootMenuItems/setSubMenuItems. For menu items coming from a design-time menu (the 'servoyMenu'
- * property, backed by a .mnu file), 'isDivider' instead goes under that item's
- * customProperties.extraProperties.Sidenav.isDivider — see the 'servoyMenu' property doc. Setting
- * 'isDivider' at the top level of a .mnu item is accepted as valid JSON but ignored by the component.
+ * property, backed by a .mnu file), 'isDivider'/'isHeading' instead go under that item's
+ * customProperties.extraProperties.Sidenav.isDivider / .isHeading — see the 'servoyMenu' property doc. Setting
+ * 'isDivider' or 'isHeading' at the top level of a .mnu item is accepted as valid JSON but ignored by the component.
+ *
+ * An item with isHeading set to true renders as a non-interactive section label: it is not clickable,
+ * shows no expand/collapse caret, and its direct children (if any) are always shown regardless of
+ * expandedIndex.
  */
 function setRootMenuItems(menuItems) {
 }
@@ -375,9 +379,9 @@ function getSubMenuItems(menuItemId) {
  * @public
  *
  * @param {String|Number} menuItemId The unique identifier of the menu item to which the provided sub-menu items should be added.
- * @param {Array<CustomType<servoyextra-sidenav.MenuItem>>} menuItems String|Number, text: String=, styleClass: String=, iconStyleClass: String=, enabled: Boolean=, data: Object=, menuItems: Array=, isDivider : Boolean=}>} menuItems is an array of MenuItem objects.
+ * @param {Array<CustomType<servoyextra-sidenav.MenuItem>>} menuItems String|Number, text: String=, styleClass: String=, iconStyleClass: String=, enabled: Boolean=, data: Object=, menuItems: Array=, isDivider : Boolean=, isHeading : Boolean=}>} menuItems is an array of MenuItem objects.
  *          Each MenuItem object should set the required properties 'id', which uniquely identifies the menuItem object in menu, and 'text' property. 
- *          The MenuItem may contain the optional properties 'styleClass', 'iconStyleClass', 'data', 'enabled', 'menuItems', 'isDivider'.
+ *          The MenuItem may contain the optional properties 'styleClass', 'iconStyleClass', 'data', 'enabled', 'menuItems', 'isDivider', 'isHeading'.
  *
  * @example <pre>var menuItems = [{
  *  id: 10,
@@ -531,6 +535,12 @@ var svy_types = {
          * Flag indicating whether the menu item is a divider.
          */
         isDivider: null,
+
+        /**
+         * Flag indicating whether the menu item is a non-interactive section heading
+         * (always expanded, no caret, not selectable/clickable).
+         */
+        isHeading: null,
 
         /**
          * Tooltip text for the menu item.

@@ -17,9 +17,10 @@ var clearGroups;
 					enabled: Boolean=,
 					data: Object=,
 					menuItems: Array=,
-					isDivider : Boolean=}>} menuItems is an array of MenuItem objects. 
+					isDivider : Boolean=,
+					isHeading : Boolean=}>} menuItems is an array of MenuItem objects. 
 					Each MenuItem object should set the required properties 'id', which uniquely identifies the menuItem object in menu, and 'text' property.
-					The MenuItem may contain the optional properties 'styleClass', 'iconStyleClass', 'data', 'enabled', 'menuItems', 'isDivider'
+					The MenuItem may contain the optional properties 'styleClass', 'iconStyleClass', 'data', 'enabled', 'menuItems', 'isDivider', 'isHeading'
  *
  * @example var menu = [{
   id: 1,
@@ -302,9 +303,10 @@ $scope.api.getSubMenuItems = function(menuItemId) {
  * 			enabled: Boolean=,
  * 			data: Object=,
  *			menuItems: Array=,
- *			isDivider : Boolean=}>} menuItems  is an array of MenuItem objects. 
+ *			isDivider : Boolean=,
+ *			isHeading : Boolean=}>} menuItems  is an array of MenuItem objects. 
  *									Each MenuItem object should set the required properties 'id', which uniquely identifies the menuItem object in menu, and 'text' property. 
- *									The MenuItem may contain the optional properties 'styleClass', 'iconStyleClass', 'data', 'enabled', 'menuItems', 'isDivider'.
+ *									The MenuItem may contain the optional properties 'styleClass', 'iconStyleClass', 'data', 'enabled', 'menuItems', 'isDivider', 'isHeading'.
  *
  * @example <pre>var menuItems = [{
   id: 10,
@@ -743,8 +745,8 @@ function expandItem(level, index, item, event, preventHandler) {
 		return true;
 	}
 
-	// prevent selection if item is disabled
-	if (isDisabled(item.id)) {
+	// prevent expansion if item is disabled or is a non-interactive heading
+	if (item.isHeading || isDisabled(item.id)) {
 		return false;
 	}
 
@@ -783,8 +785,8 @@ function collapseItem(level, index, item, event, preventHandler) {
 		return true;
 	}
 
-	// prevent selection if item is disabled
-	if (isDisabled(item.id)) {
+	// prevent collapsing if item is disabled or is a non-interactive heading
+	if (item.isHeading || isDisabled(item.id)) {
 		return false;
 	}
 
@@ -874,8 +876,8 @@ function clearExpandedIndex(level) {
  * Select the main Item */
 function selectItem(level, index, item, event, preventSelectHandler, preventExpandHandler) {
 
-	// prevent selection if item is disabled
-	if (isDisabled(item.id)) {
+	// prevent selection if item is disabled or is a non-interactive heading
+	if (item.isHeading || isDisabled(item.id)) {
 		return false;
 	}
 
@@ -1132,6 +1134,7 @@ function getMenuItemFromServoyMenuItem(jsMenuItem) {
 	menuItem.enabled = jsMenuItem.enabled;
 	menuItem.data = jsMenuItem.getExtraProperty('Sidenav', 'data');
 	menuItem.isDivider = jsMenuItem.getExtraProperty('Sidenav', 'isDivider');
+	menuItem.isHeading = jsMenuItem.getExtraProperty('Sidenav', 'isHeading');
 	menuItem.tooltip = jsMenuItem.tooltipText;
 	menuItem.badgeText = jsMenuItem.getExtraProperty('Sidenav', 'badgeText');
 	menuItem.badgeStyleClass = jsMenuItem.getExtraProperty('Sidenav', 'badgeStyleClass');

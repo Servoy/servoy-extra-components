@@ -14,7 +14,7 @@
 	{
 		"designsize" : {"type" :"dimension", "tags": {"serveronly": true, "scope": "private"}, "default" : {"width":260, "height":300}},
 		"menu"							: {"type" :"MenuItem[]", "default" : [], "pushToServer": "reject","tags": { "basic": true }},
-		"servoyMenu"                    : {"type" :"JSMenu", "pushToServer" : "allow","tags": { "basic": true }, "extraPropertiesCategory" : "Sidenav","extraProperties": { "badgeText": "tagstring","badgeStyleClass": {"type" : "styleclass", "default": "badge text-bg-secondary"}, "formName": "form", "relationName": "relation", "isDivider": "boolean","data" : "object" }},
+		"servoyMenu"                    : {"type" :"JSMenu", "pushToServer" : "allow","tags": { "basic": true }, "extraPropertiesCategory" : "Sidenav","extraProperties": { "badgeText": "tagstring","badgeStyleClass": {"type" : "styleclass", "default": "badge text-bg-secondary"}, "formName": "form", "relationName": "relation", "isDivider": "boolean","isHeading": "boolean","data" : "object" }},
 		"selectedIndex"					: {"type" :"string", "tags": { "scope" :"private" }, "pushToServer" : "deep"},
 		"expandedIndex"					: {"type" :"string", "tags": { "scope" :"private" }, "pushToServer" : "deep"},
 		"tabSeq"						: { "type": "tabseq", "tags": { "scope": "design" } },
@@ -270,6 +270,7 @@
       		"data"					: {"type" : "object"},
       		"menuItems"				: {"type" : "MenuItem[]"},
       		"isDivider"				: {"type" : "boolean", "default": false},
+      		"isHeading"				: {"type" : "boolean", "default": false},
       		"tooltip"				: {"type" : "tagstring"},
       		"badgeText"             : {"type" : "tagstring"},
       		"badgeStyleClass"       : {"type" : "styleclass", "default": "badge text-bg-secondary"},

@@ -46,8 +46,12 @@
  					class="svy-sidenav-dropdown sn-level-1"
 					ng-class="(item.id != null && _selectedIndex()[1] == item.id ? 'svy-navitem-selected' : '') + (item.enabled == false ? ' svy-navitem-disabled' : '')">
 
+					<!-- Heading (non-interactive, always expanded, no caret) -->
+					<span ng-if="item.isHeading" class="svy-sidenav-heading sn-level-1" ng-class="item.styleClass">
+						<span class="svy-sidenav-item-text">{{item.text}}</span>
+					</span>
 					<!-- Main Menu Items -->
-					<a ng-if="!item.isDivider" class="svy-sidenav-item sn-level-1" ng-class="item.styleClass" ng-href="" ng-click="selectItem(1, $index, item, $event)" svy-tooltip="item.tooltip">
+					<a ng-if="!item.isDivider && !item.isHeading" class="svy-sidenav-item sn-level-1" ng-class="item.styleClass" ng-href="" ng-click="selectItem(1, $index, item, $event)" svy-tooltip="item.tooltip">
 						<i class="svy-sidenav-item-icon" ng-class="item.iconStyleClass"></i>
 						<span class="svy-sidenav-item-text">{{item.text}}</span>
 						<i class="svy-sidenav-collapse-icon sn-level-1 pull-right" ng-class="item.menuItems ? (_expandedIndex()[1] == item.id ? '' + model.iconCollapseStyleClass : '' + model.iconExpandStyleClass) : 'hidden'"
@@ -57,13 +61,17 @@
 					<!-- Second List -->
 					<ul class="svy-sidenav-menu sn-level-2" 
 						ng-class="_expandedIndex()[1] == item.id ? 'svy-sidenav-collapsed' : ''"
-						ng-if="_expandedIndex()[1] == item.id"
+						ng-if="_expandedIndex()[1] == item.id || item.isHeading"
 						>
 						<li ng-repeat="item2 in item.menuItems"
  							class="svy-sidenav-dropdown sn-level-2" 
 							ng-class="(item2.id != null && _selectedIndex()[2] == item2.id ? 'svy-navitem-selected' : '') + (item.enabled == false || item2.enabled == false ? ' svy-navitem-disabled' : '')">
+							<!-- Heading (non-interactive, always expanded, no caret) -->
+							<span ng-if="item2.isHeading" class="svy-sidenav-heading sn-level-2" ng-class="item2.styleClass">
+								<span class="svy-sidenav-item-text">{{item2.text}}</span>
+							</span>
 							<!-- Second Menu Items -->
-							<a ng-if="!item2.isDivider" class="svy-sidenav-item sn-level-2" ng-class="item2.styleClass" ng-href="" ng-click="selectItem(2, $index, item2, $event)" svy-tooltip="item2.tooltip">
+							<a ng-if="!item2.isDivider && !item2.isHeading" class="svy-sidenav-item sn-level-2" ng-class="item2.styleClass" ng-href="" ng-click="selectItem(2, $index, item2, $event)" svy-tooltip="item2.tooltip">
 								<i class="svy-sidenav-item-icon" ng-class="item2.iconStyleClass"></i>
 								<span class="svy-sidenav-item-text">{{item2.text}}</span>
 								<i class="svy-sidenav-collapse-icon sn-level-2 pull-right" ng-class="item2.menuItems ? (_expandedIndex()[2] == item2.id ? '' + model.iconCollapseStyleClass : '' + model.iconExpandStyleClass) : 'hidden'"
@@ -72,13 +80,17 @@
 
 							<!-- Third List -->
 							<ul class="svy-sidenav-menu sn-level-3" ng-class="_expandedIndex()[2] == item2.id ? 'svy-sidenav-collapsed' : ''"
-								ng-if="_expandedIndex()[2] == item2.id"
+								ng-if="_expandedIndex()[2] == item2.id || item2.isHeading"
 								>
 								<li ng-repeat="item3 in item2.menuItems"
  									class="svy-sidenav-dropdown sn-level-3" 
 									ng-class="(item3.id != null && _selectedIndex()[3] == item3.id ? 'svy-navitem-selected' : '') + (item.enabled == false || item2.enabled == false || item3.enabled == false ? ' svy-navitem-disabled' : '')">
+									<!-- Heading (non-interactive, always expanded, no caret) -->
+									<span ng-if="item3.isHeading" class="svy-sidenav-heading sn-level-3" ng-class="item3.styleClass">
+										<span class="svy-sidenav-item-text">{{item3.text}}</span>
+									</span>
 									<!-- Third Menu Items -->
-									<a ng-if="!item3.isDivider" class="svy-sidenav-item sn-level-3" ng-class="item3.styleClass" ng-href="" ng-click="selectItem(3, $index, item3, $event)" svy-tooltip="item3.tooltip">
+									<a ng-if="!item3.isDivider && !item3.isHeading" class="svy-sidenav-item sn-level-3" ng-class="item3.styleClass" ng-href="" ng-click="selectItem(3, $index, item3, $event)" svy-tooltip="item3.tooltip">
 										<i class="svy-sidenav-item-icon" ng-class="item3.iconStyleClass"></i>
 										<span class="svy-sidenav-item-text">{{item3.text}}</span>
 										<i class="svy-sidenav-collapse-icon sn-level-3 pull-right" ng-class="item3.menuItems ? (_expandedIndex()[3] == item3.id ? '' + model.iconCollapseStyleClass : '' + model.iconExpandStyleClass) : 'hidden'"
@@ -87,13 +99,17 @@
 		
 									<!-- Fourth List -->
 									<ul class="svy-sidenav-menu sn-level-4" ng-class="_expandedIndex()[3] == item3.id ? 'svy-sidenav-collapsed' : ''"
-										ng-if="_expandedIndex()[3] == item3.id"
+										ng-if="_expandedIndex()[3] == item3.id || item3.isHeading"
 										>
 										<li ng-repeat="item4 in item3.menuItems"
 											class="svy-sidenav-dropdown sn-level-4" 
 											ng-class="(item4.id != null && _selectedIndex()[4] == item4.id ? 'svy-navitem-selected' : '') + (item.enabled == false || item2.enabled == false || item3.enabled == false || item4.enabled == false ? ' svy-navitem-disabled' : '')">
+											<!-- Heading (non-interactive, always expanded, no caret) -->
+											<span ng-if="item4.isHeading" class="svy-sidenav-heading sn-level-4" ng-class="item4.styleClass">
+												<span class="svy-sidenav-item-text">{{item4.text}}</span>
+											</span>
 											<!-- Fourth Menu Items -->
-											<a ng-if="!item4.isDivider" class="svy-sidenav-item sn-level-4" ng-class="item4.styleClass" ng-href="" ng-click="selectItem(4, $index, item4, $event)" svy-tooltip="item4.tooltip">
+											<a ng-if="!item4.isDivider && !item4.isHeading" class="svy-sidenav-item sn-level-4" ng-class="item4.styleClass" ng-href="" ng-click="selectItem(4, $index, item4, $event)" svy-tooltip="item4.tooltip">
 												<i class="svy-sidenav-item-icon" ng-class="item4.iconStyleClass"></i>
 												<span class="svy-sidenav-item-text">{{item4.text}}</span>
 											</a>
