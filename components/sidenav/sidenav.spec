@@ -51,7 +51,8 @@
 										        	{ "name" : "menuItem", "type" : "object" },
 										            { "name" : "event", "type" : "JSEvent" }
 										        ],
-										        "returns" : "boolean"
+										        "returns" : "boolean",
+										        "tags": { "doc" :"Return false to cancel the selection: the clicked item is not marked selected, a group is not expanded or collapsed, and the contained form is not switched. Any other value (including undefined / no return) lets the selection proceed."}
 										  },
 			"onMenuItemExpanded" 		: {
 										        "parameters" : [

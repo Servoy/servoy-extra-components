@@ -140,7 +140,7 @@ var handlers = {
      * @param {Object} menuItem The unique identifier of the selected menu item.
      * @param {JSEvent} event The event object associated with the selection.
      * 
-     * @return {Boolean} True if the selection is handled successfully.
+     * @return {Boolean} Return false to cancel the selection: the clicked item is not marked selected, a group is not expanded or collapsed, and the contained form is not switched. Any other value (including undefined / no return) lets the selection proceed.
      */
     onMenuItemSelected: function() {},
 
