@@ -1,10 +1,12 @@
 import {
-  ChangeDetectionStrategy, Component, OnChanges, SimpleChanges, AfterContentInit,
+  ChangeDetectionStrategy, Component, OnChanges, OnDestroy, SimpleChanges, AfterContentInit,
   ViewEncapsulation, inject,
   input,
   output,
   contentChildren,
-  viewChild
+  viewChild,
+  afterNextRender,
+  Injector
 } from '@angular/core';
 import { Renderer2, ElementRef, DOCUMENT } from '@angular/core';
 
@@ -20,10 +22,11 @@ import { BGPane } from './bg_pane.component';
     host: {
         '(document:pointerup)': 'pointerup($event)',
         '(pointermove)': 'pointermove($event)',
-        '(pointerdown)': 'pointerdown($event)'
+        '(pointerdown)': 'pointerdown($event)',
+        '(window:resize)': 'onResize()'
     }
 } )
-export class BGSplitter implements AfterContentInit , OnChanges {
+export class BGSplitter implements AfterContentInit , OnChanges , OnDestroy {
 
     readonly orientation = input('vertical');
     readonly divSize = input<number>(undefined as any);
@@ -39,9 +42,12 @@ export class BGSplitter implements AfterContentInit , OnChanges {
 
     private readonly renderer = inject(Renderer2);
     private doc = inject(DOCUMENT);
+    private readonly injector = inject(Injector);
 
     private drag = false;
     private handler;
+    private initialAdjustScheduled = false;
+    private resizeTimeout: ReturnType<typeof setTimeout> | null = null;
 
     constructor() {
         this.handler = this.renderer.createElement( 'div' );
@@ -96,7 +102,32 @@ export class BGSplitter implements AfterContentInit , OnChanges {
         } );
         this.renderer.insertBefore( this.elementRef()!.nativeElement, this.handler, this.panes().at(-1)!.element.nativeElement );
 
-        this.adjustLocation(undefined,this.divLocation());
+        if (!this.initialAdjustScheduled) {
+            this.initialAdjustScheduled = true;
+            afterNextRender(() => {
+                const panes = this.panes();
+                if (!panes || panes.length !== 2 || !this.elementRef()?.nativeElement) return;
+                this.adjustLocation(undefined, this.divLocation());
+            }, { injector: this.injector });
+        }
+    }
+
+    ngOnDestroy() {
+        if (this.resizeTimeout) {
+            clearTimeout(this.resizeTimeout);
+            this.resizeTimeout = null;
+        }
+    }
+
+    onResize() {
+        if (this.resizeTimeout) {
+            clearTimeout(this.resizeTimeout);
+        }
+        this.resizeTimeout = setTimeout(() => this.recalculate(), 50);
+    }
+
+    recalculate() {
+        this.adjustLocation(undefined, this.divLocation());
     }
 
 
