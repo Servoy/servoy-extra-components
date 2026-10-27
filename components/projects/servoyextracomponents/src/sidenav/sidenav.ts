@@ -3,6 +3,7 @@ import {
     TemplateRef, inject, input, output, contentChild, signal, linkedSignal
 } from '@angular/core';
 import { NgStyle, NgTemplateOutlet } from '@angular/common';
+import { isEqual } from 'lodash-es';
 import { ServoyBaseComponent, ServoyPublicService, IJSMenu, IJSMenuItem, ServoyPublicModule } from '@servoy/public';
 
 import { LoggerFactory } from '@servoy/public';
@@ -65,6 +66,9 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	private footerResizeObserver!: ResizeObserver;
 	private footerMutationObserver!: MutationObserver;
 	private animateFooter = false;
+	// true only while copyServoyMenu re-derives the selection from the server servoyMenu; used to
+	// suppress the selectedIndexChange echo back to the server (the recurring NG0100 ~1 Hz loop).
+	private applyingServerSelection = false;
 
 	public readonly realContainedForm = signal<string>(undefined as any);
 	private realHeaderForm: any;
@@ -821,7 +825,9 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
             newSelectedIndex[level + 1] = item.menuItems[0].id; // select first child
         }
 		this._selectedIndex.set(newSelectedIndex);
-		this.selectedIndexChange.emit(JSON.stringify(newSelectedIndex));
+		if (!this.applyingServerSelection) {
+			this.selectedIndexChange.emit(JSON.stringify(newSelectedIndex));
+		}
 		this.cdRef.markForCheck();
 	}
 
@@ -1049,7 +1055,6 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	private copyServoyMenu() {
 		const servoyMenu = this.servoyMenu();
         if (servoyMenu) {
-			this._selectedIndex.set({});
             const expandedIndex = this._expandedIndex();
             if (expandedIndex && typeof expandedIndex == 'string') {
                 this._expandedIndex.set(JSON.parse(expandedIndex));
@@ -1062,12 +1067,32 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 				}
 			}
 			this._menu.set(oldMenu);
+			// capture the selection the component currently holds so we can decide, after re-deriving
+			// it from the server menu, whether it actually changed (an unchanged menu sync is a no-op).
+			const previousSelectedIndex = this._selectedIndex();
 			const selection = Object.keys(selectedNode);
 			if (selection && selection.length == 1) {
-				this.updateSelectedNode(selectedNode[selection[0]], this._menu()!, parseInt(selection[0]));
+				// this selection originates from the server's own servoyMenu; suppress the two-way
+				// selectedIndexChange echo (setSelectedIndex normally emits) that re-triggered the
+				// ~1 Hz sync and produced the recurring NG0100. Genuine user clicks still emit.
+				this.applyingServerSelection = true;
+				try {
+					this.updateSelectedNode(selectedNode[selection[0]], this._menu()!, parseInt(selection[0]));
+				} finally {
+					this.applyingServerSelection = false;
+				}
+			} else if (!isEqual(previousSelectedIndex, {})) {
+				// no server selection: fall back to an empty selection, set once (not a transient {}).
+				this._selectedIndex.set({});
 			}
-			this.selectedIndexChange.emit(JSON.stringify(this._selectedIndex()));
-			this.cdRef.detectChanges();
+			// if the server-derived selection is identical to what we already had, restore the
+			// previous reference so the signal value is stable and no needless re-render happens.
+			if (isEqual(previousSelectedIndex, this._selectedIndex())) {
+				this._selectedIndex.set(previousSelectedIndex);
+			}
+			// signal writes already schedule the OnPush view; use markForCheck (not a forced
+			// detectChanges in this after-checked microtask) so no re-check disagrees with the host.
+			this.cdRef.markForCheck();
 		}
 	}
 

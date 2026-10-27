@@ -1,7 +1,7 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ServoyApiTesting, ServoyPublicTestingModule } from '@servoy/public';
 import { ServoyExtraSidenav, MenuItem } from './sidenav';
 
@@ -535,6 +535,94 @@ describe('ServoyExtraSidenav', () => {
             const event = new MouseEvent('click');
             expect(component.collapseItem(1, 0, headingMenu[0], event)).toBe(false);
             expect(component.isMenuItemExpanded('sales_heading')).toBe(true);
+        });
+    });
+
+    describe('servoyMenu once-per-second NG0100 loop (SVY-21654)', () => {
+        // Build a minimal IJSMenu where 'customers' is the server-selected item, reproducing the
+        // reporter's {"1":"customers"} selection derived purely from the server menu.
+        const makeServoyMenu = (): any => ({
+            name: 'mainMenu',
+            styleClass: '',
+            items: [
+                { itemID: 'home', menuText: 'Home', enabled: true, isSelected: false, items: [] },
+                { itemID: 'customers', menuText: 'Customers', enabled: true, isSelected: true, items: [] },
+                { itemID: 'orders', menuText: 'Orders', enabled: true, isSelected: false, items: [] }
+            ],
+            setSelectedItem: vi.fn(),
+            pushDataProviderValue: vi.fn()
+        });
+
+        // Simulate one server model sync: a servoyMenu push flowing through svyOnChanges, which
+        // schedules copyServoyMenu() in a microtask (Promise.resolve().then) exactly like runtime.
+        const syncServoyMenu = async (menu: any) => {
+            fixture.componentRef.setInput('servoyMenu', menu);
+            component.svyOnChanges({
+                servoyMenu: { currentValue: menu, previousValue: undefined, firstChange: false, isFirstChange: () => false }
+            } as any);
+            // let the microtask (copyServoyMenu) run
+            await Promise.resolve();
+            await fixture.whenStable();
+        };
+
+        let originalCreateJSEvent: typeof component.createJSEvent;
+
+        beforeEach(async () => {
+            // the loop is the servoyMenu-driven path, so drop the plain menu input
+            fixture.componentRef.setInput('menu', undefined);
+            fixture.detectChanges();
+            await fixture.whenStable();
+            // copyServoyMenu re-selects via selectItem(..., null event), which calls createJSEvent();
+            // jsdom's initMouseEvent rejects the global window arg, so return a plain click event
+            // (restore afterwards) to exercise the real re-derivation path without that jsdom quirk.
+            originalCreateJSEvent = component.createJSEvent;
+            component.createJSEvent = () => new MouseEvent('click');
+        });
+
+        afterEach(() => {
+            component.createJSEvent = originalCreateJSEvent;
+        });
+
+        it('should not throw NG0100 across repeated identical servoyMenu syncs', async () => {
+            await syncServoyMenu(makeServoyMenu());
+
+            // the server selection must be reflected (SVY-21634 preserved)
+            expect(component['_selectedIndex']()).toEqual({ 1: 'customers' });
+
+            // repeated identical syncs (the ~1 Hz loop) plus CD must not throw ExpressionChanged
+            for (let i = 0; i < 5; i++) {
+                await syncServoyMenu(makeServoyMenu());
+                expect(() => fixture.detectChanges()).not.toThrow();
+                // rendered selection stays stable across every sync
+                expect(component['_selectedIndex']()).toEqual({ 1: 'customers' });
+            }
+        });
+
+        it('should NOT emit selectedIndexChange for the server-originated selection', async () => {
+            const emitSpy = vi.fn();
+            component.selectedIndexChange.subscribe(emitSpy);
+
+            await syncServoyMenu(makeServoyMenu());
+            // repeated syncs must not echo the server value back over the two-way channel
+            for (let i = 0; i < 4; i++) {
+                await syncServoyMenu(makeServoyMenu());
+            }
+
+            expect(emitSpy).not.toHaveBeenCalled();
+        });
+
+        it('should still emit selectedIndexChange for a genuine user selection', async () => {
+            await syncServoyMenu(makeServoyMenu());
+
+            const emitSpy = vi.fn();
+            component.selectedIndexChange.subscribe(emitSpy);
+
+            // a real user click on a different node goes through setSelectedIndex and must emit
+            const event = new MouseEvent('click');
+            component.selectItem(1, 2, component['_menu']()![2], event, true);
+
+            expect(emitSpy).toHaveBeenCalled();
+            expect(component['_selectedIndex']()).toEqual({ 1: 'orders' });
         });
     });
 });
