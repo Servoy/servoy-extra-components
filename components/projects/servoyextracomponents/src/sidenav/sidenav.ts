@@ -88,8 +88,10 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 
 	svyOnInit() {
 		super.svyOnInit();
-		this._selectedIndex.set(this.selectedIndex()??{});
-        this._expandedIndex.set(this.expandedIndex()??{});
+		// seed the signals the template reads with a PARSED object, not the raw JSON string,
+		// so an onLoad-set selection/expansion renders on first show (SVY-21634).
+		this._selectedIndex.set(this.parseIndex(this.selectedIndex()));
+        this._expandedIndex.set(this.parseIndex(this.expandedIndex()));
 		this._open.set(this.open());
 		if (this.servoyMenu()) {
 			Promise.resolve().then(() => this.copyServoyMenu());
@@ -239,6 +241,12 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 				}
 			}
 		}
+	}
+
+	private parseIndex(value: any): any {
+		if (!value) return {};
+		if (typeof value === 'string') return JSON.parse(value);
+		return value;
 	}
 
 	getSidenavClass(): Record<string, boolean> {
@@ -1081,10 +1089,9 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 				} finally {
 					this.applyingServerSelection = false;
 				}
-			} else if (!isEqual(previousSelectedIndex, {})) {
-				// no server selection: fall back to an empty selection, set once (not a transient {}).
-				this._selectedIndex.set({});
 			}
+			// else: no isSelected item in the JSMenu — keep the selection already seeded from the
+			// selectedIndex input (SVY-21634); do NOT clear to {} and race the server push.
 			// if the server-derived selection is identical to what we already had, restore the
 			// previous reference so the signal value is stable and no needless re-render happens.
 			if (isEqual(previousSelectedIndex, this._selectedIndex())) {

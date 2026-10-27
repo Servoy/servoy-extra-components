@@ -624,5 +624,96 @@ describe('ServoyExtraSidenav', () => {
             expect(emitSpy).toHaveBeenCalled();
             expect(component['_selectedIndex']()).toEqual({ 1: 'orders' });
         });
+
+        // SVY-21634: a servoyMenu where NO item is isSelected, but the server also pushed the
+        // two-way selectedIndex string. The copyServoyMenu no-isSelected branch must keep the
+        // seeded selection instead of clearing it to {}. Distinct from the tests above which
+        // hand-set isSelected:true on 'customers'.
+        const makeUnselectedServoyMenu = (): any => ({
+            name: 'mainMenu',
+            styleClass: '',
+            items: [
+                { itemID: 'home', menuText: 'Home', enabled: true, isSelected: false, items: [] },
+                { itemID: 'customers', menuText: 'Customers', enabled: true, isSelected: false, items: [] },
+                { itemID: 'orders', menuText: 'Orders', enabled: true, isSelected: false, items: [] }
+            ],
+            setSelectedItem: vi.fn(),
+            pushDataProviderValue: vi.fn()
+        });
+
+        it('should keep the onLoad-seeded selection when the servoyMenu has no isSelected item (SVY-21634)', async () => {
+            // onLoad set the two-way selectedIndex string before the component existed; the runtime
+            // seeds it in svyOnInit (parsed by parseIndex). The menu itself carries no isSelected.
+            fixture.componentRef.setInput('selectedIndex', JSON.stringify({ 1: 'customers' }));
+            component.svyOnInit();
+
+            await syncServoyMenu(makeUnselectedServoyMenu());
+            fixture.detectChanges();
+
+            // the seeded selection must survive copyServoyMenu's no-isSelected branch, not be wiped to {}
+            expect(component['_selectedIndex']()).toEqual({ 1: 'customers' });
+
+            const items = fixture.nativeElement.querySelectorAll('.svy-sidenav-dropdown.sn-level-1');
+            const customersItem = Array.from(items).find((el: any) => el.textContent.includes('Customers')) as HTMLElement;
+            expect(customersItem.classList.contains('svy-navitem-selected')).toBe(true);
+        });
+    });
+
+    describe('onLoad selection/expansion on first show (SVY-21634)', () => {
+        // nav_nested/nav_states plain-menu path: 'customers' is a top-level item selected via the
+        // two-way selectedIndex string; 'sales' is a top-level group expanded via expandedIndex.
+        let firstShowMenu: MenuItem[];
+
+        beforeEach(() => {
+            firstShowMenu = [
+                {
+                    id: 'customers',
+                    text: 'Customers',
+                    enabled: true,
+                    formName: 'customersForm'
+                } as unknown as MenuItem,
+                {
+                    id: 'sales',
+                    text: 'Sales',
+                    enabled: true,
+                    menuItems: [
+                        {
+                            id: 'leads',
+                            text: 'Leads',
+                            formName: 'leadsForm',
+                            enabled: true
+                        } as unknown as MenuItem
+                    ]
+                } as unknown as MenuItem
+            ];
+        });
+
+        it('should seed a PARSED selection/expansion object and render them on first show', async () => {
+            // The two-way index properties arrive as JSON strings (the wire type). onLoad set them
+            // before the component existed, so they are present at the first svyOnInit seed.
+            fixture.componentRef.setInput('menu', firstShowMenu);
+            fixture.componentRef.setInput('selectedIndex', JSON.stringify({ 1: 'customers' }));
+            fixture.componentRef.setInput('expandedIndex', JSON.stringify({ 1: 'sales' }));
+
+            // re-run the first-show seed now that the inputs are set (mirrors runtime svyOnInit).
+            // Assert directly on the seeded signals BEFORE any svyOnChanges replay, so this isolates
+            // the svyOnInit seed itself: pre-fix it seeds the RAW JSON STRING (so _selectedIndex()[1]
+            // indexes a character, never matching a menu id). This assertion fails against pre-fix.
+            component.svyOnInit();
+            expect(component['_selectedIndex']()).toEqual({ 1: 'customers' });
+            expect(component['_expandedIndex']()).toEqual({ 1: 'sales' });
+            expect(typeof component['_selectedIndex']()).toBe('object');
+
+            fixture.detectChanges();
+            await fixture.whenStable();
+
+            const items = fixture.nativeElement.querySelectorAll('.svy-sidenav-dropdown.sn-level-1');
+            const customersItem = Array.from(items).find((el: any) => el.textContent.includes('Customers')) as HTMLElement;
+            expect(customersItem.classList.contains('svy-navitem-selected')).toBe(true);
+
+            // the expanded 'sales' group shows its children on first render
+            const subItems = fixture.nativeElement.querySelectorAll('.svy-sidenav-item.sn-level-2');
+            expect(subItems.length).toBe(1);
+        });
     });
 });
