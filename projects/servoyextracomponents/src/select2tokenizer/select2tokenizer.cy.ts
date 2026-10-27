@@ -343,4 +343,91 @@ describe('ServoyExtraSelect2Tokenizer', () => {
             });
         });
     });
+
+    // SVY-21666: when a numeric/boolean/single column already holds a value at onShow, the user's
+    // first pick of a different option must emit the NEWEST value (filteredDataProviderId[length-1]),
+    // not the stale pre-existing one ([0]). The widget is always multiple=true, so a pick while a
+    // token is already selected appends: event.value = [existing, newlyPicked].
+
+    // Acceptance criterion §5.1 (primary repro / the fix). FAILS with the old [0] code.
+    it('should emit the newest value when a numeric column already has a value (SVY-21666)', () => {
+        const dataProviderIDChange = cy.stub();
+        config.componentProperties.dataProviderIDChange = dataProviderIDChange;
+        config.componentProperties.dataProviderID = 1;
+        config.componentProperties.format = { 'type': 'INTEGER' } as Format;
+        cy.mount(WrapperComponent, config).then(() => {
+            // the pre-existing value renders as a token first
+            cy.get('select2 ul li').should('have.attr', 'title', 'one').then(() => {
+                // open the list (sets userChangedValue = true) and pick a different option
+                cy.get('select2').click();
+                cy.get('.select2-results__option').contains('three').click({ force: true }).then(() => {
+                    // appended -> event.value = [1, 3]; newest is 3, NOT the stale 1
+                    cy.wrap(dataProviderIDChange).should('have.been.calledWith', 3);
+                    cy.wrap(dataProviderIDChange).should('not.have.been.calledWith', 1);
+                });
+            });
+        });
+    });
+
+    // Acceptance criterion §5.2 (regression): single string select still emits the selected value.
+    it('should emit the selected value for a single string select', () => {
+        const dataProviderIDChange = cy.stub();
+        config.componentProperties.dataProviderIDChange = dataProviderIDChange;
+        config.componentProperties.dataProviderID = '';
+        cy.mount(WrapperComponent, config).then(() => {
+            cy.get('select2').click().then(() => {
+                cy.get('input').type('two{enter}').then(() => {
+                    cy.wrap(dataProviderIDChange).should('have.been.calledWith', 2);
+                });
+            });
+        });
+    });
+
+    // Acceptance criterion §5.4 (regression): deselecting the last token emits null.
+    it('should emit null when the last token is removed', () => {
+        const dataProviderIDChange = cy.stub();
+        config.componentProperties.dataProviderIDChange = dataProviderIDChange;
+        config.componentProperties.dataProviderID = 1;
+        config.componentProperties.format = { 'type': 'INTEGER' } as Format;
+        cy.mount(WrapperComponent, config).then(wrapper => {
+            cy.get('select2 ul li').should('have.attr', 'title', 'one').then(() => {
+                // drive a deselect-to-empty through the real update path
+                wrapper.component.element.userChangedValue = true;
+                wrapper.component.element.updateValue({
+                    value: [],
+                    component: { isOpen: false } as any,
+                    options: []
+                } as any);
+                expect(dataProviderIDChange).to.have.been.calledWith(null);
+                expect(wrapper.component.element.dataProviderID).to.equal(null);
+            });
+        });
+    });
+
+    // Acceptance criterion §5.5 (regression): a boolean column follows the newest-value path.
+    it('should emit the newest value for a boolean column', () => {
+        const dataProviderIDChange = cy.stub();
+        config.componentProperties.dataProviderIDChange = dataProviderIDChange;
+        config.componentProperties.dataProviderID = false;
+        // non-TEXT format so the length>1 string-join branch is skipped and the scalar branch is taken
+        config.componentProperties.format = { 'type': 'INTEGER' } as Format;
+        cy.mount(WrapperComponent, config).then(wrapper => {
+            cy.get('select2').should('exist');
+            cy.wrap(null).should(() => {
+                // ViewChild resolves after svyOnInit; wait for it before driving updateValue
+                expect(wrapper.component.element).to.exist;
+            }).then(() => {
+                // isTypeBoolean() is true because dataProviderID is a boolean; append false -> true
+                wrapper.component.element.filteredDataProviderId = [false];
+                wrapper.component.element.userChangedValue = true;
+                wrapper.component.element.updateValue({
+                    value: [false, true],
+                    component: { isOpen: false } as any,
+                    options: []
+                } as any);
+                expect(dataProviderIDChange).to.have.been.calledWith(true);
+                expect(wrapper.component.element.dataProviderID).to.equal(true);
+            });
+        });
+    });
 });
