@@ -196,7 +196,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
                     this._dataProviderID.set(event.value.join('\n'));
                 } else if (event.value.length === 1 || this.isTypeNumber() || this.isTypeBoolean()) {
                     this.filteredDataProviderId.set(event.value);
-                    this._dataProviderID.set(this.filteredDataProviderId()[0]);
+                    this._dataProviderID.set(this.filteredDataProviderId()[this.filteredDataProviderId().length - 1]);
                 } else {
                     console.log('Warning dataProviderID typeof ' + typeof dataProviderID + ' not allowed');
                 }

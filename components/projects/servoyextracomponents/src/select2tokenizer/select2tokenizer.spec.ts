@@ -331,4 +331,60 @@ describe('ServoyExtraSelect2Tokenizer', () => {
         component.setTabIndex(10);
         expect(component.tabIndex()).toBe(10);
     });
+
+    describe('newest-value collapse (SVY-21666)', () => {
+        it('should emit the newest value when a numeric column already has a value', async () => {
+            setDefaultInputs(fixture);
+            fixture.componentRef.setInput('format', { 'type': 'INTEGER' } as Format);
+            fixture.componentRef.setInput('dataProviderID', 1);
+            fixture.detectChanges();
+            await fixture.whenStable();
+            const spy = vi.fn();
+            component.dataProviderIDChange.subscribe(spy);
+            component.userChangedValue = true;
+            component.updateValue({ value: [1, 3], component: { isOpen: false } as any, options: [] } as any);
+            expect(spy).toHaveBeenCalledWith(3);
+            expect(spy).not.toHaveBeenCalledWith(1);
+        });
+
+        it('should emit the selected value for a single select', async () => {
+            setDefaultInputs(fixture);
+            fixture.componentRef.setInput('format', { 'type': 'INTEGER' } as Format);
+            fixture.componentRef.setInput('dataProviderID', '');
+            fixture.detectChanges();
+            await fixture.whenStable();
+            const spy = vi.fn();
+            component.dataProviderIDChange.subscribe(spy);
+            component.userChangedValue = true;
+            component.updateValue({ value: [2], component: { isOpen: false } as any, options: [] } as any);
+            expect(spy).toHaveBeenCalledWith(2);
+        });
+
+        it('should emit null when the last token is removed', async () => {
+            setDefaultInputs(fixture);
+            fixture.componentRef.setInput('format', { 'type': 'INTEGER' } as Format);
+            fixture.componentRef.setInput('dataProviderID', 1);
+            fixture.detectChanges();
+            await fixture.whenStable();
+            const spy = vi.fn();
+            component.dataProviderIDChange.subscribe(spy);
+            component.userChangedValue = true;
+            component.updateValue({ value: [], component: { isOpen: false } as any, options: [] } as any);
+            expect(spy).toHaveBeenCalledWith(null);
+        });
+
+        it('should emit the newest value for a boolean column', async () => {
+            setDefaultInputs(fixture);
+            fixture.componentRef.setInput('format', { 'type': 'INTEGER' } as Format);
+            fixture.componentRef.setInput('dataProviderID', false);
+            fixture.detectChanges();
+            await fixture.whenStable();
+            const spy = vi.fn();
+            component.dataProviderIDChange.subscribe(spy);
+            component.filteredDataProviderId.set([false]);
+            component.userChangedValue = true;
+            component.updateValue({ value: [false, true], component: { isOpen: false } as any, options: [] } as any);
+            expect(spy).toHaveBeenCalledWith(true);
+        });
+    });
 });
