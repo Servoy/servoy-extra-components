@@ -33,6 +33,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	readonly iconCollapseStyleClass = input<string>(undefined as any);
     readonly footerFormStickyBottom = input<boolean>(undefined as any);
 	readonly autoSelectFirstChildNode = input(false, { transform: (v: any) => v ?? false });
+	readonly allowMultipleExpanded = input(false, { transform: (v: any) => v ?? false });
 
 	readonly slidePosition = input<string>(undefined as any);
 	readonly slideAnimation = input<string>(undefined as any);
@@ -680,7 +681,7 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
             const servoyMenu = this.servoyMenu();
 			onMenuItemCollapsed(servoyMenu ? { svyType: 'JSMenuItem', id: item.id, menuid: servoyMenu.name } : item.id, event).then(() => {
 				// if (result == true) {
-				this.clearExpandedIndex(level - 1);
+				this.collapseNode(level, item);
 				this.expandedIndexChange.emit(JSON.stringify(this._expandedIndex()));
 				// }
 			}, (err) => { // Error: "Oops something went wrong"
@@ -688,11 +689,29 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 				this.log.error(err);
 			});
 		} else {
-			this.clearExpandedIndex(level - 1);
+			this.collapseNode(level, item);
 			this.expandedIndexChange.emit(JSON.stringify(this._expandedIndex()));
 		}
 
 		return true;
+	}
+
+	private collapseNode(level: number, item: MenuItem) {
+		if (this.allowMultipleExpanded()) {
+			// multi mode: remove only this node's id from its level's set and clear only the
+			// deeper-level entries that belong under it, leaving sibling branches untouched.
+			const levels = { ...this._expandedIndex() };
+			levels[level] = this.removeFromLevel(levels[level], item.id);
+			if (levels[level] === undefined) {
+				delete levels[level];
+			}
+			this.clearDescendantSubLevels(levels, level, item.id);
+			this._expandedIndex.set(levels);
+			this.cdRef.markForCheck();
+		} else {
+			// unchanged single-open path.
+			this.clearExpandedIndex(level - 1);
+		}
 	}
 
 	getNodeById(nodeId: string | number, nodes: MenuItem[]): any {
@@ -852,24 +871,36 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	setExpandedIndex(level: number, _index: number, item: MenuItem) {
 		const expandedIndex = this._expandedIndex();
         if (!expandedIndex) this._expandedIndex.set({});
-		const levels = expandedIndex;
-
-		// clear sub levels
-		this.clearExpandedIndex(level);
+		const levels = this._expandedIndex();
 
 		// expand all anchestors
-		const newExpandedIndex: any = {};
 		const anchestors = this.getNodeAnchestors(item.id);
-		for (let i = 0; i < anchestors.length; i++) {
-			if (newExpandedIndex[i + 1] !== anchestors[i].id) {
-				newExpandedIndex[i + 1] = anchestors[i].id;
-			}
-		}
 
-		// TODO select all parents as well
-		// expand node index
-		if (levels[level] !== item.id) { // collapse the selected menu
-			newExpandedIndex[level] = item.id;
+		let newExpandedIndex: any;
+		if (this.allowMultipleExpanded()) {
+			// multi mode: keep siblings. start from the current map, overlay the ancestor path,
+			// add item.id to the set at its level, then clear only the deeper-level entries that
+			// belong under item.id - sibling branches' deeper expansions survive.
+			newExpandedIndex = { ...levels };
+			for (let i = 0; i < anchestors.length; i++) {
+				newExpandedIndex[i + 1] = this.addToLevel(newExpandedIndex[i + 1], anchestors[i].id);
+			}
+			newExpandedIndex[level] = this.addToLevel(newExpandedIndex[level], item.id);
+			this.clearDescendantSubLevels(newExpandedIndex, level, item.id);
+		} else {
+			// unchanged single-open path: clear sub levels, then replace the map with the ancestor-only path.
+			this.clearExpandedIndex(level);
+			newExpandedIndex = {};
+			for (let i = 0; i < anchestors.length; i++) {
+				if (newExpandedIndex[i + 1] !== anchestors[i].id) {
+					newExpandedIndex[i + 1] = anchestors[i].id;
+				}
+			}
+			// TODO select all parents as well
+			// expand node index
+			if (levels[level] !== item.id) { // collapse the selected menu
+				newExpandedIndex[level] = item.id;
+			}
 		}
 		this._expandedIndex.set(newExpandedIndex);
 		this.expandedIndexChange.emit(JSON.stringify(newExpandedIndex));
@@ -884,6 +915,58 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		for (const lvl in levels) {
 			if (Number(lvl) > level) { // reset the next levels
 				delete levels[lvl];
+			}
+		}
+	}
+
+	private isExpandedAt(value: any, id: string | number): boolean {
+		if (Array.isArray(value)) {
+			return value.indexOf(id) !== -1;
+		}
+		return value === id;
+	}
+
+	private addToLevel(value: any, id: string | number): any {
+		if (value === undefined || value === null) {
+			return id;
+		}
+		if (Array.isArray(value)) {
+			return value.indexOf(id) === -1 ? [...value, id] : value;
+		}
+		return value === id ? value : [value, id];
+	}
+
+	private removeFromLevel(value: any, id: string | number): any {
+		if (Array.isArray(value)) {
+			const next = value.filter(v => v !== id);
+			if (next.length === 0) return undefined;
+			if (next.length === 1) return next[0];
+			return next;
+		}
+		return value === id ? undefined : value;
+	}
+
+	private isDescendantOf(nodeId: string | number, ancestorId: string | number): boolean {
+		return this.getNodeAnchestors(nodeId).some(a => a.id === ancestorId);
+	}
+
+	private pruneDescendants(value: any, ancestorId: string | number): any {
+		if (Array.isArray(value)) {
+			const next = value.filter(v => !this.isDescendantOf(v, ancestorId));
+			if (next.length === 0) return undefined;
+			if (next.length === 1) return next[0];
+			return next;
+		}
+		return this.isDescendantOf(value, ancestorId) ? undefined : value;
+	}
+
+	private clearDescendantSubLevels(levels: any, level: number, ancestorId: string | number) {
+		for (const lvl in levels) {
+			if (Number(lvl) > level) {
+				levels[lvl] = this.pruneDescendants(levels[lvl], ancestorId);
+				if (levels[lvl] === undefined) {
+					delete levels[lvl];
+				}
 			}
 		}
 	}
@@ -929,10 +1012,10 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	isNodeExpanded(nodeId: string | number, level?: number): boolean {
 		const levels = this._expandedIndex();
 		if (level) {
-			return levels[level] === nodeId;
+			return this.isExpandedAt(levels[level], nodeId);
 		} else {
 			for (const level2 in levels) {
-				if (levels[level2] === nodeId) {
+				if (this.isExpandedAt(levels[level2], nodeId)) {
 					return true;
 				}
 			}

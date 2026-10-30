@@ -716,4 +716,341 @@ describe('ServoyExtraSidenav', () => {
             expect(subItems.length).toBe(1);
         });
     });
+
+    describe('allowMultipleExpanded (SVY-21635)', () => {
+        // Flat menu of sibling top-level groups, each with its own children, mirroring the
+        // ticket's Sales/Catalog/People/Reference navigation. Groups are MenuItem nodes with
+        // menuItems so expandItem/setExpandedIndex treats them as expandable branches.
+        let groupsMenu: MenuItem[];
+
+        beforeEach(async () => {
+            groupsMenu = [
+                {
+                    id: 'sales',
+                    text: 'Sales',
+                    enabled: true,
+                    menuItems: [
+                        { id: 'leads', text: 'Leads', formName: 'leadsForm', enabled: true } as unknown as MenuItem,
+                        { id: 'orders', text: 'Orders', formName: 'ordersForm', enabled: true } as unknown as MenuItem
+                    ]
+                } as unknown as MenuItem,
+                {
+                    id: 'catalog',
+                    text: 'Catalog',
+                    enabled: true,
+                    menuItems: [
+                        { id: 'products', text: 'Products', formName: 'productsForm', enabled: true } as unknown as MenuItem,
+                        { id: 'categories', text: 'Categories', formName: 'categoriesForm', enabled: true } as unknown as MenuItem
+                    ]
+                } as unknown as MenuItem,
+                {
+                    id: 'people',
+                    text: 'People',
+                    enabled: true,
+                    menuItems: [
+                        { id: 'employees', text: 'Employees', formName: 'employeesForm', enabled: true } as unknown as MenuItem
+                    ]
+                } as unknown as MenuItem,
+                {
+                    id: 'reference',
+                    text: 'Reference',
+                    enabled: true,
+                    menuItems: [
+                        { id: 'countries', text: 'Countries', formName: 'countriesForm', enabled: true } as unknown as MenuItem
+                    ]
+                } as unknown as MenuItem
+            ];
+
+            fixture.componentRef.setInput('menu', groupsMenu);
+            fixture.detectChanges();
+            await fixture.whenStable();
+        });
+
+        describe('flag OFF (default single-open accordion)', () => {
+            it('should default allowMultipleExpanded to false when input not set', () => {
+                expect(component.allowMultipleExpanded()).toBe(false);
+            });
+
+            it('should collapse the previously open sibling when a second sibling is expanded', () => {
+                const event = new MouseEvent('click');
+                component.expandItem(1, 0, groupsMenu[0], event);
+                expect(component.isNodeExpanded('sales', 1)).toBe(true);
+
+                component.expandItem(1, 1, groupsMenu[1], event);
+                expect(component.isNodeExpanded('catalog', 1)).toBe(true);
+                // the first sibling must be dropped - accordion behaviour unchanged
+                expect(component.isNodeExpanded('sales', 1)).toBe(false);
+            });
+
+            it('should report only the last-expanded sibling via isNodeExpanded (no-level scan)', () => {
+                const event = new MouseEvent('click');
+                component.expandItem(1, 0, groupsMenu[0], event);
+                component.expandItem(1, 1, groupsMenu[1], event);
+
+                expect(component.isMenuItemExpanded('catalog')).toBe(true);
+                expect(component.isMenuItemExpanded('sales')).toBe(false);
+            });
+
+            it('should keep the single-id {level->id} shape in the stored expandedIndex (never an array)', () => {
+                const event = new MouseEvent('click');
+                component.expandItem(1, 0, groupsMenu[0], event);
+                component.expandItem(1, 1, groupsMenu[1], event);
+
+                const stored = component['_expandedIndex']();
+                expect(stored[1]).toBe('catalog');
+                expect(Array.isArray(stored[1])).toBe(false);
+            });
+
+            it('should emit a single-id serialized expandedIndex (byte-for-byte accordion shape)', () => {
+                const emitSpy = vi.fn();
+                component.expandedIndexChange.subscribe(emitSpy);
+
+                const event = new MouseEvent('click');
+                component.expandItem(1, 0, groupsMenu[0], event);
+                component.expandItem(1, 1, groupsMenu[1], event);
+
+                const lastEmitted = emitSpy.mock.calls[emitSpy.mock.calls.length - 1][0];
+                expect(lastEmitted).toBe(JSON.stringify({ 1: 'catalog' }));
+            });
+
+            it('should expand the ancestor path when a deep node is opened', () => {
+                const event = new MouseEvent('click');
+                component.expandItem(2, 0, groupsMenu[0].menuItems[0], event);
+
+                expect(component.isNodeExpanded('sales', 1)).toBe(true);
+                expect(component.isNodeExpanded('leads', 2)).toBe(true);
+            });
+        });
+
+        describe('flag ON (allow several groups open)', () => {
+            beforeEach(async () => {
+                fixture.componentRef.setInput('allowMultipleExpanded', true);
+                fixture.detectChanges();
+                await fixture.whenStable();
+            });
+
+            it('should leave the first sibling open when a second sibling is expanded', () => {
+                const event = new MouseEvent('click');
+                component.expandItem(1, 0, groupsMenu[0], event);
+                component.expandItem(1, 1, groupsMenu[1], event);
+
+                expect(component.isNodeExpanded('sales', 1)).toBe(true);
+                expect(component.isNodeExpanded('catalog', 1)).toBe(true);
+            });
+
+            it('should keep multiple sibling groups open simultaneously', () => {
+                const event = new MouseEvent('click');
+                component.expandItem(1, 0, groupsMenu[0], event);
+                component.expandItem(1, 1, groupsMenu[1], event);
+                component.expandItem(1, 2, groupsMenu[2], event);
+
+                expect(component.isNodeExpanded('sales', 1)).toBe(true);
+                expect(component.isNodeExpanded('catalog', 1)).toBe(true);
+                expect(component.isNodeExpanded('people', 1)).toBe(true);
+            });
+
+            it('should store an array at a level once two siblings are open', () => {
+                const event = new MouseEvent('click');
+                component.expandItem(1, 0, groupsMenu[0], event);
+                component.expandItem(1, 1, groupsMenu[1], event);
+
+                const stored = component['_expandedIndex']();
+                expect(Array.isArray(stored[1])).toBe(true);
+                expect(stored[1]).toContain('sales');
+                expect(stored[1]).toContain('catalog');
+            });
+
+            it('should leave the other sibling open when one is collapsed', () => {
+                const event = new MouseEvent('click');
+                component.expandItem(1, 0, groupsMenu[0], event);
+                component.expandItem(1, 1, groupsMenu[1], event);
+
+                component.collapseItem(1, 0, groupsMenu[0], event);
+
+                expect(component.isNodeExpanded('sales', 1)).toBe(false);
+                expect(component.isNodeExpanded('catalog', 1)).toBe(true);
+            });
+
+            it('should still expand the ancestor path when a deep node is opened', () => {
+                const event = new MouseEvent('click');
+                component.expandItem(1, 1, groupsMenu[1], event);
+                component.expandItem(2, 0, groupsMenu[0].menuItems[0], event);
+
+                // the deep node and its ancestor are expanded
+                expect(component.isNodeExpanded('leads', 2)).toBe(true);
+                expect(component.isNodeExpanded('sales', 1)).toBe(true);
+                // and the previously open sibling group survives
+                expect(component.isNodeExpanded('catalog', 1)).toBe(true);
+            });
+
+            it('should round-trip an array-valued expandedIndex through parseIndex', () => {
+                const event = new MouseEvent('click');
+                component.expandItem(1, 0, groupsMenu[0], event);
+                component.expandItem(1, 1, groupsMenu[1], event);
+
+                const serialized = JSON.stringify(component['_expandedIndex']());
+                const parsed = component['parseIndex'](serialized);
+                expect(Array.isArray(parsed[1])).toBe(true);
+                expect(parsed[1]).toEqual(['sales', 'catalog']);
+            });
+        });
+
+        describe('multi-mode descendant scoping regression (the bug the fix addresses)', () => {
+            // A 3-level menu: top-level groups each own sub-groups which own leaves. Acting on a
+            // third top-level group must NOT clear a deeper expansion that lives under a different
+            // sibling. The pre-fix blanket "clear every level > level" would wipe level 2/3.
+            let deepMenu: MenuItem[];
+
+            beforeEach(async () => {
+                deepMenu = [
+                    {
+                        id: 'A',
+                        text: 'A',
+                        enabled: true,
+                        menuItems: [
+                            {
+                                id: 'A1',
+                                text: 'A1',
+                                enabled: true,
+                                menuItems: [
+                                    { id: 'A1a', text: 'A1a', formName: 'a1aForm', enabled: true } as unknown as MenuItem
+                                ]
+                            } as unknown as MenuItem
+                        ]
+                    } as unknown as MenuItem,
+                    {
+                        id: 'B',
+                        text: 'B',
+                        enabled: true,
+                        menuItems: [
+                            {
+                                id: 'B1',
+                                text: 'B1',
+                                enabled: true,
+                                menuItems: [
+                                    { id: 'B1a', text: 'B1a', formName: 'b1aForm', enabled: true } as unknown as MenuItem
+                                ]
+                            } as unknown as MenuItem
+                        ]
+                    } as unknown as MenuItem,
+                    {
+                        id: 'C',
+                        text: 'C',
+                        enabled: true,
+                        menuItems: [
+                            { id: 'C1', text: 'C1', formName: 'c1Form', enabled: true } as unknown as MenuItem
+                        ]
+                    } as unknown as MenuItem
+                ];
+
+                fixture.componentRef.setInput('menu', deepMenu);
+                fixture.componentRef.setInput('allowMultipleExpanded', true);
+                fixture.detectChanges();
+                await fixture.whenStable();
+            });
+
+            it('should not collapse a sibling branch deep expansion when acting on a third top-level group', () => {
+                const event = new MouseEvent('click');
+                // open A and its child A1 (level 2 expanded under A)
+                component.expandItem(1, 0, deepMenu[0], event);
+                component.expandItem(2, 0, deepMenu[0].menuItems[0], event);
+                // open sibling B
+                component.expandItem(1, 1, deepMenu[1], event);
+
+                expect(component.isNodeExpanded('A1', 2)).toBe(true);
+
+                // acting on a third top-level group C must leave A1 (a different sibling's child) expanded
+                component.expandItem(1, 2, deepMenu[2], event);
+
+                expect(component.isNodeExpanded('A1', 2)).toBe(true);
+                expect(component.isNodeExpanded('A', 1)).toBe(true);
+                expect(component.isNodeExpanded('B', 1)).toBe(true);
+                expect(component.isNodeExpanded('C', 1)).toBe(true);
+            });
+
+            it('should prune only the collapsed node descendants, leaving a sibling branch and its descendants', () => {
+                const event = new MouseEvent('click');
+                // expand A -> A1, and B -> B1
+                component.expandItem(1, 0, deepMenu[0], event);
+                component.expandItem(2, 0, deepMenu[0].menuItems[0], event);
+                component.expandItem(1, 1, deepMenu[1], event);
+                component.expandItem(2, 0, deepMenu[1].menuItems[0], event);
+
+                expect(component.isNodeExpanded('A1', 2)).toBe(true);
+                expect(component.isNodeExpanded('B1', 2)).toBe(true);
+
+                // collapse A: only A's descendants (A1) must be pruned; B and B1 survive
+                component.collapseItem(1, 0, deepMenu[0], event);
+
+                expect(component.isNodeExpanded('A', 1)).toBe(false);
+                expect(component.isNodeExpanded('A1', 2)).toBe(false);
+                expect(component.isNodeExpanded('B', 1)).toBe(true);
+                expect(component.isNodeExpanded('B1', 2)).toBe(true);
+            });
+        });
+
+        describe('onLoad setMenuItemExpanded scenario (ticket)', () => {
+            // The ticket's onLoad expands several sibling groups up front. The component exposes
+            // expansion through expandItem (the handler surface); drive it for each sibling and
+            // assert the flag governs whether earlier ones survive.
+            it('should leave all sibling groups open when the flag is ON', async () => {
+                fixture.componentRef.setInput('allowMultipleExpanded', true);
+                fixture.detectChanges();
+                await fixture.whenStable();
+
+                const event = new MouseEvent('click');
+                component.expandItem(1, 0, groupsMenu[0], event);
+                component.expandItem(1, 1, groupsMenu[1], event);
+                component.expandItem(1, 2, groupsMenu[2], event);
+                component.expandItem(1, 3, groupsMenu[3], event);
+
+                expect(component.isMenuItemExpanded('sales')).toBe(true);
+                expect(component.isMenuItemExpanded('catalog')).toBe(true);
+                expect(component.isMenuItemExpanded('people')).toBe(true);
+                expect(component.isMenuItemExpanded('reference')).toBe(true);
+            });
+
+            it('should leave only the last sibling group open when the flag is OFF', () => {
+                const event = new MouseEvent('click');
+                component.expandItem(1, 0, groupsMenu[0], event);
+                component.expandItem(1, 1, groupsMenu[1], event);
+                component.expandItem(1, 2, groupsMenu[2], event);
+                component.expandItem(1, 3, groupsMenu[3], event);
+
+                expect(component.isMenuItemExpanded('sales')).toBe(false);
+                expect(component.isMenuItemExpanded('catalog')).toBe(false);
+                expect(component.isMenuItemExpanded('people')).toBe(false);
+                expect(component.isMenuItemExpanded('reference')).toBe(true);
+            });
+        });
+
+        describe('NG0600 / change-detection safety', () => {
+            it('should not throw when detecting changes after toggling expansion with the flag ON', async () => {
+                fixture.componentRef.setInput('allowMultipleExpanded', true);
+                fixture.detectChanges();
+                await fixture.whenStable();
+
+                const event = new MouseEvent('click');
+                component.expandItem(1, 0, groupsMenu[0], event);
+                component.expandItem(1, 1, groupsMenu[1], event);
+
+                expect(() => fixture.detectChanges()).not.toThrow();
+            });
+
+            it('should render sublists of several open sibling groups without throwing (flag ON)', async () => {
+                fixture.componentRef.setInput('allowMultipleExpanded', true);
+                fixture.detectChanges();
+                await fixture.whenStable();
+
+                const event = new MouseEvent('click');
+                component.expandItem(1, 0, groupsMenu[0], event);
+                component.expandItem(1, 1, groupsMenu[1], event);
+                expect(() => fixture.detectChanges()).not.toThrow();
+
+                const subItems = fixture.nativeElement.querySelectorAll('.svy-sidenav-item.sn-level-2');
+                // Sales (2) + Catalog (2) children both rendered at once
+                expect(subItems.length).toBe(4);
+            });
+        });
+    });
 });

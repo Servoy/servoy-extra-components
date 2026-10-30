@@ -44,15 +44,15 @@
                   <span [class]="item.badgeStyleClass">{{item.badgeText}}</span>
                 }</span>
                 <i class="svy-sidenav-collapse-icon sn-level-1 pull-right"
-                  [class]="item.menuItems ? (_expandedIndex()[1] === item.id ? iconCollapseStyleClass() : iconExpandStyleClass()) : 'hidden'"
+                  [class]="item.menuItems ? (isNodeExpanded(item.id, 1) ? iconCollapseStyleClass() : iconExpandStyleClass()) : 'hidden'"
                   (click)="toggleExpandedItem(1, $index, item, $event)"
                 ></i>
               </a>
             }
             <!-- Second List -->
-            @if (_expandedIndex()[1] === item.id || item.isHeading) {
+            @if (isNodeExpanded(item.id, 1) || item.isHeading) {
               <ul class="svy-sidenav-menu sn-level-2"
-                [class.svy-sidenav-collapsed]="_expandedIndex()[1] === item.id"
+                [class.svy-sidenav-collapsed]="isNodeExpanded(item.id, 1)"
                 >
                 @for (item2 of item.menuItems; track (item2.id ? ("id_" + item2.id) : ("index_" + $index))) {
                   <li
@@ -73,14 +73,14 @@
                           <span [class]="item2.badgeStyleClass">{{item2.badgeText}}</span>
                         }</span>
                         <i class="svy-sidenav-collapse-icon sn-level-2 pull-right"
-                          [class]="item2.menuItems ? (_expandedIndex()[2] === item2.id ? iconCollapseStyleClass() : iconExpandStyleClass()) : 'hidden'"
+                          [class]="item2.menuItems ? (isNodeExpanded(item2.id, 2) ? iconCollapseStyleClass() : iconExpandStyleClass()) : 'hidden'"
                           (click)="toggleExpandedItem(2, $index, item2, $event)"
                         ></i>
                       </a>
                     }
                     <!-- Third List -->
-                    @if (_expandedIndex()[2] === item2.id || item2.isHeading) {
-                      <ul class="svy-sidenav-menu sn-level-3" [class.svy-sidenav-collapsed]="_expandedIndex()[2] === item2.id"
+                    @if (isNodeExpanded(item2.id, 2) || item2.isHeading) {
+                      <ul class="svy-sidenav-menu sn-level-3" [class.svy-sidenav-collapsed]="isNodeExpanded(item2.id, 2)"
                         >
                         @for (item3 of item2.menuItems; track (item3.id ? ("id_" + item3.id) : ("index_" + $index))) {
                           <li
@@ -101,14 +101,14 @@
                                   <span [class]="item3.badgeStyleClass">{{item3.badgeText}}</span>
                                 }</span>
                                 <i class="svy-sidenav-collapse-icon sn-level-3 pull-right"
-                                  [class]="item3.menuItems ? (_expandedIndex()[3] === item3.id ? iconCollapseStyleClass() : iconExpandStyleClass()) : 'hidden'"
+                                  [class]="item3.menuItems ? (isNodeExpanded(item3.id, 3) ? iconCollapseStyleClass() : iconExpandStyleClass()) : 'hidden'"
                                   (click)="toggleExpandedItem(3, $index, item3, $event)"
                                 ></i>
                               </a>
                             }
                             <!-- Fourth List -->
-                            @if (_expandedIndex()[3] === item3.id || item3.isHeading) {
-                              <ul class="svy-sidenav-menu sn-level-4" [class.svy-sidenav-collapsed]="_expandedIndex()[3] === item3.id"
+                            @if (isNodeExpanded(item3.id, 3) || item3.isHeading) {
+                              <ul class="svy-sidenav-menu sn-level-4" [class.svy-sidenav-collapsed]="isNodeExpanded(item3.id, 3)"
                                 >
                                 @for (item4 of item3.menuItems; track (item4.id ? ("id_" + item4.id) : ("index_" + $index))) {
                                   <li

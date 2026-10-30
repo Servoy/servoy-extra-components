@@ -40,6 +40,7 @@
 		"animate"						: {"type" :"boolean", "default" : true, "tags": { "scope" :"design" }},
 		"footerFormStickyBottom"		: {"type" :"boolean", "default" : false, "pushToServer": "allow", "tags": { "doc" :"It will apply exclusively to CSS Position forms."}},
 		"autoSelectFirstChildNode"		: {"type" :"boolean", "default" : false, "tags": { "doc" :"When true, selecting a parent node auto-selects/marks its first child and shows that child's form. When false (default), selecting a parent marks/expands only the parent; no child is marked selected and no child form is auto-shown. Note: onMenuItemSelected still fires only for the node the user clicked, regardless of this flag."}},
+		"allowMultipleExpanded"			: {"type" :"boolean", "default" : false, "tags": { "doc" :"When false (default), only one group per level can be open: expanding a group collapses the previously open sibling at that level (the existing accordion behaviour). When true, several sibling groups at the same level can stay open at once; expanding a group leaves earlier ones open, and collapsing one leaves the others open."}},
 		
 		"visible"						: "visible"
 	},

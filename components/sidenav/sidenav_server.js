@@ -802,9 +802,31 @@ function collapseItem(level, index, item, event, preventHandler) {
 			console.log(err);
 		}
 	}
-	clearExpandedIndex(level - 1);
+	collapseNode(level, item);
 
 	return true;
+}
+
+/**
+ * @private
+ * Collapse a single node: in multi mode remove only this node's id from its level's set and
+ * clear only the deeper-level entries that belong under it, leaving sibling branches untouched;
+ * otherwise the unchanged single-open path.
+ * @param {Number} level
+ * @param {CustomType<servoyextra-sidenav.MenuItem>} item
+ *  */
+function collapseNode(level, item) {
+	if ($scope.model.allowMultipleExpanded) {
+		var levels = $scope.model.expandedIndex ? JSON.parse($scope.model.expandedIndex) : {};
+		levels[level] = removeFromLevel(levels[level], item.id);
+		if (levels[level] === undefined) {
+			delete levels[level];
+		}
+		clearDescendantSubLevels(levels, level, item.id);
+		$scope.model.expandedIndex = JSON.stringify(levels);
+	} else {
+		clearExpandedIndex(level - 1);
+	}
 }
 
 /**
@@ -819,30 +841,139 @@ function collapseItem(level, index, item, event, preventHandler) {
 function setExpandedIndex(level, index, item) {
 	var levels = $scope.model.expandedIndex ? JSON.parse($scope.model.expandedIndex) : {};
 
-	// clear sub levels
-	for (var lvl in levels) {
-		if (lvl > level) { // reset the next levels
-			delete levels[lvl];
-		}
-	}
-
 	// expand all anchestors
-	var newExpandedIndex = {}
 	var anchestors = getNodeAnchestors(item.id);
-	for (var i = 0; i < anchestors.length; i++) {
-		if (newExpandedIndex[i + 1] != anchestors[i].id) {
-			newExpandedIndex[i + 1] = anchestors[i].id;
-		}
-	}
 
-	// TODO select all parents as well
-	// expand node index
-	if (levels[level] != item.id) { // collapse the selected menu
-		newExpandedIndex[level] = item.id;
+	var newExpandedIndex;
+	if ($scope.model.allowMultipleExpanded) {
+		// multi mode: keep siblings. start from the current map, overlay the ancestor path,
+		// add item.id to the set at its level, then clear only the deeper-level entries that
+		// belong under item.id - sibling branches' deeper expansions survive.
+		newExpandedIndex = levels;
+		for (var j = 0; j < anchestors.length; j++) {
+			newExpandedIndex[j + 1] = addToLevel(newExpandedIndex[j + 1], anchestors[j].id);
+		}
+		newExpandedIndex[level] = addToLevel(newExpandedIndex[level], item.id);
+		clearDescendantSubLevels(newExpandedIndex, level, item.id);
+	} else {
+		// unchanged single-open path: clear sub levels, then replace the map with the ancestor-only path.
+		for (var lvl in levels) {
+			if (Number(lvl) > level) { // reset the next levels
+				delete levels[lvl];
+			}
+		}
+		newExpandedIndex = {}
+		for (var i = 0; i < anchestors.length; i++) {
+			if (newExpandedIndex[i + 1] != anchestors[i].id) {
+				newExpandedIndex[i + 1] = anchestors[i].id;
+			}
+		}
+
+		// TODO select all parents as well
+		// expand node index
+		if (levels[level] != item.id) { // collapse the selected menu
+			newExpandedIndex[level] = item.id;
+		}
 	}
 
 	// apply selected index
 	$scope.model.expandedIndex = JSON.stringify(newExpandedIndex);
+}
+
+/**
+ * @private
+ * @param {Object} value stored value at a level (single id or array of ids)
+ * @param {Object} id
+ * @return {Boolean}
+ *  */
+function isExpandedAt(value, id) {
+	if (value instanceof Array) {
+		return value.indexOf(id) !== -1;
+	}
+	return value == id;
+}
+
+/**
+ * @private
+ * @param {Object} value stored value at a level (single id, array of ids, or undefined)
+ * @param {Object} id
+ * @return {Object} the new value at the level
+ *  */
+function addToLevel(value, id) {
+	if (value === undefined || value === null) {
+		return id;
+	}
+	if (value instanceof Array) {
+		return value.indexOf(id) === -1 ? value.concat([id]) : value;
+	}
+	return value == id ? value : [value, id];
+}
+
+/**
+ * @private
+ * @param {Object} value stored value at a level (single id or array of ids)
+ * @param {Object} id
+ * @return {Object} the new value at the level, or undefined when empty
+ *  */
+function removeFromLevel(value, id) {
+	if (value instanceof Array) {
+		var next = value.filter(function(v) { return v !== id; });
+		if (next.length === 0) return undefined;
+		if (next.length === 1) return next[0];
+		return next;
+	}
+	return value == id ? undefined : value;
+}
+
+/**
+ * @private
+ * @param {Object} nodeId
+ * @param {Object} ancestorId
+ * @return {Boolean} true if ancestorId is an anchestor of nodeId
+ *  */
+function isDescendantOf(nodeId, ancestorId) {
+	var anchestors = getNodeAnchestors(nodeId);
+	for (var i = 0; i < anchestors.length; i++) {
+		if (anchestors[i].id === ancestorId) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * @private
+ * @param {Object} value stored value at a level (single id or array of ids)
+ * @param {Object} ancestorId
+ * @return {Object} the value with ids that are descendants of ancestorId removed, or undefined when empty
+ *  */
+function pruneDescendants(value, ancestorId) {
+	if (value instanceof Array) {
+		var next = value.filter(function(v) { return !isDescendantOf(v, ancestorId); });
+		if (next.length === 0) return undefined;
+		if (next.length === 1) return next[0];
+		return next;
+	}
+	return isDescendantOf(value, ancestorId) ? undefined : value;
+}
+
+/**
+ * @private
+ * Clear only the deeper-level entries (level numbers greater than level) that belong under
+ * ancestorId, leaving sibling branches' deeper expansions untouched.
+ * @param {Object} levels the { level -> id|id[] } map, mutated in place
+ * @param {Number} level
+ * @param {Object} ancestorId
+ *  */
+function clearDescendantSubLevels(levels, level, ancestorId) {
+	for (var lvl in levels) {
+		if (Number(lvl) > level) {
+			levels[lvl] = pruneDescendants(levels[lvl], ancestorId);
+			if (levels[lvl] === undefined) {
+				delete levels[lvl];
+			}
+		}
+	}
 }
 
 /**
@@ -1008,10 +1139,10 @@ function isNodeSelected(nodeId, level) {
 function isNodeExpanded(nodeId, level) {
 	var levels = $scope.model.expandedIndex ? JSON.parse($scope.model.expandedIndex) : {};
 	if (level) {
-		return levels[level] == nodeId;
+		return isExpandedAt(levels[level], nodeId);
 	} else {
 		for (level in levels) {
-			if (levels[level] == nodeId) {
+			if (isExpandedAt(levels[level], nodeId)) {
 				return true;
 			}
 		}

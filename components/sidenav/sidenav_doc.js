@@ -118,6 +118,15 @@ var enabled;
 var animate;
 
 /**
+ * Flag indicating whether several sibling groups at the same level can be expanded at once.
+ * When false (default), only one group per level can be open: expanding a group collapses the
+ * previously open sibling at that level (the existing accordion behaviour). When true, several
+ * sibling groups can stay open at once; expanding a group leaves earlier ones open, and
+ * collapsing one leaves the others open.
+ */
+var allowMultipleExpanded;
+
+/**
  * Dimensions (width and height) of the sidenav component.
  */
 var size;
