@@ -1,10 +1,8 @@
 import { Component, SimpleChanges, ChangeDetectionStrategy, TemplateRef, inject, input, output, contentChild } from '@angular/core';
 import { NgStyle, NgTemplateOutlet } from '@angular/common';
-import { ServoyBaseComponent, ServoyPublicModule } from '@servoy/public';
-import { ServoyPublicService } from '@servoy/public';
+import { ServoyBaseComponent, ServoyPublicModule, ServoyPublicService, ICustomObjectValue } from '@servoy/public';
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
 import { DOCUMENT } from '@angular/common';
-
 
 @Component({
     selector: 'servoyextra-collapse',
@@ -260,10 +258,20 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
 		return false;
 	}
 
-	private notifyChange(index: number) {
-		(this.collapsibles()![index] as any).getStateHolder().getChangedKeys().add('isCollapsed');
-		(this.collapsibles()![index] as any).getStateHolder().notifyChangeListener();
-		this.collapsiblesChange.emit(this.collapsibles()!);
+	private notifyChange(_index: number) {
+        // COMMENTED OUT: the following 2 lines are using internal state in a component impl; it should not happen; the correct approach is below...
+		//(this.collapsibles()![index] as any).getStateHolder().getChangedKeys().add('isCollapsed');
+		//(this.collapsibles()![index] as any).getStateHolder().notifyChangeListener();
+        
+        // COMMENTED OUT as well: it happens automatically because "collapsibles" has "pushToServer": "shallow" in the .spec file, and
+        // that cascades to it's nested subprops; so the internal json_object_converter proxy sees the "isCollapsed" change and does
+        // mark dirty + notify change that triggers through the array prop and calls emit automatically...
+        // 
+        // this manual triggering via emit would only be needed if "isCollapsed" sub-prop. would be just "pushToServer": "allow"
+        // the manual markSubPropertyAsHavingDeepChanges would only be needed if "isCollapsed" would be a JS object typed as 'object' in the spec
+        //    and it would not change by reference but something inside it (which is not the case - it's a simple boolean)
+        //this.collapsibles()![index].markSubPropertyAsHavingDeepChanges?.('isCollapsed');
+		//this.collapsiblesChange.emit(this.collapsibles()!);
 	}
 
 	/**
@@ -430,7 +438,7 @@ export class ServoyExtraCollapse extends ServoyBaseComponent<HTMLDivElement>{
     }
 }
 
-export interface Collapsible {
+export interface Collapsible extends ICustomObjectValue {
 	collapsibleId: string;
 	isCollapsed: boolean;
 	formIsVisibleServerSide: boolean;
