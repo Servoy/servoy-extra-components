@@ -4,6 +4,11 @@ import { ServoyExtraTreeview } from './treeview';
     selector: 'servoyextra-treeview-cell-renderer',
     template: `
     <div [style]="setDisplay()" (contextmenu)="oncontextmenu($event)" [attr.cell-id]="getCellId()">
+      @if (hasCheckbox()) {
+        <input class="treeCheckbox" type="checkbox"
+          [checked]="row_data.checked" [indeterminate]="row_data.indeterminate"
+          (click)="$event.stopPropagation()" (change)="oncheck($event)">
+      }
       @if (!isFAIcon() && getIcon()) {
         <img [src]="getIcon()">
       }
@@ -52,6 +57,15 @@ export class ServoyExtraTreeviewCellRenderer {
 		return {display: 'inline'};
 	}
 	return {};
+  }
+
+  hasCheckbox() {
+    return this.column.name === 'treeColumn' && (this.column.treeview as ServoyExtraTreeview).showCheckboxes();
+  }
+
+  oncheck(event) {
+    const treeview: ServoyExtraTreeview = this.column.treeview;
+    treeview.checkNode(this.row_data, event.target.checked, event);
   }
 
   oncontextmenu(event) {

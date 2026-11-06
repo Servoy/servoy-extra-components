@@ -28,6 +28,23 @@ table.treeview {
   background-color: #3399ff;
 }
 
+/* with check boxes the selected state is the checked state, only the active node is highlighted */
+.treeview-checkable .treeview span.fancytree-selected span.fancytree-title,
+.treeview-checkable .treeview .fancytree-container.fancytree-treefocus span.fancytree-selected span.fancytree-title {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.treeview-checkable .treeview span.fancytree-active span.fancytree-title,
+.treeview-checkable .treeview .fancytree-container.fancytree-treefocus span.fancytree-active span.fancytree-title {
+  background-color: #3399ff;
+}
+
+.treeview-checkable table.treeview tbody tr.fancytree-selected,
+.treeview-checkable table.treeview.fancytree-treefocus tbody tr.fancytree-selected {
+  background-color: transparent;
+}
+
 /*
 .treeview span.fancytree-node:hover span.fancytree-title {
   background-color: transparent;

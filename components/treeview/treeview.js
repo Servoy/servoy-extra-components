@@ -19,6 +19,44 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
     	var theTree;
     	var clickTimeout;
     	
+		// when check boxes are shown, the fancytree 'selected' state is the checked state of a node
+		// and the (single) selected node of the treeview is the fancytree 'active' node
+		function isCheckboxMode() {
+			return $scope.model.showCheckboxes === true;
+		}
+
+		function getSelectMode() {
+			if (isCheckboxMode()) {
+				// 3: a parent is checked together with all its children, 2: nodes are checked independently
+				return $scope.model.checkboxAutoselectsChildren === false ? 2 : 3;
+			}
+			return 1;
+		}
+
+		function clearCheckedNodes() {
+			theTree.visit(function(node) {
+				node.setSelected(false, {noEvents: true});
+			});
+		}
+
+		function updateCheckboxClass() {
+			$element.toggleClass('treeview-checkable', isCheckboxMode());
+		}
+
+		$scope.$watchGroup(['model.showCheckboxes', 'model.checkboxAutoselectsChildren'], function(newValues, oldValues) {
+			if (theTree && (newValues[0] !== oldValues[0] || newValues[1] !== oldValues[1])) {
+				// the meaning of the fancytree 'selected' state is changing, so start with a clean state
+				var activeNode = theTree.getActiveNode();
+				clearCheckedNodes();
+				theTree.setOption('selectMode', getSelectMode());
+				theTree.setOption('checkbox', isCheckboxMode());
+				if (!isCheckboxMode() && activeNode) {
+					activeNode.setSelected(true, {noEvents: true});
+				}
+				updateCheckboxClass();
+			}
+		});
+
 		$scope.$watch('model.jsDataSet', function(newValue) {
 			if($scope.model.jsDataSet) {
 				treeJSON = toTreeJSON($scope.model.jsDataSet);
@@ -46,12 +84,19 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 				    highlight: false
 				  },
  				source: treeJSON,
- 				selectMode: 1,
+ 				selectMode: getSelectMode(),
+ 				checkbox: isCheckboxMode(),
 // 				extensions: ["wide"],
  				activate: function(event, data) {
-					if(!data.node.isSelected()) data.node.setSelected();
+					if (isCheckboxMode()) {
+						if($scope.handlers.onNodeSelected) $scope.handlers.onNodeSelected(data.node.key);
+					} else if(!data.node.isSelected()) {
+						data.node.setSelected();
+					}
 				},
 				click: function(event, data) {	
+					// a click on a check box only (un)checks the node
+					if (data.targetType === "checkbox") return;
 					if ($scope.handlers.onNodeClicked) {
 
 						// if double click available execute timeout
@@ -69,6 +114,7 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 					}
 				},
 				dblclick: function(event, data) {
+					if (data.targetType === "checkbox") return;
 					if($scope.handlers.onNodeDoubleClicked)  {
 			    		if(clickTimeout) {
 			    			$timeout.cancel(clickTimeout);
@@ -78,7 +124,11 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 					}
 				},
 				select: function(event, data) {
-					if($scope.handlers.onNodeSelected && data.node.isSelected()) $scope.handlers.onNodeSelected(data.node.key);
+					if (isCheckboxMode()) {
+						if($scope.handlers.onNodeChecked) $scope.handlers.onNodeChecked(data.node.key, data.node.isSelected(), data.originalEvent);
+					} else if($scope.handlers.onNodeSelected && data.node.isSelected()) {
+						$scope.handlers.onNodeSelected(data.node.key);
+					}
 				},
 				expand: function(event, data) {
 					if($scope.handlers.onNodeExpanded) $scope.handlers.onNodeExpanded(data.node.key);
@@ -159,6 +209,7 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       		}
       		
       		theTree = theTree.fancytree("getTree");
+      		updateCheckboxClass();
      	}
 		
      	  // --- Contextmenu helper --------------------------------------------------
@@ -395,7 +446,12 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       		if(theTree) {
 	  			var node = theTree.getNodeByKey(nodeId.toString());
 	  			if(node) {
-	  				node.setSelected()
+	  				if (isCheckboxMode()) {
+	  					// the selected node is the active one, the selected state of fancytree is the checked state
+	  					node.setActive();
+	  				} else {
+	  					node.setSelected();
+	  				}
 	  			}
       		}
       	}
@@ -443,6 +499,10 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
       	 */
       	$scope.api.getSeletedNode = function() {
       		if(theTree) {
+      			if (isCheckboxMode()) {
+      				var activeNode = theTree.getActiveNode();
+      				return activeNode ? activeNode.key : null;
+      			}
 	  			var nodes = theTree.getSelectedNodes();
 	  			if(nodes && nodes.length && nodes.length > 0) {
 	  				return nodes[0].key;
@@ -533,6 +593,60 @@ angular.module('servoyextraTreeview',['servoy']).directive('servoyextraTreeview'
 	  			}
       		}
       		return rootNodesId;
+      	}
+
+      	/**
+      	 * Get the ids of the checked nodes. Only available when showCheckboxes is true.
+      	 * A parent node is only included if it is fully checked (when checkboxAutoselectsChildren is true, that means all its children are checked).
+      	 *
+      	 * @example
+      	 * var checked = %%elementName%%.getCheckedNodes()
+      	 *
+      	 * @return {Array}
+      	 */
+      	$scope.api.getCheckedNodes = function() {
+      		var checkedNodesId = new Array();
+      		if(theTree && isCheckboxMode()) {
+      			var nodes = theTree.getSelectedNodes();
+      			for(var i = 0; i < nodes.length; i++) {
+      				checkedNodesId.push(nodes[i].key);
+      			}
+      		}
+      		return checkedNodesId;
+      	}
+
+      	/**
+      	 * Check or uncheck the given nodes. onNodeChecked is not triggered.
+      	 * If checkboxAutoselectsChildren is true, the descendants of the nodes are (un)checked as well.
+      	 *
+      	 * @example
+      	 * %%elementName%%.setCheckedNodes([2, 5], true)
+      	 *
+      	 * @param {Array} nodeIds ids of the nodes
+      	 * @param {Boolean} [state] true (default) to check the nodes, false to uncheck them
+      	 */
+      	$scope.api.setCheckedNodes = function(nodeIds, state) {
+      		if(theTree && isCheckboxMode() && nodeIds) {
+      			var checked = state !== false;
+      			for(var i = 0; i < nodeIds.length; i++) {
+      				var node = theTree.getNodeByKey(nodeIds[i].toString());
+      				if(node) {
+      					node.setSelected(checked, {noEvents: true});
+      				}
+      			}
+      		}
+      	}
+
+      	/**
+      	 * Uncheck all nodes. onNodeChecked is not triggered.
+      	 *
+      	 * @example
+      	 * %%elementName%%.clearCheckedNodes()
+      	 */
+      	$scope.api.clearCheckedNodes = function() {
+      		if(theTree && isCheckboxMode()) {
+      			clearCheckedNodes();
+      		}
       	}
       	
        	/**
