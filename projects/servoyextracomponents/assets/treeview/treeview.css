@@ -20,6 +20,11 @@
     font-weight: lighter;
 }
 
+.svy-treeview .treeCheckbox {
+    margin: 0 4px 0 0;
+    vertical-align: middle;
+}
+
 .svy-treeview img {
 	width: 15px;
 }
