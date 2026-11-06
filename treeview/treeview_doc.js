@@ -143,6 +143,40 @@ function getRootNodes() {
 }
 
 /**
+ * Get the ids of the checked nodes. Only available when showCheckboxes is true.
+ * A parent node is only included if it is fully checked (when checkboxAutoselectsChildren is true, that means all its children are checked).
+ *
+ * @example
+ * var checked = %%elementName%%.getCheckedNodes()
+ *
+ * @return {Array}
+ */
+function getCheckedNodes() {
+}
+
+/**
+ * Check or uncheck the given nodes. onNodeChecked is not triggered.
+ * If checkboxAutoselectsChildren is true, the descendants of the nodes are (un)checked as well.
+ *
+ * @example
+ * %%elementName%%.setCheckedNodes([2, 5], true)
+ *
+ * @param {Array} nodeIds ids of the nodes
+ * @param {Boolean} [state] true (default) to check the nodes, false to uncheck them
+ */
+function setCheckedNodes(nodeIds, state) {
+}
+
+/**
+ * Uncheck all nodes. onNodeChecked is not triggered.
+ *
+ * @example
+ * %%elementName%%.clearCheckedNodes()
+ */
+function clearCheckedNodes() {
+}
+
+/**
  * Dimm or hide unmatched nodes.
  * 
  * <br>

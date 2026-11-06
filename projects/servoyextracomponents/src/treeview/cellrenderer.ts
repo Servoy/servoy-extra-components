@@ -4,6 +4,9 @@ import { ServoyExtraTreeview } from './treeview';
   selector: 'servoyextra-treeview-cell-renderer',
   template: `
     <div style="display: inline;" (contextmenu)="oncontextmenu($event)">
+      <input *ngIf="hasCheckbox()" class="treeCheckbox" type="checkbox"
+        [checked]="row_data.checked" [indeterminate]="row_data.indeterminate"
+        (click)="$event.stopPropagation()" (change)="oncheck($event)">
       <img *ngIf="!isFAIcon() && getIcon()" [src]="getIcon()">
       <span *ngIf="isFAIcon() && getIcon()" [class]="getIcon()"></span>
       <span class="treeLabel" [class]="getFilterClass()" [innerHtml]="getLabel()"></span>
@@ -30,6 +33,15 @@ export class ServoyExtraTreeviewCellRenderer {
 
   isFAIcon() {
     return (this.cell_value && this.cell_value.isFAIcon !== undefined) ? this.cell_value.isFAIcon : false;
+  }
+
+  hasCheckbox() {
+    return this.column.name === 'treeColumn' && (this.column.treeview as ServoyExtraTreeview).showCheckboxes;
+  }
+
+  oncheck(event) {
+    const treeview: ServoyExtraTreeview = this.column.treeview;
+    treeview.checkNode(this.row_data, event.target.checked, event);
   }
 
   oncontextmenu(event) {

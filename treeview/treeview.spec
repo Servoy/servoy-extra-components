@@ -11,7 +11,9 @@
 	"keywords": [],
 	"model":
 	{
-	    "jsDataSet": {"type" :"dataset", "includeColumnNames": true, "columnTypes":{ "icon" : "media" }}
+	    "jsDataSet": {"type" :"dataset", "includeColumnNames": true, "columnTypes":{ "icon" : "media" }},
+	    "showCheckboxes": {"type":"boolean", "default":false, "tags": { "doc": "If true, a checkbox is displayed for each node. The checked state is separate from the (single) selected node, and is cleared when a new data set is set. Changing this property clears the current checked nodes." }},
+	    "checkboxAutoselectsChildren": {"type":"boolean", "default":true, "tags": { "doc": "If true, checking a node checks all its descendants and a parent node is checked when all its children are checked (shown as partially checked when only some are). If false, each node is checked independently. Changing this property clears the current checked nodes." }}
 	},	
 	"handlers":
 	{
@@ -71,6 +73,22 @@
       						{
       						"name":"nodeId",
       						"type":"object"
+      						}
+      					]},
+	    "onNodeChecked": {
+	    			"doc": "Called when the user checks or unchecks a node (only when showCheckboxes is true). Only the node that was clicked is reported, use getCheckedNodes() to get all the checked nodes (including the ones changed by checking a parent). Not called for changes made through setCheckedNodes or clearCheckedNodes.",
+		      		"parameters":[
+      						{
+      						"name":"nodeId",
+      						"type":"object"
+      						},
+      						{
+      						"name":"checked",
+      						"type":"boolean"
+      						},
+      						{
+      						"name":"event",
+      						"type":"JSEvent"
       						}
       					]},
       	"onReady": {
@@ -182,6 +200,24 @@
       	
 		"getRootNodes": {   	
       		"returns": "object"
+      	},
+      	"getCheckedNodes": {
+      		"returns": "object[]"
+      	},
+      	"setCheckedNodes": {
+      		"parameters":[
+      						{
+      						"name":"nodeIds",
+      						"type":"object[]"
+      						}, {
+      						"name":"state",
+      						"type":"boolean",
+      						"optional":true
+      						}
+      					]
+      	},
+      	"clearCheckedNodes": {
+      		"parameters":[]
       	},
       	"filterNodes": {
       		"parameters":[
