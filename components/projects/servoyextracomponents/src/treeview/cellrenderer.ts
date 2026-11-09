@@ -4,6 +4,11 @@ import { ServoyExtraTreeview } from './treeview';
     selector: 'servoyextra-treeview-cell-renderer',
     template: `
     <div [style]="display()" (contextmenu)="oncontextmenu($event)" [attr.cell-id]="cellId()">
+      @if (hasCheckbox()) {
+        <input class="treeCheckbox" type="checkbox"
+          [checked]="checked()" [indeterminate]="indeterminate()"
+          (click)="$event.stopPropagation()" (change)="oncheck($event)">
+      }
       @if (!faIcon() && icon()) {
         <img [src]="icon()">
       }
@@ -38,6 +43,21 @@ export class ServoyExtraTreeviewCellRenderer {
 
   readonly cellId = computed(() => {
     return this.row_data()?.id;
+  });
+
+  readonly hasCheckbox = computed(() => {
+    const col = this.column();
+    return !!col && col.name === 'treeColumn' && (col.treeview as ServoyExtraTreeview).showCheckboxes();
+  });
+
+  readonly checked = computed(() => {
+    const col = this.column();
+    return !!col && (col.treeview as ServoyExtraTreeview).checkedKeys().has(String(this.cellId()));
+  });
+
+  readonly indeterminate = computed(() => {
+    const col = this.column();
+    return !!col && (col.treeview as ServoyExtraTreeview).partialKeys().has(String(this.cellId()));
   });
 
   readonly filterClass = computed(() => {
@@ -80,6 +100,12 @@ export class ServoyExtraTreeviewCellRenderer {
     const treeview: ServoyExtraTreeview = col.treeview;
     return treeview.columnWidth;
   });
+
+  oncheck(event: any) {
+    const col = this.column();
+    if (!col) return;
+    (col.treeview as ServoyExtraTreeview).checkNode(this.row_data().id, event.target.checked, event);
+  }
 
   oncontextmenu(event: any) {
     const col = this.column();

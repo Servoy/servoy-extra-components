@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, SimpleChanges, inject, input, viewChild, signal } from '@angular/core';
+import { ChangeDetectionStrategy, SimpleChanges, computed, inject, input, viewChild, signal } from '@angular/core';
 import { Component } from '@angular/core';
 import { AngularTreeGridComponent } from '@servoy/angular-tree-grid';
 import { ServoyBaseComponent, ServoyPublicService, EventLike, JSEvent, LoggerFactory } from '@servoy/public';
@@ -17,7 +17,11 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
 
     readonly jsDataSet = input<any>(undefined as any);
     readonly styleClass = input<string>(undefined as any);
+    // the form template binds all model properties, so keep the spec defaults when the server doesn't send a value
+    readonly showCheckboxes = input(false, { transform: (v: boolean | undefined) => v ?? false });
+    readonly checkboxAutoselectsChildren = input(true, { transform: (v: boolean | undefined) => v ?? true });
 
+    readonly onNodeChecked = input<((nodeId: any, checked: boolean, event: any) => void) | undefined>(undefined);
     readonly onNodeClicked = input<any>(undefined as any);
     readonly onNodeCollapsed = input<any>(undefined as any);
     readonly onNodeDoubleClicked = input<any>(undefined as any);
@@ -39,6 +43,31 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     columnWidth = 'auto';
 
     readonly data = signal<IRowData[]>([]);
+
+    // lookups by String(id), used for the check box state propagation
+    private readonly rowIndex = computed(() => {
+        const byId = new Map<string, IRowData>();
+        const children = new Map<string, IRowData[]>();
+        const rows = this.data();
+        rows.forEach(row => byId.set(String(row.id), row));
+        rows.forEach(row => {
+            if (this.hasParent(row)) {
+                const parentKey = String(row.pid);
+                const siblings = children.get(parentKey);
+                if (siblings) {
+                    siblings.push(row);
+                } else {
+                    children.set(parentKey, [row]);
+                }
+            }
+        });
+        return { byId, children };
+    });
+
+    // checked state of the nodes, by String(id). A parent is only in checkedKeys when it is fully checked,
+    // when only some of its children are checked it is in partialKeys (when checkboxAutoselectsChildren is true).
+    readonly checkedKeys = signal<ReadonlySet<string>>(new Set());
+    readonly partialKeys = signal<ReadonlySet<string>>(new Set());
 
     readonly configs = signal<any>({
         id_field: 'id',
@@ -64,7 +93,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     isBranchFilter = false;
     filterMatchedNodes = signal<any[]>([]);
     filterPartNodes = signal<any[]>([]);
-    lastSelectedNode!: number;
+    lastSelectedNode: number | undefined;
 
     folderImgPath = './assets/images/folder.png';
     fileImgPath = './assets/images/file.png';
@@ -104,6 +133,13 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
                         }
                         break;
                     }
+                    case 'showCheckboxes':
+                    case 'checkboxAutoselectsChildren':
+                        // the meaning of the checked state changes, so start with a clean state
+                        if (!change.firstChange) {
+                            this.clearCheckedNodes();
+                        }
+                        break;
                 }
             }
         }
@@ -123,9 +159,15 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         super.svyOnInit();
     }
 
-    updateTreeGridData() {
+    /**
+     * (Re)builds the tree rows from the data set.
+     * @param keepChecked keep the checked nodes (a refresh of the same data), by default the checked nodes are cleared like the selection
+     */
+    updateTreeGridData(keepChecked = false) {
         const columns: any[] = [];
+        const previouslyChecked = keepChecked ? new Set(this.checkedKeys()) : new Set<string>();
         this.data.set([]);
+        this.lastSelectedNode = undefined;
         this.columnNameMap = {};
         this.columnNameMapIndex = {};
         const ids: (number | string)[] = [];
@@ -207,6 +249,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
 
         this.checkIfAllParentsExist(this.data(), ids);
         this.addDefaultIconsIfNeeded(this.data(), ids, pids);
+        this.applyCheckedKeys(previouslyChecked);
 
         if (this.onReady()) {
             setTimeout(() => {
@@ -266,6 +309,8 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         const pids = this.data().map(item => item.pid);
         this.checkIfAllParentsExist(this.data(), ids);
         this.addDefaultIconsIfNeeded(this.data(), ids, pids);
+        // keep the checked state, the parents have to reflect their (new) children again
+        this.applyCheckedKeys(new Set(this.checkedKeys()));
 
         this.cdRef.detectChanges();
     }
@@ -380,6 +425,151 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
         }
     }
 
+    private hasParent(row: IRowData): boolean {
+        return row.pid !== null && row.pid !== undefined && (row.pid as any) !== '';
+    }
+
+    /**
+     * Called by the cell renderer when the user (un)checks the check box of a node.
+     */
+    checkNode(nodeId: number | string, checked: boolean, event: any) {
+        this.applyChecked([nodeId], checked);
+        const onNodeChecked = this.onNodeChecked();
+        if (onNodeChecked) {
+            onNodeChecked(nodeId, checked, event);
+        }
+    }
+
+    /**
+     * (Un)checks the given nodes (and their descendants when checkboxAutoselectsChildren is true),
+     * and updates the state of their ancestors.
+     */
+    private applyChecked(nodeIds: (number | string)[], checked: boolean) {
+        const { byId, children } = this.rowIndex();
+        const checkedSet = new Set(this.checkedKeys());
+        const partialSet = new Set(this.partialKeys());
+        const autoselect = this.checkboxAutoselectsChildren();
+
+        const setNode = (row: IRowData) => {
+            const key = String(row.id);
+            if (checked) {
+                checkedSet.add(key);
+            } else {
+                checkedSet.delete(key);
+            }
+            partialSet.delete(key);
+        };
+        const visited = new Set<string>();
+        const setWithDescendants = (row: IRowData) => {
+            // the visited set guards against a parent cycle in the data
+            if (visited.has(String(row.id))) return;
+            visited.add(String(row.id));
+            setNode(row);
+            children.get(String(row.id))?.forEach(setWithDescendants);
+        };
+
+        nodeIds.forEach(nodeId => {
+            const row = byId.get(String(nodeId));
+            if (!row) return;
+            if (autoselect) {
+                setWithDescendants(row);
+                this.updateAncestorsCheckedState(row, byId, children, checkedSet, partialSet);
+            } else {
+                setNode(row);
+            }
+        });
+        this.checkedKeys.set(checkedSet);
+        this.partialKeys.set(partialSet);
+    }
+
+    // a parent is checked when all its children are checked, and partially checked when only some of them are
+    private updateAncestorsCheckedState(row: IRowData, byId: Map<string, IRowData>, children: Map<string, IRowData[]>,
+        checkedSet: Set<string>, partialSet: Set<string>) {
+        let parent = this.hasParent(row) ? byId.get(String(row.pid)) : undefined;
+        // bounded by the number of rows, in case the data contains a parent cycle
+        for (let i = 0; parent && i < byId.size; i++) {
+            const key = String(parent.id);
+            const siblings = children.get(key) ?? [];
+            const allChecked = siblings.every(child => checkedSet.has(String(child.id)));
+            const someChecked = siblings.some(child => checkedSet.has(String(child.id)) || partialSet.has(String(child.id)));
+            if (allChecked) {
+                checkedSet.add(key);
+            } else {
+                checkedSet.delete(key);
+            }
+            if (!allChecked && someChecked) {
+                partialSet.add(key);
+            } else {
+                partialSet.delete(key);
+            }
+            parent = this.hasParent(parent) ? byId.get(String(parent.pid)) : undefined;
+        }
+    }
+
+    /**
+     * Restores the checked state after the rows were rebuilt: nodes that no longer exist are dropped and
+     * (when checkboxAutoselectsChildren is true) the parents are derived again from their children.
+     */
+    private applyCheckedKeys(keys: ReadonlySet<string>) {
+        const { byId, children } = this.rowIndex();
+        const checkedSet = new Set<string>();
+        keys.forEach(key => {
+            if (byId.has(key)) checkedSet.add(key);
+        });
+        const partialSet = new Set<string>();
+        if (this.checkboxAutoselectsChildren()) {
+            byId.forEach(row => {
+                if (!children.has(String(row.id))) {
+                    this.updateAncestorsCheckedState(row, byId, children, checkedSet, partialSet);
+                }
+            });
+        }
+        this.checkedKeys.set(checkedSet);
+        this.partialKeys.set(partialSet);
+    }
+
+    /**
+     * Get the ids of the checked nodes. Only available when showCheckboxes is true.
+     * A parent node is only included if it is fully checked (when checkboxAutoselectsChildren is true, that means all its children are checked).
+     *
+     * @example
+     * var checked = %%elementName%%.getCheckedNodes()
+     *
+     * @return array of checked node ids
+     */
+    getCheckedNodes() {
+        if (!this.showCheckboxes()) return [];
+        const checkedSet = this.checkedKeys();
+        return this.data().filter(row => checkedSet.has(String(row.id))).map(row => row.id);
+    }
+
+    /**
+     * Check or uncheck the given nodes. onNodeChecked is not triggered.
+     * If checkboxAutoselectsChildren is true, the descendants of the nodes are (un)checked as well.
+     *
+     * @example
+     * %%elementName%%.setCheckedNodes([2, 5], true)
+     *
+     * @param nodeIds ids of the nodes
+     * @param [state] true (default) to check the nodes, false to uncheck them
+     */
+    setCheckedNodes(nodeIds: (number | string)[], state?: boolean) {
+        if (this.showCheckboxes() && nodeIds) {
+            this.applyChecked(nodeIds, state !== false);
+        }
+    }
+
+    /**
+     * Uncheck all nodes. onNodeChecked is not triggered.
+     *
+     * @example
+     * %%elementName%%.clearCheckedNodes()
+     */
+    clearCheckedNodes() {
+        this.checkedKeys.set(new Set());
+        this.partialKeys.set(new Set());
+    }
+
     /**
      * Refresh the tree display.
      *
@@ -393,7 +583,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
                 this.angularGrid()!.store.refreshDisplayData();
             } else {
                 this.angularGrid()!.collapseAll();
-                this.updateTreeGridData();
+                this.updateTreeGridData(true);
             }
             this.cdRef.detectChanges();
         }
