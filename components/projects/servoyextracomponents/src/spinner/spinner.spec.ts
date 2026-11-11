@@ -189,4 +189,99 @@ describe('ServoyExtraSpinner', () => {
         await fixture.whenStable();
         expect(changeSpy).not.toHaveBeenCalled();
     });
+
+    it('increment advances the counter and wraps around at the end', async () => {
+        fixture.componentRef.setInput('dataProviderID', 3);
+        fixture.detectChanges();
+        await fixture.whenStable();
+        // mockData order: realValue 3,1,2 -> starting counter is 0 (value 3)
+        component.increment();
+        expect(component._dataProviderID()).toBe(1);
+        component.increment();
+        expect(component._dataProviderID()).toBe(2);
+        component.increment();
+        // wraps back to the first
+        expect(component._dataProviderID()).toBe(3);
+    });
+
+    it('decrement goes backwards and wraps to the end', async () => {
+        fixture.componentRef.setInput('dataProviderID', 3);
+        fixture.detectChanges();
+        await fixture.whenStable();
+        component.decrement();
+        // from counter 0 wraps to last (value 2)
+        expect(component._dataProviderID()).toBe(2);
+    });
+
+    it('isDisabled reflects enabled and editable', async () => {
+        fixture.componentRef.setInput('enabled', true);
+        fixture.componentRef.setInput('editable', true);
+        fixture.detectChanges();
+        expect(component.isDisabled()).toBe(false);
+        fixture.componentRef.setInput('editable', false);
+        fixture.detectChanges();
+        expect(component.isDisabled()).toBe(true);
+    });
+
+    it('getSelectionFromDataprovider returns the display value for the current data', async () => {
+        fixture.componentRef.setInput('dataProviderID', 2);
+        fixture.detectChanges();
+        await fixture.whenStable();
+        expect(component.getSelectionFromDataprovider()).toBe('Value 2');
+    });
+
+    it('getSelectionFromDataprovider returns undefined for empty data', async () => {
+        fixture.componentRef.setInput('dataProviderID', null);
+        fixture.detectChanges();
+        await fixture.whenStable();
+        expect(component.getSelectionFromDataprovider()).toBeUndefined();
+    });
+
+    it('isScrollingUp detects wheel direction', () => {
+        expect(component.isScrollingUp({ wheelDelta: 10 })).toBe(true);
+        expect(component.isScrollingUp({ deltaY: 10 })).toBe(false);
+    });
+
+    it('scrollCallback increments when scrolling up and the field is enabled', async () => {
+        fixture.componentRef.setInput('dataProviderID', 3);
+        fixture.detectChanges();
+        await fixture.whenStable();
+        const spy = vi.spyOn(component, 'increment');
+        component.scrollCallback({ wheelDelta: 10, preventDefault: vi.fn() });
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('scrollCallback decrements when scrolling down', async () => {
+        fixture.componentRef.setInput('dataProviderID', 3);
+        fixture.detectChanges();
+        await fixture.whenStable();
+        const spy = vi.spyOn(component, 'decrement');
+        component.scrollCallback({ deltaY: 10, preventDefault: vi.fn() });
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('keydownKeypressCallback handles arrow up and down', async () => {
+        fixture.componentRef.setInput('dataProviderID', 3);
+        fixture.detectChanges();
+        await fixture.whenStable();
+        const up = vi.spyOn(component, 'increment');
+        const down = vi.spyOn(component, 'decrement');
+        component.keydownKeypressCallback({ which: 38 });
+        expect(up).toHaveBeenCalled();
+        component.keydownKeypressCallback({ which: 40 });
+        expect(down).toHaveBeenCalled();
+    });
+
+    it('getFocusElement returns the native element', () => {
+        expect(component.getFocusElement()).toBe(component.getNativeElement());
+    });
+
+    it('pushUpdate emits the current dataProviderID', () => {
+        const spy = vi.fn();
+        component.dataProviderIDChange.subscribe(spy);
+        component._dataProviderID.set(42);
+        component.pushUpdate();
+        expect(spy).toHaveBeenCalledWith(42);
+    });
+
 });

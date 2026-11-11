@@ -118,4 +118,121 @@ describe('ServoyExtraFileUpload', () => {
         component.onComplete();
         expect(onFileTransferFinished).toHaveBeenCalled();
     });
+
+    it('getFocusElement returns the native element', () => {
+        expect(component.getFocusElement()).toBe(component.getNativeElement());
+    });
+
+    it('fileOverBase toggles the drop-zone-over flag', () => {
+        component.fileOverBase(true);
+        expect(component.hasBaseDropZoneOver()).toBe(true);
+        component.fileOverBase(false);
+        expect(component.hasBaseDropZoneOver()).toBe(false);
+    });
+
+    it('fileInputClick clicks the label element', () => {
+        const label = component.fileInputLabel();
+        if (label) {
+            const spy = vi.spyOn(label.nativeElement, 'click');
+            component.fileInputClick();
+            expect(spy).toHaveBeenCalled();
+        }
+    });
+
+    it('onComplete resets state and shows the success text', () => {
+        fixture.componentRef.setInput('uploadSuccessText', 'Done!');
+        fixture.componentRef.setInput('resultDisplayTimeout', -1);
+        fixture.detectChanges();
+        component.onComplete();
+        expect(component.customText()).toBe('Done!');
+    });
+
+    it('onWhenAddingFileFailed shows the file-size message for a fileSize filter', () => {
+        fixture.componentRef.setInput('resultDisplayTimeout', -1);
+        fixture.detectChanges();
+        component.onWhenAddingFileFailed({ size: 5000, name: 'big.txt' }, { name: 'fileSize' }, { maxFileSize: 1000 });
+        expect(component.customText()).toContain('exceeds the maximum allowed size');
+    });
+
+    it('onWhenAddingFileFailed shows the not-supported text for other filters', () => {
+        fixture.componentRef.setInput('uploadNotSupportedFileText', 'Nope');
+        fixture.componentRef.setInput('resultDisplayTimeout', -1);
+        fixture.detectChanges();
+        component.onWhenAddingFileFailed({ size: 1, name: 'x' }, { name: 'emptyType' }, {});
+        expect(component.customText()).toBe('Nope');
+    });
+
+    it('hideProgress clears the progress after the timeout', () => {
+        vi.useFakeTimers();
+        fixture.componentRef.setInput('resultDisplayTimeout', 100);
+        fixture.componentRef.setInput('uploadText', 'Upload again');
+        fixture.detectChanges();
+        component.uploader.progress = 80;
+        component.hideProgress();
+        vi.advanceTimersByTime(100);
+        expect(component.uploader.progress).toBe(0);
+        expect(component.customText()).toBe('Upload again');
+        vi.useRealTimers();
+    });
+
+    it('svyOnChanges disables the component and shows the disabled message', () => {
+        component.svyOnChanges({ enabled: { currentValue: false, previousValue: true, firstChange: false, isFirstChange: () => false } });
+        expect(component.getFocusElement().getAttribute('disabled')).toBe('disabled');
+    });
+
+    it('svyOnChanges re-enables the component and restores the upload text', () => {
+        fixture.componentRef.setInput('uploadText', 'Pick a file');
+        fixture.detectChanges();
+        component.svyOnChanges({ enabled: { currentValue: true, previousValue: false, firstChange: false, isFirstChange: () => false } });
+        expect(component.getFocusElement().getAttribute('disabled')).toBeNull();
+        expect(component.customText()).toBe('Pick a file');
+    });
+
+    it('svyOnChanges updates the custom text when uploadText changes (not first change)', () => {
+        fixture.componentRef.setInput('uploadText', 'New text');
+        fixture.detectChanges();
+        component.svyOnChanges({ uploadText: { currentValue: 'New text', previousValue: 'Old', firstChange: false, isFirstChange: () => false } });
+        expect(component.customText()).toBe('New text');
+    });
+
+    it('configures accept filters for image/* via initializeComponent', () => {
+        const newFixture = TestBed.createComponent(ServoyExtraFileUpload);
+        newFixture.componentRef.setInput('servoyApi', new ServoyApiTesting());
+        newFixture.componentRef.setInput('enabled', true);
+        newFixture.componentRef.setInput('accept', 'image/*');
+        newFixture.componentRef.setInput('multiFileUpload', false);
+        newFixture.componentRef.setInput('resultDisplayTimeout', 2000);
+        newFixture.componentRef.setInput('uploadText', 'Upload File');
+        newFixture.componentRef.setInput('uploadSuccessText', 'Success!');
+        newFixture.componentRef.setInput('uploadNotSupportedFileText', 'File type not supported');
+        newFixture.detectChanges();
+        const comp = newFixture.componentInstance as ServoyExtraFileUpload;
+        expect(comp.acceptFiles()).toContain('image/');
+        expect(comp.uploader).toBeTruthy();
+    });
+
+    it('maps a plain extension accept value to a mime type', () => {
+        const newFixture = TestBed.createComponent(ServoyExtraFileUpload);
+        newFixture.componentRef.setInput('servoyApi', new ServoyApiTesting());
+        newFixture.componentRef.setInput('enabled', true);
+        newFixture.componentRef.setInput('accept', '.pdf');
+        newFixture.componentRef.setInput('multiFileUpload', false);
+        newFixture.componentRef.setInput('resultDisplayTimeout', 2000);
+        newFixture.componentRef.setInput('uploadText', 'Upload File');
+        newFixture.componentRef.setInput('uploadSuccessText', 'Success!');
+        newFixture.componentRef.setInput('uploadNotSupportedFileText', 'File type not supported');
+        newFixture.detectChanges();
+        const comp = newFixture.componentInstance as ServoyExtraFileUpload;
+        expect(comp.acceptFiles()).toContain('application/pdf');
+    });
+
+    it('ngOnDestroy clears a pending progress timer', () => {
+        vi.useFakeTimers();
+        fixture.componentRef.setInput('resultDisplayTimeout', 100);
+        fixture.detectChanges();
+        component.hideProgress();
+        expect(() => component.ngOnDestroy()).not.toThrow();
+        vi.useRealTimers();
+    });
+
 });

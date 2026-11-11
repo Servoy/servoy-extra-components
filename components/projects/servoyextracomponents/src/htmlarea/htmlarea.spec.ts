@@ -148,4 +148,142 @@ describe('ServoyExtraHtmlarea', () => {
         component.pushUpdate();
         expect(emitSpy).toHaveBeenCalledWith('test value');
     });
+
+    function makeEditorMock() {
+        return {
+            mode: { set: vi.fn() },
+            getContent: vi.fn().mockReturnValue('<p>content</p>'),
+            getContainer: vi.fn().mockReturnValue(document.createElement('div')),
+            addShortcut: vi.fn(),
+            focus: vi.fn(),
+            selection: { select: vi.fn(), getContent: vi.fn().mockReturnValue('sel'), setContent: vi.fn() },
+            getBody: vi.fn().mockReturnValue(document.createElement('div')),
+            getWin: vi.fn().mockReturnValue({ scrollX: 10, scrollY: 20, scrollTo: vi.fn() })
+        } as any;
+    }
+
+    it('onInit stores the editor and sets readonly when not editable', () => {
+        fixture.componentRef.setInput('enabled', false);
+        fixture.detectChanges();
+        const editor = makeEditorMock();
+        component.onInit({ editor });
+        expect(component.getEditor()).toBe(editor);
+        expect(editor.mode.set).toHaveBeenCalledWith('readonly');
+    });
+
+    it('onInit leaves the editor in design mode when editable', () => {
+        fixture.componentRef.setInput('enabled', true);
+        fixture.componentRef.setInput('editable', true);
+        fixture.componentRef.setInput('readOnly', false);
+        fixture.detectChanges();
+        const editor = makeEditorMock();
+        component.onInit({ editor });
+        expect(editor.mode.set).not.toHaveBeenCalledWith('readonly');
+    });
+
+    it('svyOnChanges toggles editor mode to readonly when disabled', () => {
+        const editor = makeEditorMock();
+        component.onInit({ editor });
+        editor.mode.set.mockClear();
+        fixture.componentRef.setInput('enabled', false);
+        component.svyOnChanges({ enabled: { previousValue: true, currentValue: false, firstChange: false, isFirstChange: () => false } });
+        expect(editor.mode.set).toHaveBeenCalledWith('readonly');
+    });
+
+    it('svyOnChanges adds and removes style classes', () => {
+        component.svyOnChanges({ styleClass: { previousValue: '', currentValue: 'a b', firstChange: false, isFirstChange: () => false } });
+        expect(component.getNativeElement().classList.contains('a')).toBe(true);
+        expect(component.getNativeElement().classList.contains('b')).toBe(true);
+        component.svyOnChanges({ styleClass: { previousValue: 'a b', currentValue: 'c', firstChange: false, isFirstChange: () => false } });
+        expect(component.getNativeElement().classList.contains('a')).toBe(false);
+        expect(component.getNativeElement().classList.contains('c')).toBe(true);
+    });
+
+    it('addShortCut registers a shortcut on the editor when present', () => {
+        const editor = makeEditorMock();
+        component.onInit({ editor });
+        const cb = vi.fn();
+        component.addShortCut('ctrl+k', cb);
+        expect(editor.addShortcut).toHaveBeenCalledWith('ctrl+k', '', cb);
+    });
+
+    it('selectAll selects the whole editor body', () => {
+        const editor = makeEditorMock();
+        component.onInit({ editor });
+        component.selectAll();
+        expect(editor.selection.select).toHaveBeenCalled();
+    });
+
+    it('getSelectedText returns the current selection content', () => {
+        const editor = makeEditorMock();
+        component.onInit({ editor });
+        expect(component.getSelectedText()).toBe('sel');
+    });
+
+    it('getAsPlainText reads the text content of the editor', () => {
+        const editor = makeEditorMock();
+        component.onInit({ editor });
+        component.getAsPlainText();
+        expect(editor.getContent).toHaveBeenCalledWith({ format: 'text' });
+    });
+
+    it('getScrollX and getScrollY read the editor window scroll position', () => {
+        const editor = makeEditorMock();
+        component.onInit({ editor });
+        expect(component.getScrollX()).toBe(10);
+        expect(component.getScrollY()).toBe(20);
+    });
+
+    it('setScroll scrolls the editor window', () => {
+        const editor = makeEditorMock();
+        component.onInit({ editor });
+        component.setScroll(5, 6);
+        expect(editor.getWin().scrollTo).toHaveBeenCalledWith(5, 6);
+    });
+
+    it('replaceSelectedText sets content and emits a data change when it changed', () => {
+        const editor = makeEditorMock();
+        component.onInit({ editor });
+        component.lastServerValueAsSeenByTinyMCEContent = 'old';
+        const emitSpy = vi.fn();
+        component.dataProviderIDChange.subscribe(emitSpy);
+        const result = component.replaceSelectedText('new text');
+        expect(editor.selection.setContent).toHaveBeenCalledWith('new text');
+        expect(emitSpy).toHaveBeenCalled();
+        expect(result).toContain('content');
+    });
+
+    it('setTabIndex applies the tab index to the editor iframe', () => {
+        const container = document.createElement('div');
+        const iframe = document.createElement('iframe');
+        container.appendChild(iframe);
+        const editor = makeEditorMock();
+        editor.getContainer = vi.fn().mockReturnValue(container);
+        component.onInit({ editor });
+        component.setTabIndex(4);
+        expect(iframe.tabIndex).toBe(4);
+    });
+
+    it('keyUp re-dispatches a keyup on the native element', () => {
+        const spy = vi.fn();
+        component.getNativeElement().addEventListener('keyup', spy);
+        component.keyUp({ event: { key: 'a' } });
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('requestFocus focuses the editor when it is present', () => {
+        const editor = makeEditorMock();
+        component.onInit({ editor });
+        component.requestFocus(true);
+        expect(editor.focus).toHaveBeenCalled();
+    });
+
+    it('svyOnChanges sets minHeight for responsiveHeight in responsive layout', () => {
+        const api: any = component.servoyApi();
+        vi.spyOn(api, 'isInAbsoluteLayout').mockReturnValue(false);
+        fixture.componentRef.setInput('responsiveHeight', 250);
+        component.svyOnChanges({ responsiveHeight: { previousValue: 0, currentValue: 250, firstChange: false, isFirstChange: () => false } });
+        expect(component.getNativeElement().style.minHeight).toBe('250px');
+    });
+
 });

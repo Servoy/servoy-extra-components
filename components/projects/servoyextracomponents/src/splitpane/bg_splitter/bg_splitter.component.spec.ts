@@ -248,4 +248,88 @@ describe('BGSplitter (SVY-21650 nested init width)', () => {
             expect(recalcSpy).not.toHaveBeenCalled();
         });
     });
+
+    describe('pointer dragging', () => {
+        it('starts dragging only when pointerdown hits the handler', async () => {
+            await mountAndSettle();
+            const splitter = fixture.componentInstance.splitter()!;
+            const handler = (splitter as any).handler as HTMLElement;
+            (splitter as any).doc.elementFromPoint = () => handler;
+            const ev: any = { clientX: 10, clientY: 10, preventDefault: vi.fn() };
+            splitter.pointerdown(ev);
+            expect((splitter as any).drag).toBe(true);
+            expect(ev.preventDefault).toHaveBeenCalled();
+        });
+
+        it('does not start dragging when pointerdown misses the handler', async () => {
+            await mountAndSettle();
+            const splitter = fixture.componentInstance.splitter()!;
+            (splitter as any).doc.elementFromPoint = () => document.createElement('div');
+            splitter.pointerdown({ clientX: 10, clientY: 10, preventDefault: vi.fn() } as any);
+            expect((splitter as any).drag).toBe(false);
+        });
+
+        it('pointermove repositions the panes while dragging (horizontal)', async () => {
+            await mountAndSettle();
+            const splitter = fixture.componentInstance.splitter()!;
+            (splitter as any).drag = true;
+            splitter.pointermove({ clientX: 500, clientY: 0 } as any);
+            const panes = getPaneElements(fixture);
+            expect(parseInt(panes[0].style.width, 10)).toBe(500);
+        });
+
+        it('pointermove does nothing when not dragging', async () => {
+            await mountAndSettle();
+            const splitter = fixture.componentInstance.splitter()!;
+            const panes = getPaneElements(fixture);
+            const before = panes[0].style.width;
+            splitter.pointermove({ clientX: 999, clientY: 0 } as any);
+            expect(panes[0].style.width).toBe(before);
+        });
+
+        it('pointerup emits the divider change based on the handler position', async () => {
+            await mountAndSettle();
+            const splitter = fixture.componentInstance.splitter()!;
+            const handler = (splitter as any).handler as HTMLElement;
+            handler.style.left = '420px';
+            (splitter as any).drag = true;
+            fixture.componentInstance.dividerChanges = [];
+            splitter.pointerup({} as any);
+            expect(fixture.componentInstance.dividerChanges).toContain(420);
+            expect((splitter as any).drag).toBe(false);
+        });
+
+        it('pointerup does not emit when not dragging', async () => {
+            await mountAndSettle();
+            const splitter = fixture.componentInstance.splitter()!;
+            fixture.componentInstance.dividerChanges = [];
+            splitter.pointerup({} as any);
+            expect(fixture.componentInstance.dividerChanges).toHaveLength(0);
+        });
+
+        it('pointermove honors the pane minSize and refuses to move past it', async () => {
+            fixture.componentInstance.pane1MinSize = 600;
+            await mountAndSettle();
+            const splitter = fixture.componentInstance.splitter()!;
+            const panes = getPaneElements(fixture);
+            const before = panes[0].style.width;
+            (splitter as any).drag = true;
+            // request a position smaller than pane1 minSize -> adjust should bail out
+            splitter.pointermove({ clientX: 100, clientY: 0 } as any);
+            expect(panes[0].style.width).toBe(before);
+        });
+    });
+
+    describe('vertical orientation', () => {
+        it('sizes panes by height when vertical', async () => {
+            fixture.componentInstance.orientation = 'vertical';
+            await mountAndSettle();
+            const splitter = fixture.componentInstance.splitter()!;
+            (splitter as any).drag = true;
+            splitter.pointermove({ clientX: 0, clientY: 120 } as any);
+            const panes = getPaneElements(fixture);
+            expect(parseInt(panes[0].style.height, 10)).toBe(120);
+        });
+    });
+
 });

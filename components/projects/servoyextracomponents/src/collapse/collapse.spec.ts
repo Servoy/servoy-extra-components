@@ -222,4 +222,135 @@ describe('ServoyExtraCollapse', () => {
         const text3 = fixture.nativeElement.querySelector('.svy-collapse')?.textContent;
         expect(text3).toContain('Content 1');
     });
+
+    it('getFormIfVisible returns the form only when expanded and visible server-side', () => {
+        const c: any = { form: 'myForm', isCollapsed: false, formIsVisibleServerSide: true };
+        expect(component.getFormIfVisible(c)).toBe('myForm');
+        expect(component.getFormIfVisible({ form: 'myForm', isCollapsed: true, formIsVisibleServerSide: true } as any)).toBe('');
+        expect(component.getFormIfVisible({ form: 'myForm', isCollapsed: false, formIsVisibleServerSide: false } as any)).toBe('');
+        expect(component.getFormIfVisible(null as any)).toBe('');
+    });
+
+    it('getCardFormIfVisible returns the card form only when the collapsible is open and visible', () => {
+        const collapse: any = { isCollapsed: false, formIsVisibleServerSide: true };
+        expect(component.getCardFormIfVisible(collapse, { form: 'cardForm' } as any)).toBe('cardForm');
+        expect(component.getCardFormIfVisible({ isCollapsed: true, formIsVisibleServerSide: true } as any, { form: 'cardForm' } as any)).toBe('');
+    });
+
+    it('getFormStyle sets a fixed height for an absolute form', () => {
+        vi.spyOn((component as any).servoyPublic, 'getFormCacheByName').mockReturnValue({ absolute: true, size: { height: 250 } } as any);
+        const style = component.getFormStyle('absForm');
+        expect(style.height).toBe('250px');
+    });
+
+    it('getFormStyle sets min/max height for a responsive form with a real height', () => {
+        vi.spyOn((component as any).servoyPublic, 'getFormCacheByName').mockReturnValue({ absolute: false, size: { height: 120 } } as any);
+        const style = component.getFormStyle('respForm');
+        expect(style['min-height']).toBe('120px');
+        expect(style['max-height']).toBe('120px');
+    });
+
+    it('getFormStyle leaves a zero-height responsive form unconstrained', () => {
+        vi.spyOn((component as any).servoyPublic, 'getFormCacheByName').mockReturnValue({ absolute: false, size: { height: 0 } } as any);
+        const style = component.getFormStyle('respForm0');
+        expect(style['min-height']).toBeUndefined();
+        expect(style['max-height']).toBeUndefined();
+    });
+
+    it('getFormStyle returns the same cached object when the style is unchanged', () => {
+        vi.spyOn((component as any).servoyPublic, 'getFormCacheByName').mockReturnValue({ absolute: true, size: { height: 300 } } as any);
+        const a = component.getFormStyle('cachedForm');
+        const b = component.getFormStyle('cachedForm');
+        expect(a).toBe(b);
+    });
+
+    it('isTrustedHTML reflects servoyApi.trustAsHtml', () => {
+        const api = component.servoyApi();
+        vi.spyOn(api, 'trustAsHtml').mockReturnValue(true);
+        expect(component.isTrustedHTML()).toBe(true);
+        vi.spyOn(api, 'trustAsHtml').mockReturnValue(false);
+        expect(component.isTrustedHTML()).toBe(false);
+    });
+
+    it('show() opens the collapsible at the given index', async () => {
+        const updated = createDefaultCollapsibles();
+        updated[0].isCollapsed = true;
+        updated[1].isCollapsed = true;
+        fixture.componentRef.setInput('collapsibles', updated);
+        fixture.detectChanges();
+        component.show(1);
+        fixture.detectChanges();
+        await fixture.whenStable();
+        expect(component.collapsibles()![1].isCollapsed).toBe(false);
+    });
+
+    it('hide() closes the collapsible at the given index', async () => {
+        component.hide(0);
+        fixture.detectChanges();
+        await fixture.whenStable();
+        expect(component.collapsibles()![0].isCollapsed).toBe(true);
+    });
+
+    it('show() defaults to index 0 when called without a valid index', async () => {
+        const updated = createDefaultCollapsibles();
+        updated[0].isCollapsed = true;
+        fixture.componentRef.setInput('collapsibles', updated);
+        fixture.detectChanges();
+        component.show(undefined as any);
+        fixture.detectChanges();
+        await fixture.whenStable();
+        expect(component.collapsibles()![0].isCollapsed).toBe(false);
+    });
+
+    it('onCardClick calls the onCardClicked handler for an existing card', () => {
+        const onCardClicked = vi.fn();
+        const withCards = createDefaultCollapsibles();
+        withCards[0].cards = [{ cardId: 'c0', contentHtml: 'x', form: '', minResponsiveHeight: 0, maxResponsiveHeight: 0, styleClass: '' }];
+        fixture.componentRef.setInput('collapsibles', withCards);
+        fixture.componentRef.setInput('onCardClicked', onCardClicked);
+        fixture.detectChanges();
+        const target = document.createElement('div');
+        component.onCardClick({ target } as any, 0, 0);
+        expect(onCardClicked).toHaveBeenCalled();
+        expect(onCardClicked.mock.calls[0][1]).toBe(withCards[0].cards[0]);
+    });
+
+    it('onCardClick passes null card when the card index is out of range', () => {
+        const onCardClicked = vi.fn();
+        fixture.componentRef.setInput('onCardClicked', onCardClicked);
+        fixture.detectChanges();
+        const target = document.createElement('div');
+        component.onCardClick({ target } as any, 99, 0);
+        expect(onCardClicked).toHaveBeenCalled();
+        expect(onCardClicked.mock.calls[0][1]).toBeNull();
+    });
+
+    it('checkIfCollapsibleHaveUniqueIds warns and returns true for duplicate ids', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => { /* noop */ });
+        const dup = createDefaultCollapsibles();
+        dup[1].collapsibleId = '1';
+        expect((component as any).checkIfCollapsibleHaveUniqueIds(dup)).toBe(true);
+        expect(warn).toHaveBeenCalled();
+        warn.mockRestore();
+    });
+
+    it('checkIfCollapsibleHaveUniqueIds returns false for unique ids', () => {
+        expect((component as any).checkIfCollapsibleHaveUniqueIds(createDefaultCollapsibles())).toBe(false);
+    });
+
+    it('checkIfCollapsibleHaveUniqueIds returns false for empty input', () => {
+        expect((component as any).checkIfCollapsibleHaveUniqueIds([])).toBe(false);
+    });
+
+    it('svyOnInit opens the first expanded index and keeps others collapsed in accordion mode', () => {
+        const updated = createDefaultCollapsibles();
+        updated.forEach(c => c.isCollapsed = true);
+        fixture.componentRef.setInput('accordionMode', true);
+        fixture.componentRef.setInput('expandedIndices', [0, 1]);
+        fixture.componentRef.setInput('collapsibles', updated);
+        component.svyOnInit();
+        expect(updated[0].isCollapsed).toBe(false);
+        expect(updated[1].isCollapsed).toBe(true);
+    });
+
 });

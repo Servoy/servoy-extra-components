@@ -296,4 +296,196 @@ describe('ServoyExtraTreeview', () => {
             expect(boxes.length).toBeGreaterThan(0);
         });
     });
+
+    describe('tree grid API (with mocked angular grid)', () => {
+        let displayData: any[];
+        let gridMock: any;
+
+        beforeEach(() => {
+            displayData = [
+                { id: '1', pid: null, pathx: '0', levelx: 0, row_selected: false },
+                { id: '2', pid: null, pathx: '1', levelx: 0, row_selected: false },
+                { id: '3', pid: '2', pathx: '1.0', levelx: 1, row_selected: false },
+                { id: '4', pid: '3', pathx: '1.0.0', levelx: 2, row_selected: false },
+                { id: '5', pid: '3', pathx: '1.0.1', levelx: 2, row_selected: false }
+            ];
+            gridMock = {
+                store: {
+                    getDisplayData: () => displayData,
+                    getProcessedData: () => displayData.map(d => ({ ...d, treeColumn: { text: d.id === '3' ? 'Subgroup' : 'Node ' + d.id } })),
+                    findChildren: (_data: any, nodeId: any) => displayData.filter(d => d.pid === nodeId),
+                    refreshDisplayData: vi.fn(),
+                    filterBy: vi.fn()
+                },
+                expand_tracker: { '1.0': true },
+                collapseAll: vi.fn(),
+                expandAll: vi.fn(),
+                expandRow: vi.fn(),
+                collapseRow: vi.fn()
+            };
+            // substitute the viewChild signal with a function returning our mock
+            (component as any).angularGrid = () => gridMock;
+            component.isTreeReady.set(true);
+        });
+
+        it('nodeExist returns true for an existing node and false otherwise', () => {
+            expect(component.nodeExist('3')).toBe(true);
+            expect(component.nodeExist('nope')).toBe(false);
+        });
+
+        it('expandNode expands an existing node', () => {
+            component.expandNode('3');
+            expect(gridMock.expandRow).toHaveBeenCalledWith('3');
+        });
+
+        it('expandNode warns for a missing node', () => {
+            const warn = vi.fn();
+            (component as any).log = { warn };
+            component.expandNode('missing');
+            expect(warn).toHaveBeenCalled();
+        });
+
+        it('isNodeExpanded reflects the expand tracker', () => {
+            expect(component.isNodeExpanded('3')).toBe(true);
+            expect(component.isNodeExpanded('1')).toBe(false);
+        });
+
+        it('collapseNode collapses the given node', () => {
+            component.collapseNode('3');
+            expect(gridMock.collapseRow).toHaveBeenCalledWith('3');
+        });
+
+        it('expandAll and collapseAll return true when ready', () => {
+            expect(component.expandAll()).toBe(true);
+            expect(gridMock.expandAll).toHaveBeenCalled();
+            expect(component.collapseAll()).toBe(true);
+            expect(gridMock.collapseAll).toHaveBeenCalled();
+        });
+
+        it('getChildNodes returns the child ids of a parent', () => {
+            expect(component.getChildNodes('3')).toEqual(['4', '5']);
+        });
+
+        it('getParentNode returns the parent id', () => {
+            expect(component.getParentNode('3')).toBe('2');
+        });
+
+        it('getNodeLevel returns the 1-based level', () => {
+            expect(component.getNodeLevel('4')).toBe(3);
+            expect(component.getNodeLevel('unknown')).toBe(-1);
+        });
+
+        it('getRootNodes returns the nodes without a parent', () => {
+            expect(component.getRootNodes()).toEqual(['1', '2']);
+        });
+
+        it('setSelectedNode marks a node selected', () => {
+            component.setSelectedNode('2');
+            const row = displayData.find(d => d.id === '2');
+            expect(row.row_selected).toBe(true);
+        });
+
+        it('getSelectedNode returns the selected node id', () => {
+            displayData.find(d => d.id === '4')!.row_selected = true;
+            expect(component.getSelectedNode()).toBe('4');
+        });
+
+        it('getSeletedNode (deprecated) returns the selected node id', () => {
+            displayData.find(d => d.id === '5')!.row_selected = true;
+            expect(component.getSeletedNode()).toBe('5');
+        });
+
+        it('refresh with restoreExpandedNodes calls refreshDisplayData', () => {
+            component.refresh(true);
+            expect(gridMock.store.refreshDisplayData).toHaveBeenCalled();
+        });
+
+        it('filterNodes applies a non-branch filter', () => {
+            component.filterNodes('Sub', { autoExpand: true });
+            expect(component.filterText()).toBe('Sub');
+            expect(component.isBranchFilter).toBe(false);
+            expect(gridMock.store.filterBy).toHaveBeenCalled();
+            expect(component.filterMatchedNodes()).toContain('3');
+        });
+
+        it('filterBranches applies a branch filter', () => {
+            component.filterBranches('Sub', {});
+            expect(component.isBranchFilter).toBe(true);
+            expect(component.filterMatchedNodes()).toContain('3');
+        });
+
+        it('getFilteredNodes clears matches when the filter text is empty', () => {
+            component.filterText.set('');
+            component.getFilteredNodes();
+            expect(component.filterMatchedNodes()).toEqual([]);
+            expect(component.filterPartNodes()).toEqual([]);
+        });
+
+        it('setColumnWidth sets the width on all columns', () => {
+            // ensure there are columns
+            component.updateTreeGridData();
+            component.setColumnWidth(120);
+            expect(component.columnWidth).toBe('120px');
+        });
+
+        it('setColumnWidth sets the width on a single column by index', () => {
+            component.updateTreeGridData();
+            component.setColumnWidth(80, 0);
+            expect(component.configs().columns[0].width).toBe('80px');
+        });
+    });
+
+    describe('row drag and drop', () => {
+        it('onRowDragOverEvent accepts supported drag types', () => {
+            const ev: any = { dataTransfer: { types: ['nggrids-drag/json'] }, preventDefault: vi.fn() };
+            component.onRowDragOverEvent(ev);
+            expect(ev.dataTransfer.dropEffect).toBe('copy');
+            expect(ev.preventDefault).toHaveBeenCalled();
+        });
+
+        it('onRowDragOverEvent ignores unsupported drag types', () => {
+            const ev: any = { dataTransfer: { types: ['text/plain'] }, preventDefault: vi.fn() };
+            component.onRowDragOverEvent(ev);
+            expect(ev.preventDefault).not.toHaveBeenCalled();
+        });
+
+        it('onRowDropEvent forwards parsed records to the handler', () => {
+            const onRowDrop = vi.fn();
+            fixture.componentRef.setInput('onRowDrop', onRowDrop);
+            fixture.detectChanges();
+            const payload = JSON.stringify({ records: [{ id: 9 }], sourceGridName: 'g', sourceColumnId: 'c' });
+            const ev: any = {
+                preventDefault: vi.fn(),
+                dataTransfer: { getData: () => payload },
+                target: { closest: () => ({ getAttribute: () => '3' }) }
+            };
+            component.onRowDropEvent(ev);
+            expect(onRowDrop).toHaveBeenCalled();
+            expect(onRowDrop.mock.calls[0][0]).toEqual([{ id: 9 }]);
+            expect(onRowDrop.mock.calls[0][1]).toBe('3');
+        });
+
+        it('getTargetNodeId reads the cell-id attribute', () => {
+            const el = { closest: (sel: string) => sel === '[cell-id]' ? { getAttribute: () => '7' } : null };
+            expect(component.getTargetNodeId(el)).toBe('7');
+            expect(component.getTargetNodeId({ closest: () => null })).toBeNull();
+        });
+    });
+
+    it('addOrUpdateRowData warns on a misaligned row and makes no change', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => { /* noop */ });
+        const before = component.data().length;
+        component.addOrUpdateRowData(['only', 'two']);
+        expect(component.data().length).toBe(before);
+        expect(warn).toHaveBeenCalled();
+        warn.mockRestore();
+    });
+
+    it('svyOnInit populates designer sample data when in designer', () => {
+        const api: any = component.servoyApi();
+        vi.spyOn(api, 'isInDesigner').mockReturnValue(true);
+        component.svyOnInit();
+        expect(component._jsDataSet()[0]).toContain('id');
+    });
+
 });

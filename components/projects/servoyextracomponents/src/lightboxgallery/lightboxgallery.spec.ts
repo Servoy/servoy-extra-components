@@ -253,4 +253,144 @@ describe('ServoyExtraLightboxGallery', () => {
         expect(component.images().length).toBe(1);
         expect(component.images()[0].src).toBe('new1.jpg');
     });
+
+    function makeImagesFoundset(serverSize = 4, viewSize = 2) {
+        const rows: any[] = [];
+        for (let i = 0; i < viewSize; i++) {
+            rows.push({ image: { url: 'img' + i + '.jpg' }, thumbnail: { url: 'thumb' + i + '.jpg' }, caption: 'cap' + i, imageId: 'id' + i });
+        }
+        return {
+            serverSize,
+            hasMoreRows: false,
+            viewPort: { startIndex: 0, size: viewSize, rows },
+            loadExtraRecordsAsync: vi.fn().mockResolvedValue(undefined)
+        } as any;
+    }
+
+    it('createImages builds images from a foundset viewport', () => {
+        const fs = makeImagesFoundset(2, 2);
+        fixture.componentRef.setInput('imagesFoundset', fs);
+        fixture.detectChanges();
+        (component as any).createImages();
+        expect(component.images().length).toBe(2);
+        expect(component.images()[0].src).toBe('img0.jpg');
+        expect(component.images()[0].thumb).toBe('thumb0.jpg');
+        expect(component.images()[0].caption).toBe('cap0');
+    });
+
+    it('createImages skips rows without an image and counts null images', () => {
+        const fs = makeImagesFoundset(3, 3);
+        fs.viewPort.rows[1].image = null;
+        fixture.componentRef.setInput('imagesFoundset', fs);
+        fixture.detectChanges();
+        (component as any).createImages();
+        // one row had no image, so only 2 remain
+        expect(component.images().length).toBe(2);
+    });
+
+    it('onScroll loads more records when scrolled to the bottom and more are available', () => {
+        const fs = makeImagesFoundset(10, 2);
+        fixture.componentRef.setInput('imagesFoundset', fs);
+        fixture.componentRef.setInput('imageBatchSize', 5);
+        fixture.detectChanges();
+        const native = component['elementRef']()!.nativeElement as HTMLElement;
+        Object.defineProperty(native, 'scrollHeight', { value: 100, configurable: true });
+        Object.defineProperty(native, 'clientHeight', { value: 50, configurable: true });
+        Object.defineProperty(native, 'scrollTop', { value: 50, configurable: true });
+        component.onScroll();
+        expect(fs.loadExtraRecordsAsync).toHaveBeenCalledWith(5);
+    });
+
+    it('open warns when the requested index does not exist', () => {
+        const fs = makeImagesFoundset(2, 2);
+        fixture.componentRef.setInput('imagesFoundset', fs);
+        fixture.detectChanges();
+        (component as any).createImages();
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => { /* noop */ });
+        component.open(99);
+        expect(warn).toHaveBeenCalled();
+        warn.mockRestore();
+    });
+
+    it('open opens the lightbox for a valid index', () => {
+        const fs = makeImagesFoundset(2, 2);
+        fixture.componentRef.setInput('imagesFoundset', fs);
+        fixture.detectChanges();
+        (component as any).createImages();
+        const openSpy = vi.spyOn((component as any)._lightbox, 'open');
+        component.open(0);
+        expect(openSpy).toHaveBeenCalled();
+    });
+
+    it('close delegates to the lightbox', () => {
+        const closeSpy = vi.spyOn((component as any)._lightbox, 'close');
+        component.close();
+        expect(closeSpy).toHaveBeenCalled();
+    });
+
+    it('setHeight applies the responsive height in responsive layout', () => {
+        const api: any = component.servoyApi();
+        vi.spyOn(api, 'isInAbsoluteLayout').mockReturnValue(false);
+        fixture.componentRef.setInput('responsiveHeight', 333);
+        fixture.detectChanges();
+        component.setHeight();
+        expect(component['elementRef']()!.nativeElement.style.height).toBe('333px');
+    });
+
+    it('setHeight applies 100% when no responsive height is set', () => {
+        const api: any = component.servoyApi();
+        vi.spyOn(api, 'isInAbsoluteLayout').mockReturnValue(false);
+        fixture.componentRef.setInput('responsiveHeight', 0);
+        fixture.detectChanges();
+        component.setHeight();
+        expect(component['elementRef']()!.nativeElement.style.height).toBe('100%');
+    });
+
+    it('onKeyDown clicks the next button when the lightbox is open', () => {
+        const lb = document.createElement('div');
+        lb.className = 'fadeIn lightbox';
+        const next = document.createElement('a');
+        next.className = 'lb-next';
+        const clickSpy = vi.fn();
+        next.addEventListener('click', clickSpy);
+        lb.appendChild(next);
+        document.body.appendChild(lb);
+        component.onKeyDown(new KeyboardEvent('keydown', { code: 'ArrowRight' }));
+        expect(clickSpy).toHaveBeenCalled();
+        document.body.removeChild(lb);
+    });
+
+    it('onKeyDown clicks the prev button on ArrowLeft', () => {
+        const lb = document.createElement('div');
+        lb.className = 'fadeIn lightbox';
+        const prev = document.createElement('a');
+        prev.className = 'lb-prev';
+        const clickSpy = vi.fn();
+        prev.addEventListener('click', clickSpy);
+        lb.appendChild(prev);
+        document.body.appendChild(lb);
+        component.onKeyDown(new KeyboardEvent('keydown', { code: 'ArrowLeft' }));
+        expect(clickSpy).toHaveBeenCalled();
+        document.body.removeChild(lb);
+    });
+
+    it('refresh re-runs svyOnInit', () => {
+        const spy = vi.spyOn(component, 'svyOnInit');
+        component.refresh();
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('loadMoreData requests more records when the content fits and more exist', () => {
+        const fs = makeImagesFoundset(10, 2);
+        fixture.componentRef.setInput('imagesFoundset', fs);
+        fixture.componentRef.setInput('imageBatchSize', 5);
+        fixture.componentRef.setInput('maxImageHeight', 100);
+        fixture.detectChanges();
+        const native = component['elementRef']()!.nativeElement as HTMLElement;
+        Object.defineProperty(native, 'clientHeight', { value: 100, configurable: true });
+        Object.defineProperty(native, 'scrollHeight', { value: 100, configurable: true });
+        component.loadMoreData();
+        expect(fs.loadExtraRecordsAsync).toHaveBeenCalledWith(5);
+    });
+
 });

@@ -1053,4 +1053,211 @@ describe('ServoyExtraSidenav', () => {
             });
         });
     });
+
+    describe('navigation helpers and API', () => {
+        it('getNodeByIndexPath returns the root when the path is empty', () => {
+            expect(component.getNodeByIndexPath([], testMenu)).toBe(testMenu);
+        });
+
+        it('getNodeByIndexPath returns a top-level node for a single-element path', () => {
+            expect(component.getNodeByIndexPath([0], testMenu).id).toBe('dashboard');
+        });
+
+        it('getAllNodesToNodeId returns the ancestor chain including the node', () => {
+            const chain = component.getAllNodesToNodeId('user_list');
+            expect(chain.map((n: any) => n.id)).toEqual(['users', 'user_list']);
+        });
+
+        it('getNodeAnchestors excludes the node itself', () => {
+            const chain = component.getNodeAnchestors('user_list');
+            expect(chain.map((n: any) => n.id)).toEqual(['users']);
+        });
+
+        it('getParentNode returns the direct parent', () => {
+            expect(component.getParentNode('user_groups').id).toBe('users');
+            expect(component.getParentNode('dashboard')).toBeNull();
+        });
+
+        it('getNodeLevel returns the 1-based depth', () => {
+            expect(component.getNodeLevel('dashboard')).toBe(1);
+            expect(component.getNodeLevel('user_list')).toBe(2);
+            expect(component.getNodeLevel('does-not-exist')).toBeNull();
+        });
+
+        it('isNodeSelected checks a specific level and any level', () => {
+            component._selectedIndex.set({ 1: 'users', 2: 'user_list' });
+            expect(component.isNodeSelected('user_list', 2)).toBe(true);
+            expect(component.isNodeSelected('user_list', 1)).toBe(false);
+            expect(component.isNodeSelected('users', 0 as any)).toBe(true);
+        });
+
+        it('getSelectedNode returns the deepest selected node', () => {
+            component._selectedIndex.set({ 1: 'users', 2: 'user_list' });
+            expect(component.getSelectedNode(0).id).toBe('user_list');
+            expect(component.getSelectedNode(1).id).toBe('users');
+        });
+
+        it('getSelectedIndexPath returns the path of the selected node', () => {
+            component._selectedIndex.set({ 1: 'users', 2: 'user_groups' });
+            expect(component.getSelectedIndexPath(0)).toEqual([1, 1]);
+        });
+
+        it('clearSelectedIndex removes deeper levels', () => {
+            component._selectedIndex.set({ 1: 'users', 2: 'user_list' });
+            component.clearSelectedIndex(1);
+            expect(component._selectedIndex()[2]).toBeUndefined();
+            expect(component._selectedIndex()[1]).toBe('users');
+        });
+
+        it('clearExpandedIndex removes deeper levels', () => {
+            component._expandedIndex.set({ 1: 'users', 2: 'user_list' });
+            component.clearExpandedIndex(1);
+            expect(component._expandedIndex()[2]).toBeUndefined();
+        });
+
+        it('toggleExpandedItem expands then collapses a node', () => {
+            const event = new MouseEvent('click');
+            component.toggleExpandedItem(1, 1, testMenu[1], event);
+            expect(component.isNodeExpanded('users', 1)).toBe(true);
+            component.toggleExpandedItem(1, 1, testMenu[1], event);
+            expect(component.isNodeExpanded('users', 1)).toBe(false);
+        });
+
+        it('setSelectedByIndexPath selects the node at the given path', () => {
+            // createJSEvent uses jsdom initMouseEvent which rejects the window arg; stub it
+            component.createJSEvent = () => new MouseEvent('click');
+            component.setSelectedByIndexPath([1, 0], true);
+            expect(component._selectedIndex()[1]).toBe('users');
+            expect(component._selectedIndex()[2]).toBe('user_list');
+        });
+
+        it('getSidenavClass maps slidePosition and styleClass', () => {
+            fixture.componentRef.setInput('slidePosition', 'right');
+            fixture.componentRef.setInput('slideAnimation', 'collapse-menu');
+            fixture.componentRef.setInput('styleClass', 'extra1 extra2');
+            fixture.detectChanges();
+            const cls = component.getSidenavClass();
+            expect(cls['svy-sidenav-right']).toBe(true);
+            expect(cls['nav-collapse-menu']).toBe(true);
+            expect(cls['extra1']).toBe(true);
+            expect(cls['extra2']).toBe(true);
+        });
+
+        it('isDesignTime reflects servoyApi.isInDesigner', () => {
+            const api: any = component.servoyApi();
+            vi.spyOn(api, 'isInDesigner').mockReturnValue(true);
+            expect(component.isDesignTime()).toBe(true);
+        });
+
+        it('getContainerStyle sets a left margin for a left slide position', () => {
+            fixture.componentRef.setInput('slidePosition', 'left');
+            fixture.componentRef.setInput('sidenavWidth', 200);
+            fixture.detectChanges();
+            const api: any = component.servoyApi();
+            vi.spyOn(api, 'isInAbsoluteLayout').mockReturnValue(false);
+            const style = component.getContainerStyle();
+            expect(style.position).toBe('relative');
+            expect(style.marginLeft).toBe('200px');
+        });
+
+        it('getSidenavWidth returns the width for responsive layout', () => {
+            const api: any = component.servoyApi();
+            vi.spyOn(api, 'isInAbsoluteLayout').mockReturnValue(false);
+            fixture.componentRef.setInput('sidenavWidth', 250);
+            fixture.detectChanges();
+            expect(component.getSidenavWidth()).toBe(250);
+        });
+
+        it('getHeaderFormStyle sets a minHeight for an absolute header form', () => {
+            fixture.componentRef.setInput('headerForm', 'hdr');
+            fixture.detectChanges();
+            vi.spyOn((component as any).servoyPublic, 'getFormCacheByName').mockReturnValue({ absolute: true, size: { height: 60 } } as any);
+            expect(component.getHeaderFormStyle().minHeight).toBe('60px');
+        });
+
+        it('getFooterFormStyle sets a minHeight for an absolute footer form', () => {
+            fixture.componentRef.setInput('footerForm', 'ftr');
+            fixture.detectChanges();
+            vi.spyOn((component as any).servoyPublic, 'getFormCacheByName').mockReturnValue({ absolute: true, size: { height: 40 } } as any);
+            expect(component.getFooterFormStyle().minHeight).toBe('40px');
+        });
+
+        it('getForm/getHeaderForm/getFooterForm expose the real forms', () => {
+            component.realContainedForm.set('mainForm');
+            expect(component.getForm()).toBe('mainForm');
+            expect(component.getHeaderForm()).toBeUndefined();
+            expect(component.getFooterForm()).toBeUndefined();
+        });
+
+        it('findDuplicateIds returns the duplicated ids', () => {
+            const dupe = [
+                { id: 'x' }, { id: 'y' }, { id: 'x', menuItems: [{ id: 'z' }] }
+            ] as any;
+            expect((component as any).findDuplicateIds(dupe)).toEqual(['x']);
+        });
+
+        it('parseIndex parses a JSON string and passes through an object', () => {
+            expect((component as any).parseIndex('{"1":"a"}')).toEqual({ 1: 'a' });
+            expect((component as any).parseIndex({ 2: 'b' })).toEqual({ 2: 'b' });
+            expect((component as any).parseIndex(undefined)).toEqual({});
+        });
+
+        it('isMenuItemExpanded is true after expanding the node', () => {
+            component.expandItem(1, 1, testMenu[1], new MouseEvent('click'));
+            expect(component.isMenuItemExpanded('users')).toBe(true);
+        });
+
+        it('slideMenu fires onOpenToggled when the open state changes', () => {
+            const spy = vi.fn();
+            fixture.componentRef.setInput('onOpenToggled', spy);
+            fixture.detectChanges();
+            component._open.set(false);
+            component.slideMenu(new MouseEvent('click'));
+            expect(spy).toHaveBeenCalled();
+            expect(component._open()).toBe(true);
+        });
+    });
+
+    describe('servoyMenu copy', () => {
+        const makeMenu = (): any => ({
+            name: 'm',
+            styleClass: '',
+            items: [
+                { itemID: 'home', menuText: 'Home', enabled: true, isSelected: false, items: [] },
+                {
+                    itemID: 'grp', menuText: 'Group', enabled: true, isSelected: false,
+                    items: [{ itemID: 'leaf', menuText: 'Leaf', enabled: true, isSelected: true, items: [] }]
+                }
+            ],
+            setSelectedItem: vi.fn(),
+            pushDataProviderValue: vi.fn()
+        });
+
+        it('copyServoyMenu builds the menu and applies the server selection', async () => {
+            fixture.componentRef.setInput('menu', undefined);
+            const menu = makeMenu();
+            fixture.componentRef.setInput('servoyMenu', menu);
+            component.createJSEvent = () => new MouseEvent('click');
+            (component as any).copyServoyMenu();
+            expect(component['_menu']()!.length).toBe(2);
+            expect(component['_menu']()![1].menuItems.length).toBe(1);
+            expect(component['_selectedIndex']()).toEqual({ 1: 'grp', 2: 'leaf' });
+        });
+
+        it('copyServoyMenuItem maps the sidenav extra properties', () => {
+            const dest: any[] = [];
+            const src: any = {
+                itemID: 'i', menuText: 'Item', enabled: true, iconStyleClass: 'ic', styleClass: 'sc', tooltipText: 'tip',
+                extraProperties: { Sidenav: { isDivider: true, isHeading: false, badgeText: '3', badgeStyleClass: 'bg', formName: 'f', relationName: 'r', data: { a: 1 } } },
+                items: []
+            };
+            (component as any).copyServoyMenuItem(dest, src, 1, {});
+            expect(dest[0].id).toBe('i');
+            expect(dest[0].badgeText).toBe('3');
+            expect(dest[0].isDivider).toBe(true);
+            expect(dest[0].formName).toBe('f');
+            expect(dest[0].data).toEqual({ a: 1 });
+        });
+    });
+
 });

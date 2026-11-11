@@ -387,4 +387,121 @@ describe('ServoyExtraSelect2Tokenizer', () => {
             expect(spy).toHaveBeenCalledWith(true);
         });
     });
+
+    describe('additional behavior', () => {
+        beforeEach(async () => {
+            setDefaultInputs(fixture);
+            fixture.detectChanges();
+            await fixture.whenStable();
+        });
+
+        it('onDataChangeCallback adds ng-invalid for a string return value', () => {
+            component.onDataChangeCallback(null, 'error message');
+            expect(component.getNativeElement().classList.contains('ng-invalid')).toBe(true);
+        });
+
+        it('onDataChangeCallback adds ng-invalid for a false return value', () => {
+            component.onDataChangeCallback(null, false);
+            expect(component.getNativeElement().classList.contains('ng-invalid')).toBe(true);
+        });
+
+        it('onDataChangeCallback removes ng-invalid for a valid return value', () => {
+            component.onDataChangeCallback(null, false);
+            component.onDataChangeCallback(null, true);
+            expect(component.getNativeElement().classList.contains('ng-invalid')).toBe(false);
+        });
+
+        it('updateValue joins multiple string tokens with a newline', () => {
+            const spy = vi.fn();
+            component.dataProviderIDChange.subscribe(spy);
+            component.userChangedValue = true;
+            component.updateValue({ value: ['2', '3'], component: { isOpen: false } as any, options: [] } as any);
+            expect(spy).toHaveBeenCalledWith('2\n3');
+        });
+
+        it('updateValue does nothing when the user did not change the value', () => {
+            const spy = vi.fn();
+            component.dataProviderIDChange.subscribe(spy);
+            component.userChangedValue = false;
+            component.updateValue({ value: [2], component: { isOpen: false } as any, options: [] } as any);
+            expect(spy).not.toHaveBeenCalled();
+        });
+
+        it('updateValue closes the popup when closeOnSelect is true and it is open', () => {
+            const toggle = vi.fn();
+            component.userChangedValue = true;
+            component.updateValue({ value: ['2'], component: { isOpen: true, toggleOpenAndClose: toggle } as any, options: [] } as any);
+            expect(toggle).toHaveBeenCalled();
+        });
+
+        it('removedOption marks a user change and re-opens when openOnUnselect is set', () => {
+            const toggle = vi.fn();
+            component.updateValue = vi.fn();
+            component.removedOption({ value: [], component: { isOpen: false, toggleOpenAndClose: toggle } as any } as any);
+            expect(component.userChangedValue).toBe(true);
+            expect(toggle).toHaveBeenCalled();
+        });
+
+        it('isEnabled is false when not editable even if enabled', async () => {
+            fixture.componentRef.setInput('enabled', true);
+            fixture.componentRef.setInput('editable', false);
+            fixture.detectChanges();
+            expect(component.isEnabled()).toBe(false);
+        });
+
+        it('compareArrays returns false for different lengths and true for equal contents', () => {
+            const cmp = (component as any).compareArrays.bind(component);
+            expect(cmp([1, 2], [1])).toBe(false);
+            expect(cmp([1, 2], [1, 2])).toBe(true);
+            expect(cmp('x', [1])).toBe(false);
+        });
+
+        it('hasKeyListenerAttribute reflects the servoyAttributes keylistener key', () => {
+            expect(component.hasKeyListenerAttribute()).toBe(false);
+        });
+
+        it('setData skips null and empty real values', () => {
+            const vl = [
+                { displayValue: 'empty', realValue: '' },
+                { displayValue: 'nullish', realValue: null },
+                { displayValue: 'ok', realValue: 7 }
+            ] as any;
+            vl.hasRealValues = () => true;
+            vl.filterList = () => of([]);
+            vl.getDisplayValue = (v: any) => of(v + '');
+            fixture.componentRef.setInput('valuelistID', vl);
+            fixture.detectChanges();
+            component.setData();
+            expect(component.data().some(d => d.value === 7)).toBe(true);
+            expect(component.data().some(d => d.value === '')).toBe(false);
+        });
+
+        it('listOpened activates the popup and flags a user change', () => {
+            vi.useFakeTimers();
+            const activate = vi.spyOn((component as any).popupStateService, 'activatePopup');
+            component.listOpened({} as any);
+            expect(activate).toHaveBeenCalled();
+            expect(component.userChangedValue).toBe(true);
+            vi.runAllTimers();
+            vi.useRealTimers();
+        });
+
+        it('listClosed deactivates the popup and resets the user change flag', () => {
+            fixture.componentRef.setInput('selectOnClose', false);
+            fixture.detectChanges();
+            const deactivate = vi.spyOn((component as any).popupStateService, 'deactivatePopup');
+            component.userChangedValue = true;
+            component.listClosed({} as any);
+            expect(deactivate).toHaveBeenCalled();
+            expect(component.userChangedValue).toBe(false);
+        });
+
+        it('resetSearch re-filters the valuelist with an empty string', () => {
+            const spy = vi.spyOn(mockData, 'filterList');
+            component.resetSearch();
+            expect(spy).toHaveBeenCalledWith('');
+            spy.mockRestore();
+        });
+    });
+
 });

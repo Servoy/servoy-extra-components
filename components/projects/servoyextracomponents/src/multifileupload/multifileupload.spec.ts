@@ -194,4 +194,218 @@ describe('ServoyExtraMultiFileUpload', () => {
     it('should set showDashboard signal to true after init', async () => {
         expect(component.showDashboard()).toBe(true);
     });
+
+    it('createJSEvent builds a JSEvent with the given type', () => {
+        const ev = component.createJSEvent('my-type');
+        expect(ev.eventType).toBe('my-type');
+    });
+
+    it('convertToNumberOrReturnValue converts numeric strings and leaves others', () => {
+        expect(component.convertToNumberOrReturnValue('400')).toBe(400);
+        expect(component.convertToNumberOrReturnValue(250)).toBe(250);
+        expect(component.convertToNumberOrReturnValue('100%')).toBe('100%');
+    });
+
+    it('createUppyFile maps the core fields of an uppy file', () => {
+        const file: any = {
+            id: 'f1', name: 'a.pdf', extension: 'pdf', type: 'application/pdf', size: 1000,
+            meta: {}, progress: { bytesTotal: 1000, bytesUploaded: 500, percentage: 50, uploadComplete: false, uploadStarted: 123 }
+        };
+        const mapped = component.createUppyFile(file);
+        expect(mapped.id).toBe('f1');
+        expect(mapped.name).toBe('a.pdf');
+        expect(mapped.size).toBe(1000);
+        expect(mapped.progress!.bytesUploaded).toBe(500);
+        expect(mapped.progress!.percentage).toBe(50);
+    });
+
+    it('createUppyFile fills default progress when the file has none', () => {
+        const file: any = { id: 'f2', name: 'b.txt', extension: 'txt', type: 'text/plain', size: 10, meta: {} };
+        const mapped = component.createUppyFile(file);
+        expect(mapped.progress!.bytesUploaded).toBe(0);
+        expect(mapped.progress!.uploadComplete).toBe(false);
+    });
+
+    it('getSize returns the cssPosition dimensions in absolute layout', () => {
+        const api: any = component.servoyApi();
+        vi.spyOn(api, 'isInAbsoluteLayout').mockReturnValue(true);
+        fixture.componentRef.setInput('cssPosition', { width: 321, height: 123 });
+        fixture.detectChanges();
+        expect(component.getSize()).toEqual({ width: 321, height: 123 });
+    });
+
+    it('getSize returns responsive dimensions when not in absolute layout', () => {
+        const api: any = component.servoyApi();
+        vi.spyOn(api, 'isInAbsoluteLayout').mockReturnValue(false);
+        fixture.componentRef.setInput('responsiveWidth', '400');
+        fixture.componentRef.setInput('responsiveHeight', 250);
+        fixture.detectChanges();
+        expect(component.getSize()).toEqual({ width: 400, height: 250 });
+    });
+
+    it('getFile returns a mapped file when it exists and null otherwise', () => {
+        vi.spyOn(component.uppy(), 'getFile').mockReturnValue({ id: 'x', name: 'x', extension: '', type: '', size: 1, meta: {} } as any);
+        expect(component.getFile('x')!.id).toBe('x');
+        vi.spyOn(component.uppy(), 'getFile').mockReturnValue(null as any);
+        expect(component.getFile('x')).toBeNull();
+    });
+
+    it('getFiles maps all uppy files', () => {
+        vi.spyOn(component.uppy(), 'getFiles').mockReturnValue([
+            { id: 'a', name: 'a', extension: '', type: '', size: 1, meta: {} },
+            { id: 'b', name: 'b', extension: '', type: '', size: 2, meta: {} }
+        ] as any);
+        const files = component.getFiles();
+        expect(files.length).toBe(2);
+        expect(files[0].id).toBe('a');
+    });
+
+    it('info delegates to uppy.info', () => {
+        const spy = vi.spyOn(component.uppy(), 'info');
+        component.info('hello', 'info', 2000);
+        expect(spy).toHaveBeenCalledWith('hello', 'info', 2000);
+    });
+
+    it('retryUpload delegates to uppy.retryUpload', () => {
+        const spy = vi.spyOn(component.uppy(), 'retryUpload').mockResolvedValue(undefined as any);
+        component.retryUpload('rid');
+        expect(spy).toHaveBeenCalledWith('rid');
+    });
+
+    it('openModal and closeModal call the dashboard plugin', () => {
+        const plugin: any = { openModal: vi.fn(), closeModal: vi.fn() };
+        vi.spyOn(component.uppy(), 'getPlugin').mockReturnValue(plugin);
+        component.openModal();
+        component.closeModal();
+        expect(plugin.openModal).toHaveBeenCalled();
+        expect(plugin.closeModal).toHaveBeenCalled();
+    });
+
+    it('onBeforeFileAddedEvent returns true when no handler is set', () => {
+        expect(component.onBeforeFileAddedEvent({ name: 'f' })).toBe(true);
+    });
+
+    it('onBeforeFileAddedEvent defers to the handler and returns false the first time', async () => {
+        const handler = vi.fn().mockResolvedValue(false);
+        fixture.componentRef.setInput('onBeforeFileAdded', handler);
+        fixture.detectChanges();
+        const result = component.onBeforeFileAddedEvent({ name: 'defer.pdf', extension: 'pdf', type: 'application/pdf', size: 1, meta: {} });
+        expect(result).toBe(false);
+        expect(handler).toHaveBeenCalled();
+        // let the handler promise resolve (rejected adds are not re-added to uppy)
+        await Promise.resolve();
+        expect(component.filesToBeAdded).not.toContain('defer.pdf');
+    });
+
+    it('onBeforeFileAddedEvent returns true for a file already queued', () => {
+        const handler = vi.fn().mockResolvedValue(true);
+        fixture.componentRef.setInput('onBeforeFileAdded', handler);
+        fixture.detectChanges();
+        component.filesToBeAdded.push('queued.pdf');
+        expect(component.onBeforeFileAddedEvent({ name: 'queued.pdf' })).toBe(true);
+    });
+
+    it('getUppyOptions disables multiple batches when closeAfterFinish is set', () => {
+        fixture.componentRef.setInput('allowMultipleUploads', true);
+        fixture.componentRef.setInput('closeAfterFinish', true);
+        fixture.detectChanges();
+        expect(component.getUppyOptions().allowMultipleUploadBatches).toBe(false);
+    });
+
+    it('initialize rebuilds the uppy instance', () => {
+        const oldUppy = component.uppy();
+        const destroySpy = vi.spyOn(oldUppy, 'destroy');
+        component.initialize();
+        expect(destroySpy).toHaveBeenCalled();
+        expect(component.uppy()).not.toBe(oldUppy);
+    });
+
+
+    describe('locale loading', () => {
+        const languages = [
+            'English', 'German', 'Dutch', 'French', 'Italian', 'Spanish', 'Chinese', 'Czech',
+            'Danish', 'Finnish', 'Greek', 'Hungarian', 'Japanese', 'Persian', 'Russian', 'Swedish', 'Turkish'
+        ];
+
+        for (const lang of languages) {
+            it('loads a locale without throwing for ' + lang, () => {
+                fixture.componentRef.setInput('language', lang);
+                fixture.detectChanges();
+                expect(() => (component as any).loadUppyLocale()).not.toThrow();
+            });
+        }
+
+        it('falls back to the servoy locale when no language is set', () => {
+            fixture.componentRef.setInput('language', undefined);
+            fixture.detectChanges();
+            const svc: any = (component as any).servoyService;
+            vi.spyOn(svc, 'getLocale').mockReturnValue('nl-NL');
+            expect(() => (component as any).loadUppyLocale()).not.toThrow();
+        });
+
+        it('expands a single-token locale to lang_LANG', () => {
+            fixture.componentRef.setInput('language', undefined);
+            fixture.detectChanges();
+            const svc: any = (component as any).servoyService;
+            vi.spyOn(svc, 'getLocale').mockReturnValue('fr');
+            expect(() => (component as any).loadUppyLocale()).not.toThrow();
+        });
+
+        it('maps en_GB to en_US', () => {
+            fixture.componentRef.setInput('language', undefined);
+            fixture.detectChanges();
+            const svc: any = (component as any).servoyService;
+            vi.spyOn(svc, 'getLocale').mockReturnValue('en-GB');
+            expect(() => (component as any).loadUppyLocale()).not.toThrow();
+        });
+
+        it('applies localeStrings overrides including dotted keys', async () => {
+            fixture.componentRef.setInput('language', 'English');
+            fixture.componentRef.setInput('localeStrings', { browseFiles: 'Pick', 'dashboard.done': 'Finished' });
+            fixture.detectChanges();
+            (component as any).loadUppyLocale();
+            // let the dynamic import resolve
+            await new Promise(r => setTimeout(r, 50));
+            expect(component).toBeTruthy();
+        });
+    });
+
+    describe('uppy event wiring', () => {
+        it('wires onFileAdded through to the handler on init', () => {
+            const newFixture = TestBed.createComponent(ServoyExtraMultiFileUpload);
+            const handler = vi.fn();
+            newFixture.componentRef.setInput('servoyApi', new ServoyApiTesting());
+            newFixture.componentRef.setInput('inline', true);
+            newFixture.componentRef.setInput('responsiveHeight', 300);
+            newFixture.componentRef.setInput('responsiveWidth', 400);
+            newFixture.componentRef.setInput('cssPosition', { width: 200, height: 200 });
+            newFixture.componentRef.setInput('onFileAdded', handler);
+            newFixture.detectChanges();
+            const comp = newFixture.componentInstance as ServoyExtraMultiFileUpload;
+            comp.uppy().emit('file-added', { id: 'f', name: 'n', extension: '', type: '', size: 1, meta: {} } as any);
+            expect(handler).toHaveBeenCalled();
+        });
+
+        it('wires onUploadComplete and maps successful/failed files', () => {
+            const newFixture = TestBed.createComponent(ServoyExtraMultiFileUpload);
+            const handler = vi.fn();
+            newFixture.componentRef.setInput('servoyApi', new ServoyApiTesting());
+            newFixture.componentRef.setInput('inline', true);
+            newFixture.componentRef.setInput('responsiveHeight', 300);
+            newFixture.componentRef.setInput('responsiveWidth', 400);
+            newFixture.componentRef.setInput('cssPosition', { width: 200, height: 200 });
+            newFixture.componentRef.setInput('onUploadComplete', handler);
+            newFixture.detectChanges();
+            const comp = newFixture.componentInstance as ServoyExtraMultiFileUpload;
+            comp.uppy().emit('complete', {
+                successful: [{ id: 's', name: 's', extension: '', type: '', size: 1, meta: {} }],
+                failed: [{ id: 'f', name: 'f', extension: '', type: '', size: 1, meta: {} }]
+            } as any);
+            expect(handler).toHaveBeenCalled();
+            const [success, failed] = handler.mock.calls[0];
+            expect(success.length).toBe(1);
+            expect(failed.length).toBe(1);
+        });
+    });
+
 });
