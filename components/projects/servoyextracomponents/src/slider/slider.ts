@@ -244,7 +244,7 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
         const numberFormat = this.numberFormat();
         if (numberFormat && numberFormat.type === 'NUMBER') {
             const format = new Format();
-            format.display = numberFormat;
+            format.display = numberFormat.display;
             format.type = 'NUMBER';
             return this.formatService.format(value, format, false);
         }
