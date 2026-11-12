@@ -48,7 +48,7 @@ var dataChangeOnSlideEnd;
 var numberFormat;
 
 /**
- * Can be given a function code as string that can be used to format numbers client side.
+ * Can be given as function code - as string - that can be used to format numbers client side. This overrides 'numberFormat' if both are set.
  */
 var formattingFunction;
 

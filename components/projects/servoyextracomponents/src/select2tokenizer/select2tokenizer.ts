@@ -174,7 +174,7 @@ export class ServoyExtraSelect2Tokenizer extends ServoyBaseComponent<HTMLDivElem
         }
     }
 
-    onDataChangeCallback(event: any, returnval: any) {
+    onDataChangeCallback(_event: any, returnval: any) {
         const stringValue = (typeof returnval === 'string' || returnval instanceof String);
         if (returnval === false || stringValue) {
             //this.renderer.removeClass( this.select2, 'ng-valid' );
