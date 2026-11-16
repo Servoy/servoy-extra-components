@@ -82,6 +82,16 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
         this.setNewOptions('floor', this.floor());
     }
 
+    ngAfterViewInit() {
+        super.ngAfterViewInit();
+        // ngx-slider turns on its class.animate host binding in a setTimeout queued from its own
+        // ngAfterViewInit, without notifying Angular. Under zoneless change detection nothing
+        // re-renders that binding, so the dev-mode no-changes check reports NG0100 (SVY-21678).
+        // The child's timeout is queued before this one, so marking this view for check here
+        // lets a real change detection pass pick up the new class value.
+        setTimeout(() => this.cdRef.markForCheck());
+    }
+
     svyOnChanges(changes: SimpleChanges) {
         if (changes) {
             for (const property of Object.keys(changes)) {
@@ -239,13 +249,16 @@ export class ServoyExtraSlider extends ServoyBaseComponent<HTMLDivElement> {
             return this.formattingFunctionParsed(value, label);
         }
         const numberFormat = this.numberFormat();
-        if (numberFormat && numberFormat.type === 'NUMBER') {
+        // only delegate to the FormattingService when display is a usable format string;
+        // a non-string / missing display would throw "patchedFormat.indexOf is not a function"
+        // inside formatNumbers (SVY-21678)
+        if (numberFormat && numberFormat.type === 'NUMBER' && typeof numberFormat.display === 'string') {
             const format = new Format();
             format.display = numberFormat.display;
             format.type = 'NUMBER';
             return this.formatService.format(value, format, false);
         }
-        return value.toString();
+        return value?.toString() ?? '';
     }
 
     onUserChangeStart(changeContext: ChangeContext) {

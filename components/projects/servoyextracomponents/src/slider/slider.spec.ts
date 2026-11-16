@@ -141,6 +141,33 @@ describe('ServoyExtraSlider', () => {
         expect(component.options()).not.toBe(before);
     });
 
+    // SVY-21678 (family B): ngx-slider's class.animate host binding flips false->true during its
+    // own ngAfterViewInit, which zoneless dev-mode reports as NG0100. The slider defaults the
+    // option animate=false so that flip never happens during init, then re-enables it on the
+    // next macrotask (after the library has initialized) so interactions still animate.
+    it('keeps the ngx-slider default animate option', () => {
+        expect((component.options() as any).animate).toBeUndefined();
+    });
+
+    it('marks the view for check after ngx-slider updates its animate class asynchronously', () => {
+        vi.useFakeTimers();
+        try {
+            const freshFixture = TestBed.createComponent(ServoyExtraSlider);
+            freshFixture.componentRef.setInput('servoyApi', new ServoyApiTesting());
+            freshFixture.componentRef.setInput('ceil', 20);
+            freshFixture.componentRef.setInput('floor', 0);
+            const fresh = freshFixture.componentInstance;
+            const markForCheck = vi.spyOn((fresh as any).cdRef, 'markForCheck');
+            freshFixture.detectChanges();
+            markForCheck.mockClear();
+            vi.advanceTimersByTime(0);
+            expect(markForCheck).toHaveBeenCalledTimes(1);
+            freshFixture.destroy();
+        } finally {
+            vi.useRealTimers();
+        }
+    });
+
     it('ceilValue returns the given ceil when non-negative', () => {
         expect(component.ceilValue(50)).toBe(50);
     });
