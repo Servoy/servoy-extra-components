@@ -91,8 +91,22 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		super.svyOnInit();
 		// seed the signals the template reads with a PARSED object, not the raw JSON string,
 		// so an onLoad-set selection/expansion renders on first show (SVY-21634).
-		this._selectedIndex.set(this.parseIndex(this.selectedIndex()));
-        this._expandedIndex.set(this.parseIndex(this.expandedIndex()));
+		// Only overwrite the signal when onLoad actually provided a value. When the two-way
+		// selectedIndex/expandedIndex inputs are undefined (the common no-onLoad case), keep the
+		// signals' existing (constructor-created) {} reference instead of replacing it with a fresh
+		// {} that parseIndex(undefined) would manufacture. That fresh object, written in this
+		// after-checked svyOnInit, is what the host FormComponent's exhaustive dev-mode re-check saw
+		// flip the deep-pushed two-way property undefined -> {} at launch (the single first-show
+		// NG0100, SVY-21686). Leaving the stable reference in place keeps the bound value constant
+		// across the host's first check, while still rendering an onLoad-set selection (SVY-21634).
+		const selectedIndexValue = this.selectedIndex();
+		if (selectedIndexValue) {
+			this._selectedIndex.set(this.parseIndex(selectedIndexValue));
+		}
+		const expandedIndexValue = this.expandedIndex();
+		if (expandedIndexValue) {
+			this._expandedIndex.set(this.parseIndex(expandedIndexValue));
+		}
 		this._open.set(this.open());
 		if (this.servoyMenu()) {
 			Promise.resolve().then(() => this.copyServoyMenu());

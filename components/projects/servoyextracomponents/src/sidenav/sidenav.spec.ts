@@ -659,6 +659,85 @@ describe('ServoyExtraSidenav', () => {
         });
     });
 
+    describe('first-show servoyMenu NG0100 (SVY-21686)', () => {
+        // The ticket's exact case: a servoyMenu is present, NO item carries isSelected, and the
+        // onLoad two-way selectedIndex/expandedIndex strings are NOT set (left undefined). Pre-fix,
+        // svyOnInit seeded _selectedIndex/_expandedIndex with a fresh parseIndex(undefined) -> {},
+        // flipping the host-bound two-way property undefined -> {} inside the after-checked
+        // svyOnInit, which the host FormComponent's exhaustive dev-mode re-check saw as a single
+        // launch NG0100. The fix keeps the stable constructor {} reference when the input is
+        // undefined (does not manufacture a new one). This test guards that stable reference.
+        const makeUnselectedServoyMenuNoOnLoad = (): any => ({
+            name: 'mainMenu',
+            styleClass: '',
+            items: [
+                { itemID: 'home', menuText: 'Home', enabled: true, isSelected: false, items: [] },
+                { itemID: 'customers', menuText: 'Customers', enabled: true, isSelected: false, items: [] },
+                { itemID: 'orders', menuText: 'Orders', enabled: true, isSelected: false, items: [] }
+            ],
+            setSelectedItem: vi.fn(),
+            pushDataProviderValue: vi.fn()
+        });
+
+        let originalCreateJSEvent: typeof component.createJSEvent;
+
+        beforeEach(async () => {
+            // this is the servoyMenu-driven first-show path, so drop the plain menu input and leave
+            // selectedIndex/expandedIndex unset (undefined) - the ticket's no-onLoad-index case.
+            fixture.componentRef.setInput('menu', undefined);
+            fixture.detectChanges();
+            await fixture.whenStable();
+            // copyServoyMenu's re-derivation can reach selectItem(..., null event) -> createJSEvent();
+            // jsdom's initMouseEvent rejects the global window arg, so return a plain click event
+            // (restored afterwards), mirroring the SVY-21654 suite.
+            originalCreateJSEvent = component.createJSEvent;
+            component.createJSEvent = () => new MouseEvent('click');
+        });
+
+        afterEach(() => {
+            component.createJSEvent = originalCreateJSEvent;
+        });
+
+        it('should keep the stable {} reference for _selectedIndex/_expandedIndex across the first show and not throw NG0100', async () => {
+            // capture the constructor-created {} references BEFORE the first-show seed. The fix must
+            // keep these exact references when the two-way inputs are undefined; pre-fix svyOnInit
+            // manufactured a fresh parseIndex(undefined) -> {} and replaced them (identity broken).
+            const selectedRefBefore = component['_selectedIndex']();
+            const expandedRefBefore = component['_expandedIndex']();
+            expect(selectedRefBefore).toEqual({});
+            expect(expandedRefBefore).toEqual({});
+
+            // present the servoyMenu with no isSelected item and no onLoad indexes, then run the real
+            // first-show lifecycle: svyOnInit seeds + schedules copyServoyMenu in a microtask.
+            fixture.componentRef.setInput('servoyMenu', makeUnselectedServoyMenuNoOnLoad());
+            expect(component.selectedIndex()).toBeUndefined();
+            expect(component.expandedIndex()).toBeUndefined();
+
+            component.svyOnInit();
+
+            // the seed must NOT have manufactured a fresh {} - same reference as construction.
+            expect(component['_selectedIndex']()).toBe(selectedRefBefore);
+            expect(component['_expandedIndex']()).toBe(expandedRefBefore);
+
+            // let the Promise.resolve().then(copyServoyMenu) microtask run.
+            await Promise.resolve();
+            await fixture.whenStable();
+
+            // after the microtask, with no isSelected item, the selection stays the same stable
+            // reference - copyServoyMenu must not have flipped it to a fresh {}.
+            expect(component['_selectedIndex']()).toBe(selectedRefBefore);
+            expect(component['_expandedIndex']()).toBe(expandedRefBefore);
+
+            // the first host check: the bound two-way values held one stable value (never
+            // undefined -> {}), so the exhaustive re-check must not throw ExpressionChanged (NG0100).
+            expect(() => fixture.detectChanges()).not.toThrow();
+
+            // and the stable reference survives that first detectChanges as well.
+            expect(component['_selectedIndex']()).toBe(selectedRefBefore);
+            expect(component['_expandedIndex']()).toBe(expandedRefBefore);
+        });
+    });
+
     describe('onLoad selection/expansion on first show (SVY-21634)', () => {
         // nav_nested/nav_states plain-menu path: 'customers' is a top-level item selected via the
         // two-way selectedIndex string; 'sales' is a top-level group expanded via expandedIndex.
