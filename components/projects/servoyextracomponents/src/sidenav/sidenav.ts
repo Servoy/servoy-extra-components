@@ -588,7 +588,10 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 			if (item.menuItems) { // expand the node if not leaf
 				if (!isItemAlreadySelected) { // expand the node if not isItemAlreadySelected
 					this.expandItem(level, index, item, event, preventExpandHandler);
-				} else if (!this.isMenuItemExpanded(item.id)) { // expand the node if if the node is not expanded
+				} else if (!this.isMenuItemExpanded(item.id) || this.applyingServerSelection) { // expand the node if if the node is not expanded
+					// a server-derived re-selection (servoyMenu sync) is not a user "click again to toggle":
+					// it must never collapse an already selected+expanded node, otherwise every ~1 Hz sync
+					// would flip the node expanded <-> collapsed (expandItem is a no-op when already expanded).
 					this.expandItem(level, index, item, event, preventExpandHandler);
 				} else { // collapse the node
 					this.collapseItem(level, index, item, event, preventExpandHandler);
@@ -1175,6 +1178,9 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 			// capture the selection the component currently holds so we can decide, after re-deriving
 			// it from the server menu, whether it actually changed (an unchanged menu sync is a no-op).
 			const previousSelectedIndex = this._selectedIndex();
+			// setSelectedIndex -> clearSelectedIndex deletes deeper levels from the previous object in place,
+			// so compare against a snapshot taken before the selection is re-derived.
+			const previousSnapshot = { ...previousSelectedIndex };
 			const selection = Object.keys(selectedNode);
 			if (selection && selection.length == 1) {
 				// this selection originates from the server's own servoyMenu; suppress the two-way
@@ -1195,7 +1201,12 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 			}
 			// if the server-derived selection is identical to what we already had, restore the
 			// previous reference so the signal value is stable and no needless re-render happens.
-			if (isEqual(previousSelectedIndex, this._selectedIndex())) {
+			if (previousSelectedIndex && isEqual(previousSnapshot, this._selectedIndex())) {
+				// put back any levels clearSelectedIndex removed from the previous object, then restore it
+				for (const level of Object.keys(previousSelectedIndex)) {
+					delete previousSelectedIndex[level];
+				}
+				Object.assign(previousSelectedIndex, previousSnapshot);
 				this._selectedIndex.set(previousSelectedIndex);
 			}
 			// signal writes already schedule the OnPush view; use markForCheck (not a forced

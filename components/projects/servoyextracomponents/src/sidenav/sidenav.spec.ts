@@ -625,6 +625,77 @@ describe('ServoyExtraSidenav', () => {
             expect(component['_selectedIndex']()).toEqual({ 1: 'orders' });
         });
 
+        it('should keep a server-selected parent with children expanded across repeated syncs (no expand/collapse toggle)', async () => {
+            const makeParentMenu = (): any => ({
+                name: 'mainMenu',
+                styleClass: '',
+                items: [
+                    {
+                        itemID: 'parent', menuText: 'Parent', enabled: true, isSelected: true,
+                        items: [{ itemID: 'child', menuText: 'Child', enabled: true, isSelected: false, items: [] }]
+                    }
+                ],
+                setSelectedItem: vi.fn(),
+                pushDataProviderValue: vi.fn()
+            });
+            const collapseSpy = vi.spyOn(component, 'collapseItem');
+
+            for (let i = 0; i < 5; i++) {
+                await syncServoyMenu(makeParentMenu());
+                // the re-derived server selection must never collapse the node
+                expect(collapseSpy).not.toHaveBeenCalled();
+                expect(component.isMenuItemExpanded('parent')).toBe(true);
+            }
+        });
+
+        it('should keep a stable _selectedIndex reference across syncs for an autoSelectFirstChildNode parent', async () => {
+            fixture.componentRef.setInput('autoSelectFirstChildNode', true);
+            const makeParentMenu = (): any => ({
+                name: 'mainMenu',
+                styleClass: '',
+                items: [
+                    {
+                        itemID: 'parent', menuText: 'Parent', enabled: true, isSelected: true,
+                        items: [{ itemID: 'child', menuText: 'Child', enabled: true, isSelected: false, items: [] }]
+                    }
+                ],
+                setSelectedItem: vi.fn(),
+                pushDataProviderValue: vi.fn()
+            });
+
+            await syncServoyMenu(makeParentMenu());
+            await syncServoyMenu(makeParentMenu());
+            const settled = component['_selectedIndex']();
+            expect(settled).toEqual({ 1: 'parent', 2: 'child' });
+
+            // further identical syncs must leave the very same object in the signal (no churn)
+            for (let i = 0; i < 3; i++) {
+                await syncServoyMenu(makeParentMenu());
+                expect(component['_selectedIndex']()).toBe(settled);
+            }
+        });
+
+        it('should still collapse a selected, expanded parent on a genuine user re-click', async () => {
+            const menu: any = {
+                name: 'mainMenu',
+                styleClass: '',
+                items: [
+                    {
+                        itemID: 'parent', menuText: 'Parent', enabled: true, isSelected: true,
+                        items: [{ itemID: 'child', menuText: 'Child', enabled: true, isSelected: false, items: [] }]
+                    }
+                ],
+                setSelectedItem: vi.fn(),
+                pushDataProviderValue: vi.fn()
+            };
+            await syncServoyMenu(menu);
+            expect(component.isMenuItemExpanded('parent')).toBe(true);
+
+            // user clicks the already selected + expanded parent again: toggle (collapse) must still work
+            component.selectItem(1, 0, component['_menu']()![0], new MouseEvent('click'), true, true);
+            expect(component.isMenuItemExpanded('parent')).toBe(false);
+        });
+
         // SVY-21634: a servoyMenu where NO item is isSelected, but the server also pushed the
         // two-way selectedIndex string. The copyServoyMenu no-isSelected branch must keep the
         // seeded selection instead of clearing it to {}. Distinct from the tests above which
