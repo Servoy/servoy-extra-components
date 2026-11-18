@@ -1348,6 +1348,13 @@ describe('ServoyExtraSidenav', () => {
             expect(component.isDesignTime()).toBe(true);
         });
 
+        it('isDesignTime stays false in the sample data render so the contained form is rendered, not its name', () => {
+            const api: any = component.servoyApi();
+            vi.spyOn(api, 'isInDesigner').mockReturnValue(false);
+            api.isInSampleDataMode = () => true;
+            expect(component.isDesignTime()).toBe(false);
+        });
+
         it('getContainerStyle sets a left margin for a left slide position', () => {
             fixture.componentRef.setInput('slidePosition', 'left');
             fixture.componentRef.setInput('sidenavWidth', 200);

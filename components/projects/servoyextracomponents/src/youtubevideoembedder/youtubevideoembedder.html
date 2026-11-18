@@ -1,4 +1,4 @@
-@if (!servoyApi().isInDesigner()) {
+@if (!isDesignMode()) {
   <iframe
     #element
     [width]="videoWidth()"
@@ -10,7 +10,7 @@
     allowfullscreen
   ></iframe>
 }
-@if (servoyApi().isInDesigner()) {
+@if (isDesignMode()) {
   <div  #element class="youtubevideoembedder-designer-container" [style.width.px]="videoWidth()" [style.height.px]="videoHeight()">
     <i class="fab fa-youtube fa-10x youtubevideoembedder-designer-icon"></i>
   </div>

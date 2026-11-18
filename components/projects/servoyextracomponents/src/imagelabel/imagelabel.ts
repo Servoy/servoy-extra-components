@@ -1,5 +1,6 @@
 import { Component, SimpleChanges, ChangeDetectionStrategy, input, signal } from '@angular/core';
 import { ServoyBaseComponent, ServoyPublicModule } from '@servoy/public';
+import { isInDesignerOrSampleData } from '../sampledata';
 
 @Component( {
     selector: 'servoyextra-imagelabel',
@@ -28,7 +29,7 @@ export class ServoyExtraImageLabel extends ServoyBaseComponent<HTMLImageElement>
     svyOnInit() {
         super.svyOnInit();
         this.attachHandlers();
-        if (this.servoyApi().isInDesigner()){
+        if (isInDesignerOrSampleData(this.servoyApi())){
             this.imageURL.set(this.designerURL);
         }
     }
@@ -63,7 +64,7 @@ export class ServoyExtraImageLabel extends ServoyBaseComponent<HTMLImageElement>
     }
 
     private updateImageURL( media: any ) {
-        if (!this.servoyApi().isInDesigner()){
+        if (!isInDesignerOrSampleData(this.servoyApi())){
             this.imageURL.set(media);
         }
     }

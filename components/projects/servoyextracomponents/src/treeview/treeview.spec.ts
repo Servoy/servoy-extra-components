@@ -481,11 +481,53 @@ describe('ServoyExtraTreeview', () => {
         warn.mockRestore();
     });
 
-    it('svyOnInit populates designer sample data when in designer', () => {
-        const api: any = component.servoyApi();
-        vi.spyOn(api, 'isInDesigner').mockReturnValue(true);
-        component.svyOnInit();
-        expect(component._jsDataSet()[0]).toContain('id');
+    describe('placeholder tree without a data set', () => {
+        let emptyFixture: ComponentFixture<ServoyExtraTreeview>;
+        let empty: ServoyExtraTreeview;
+
+        beforeEach(() => {
+            emptyFixture = TestBed.createComponent(ServoyExtraTreeview);
+            empty = emptyFixture.componentInstance;
+            emptyFixture.componentRef.setInput('servoyApi', new ServoyApiTesting());
+            emptyFixture.componentRef.setInput('jsDataSet', undefined);
+            emptyFixture.componentRef.setInput('styleClass', '');
+        });
+
+        it('stays empty at runtime', async () => {
+            emptyFixture.detectChanges();
+            await emptyFixture.whenStable();
+            expect(empty.isTreeReady()).toBe(false);
+            expect(empty.data().length).toBe(0);
+        });
+
+        it('shows the placeholder rows in the designer and keeps them after the first change cycle', async () => {
+            vi.spyOn(empty.servoyApi() as any, 'isInDesigner').mockReturnValue(true);
+            emptyFixture.detectChanges();
+            await emptyFixture.whenStable();
+            expect(empty.isTreeReady()).toBe(true);
+            expect(empty.data().length).toBe(5);
+        });
+
+        it('shows the placeholder rows in the sample data render', async () => {
+            const api: any = empty.servoyApi();
+            vi.spyOn(api, 'isInDesigner').mockReturnValue(false);
+            api.isInSampleDataMode = () => true;
+            emptyFixture.detectChanges();
+            await emptyFixture.whenStable();
+            expect(empty.isTreeReady()).toBe(true);
+            expect(empty.data().length).toBe(5);
+        });
+
+        it('replaces the placeholder once a real data set arrives', async () => {
+            vi.spyOn(empty.servoyApi() as any, 'isInDesigner').mockReturnValue(true);
+            emptyFixture.detectChanges();
+            await emptyFixture.whenStable();
+            emptyFixture.componentRef.setInput('jsDataSet', treeData);
+            emptyFixture.detectChanges();
+            await emptyFixture.whenStable();
+            expect(empty.data().length).toBe(treeData.length - 1);
+            expect(empty.data()[0].treeColumn.text).toBe('Main group');
+        });
     });
 
 });

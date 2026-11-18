@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { AngularTreeGridComponent } from '@servoy/angular-tree-grid';
 import { ServoyBaseComponent, ServoyPublicService, EventLike, JSEvent, LoggerFactory } from '@servoy/public';
 import { ServoyExtraTreeviewCellRenderer } from './cellrenderer';
+import { isInDesignerOrSampleData } from '../sampledata';
 
 @Component({
     selector: 'servoyextra-treeview',
@@ -34,6 +35,7 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     _jsDataSet = signal<any>(undefined);
 
     readonly isTreeReady = signal(false);
+    private placeholderShown = false;
     dblClickTimeout: any = null;
     rowID = null;
 
@@ -108,6 +110,10 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
                 const change = changes[property];
                 switch (property) {
                     case 'jsDataSet': {
+                        if (this.placeholderShown && !this.jsDataSet()) {
+                            break;
+                        }
+                        this.placeholderShown = false;
                         this._jsDataSet.set(this.jsDataSet());
                         if (this._jsDataSet()) {
                             if (this.isTreeReady()) {
@@ -147,16 +153,23 @@ export class ServoyExtraTreeview extends ServoyBaseComponent<HTMLDivElement> {
     }
 
     svyOnInit(): void {
-        if (this.servoyApi().isInDesigner()) {
-            this._jsDataSet.set([['id', 'pid', 'treeColumn', 'icon'],
-            [1, null, 'Main group', this.folderImgPath],
-            [2, null, 'Second group', this.folderImgPath],
-            [3, 2, 'Subgroup', this.folderImgPath],
-            [4, 3, 'Mark', this.fileImgPath],
-            [5, 1, 'George', this.fileImgPath]
-            ]);
+        if (!this.jsDataSet() && isInDesignerOrSampleData(this.servoyApi())) {
+            this.showPlaceholderData();
         }
         super.svyOnInit();
+    }
+
+    private showPlaceholderData() {
+        this.placeholderShown = true;
+        this._jsDataSet.set([['id', 'pid', 'treeColumn', 'icon'],
+        [1, null, 'Main group', this.folderImgPath],
+        [2, null, 'Second group', this.folderImgPath],
+        [3, 2, 'Subgroup', this.folderImgPath],
+        [4, 3, 'Mark', this.fileImgPath],
+        [5, 1, 'George', this.fileImgPath]
+        ]);
+        this.updateTreeGridData();
+        this.isTreeReady.set(true);
     }
 
     /**

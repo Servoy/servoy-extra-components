@@ -40,6 +40,17 @@ describe('ServoyExtraYoutubeVideoEmbedder', () => {
         expect(iframe.className).toContain('youtube-test');
     });
 
+    it('should render the placeholder and no iframe in the sample data render', async () => {
+        const api: any = fixture.componentInstance.servoyApi();
+        api.isInSampleDataMode = () => true;
+        fixture.componentRef.setInput('videoWidth', 100);
+        fixture.detectChanges();
+        await fixture.whenStable();
+
+        expect(fixture.nativeElement.querySelector('iframe')).toBeNull();
+        expect(fixture.nativeElement.querySelector('.youtubevideoembedder-designer-container')).not.toBeNull();
+    });
+
     it('should return a valid native element from getNativeElement()', () => {
         expect(fixture.componentInstance.getNativeElement()).not.toBeNull();
         expect(fixture.componentInstance.getNativeElement()).toBeInstanceOf(HTMLElement);

@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, SimpleChanges, inject, i
 import { LoggerFactory, ServoyBaseComponent, IFoundsetTree, ServoyPublicService, EventLike, JSEvent } from '@servoy/public';
 import { IActionMapping, ITreeOptions, TreeComponent, TreeNode } from '@ali-hm/angular-tree-component';
 import { TreeModule } from '@ali-hm/angular-tree-component';
+import { isInDesignerOrSampleData } from '../sampledata';
 
 
 
@@ -551,7 +552,7 @@ export class ServoyExtraDbtreeview extends ServoyBaseComponent<HTMLDivElement> i
 
     private initTree(): void {
         this.displayNodes.set([]);
-        if (this.servoyApi().isInDesigner()) {
+        if (isInDesignerOrSampleData(this.servoyApi())) {
             this.displayNodes.set([{ name: 'node1', image: this.fileImgPath },
                 { name: 'node2', image: this.fileImgPath },
                 { name: 'node3', image: this.fileImgPath }]);

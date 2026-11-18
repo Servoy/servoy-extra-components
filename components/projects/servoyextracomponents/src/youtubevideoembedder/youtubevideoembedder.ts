@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, SimpleChanges, inject, input, signal } from '@angular/core';
 import { ServoyBaseComponent, ServoyPublicModule } from '@servoy/public';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { isInDesignerOrSampleData } from '../sampledata';
 
 @Component({
     selector: 'servoyextra-youtubevideoembedder',
@@ -28,6 +29,10 @@ export class ServoyExtraYoutubeVideoEmbedder extends ServoyBaseComponent<HTMLIFr
 
     private sanitizer = inject(DomSanitizer);
     public readonly fullYoutubeURL = signal<SafeResourceUrl>(this.sanitizer.bypassSecurityTrustResourceUrl(''));
+
+    isDesignMode(): boolean {
+        return isInDesignerOrSampleData(this.servoyApi());
+    }
 
     svyOnChanges(changes: SimpleChanges) {
         if (changes) {

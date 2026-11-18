@@ -239,6 +239,15 @@ describe('ServoyExtraDbtreeview', () => {
         expect(component.displayNodes()[0].name).toBe('node1');
     });
 
+    it('initTree renders placeholder nodes in the sample data render', () => {
+        const api: any = component.servoyApi();
+        vi.spyOn(api, 'isInDesigner').mockReturnValue(false);
+        api.isInSampleDataMode = () => true;
+        (component as any).initTree();
+        expect(component.displayNodes().length).toBe(3);
+        expect(component.displayNodes()[0].name).toBe('node1');
+    });
+
     it('initTree builds display nodes from the foundsettree', () => {
         const api: any = component.servoyApi();
         vi.spyOn(api, 'isInDesigner').mockReturnValue(false);

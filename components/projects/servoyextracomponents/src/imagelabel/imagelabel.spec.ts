@@ -116,6 +116,51 @@ describe('ServoyExtraImageLabel', () => {
         expect(onRightClick).toHaveBeenCalled();
     });
 
+    describe('designer and sample data render', () => {
+        const placeholder = 'servoyextra/imagelabel/label.png';
+        let designFixture: ComponentFixture<ServoyExtraImageLabel>;
+        let design: ServoyExtraImageLabel;
+
+        const create = async (inDesigner: boolean, inSampleData: boolean) => {
+            designFixture = TestBed.createComponent(ServoyExtraImageLabel);
+            design = designFixture.componentInstance;
+            const api: any = new ServoyApiTesting();
+            api.isInDesigner = () => inDesigner;
+            if (inSampleData) api.isInSampleDataMode = () => true;
+            designFixture.componentRef.setInput('servoyApi', api);
+            designFixture.componentRef.setInput('enabled', true);
+            designFixture.componentRef.setInput('centerImage', true);
+            designFixture.componentRef.setInput('media', 'http://example.com/real.png');
+            designFixture.componentRef.setInput('styleClass', undefined);
+            designFixture.componentRef.setInput('tabSeq', undefined);
+            designFixture.detectChanges();
+            await designFixture.whenStable();
+        };
+
+        it('shows the placeholder image and ignores the media in the designer', async () => {
+            await create(true, false);
+            expect(design.imageURL()).toBe(placeholder);
+        });
+
+        it('shows the placeholder image and ignores the media in the sample data render', async () => {
+            await create(false, true);
+            expect(design.imageURL()).toBe(placeholder);
+        });
+
+        it('shows the media at runtime', async () => {
+            await create(false, false);
+            expect(design.imageURL()).toBe('http://example.com/real.png');
+        });
+
+        it('keeps the runtime centering in the sample data render but not in the designer', async () => {
+            await create(false, true);
+            expect(designFixture.nativeElement.querySelector('img').classList.contains('svy-extra-imagelabel-center')).toBe(true);
+            designFixture.destroy();
+            await create(true, false);
+            expect(designFixture.nativeElement.querySelector('img').classList.contains('svy-extra-imagelabel-center')).toBe(false);
+        });
+    });
+
     it('should update imageURL signal when media changes', async () => {
         fixture.componentRef.setInput('media', 'http://example.com/image.png');
         fixture.detectChanges();
