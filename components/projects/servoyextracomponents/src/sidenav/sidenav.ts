@@ -1186,9 +1186,13 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 				} finally {
 					this.applyingServerSelection = false;
 				}
+			} else if (!this.isSelectionInMenu(previousSelectedIndex, this._menu()!)) {
+				// no isSelected item in the JSMenu: keep the selection already seeded from the selectedIndex
+				// input (SVY-21634) and do NOT clear it to {} just because the menu carries no isSelected -
+				// but drop it when an item it points to is gone from the rebuilt menu, otherwise a stale
+				// highlight / 'already selected' state survives the rebuild.
+				this._selectedIndex.set({});
 			}
-			// else: no isSelected item in the JSMenu — keep the selection already seeded from the
-			// selectedIndex input (SVY-21634); do NOT clear to {} and race the server push.
 			// if the server-derived selection is identical to what we already had, restore the
 			// previous reference so the signal value is stable and no needless re-render happens.
 			if (isEqual(previousSelectedIndex, this._selectedIndex())) {
@@ -1225,6 +1229,10 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 			}
 		}
 		destination.push(menuItem);
+	}
+
+	private isSelectionInMenu(selectedIndex: any, menu: MenuItem[]): boolean {
+		return Object.values(selectedIndex ?? {}).every(id => !!this.getNodeById(id as string, menu));
 	}
 
 	updateSelectedNode(nodeId: string, nodes: MenuItem[], level: number) {

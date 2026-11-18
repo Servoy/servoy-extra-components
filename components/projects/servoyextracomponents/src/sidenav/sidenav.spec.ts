@@ -657,6 +657,55 @@ describe('ServoyExtraSidenav', () => {
             const customersItem = Array.from(items).find((el: any) => el.textContent.includes('Customers')) as HTMLElement;
             expect(customersItem.classList.contains('svy-navitem-selected')).toBe(true);
         });
+
+        // SVY-21634 review follow-up: the no-isSelected branch must not leave a stale selection behind
+        // when the rebuilt servoyMenu no longer contains the item the selection points to.
+        const makeMenuWithout = (...ids: string[]): any => ({
+            name: 'mainMenu',
+            styleClass: '',
+            items: ids.map(id => ({ itemID: id, menuText: id, enabled: true, isSelected: false, items: [] })),
+            setSelectedItem: vi.fn(),
+            pushDataProviderValue: vi.fn()
+        });
+
+        it('should clear the selection when the rebuilt servoyMenu no longer contains the selected item', async () => {
+            await syncServoyMenu(makeServoyMenu());
+            expect(component['_selectedIndex']()).toEqual({ 1: 'customers' });
+
+            // the server swaps in a menu without 'customers' and without any isSelected item
+            await syncServoyMenu(makeMenuWithout('home', 'orders'));
+            fixture.detectChanges();
+
+            expect(component['_selectedIndex']()).toEqual({});
+            const selected = fixture.nativeElement.querySelectorAll('.svy-navitem-selected');
+            expect(selected.length).toBe(0);
+        });
+
+        it('should keep the selection when the rebuilt servoyMenu still contains the selected item', async () => {
+            await syncServoyMenu(makeServoyMenu());
+            expect(component['_selectedIndex']()).toEqual({ 1: 'customers' });
+
+            // same item still present, none flagged isSelected: the seeded selection survives (SVY-21634)
+            await syncServoyMenu(makeMenuWithout('home', 'customers', 'orders'));
+
+            expect(component['_selectedIndex']()).toEqual({ 1: 'customers' });
+        });
+
+        it('should show the form of a re-added item after its selection was dropped with the menu', async () => {
+            await syncServoyMenu(makeServoyMenu());
+            await syncServoyMenu(makeMenuWithout('home', 'orders'));
+            expect(component['_selectedIndex']()).toEqual({});
+
+            const menu = makeMenuWithout('home', 'customers', 'orders');
+            menu.items[1].extraProperties = { Sidenav: { formName: 'customers_form' } };
+            await syncServoyMenu(menu);
+
+            const spy = vi.spyOn(component.servoyApi(), 'callServerSideApi');
+            component.selectItem(1, 1, component['_menu']()![1], new MouseEvent('click'), true);
+
+            // not treated as 'already selected', so the contained form is requested
+            expect(spy).toHaveBeenCalledWith('showForm', [undefined, 'customers']);
+        });
     });
 
     describe('first-show servoyMenu NG0100 (SVY-21686)', () => {
