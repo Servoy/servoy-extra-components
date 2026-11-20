@@ -1,5 +1,5 @@
 import {
-  ChangeDetectionStrategy, Component, OnChanges, OnDestroy, SimpleChanges, AfterContentInit,
+  ChangeDetectionStrategy, Component, OnChanges, SimpleChanges, AfterContentInit,
   ViewEncapsulation, inject,
   input,
   output,
@@ -22,11 +22,10 @@ import { BGPane } from './bg_pane.component';
     host: {
         '(document:pointerup)': 'pointerup($event)',
         '(pointermove)': 'pointermove($event)',
-        '(pointerdown)': 'pointerdown($event)',
-        '(window:resize)': 'onResize()'
+        '(pointerdown)': 'pointerdown($event)'
     }
 } )
-export class BGSplitter implements AfterContentInit , OnChanges , OnDestroy {
+export class BGSplitter implements AfterContentInit , OnChanges {
 
     readonly orientation = input('vertical');
     readonly divSize = input<number>(undefined as any);
@@ -47,7 +46,6 @@ export class BGSplitter implements AfterContentInit , OnChanges , OnDestroy {
     private drag = false;
     private handler;
     private initialAdjustScheduled = false;
-    private resizeTimeout: ReturnType<typeof setTimeout> | null = null;
 
     constructor() {
         this.handler = this.renderer.createElement( 'div' );
@@ -111,25 +109,6 @@ export class BGSplitter implements AfterContentInit , OnChanges , OnDestroy {
             }, { injector: this.injector });
         }
     }
-
-    ngOnDestroy() {
-        if (this.resizeTimeout) {
-            clearTimeout(this.resizeTimeout);
-            this.resizeTimeout = null;
-        }
-    }
-
-    onResize() {
-        if (this.resizeTimeout) {
-            clearTimeout(this.resizeTimeout);
-        }
-        this.resizeTimeout = setTimeout(() => this.recalculate(), 50);
-    }
-
-    recalculate() {
-        this.adjustLocation(undefined, this.divLocation());
-    }
-
 
     private adjustLocation(event?: PointerEvent,wantedPosition?: number) {
         const panes = this.panes();

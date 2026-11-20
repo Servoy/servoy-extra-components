@@ -178,74 +178,35 @@ describe('BGSplitter (SVY-21650 nested init width)', () => {
         });
     });
 
-    describe('window:resize corrective recalc (debounced 50ms)', () => {
-        it('recalculates against the current host width only after the 50ms debounce elapses', async () => {
+    describe('window resize leaves the divider where it is (SVY-21650 review)', () => {
+        // The init fix only needs the deferred first measurement. A window resize must not re-apply the
+        // raw divLocation input, because that input may not match a position the user dragged to.
+        it('keeps a dragged divider position when the window is resized', async () => {
             await mountAndSettle();
-
             const splitter = fixture.componentInstance.splitter()!;
-
-            vi.useFakeTimers();
-            const recalcSpy = vi.spyOn(splitter, 'recalculate');
-
-            // the host now reports a new (narrower) reference width after a reflow.
-            currentHostWidth = 1000;
-
-            splitter.onResize();
-            vi.advanceTimersByTime(49);
-            expect(recalcSpy).not.toHaveBeenCalled();
-
-            vi.advanceTimersByTime(1);
-            expect(recalcSpy).toHaveBeenCalledTimes(1);
-
             const panes = getPaneElements(fixture);
-            expect(parseInt(panes[0].style.width, 10)).toBe(Math.round(1000 * DIV_LOCATION));
-        });
 
-        it('coalesces a burst of resize events into a single recalc', async () => {
-            await mountAndSettle();
-
-            const splitter = fixture.componentInstance.splitter()!;
+            (splitter as any).drag = true;
+            splitter.pointermove({ clientX: 500, clientY: 0 } as any);
+            expect(parseInt(panes[0].style.width, 10)).toBe(500);
 
             vi.useFakeTimers();
-            const recalcSpy = vi.spyOn(splitter, 'recalculate');
+            currentHostWidth = 1000;
+            window.dispatchEvent(new Event('resize'));
+            vi.advanceTimersByTime(200);
 
-            splitter.onResize();
-            vi.advanceTimersByTime(20);
-            splitter.onResize();
-            vi.advanceTimersByTime(20);
-            splitter.onResize();
-            vi.advanceTimersByTime(50);
-
-            expect(recalcSpy).toHaveBeenCalledTimes(1);
+            expect(parseInt(panes[0].style.width, 10)).toBe(500);
         });
-    });
 
-    describe('recalculate does not emit onDividerChange', () => {
-        it('does not push a new divider location when only the reference box changed', async () => {
+        it('does not emit onDividerChange when the window is resized', async () => {
             await mountAndSettle();
-
-            const splitter = fixture.componentInstance.splitter()!;
             fixture.componentInstance.dividerChanges = [];
-            splitter.recalculate();
+
+            vi.useFakeTimers();
+            window.dispatchEvent(new Event('resize'));
+            vi.advanceTimersByTime(200);
 
             expect(fixture.componentInstance.dividerChanges).toHaveLength(0);
-        });
-    });
-
-    describe('resize timeout cleared on destroy', () => {
-        it('does not run a pending recalc after the component is destroyed', async () => {
-            await mountAndSettle();
-
-            const splitter = fixture.componentInstance.splitter()!;
-
-            vi.useFakeTimers();
-            const recalcSpy = vi.spyOn(splitter, 'recalculate');
-
-            splitter.onResize();
-            splitter.ngOnDestroy();
-            vi.advanceTimersByTime(100);
-
-            expect(recalcSpy).not.toHaveBeenCalled();
         });
     });
 
