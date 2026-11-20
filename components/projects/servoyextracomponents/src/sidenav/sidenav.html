@@ -50,7 +50,7 @@
               </a>
             }
             <!-- Second List -->
-            @if (isNodeExpanded(item.id, 1) || item.isHeading) {
+            @if (isNodeExpanded(item.id, 1)) {
               <ul class="svy-sidenav-menu sn-level-2"
                 [class.svy-sidenav-collapsed]="isNodeExpanded(item.id, 1)"
                 >
@@ -79,7 +79,7 @@
                       </a>
                     }
                     <!-- Third List -->
-                    @if (isNodeExpanded(item2.id, 2) || item2.isHeading) {
+                    @if (isNodeExpanded(item2.id, 2)) {
                       <ul class="svy-sidenav-menu sn-level-3" [class.svy-sidenav-collapsed]="isNodeExpanded(item2.id, 2)"
                         >
                         @for (item3 of item2.menuItems; track (item3.id ? ("id_" + item3.id) : ("index_" + $index))) {
@@ -107,7 +107,7 @@
                               </a>
                             }
                             <!-- Fourth List -->
-                            @if (isNodeExpanded(item3.id, 3) || item3.isHeading) {
+                            @if (isNodeExpanded(item3.id, 3)) {
                               <ul class="svy-sidenav-menu sn-level-4" [class.svy-sidenav-collapsed]="isNodeExpanded(item3.id, 3)"
                                 >
                                 @for (item4 of item3.menuItems; track (item4.id ? ("id_" + item4.id) : ("index_" + $index))) {

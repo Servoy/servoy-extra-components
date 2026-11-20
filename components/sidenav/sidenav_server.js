@@ -462,6 +462,28 @@ function getNodeById(menuItemId, nodes) {
 }
 
 /**
+ * The first child of 'item' that is not itself a non-interactive heading (SVY-21636 code
+ * review): a heading used as a group label should never be picked as the "first child" to
+ * auto-select/auto-show for autoSelectFirstChildNode.
+ * @private
+ *
+ * @param {CustomType<servoyextra-sidenav.MenuItem>} item
+ *
+ * @return {CustomType<servoyextra-sidenav.MenuItem>}
+ * */
+function getFirstNonHeadingChild(item) {
+	if (!item.menuItems) {
+		return null;
+	}
+	for (var i = 0; i < item.menuItems.length; i++) {
+		if (!item.menuItems[i].isHeading) {
+			return item.menuItems[i];
+		}
+	}
+	return null;
+}
+
+/**
  * Returns the subtree at the Given path
  * Cost O(1) scan depth
  * @private
@@ -1041,7 +1063,10 @@ function selectItem(level, index, item, event, preventSelectHandler, preventExpa
 		if (item.menuItems && item.menuItems.length > 0 ) { // expand the node if not leaf
 			expandItem(level, index, item, event, preventExpandHandler); // TODO add collapsed argument
 			if ($scope.model.autoSelectFirstChildNode) {
-				newContainedForm = item.menuItems[0].formName;
+				var firstSelectableChild = getFirstNonHeadingChild(item);
+				if (firstSelectableChild) {
+					newContainedForm = firstSelectableChild.formName;
+				}
 			}
 		} else { // expand the parent node if is a leaf
 			var parentNode = $scope.api.getParentMenuItem(item.id);
@@ -1096,8 +1121,11 @@ function setSelectedIndex(level, index, item) {
 	} else {
 		newSelectedIndex[level] = item.id;
 	}
-	if ($scope.model.autoSelectFirstChildNode && item.menuItems && item.menuItems.length) {
-		newSelectedIndex[level + 1] = item.menuItems[0].id; // select first child
+	if ($scope.model.autoSelectFirstChildNode) {
+		var firstSelectableChild = getFirstNonHeadingChild(item);
+		if (firstSelectableChild) {
+			newSelectedIndex[level + 1] = firstSelectableChild.id; // select first non-heading child
+		}
 	}
 
 	// apply selected index
@@ -1137,6 +1165,13 @@ function isNodeSelected(nodeId, level) {
  * @return {Boolean}
  *  */
 function isNodeExpanded(nodeId, level) {
+	// a non-interactive heading is always expanded, regardless of expandedIndex and regardless
+	// of allowMultipleExpanded - it is never collapsed by selection elsewhere (SVY-21636 code
+	// review).
+	var node = getNodeById(nodeId, $scope.model.menu);
+	if (node && node.isHeading) {
+		return true;
+	}
 	var levels = $scope.model.expandedIndex ? JSON.parse($scope.model.expandedIndex) : {};
 	if (level) {
 		return isExpandedAt(levels[level], nodeId);

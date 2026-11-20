@@ -604,7 +604,8 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 			}
 
             // change containedForm
-            const itm = this.autoSelectFirstChildNode() && item.menuItems?.length && item.menuItems[0].formName ? item.menuItems[0] : item;
+            const firstSelectableChild = this.getFirstNonHeadingChild(item);
+            const itm = this.autoSelectFirstChildNode() && firstSelectableChild?.formName ? firstSelectableChild : item;
             if (itm.formName && !isItemAlreadySelected) {
                 const formToHide = this.containedForm();
                 const menuIDToShow = itm.id;
@@ -810,6 +811,15 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		return null;
 	}
 
+	/**
+	 * The first child of 'item' that is not itself a non-interactive heading (SVY-21636 code
+	 * review): a heading used as a group label should never be picked as the "first child" to
+	 * auto-select/auto-show for autoSelectFirstChildNode.
+	 */
+	private getFirstNonHeadingChild(item: MenuItem): MenuItem | undefined {
+		return item.menuItems?.find(child => !child.isHeading);
+	}
+
 	getNodeLevel(nodeId: string | number): any {
 		const path = this.getPathToNode(nodeId, this._menu()!);
 		if (path) {
@@ -865,8 +875,11 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 		} else {
 			newSelectedIndex[level] = item.id;
 		}
-        if (this.autoSelectFirstChildNode() && item.menuItems?.length) {
-            newSelectedIndex[level + 1] = item.menuItems[0].id; // select first child
+        if (this.autoSelectFirstChildNode()) {
+            const firstSelectableChild = this.getFirstNonHeadingChild(item);
+            if (firstSelectableChild) {
+                newSelectedIndex[level + 1] = firstSelectableChild.id; // select first non-heading child
+            }
         }
 		this._selectedIndex.set(newSelectedIndex);
 		if (!this.applyingServerSelection) {
@@ -1027,6 +1040,12 @@ export class ServoyExtraSidenav extends ServoyBaseComponent<HTMLDivElement> {
 	}
 
 	isNodeExpanded(nodeId: string | number, level?: number): boolean {
+		// a non-interactive heading is always expanded, regardless of _expandedIndex and
+		// regardless of allowMultipleExpanded - it is never collapsed by selection elsewhere
+		// (SVY-21636 code review).
+		if (this.getNodeById(nodeId, this._menu()!)?.isHeading) {
+			return true;
+		}
 		const levels = this._expandedIndex();
 		if (level) {
 			return this.isExpandedAt(levels[level], nodeId);

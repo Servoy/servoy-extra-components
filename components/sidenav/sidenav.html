@@ -60,8 +60,8 @@
 			
 					<!-- Second List -->
 					<ul class="svy-sidenav-menu sn-level-2" 
-						ng-class="_expandedIndex()[1] == item.id ? 'svy-sidenav-collapsed' : ''"
-						ng-if="_expandedIndex()[1] == item.id || item.isHeading"
+						ng-class="isNodeExpanded(item.id, 1) ? 'svy-sidenav-collapsed' : ''"
+						ng-if="isNodeExpanded(item.id, 1)"
 						>
 						<li ng-repeat="item2 in item.menuItems"
  							class="svy-sidenav-dropdown sn-level-2" 
@@ -79,8 +79,8 @@
 							</a>
 
 							<!-- Third List -->
-							<ul class="svy-sidenav-menu sn-level-3" ng-class="_expandedIndex()[2] == item2.id ? 'svy-sidenav-collapsed' : ''"
-								ng-if="_expandedIndex()[2] == item2.id || item2.isHeading"
+							<ul class="svy-sidenav-menu sn-level-3" ng-class="isNodeExpanded(item2.id, 2) ? 'svy-sidenav-collapsed' : ''"
+								ng-if="isNodeExpanded(item2.id, 2)"
 								>
 								<li ng-repeat="item3 in item2.menuItems"
  									class="svy-sidenav-dropdown sn-level-3" 
@@ -98,8 +98,8 @@
 									</a>
 		
 									<!-- Fourth List -->
-									<ul class="svy-sidenav-menu sn-level-4" ng-class="_expandedIndex()[3] == item3.id ? 'svy-sidenav-collapsed' : ''"
-										ng-if="_expandedIndex()[3] == item3.id || item3.isHeading"
+									<ul class="svy-sidenav-menu sn-level-4" ng-class="isNodeExpanded(item3.id, 3) ? 'svy-sidenav-collapsed' : ''"
+										ng-if="isNodeExpanded(item3.id, 3)"
 										>
 										<li ng-repeat="item4 in item3.menuItems"
 											class="svy-sidenav-dropdown sn-level-4" 

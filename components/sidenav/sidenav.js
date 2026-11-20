@@ -812,6 +812,12 @@ angular.module('servoyextraSidenav', ['servoy', 'ngAnimate']).directive('servoye
 				 * @return {Boolean}
 				 *  */
 				isNodeExpanded = function(nodeId, level) {
+					// a non-interactive heading is always expanded, regardless of expandedIndex
+					// (SVY-21636 code review).
+					var node = getNodeById(nodeId, $scope.model.menu);
+					if (node && node.isHeading) {
+						return true;
+					}
 					var levels = $scope.expandedIndex;
 					if (level) {
 						return levels[level] == nodeId;

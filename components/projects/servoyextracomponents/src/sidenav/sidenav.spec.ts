@@ -524,17 +524,109 @@ describe('ServoyExtraSidenav', () => {
             expect(selected[1]).toBeUndefined();
         });
 
-        it('should not expand a heading item via expandItem', () => {
-            const event = new MouseEvent('click');
-            expect(component.expandItem(1, 0, headingMenu[0], event)).toBe(false);
-            expect(component.isMenuItemExpanded('sales_heading')).toBe(false);
+        it('isNodeExpanded/isMenuItemExpanded should always report a heading as expanded', () => {
+            // a heading is always considered expanded regardless of _expandedIndex content
+            // (code review follow-up: visibility must not depend only on the template @if).
+            expect(component.isMenuItemExpanded('sales_heading')).toBe(true);
+            expect(component.isMenuItemExpanded('catalog_heading')).toBe(true);
         });
 
-        it('should not collapse an already-expanded heading item via collapseItem', () => {
-            component._expandedIndex.set({ 1: 'sales_heading' });
+        it('expandItem on a heading item is a no-op that reports already-expanded (true)', () => {
+            const event = new MouseEvent('click');
+            // isNodeExpanded short-circuits true for a heading, so expandItem's "already expanded"
+            // guard returns true without touching _expandedIndex - it never falls through to the
+            // isHeading-disabled branch.
+            expect(component.expandItem(1, 0, headingMenu[0], event)).toBe(true);
+            expect(component.isMenuItemExpanded('sales_heading')).toBe(true);
+        });
+
+        it('collapseItem cannot collapse a heading item, regardless of _expandedIndex content', () => {
             const event = new MouseEvent('click');
             expect(component.collapseItem(1, 0, headingMenu[0], event)).toBe(false);
             expect(component.isMenuItemExpanded('sales_heading')).toBe(true);
+
+            component._expandedIndex.set({ 1: 'sales_heading' });
+            expect(component.collapseItem(1, 0, headingMenu[0], event)).toBe(false);
+            expect(component.isMenuItemExpanded('sales_heading')).toBe(true);
+        });
+
+        it('a heading\'s children stay visible (svy-sidenav-collapsed applied) on first render, with no expandedIndex set', () => {
+            // code review: the @if gated the <ul> rendering, but [class.svy-sidenav-collapsed]
+            // must ALSO apply for a heading, or .svy-sidenav-menu's display:none hides the
+            // children even though the <ul> is in the DOM.
+            const salesList = fixture.nativeElement.querySelector('ul.svy-sidenav-menu.sn-level-2');
+            expect(salesList).toBeTruthy();
+            expect(salesList.classList.contains('svy-sidenav-collapsed')).toBe(true);
+        });
+
+        it('selecting a leaf under one heading leaves the other heading\'s children visible (allowMultipleExpanded off, default)', async () => {
+            expect(component.allowMultipleExpanded()).toBe(false);
+
+            const event = new MouseEvent('click');
+            // select a leaf under the SALES heading; with allowMultipleExpanded false,
+            // setExpandedIndex used to rebuild _expandedIndex from this leaf's ancestors only,
+            // which (pre-fix) made CATALOG's children disappear since they are not an ancestor.
+            component.selectItem(2, 0, headingMenu[0].menuItems[0], event);
+            fixture.detectChanges();
+            await fixture.whenStable();
+
+            const catalogList = fixture.nativeElement.querySelectorAll('ul.svy-sidenav-menu.sn-level-2')[1];
+            expect(catalogList).toBeTruthy();
+            expect(catalogList.classList.contains('svy-sidenav-collapsed')).toBe(true);
+            const catalogChildren = catalogList.querySelectorAll('.svy-sidenav-item.sn-level-2');
+            expect(catalogChildren.length).toBe(1);
+        });
+    });
+
+    describe('autoSelectFirstChildNode skips a heading used as first child (SVY-21636 code review)', () => {
+        let menuWithHeadingFirstChild: MenuItem[];
+
+        beforeEach(async () => {
+            menuWithHeadingFirstChild = [
+                {
+                    id: 'parent',
+                    text: 'Parent',
+                    enabled: true,
+                    menuItems: [
+                        {
+                            id: 'group_heading',
+                            text: 'GROUP',
+                            isHeading: true,
+                            enabled: true
+                        } as unknown as MenuItem,
+                        {
+                            id: 'first_real_child',
+                            text: 'First real child',
+                            formName: 'firstRealChildForm',
+                            enabled: true
+                        } as unknown as MenuItem
+                    ]
+                } as unknown as MenuItem
+            ];
+
+            fixture.componentRef.setInput('menu', menuWithHeadingFirstChild);
+            fixture.componentRef.setInput('autoSelectFirstChildNode', true);
+            fixture.detectChanges();
+            await fixture.whenStable();
+        });
+
+        it('should select the first non-heading child, not the heading, as the auto-selected child', () => {
+            const event = new MouseEvent('click');
+            component.selectItem(1, 0, menuWithHeadingFirstChild[0], event);
+
+            const selected = component['_selectedIndex']();
+            expect(selected[2]).toBe('first_real_child');
+        });
+
+        it('should auto-show the first non-heading child\'s form, not the heading', () => {
+            const servoyApi = component.servoyApi();
+            const spy = vi.spyOn(servoyApi, 'callServerSideApi');
+            const event = new MouseEvent('click');
+
+            component.selectItem(1, 0, menuWithHeadingFirstChild[0], event);
+
+            expect(spy).toHaveBeenCalledWith('showForm', [undefined, 'first_real_child']);
+            spy.mockRestore();
         });
     });
 
