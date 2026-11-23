@@ -68,3 +68,14 @@ jobs:
           name: coverage-${{ github.event.repository.name }}
           path: ${{ env.COMPONENT_DIR }}/coverage
           if-no-files-found: warn
+
+      # Sends the Cobertura report to the combined Servoy coverage job on Jenkins (master/coverage).
+      # Only master is reported there; a failed upload is a warning, never a failed build.
+      - name: Upload coverage to the combined Servoy coverage job (Jenkins)
+        if: ${{ !cancelled() && github.ref == 'refs/heads/master' && vars.JENKINS_COVERAGE_URL != '' }}
+        uses: Servoy/servoy-eclipse/.github/actions/upload-coverage@master
+        with:
+          jenkins-url: ${{ vars.JENKINS_COVERAGE_URL }}
+          trigger-token: ${{ secrets.JENKINS_COVERAGE_TOKEN }}
+          working-directory: ${{ env.COMPONENT_DIR }}
+          patterns: '*coverage/*cobertura-coverage.xml'
