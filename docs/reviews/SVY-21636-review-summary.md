@@ -1,13 +1,20 @@
 # SVY-21636 review summary — sidenav `isHeading`
 
-**Risk: ELEVATED.** Nothing existing regresses (everything new is gated on `isHeading`), but in the Angular client the headings are likely unstyled and their children likely hidden by CSS. Both were found by reading the code, not by running a browser.
+**Risk at review: ELEVATED.** Nothing existing regressed (everything new is gated on `isHeading`), but in the Angular client the headings were likely unstyled and their children likely hidden by CSS. Both were found by reading the code, not by running a browser.
 
-**Reviewed scope:** servoy-extra-components `09d1259`; skill4servoy `a4853b7` (docs only). Both on `master`.
+**Outcome:** the author fixed all four review points in `ec1bdeb` (2026-11-20). The issue was then resolved (Fixed) after a diff-only re-review. The suite, lint and a browser were not run during that re-review.
 
-**Release target:** INDETERMINATE. Jira Fix Version is `2026.12` (a core version). The fix is an extension-package change already in tag v2026.9.1 (master is now 2026.9.2), and Jira names no extension version.
+**Reviewed scope:** servoy-extra-components `09d1259` (original change) and `ec1bdeb` (follow-up fix); skill4servoy `a4853b7` (docs only). All on `master`.
+
+**Release target:** confirmed by the author. Jira Fix Version `2026.12` is a core version. The change was released in extension tag v2026.9.1, which is the intended target. `ec1bdeb` is on master and was not checked against a release tag.
+
+## What the follow-up fix changed (`ec1bdeb`)
+- `isNodeExpanded()` returns `true` for a heading in both the Angular and legacy runtimes. The templates use it for both the `@if` and the collapsed class, so heading children are visible and no longer depend on `expandedIndex`. This also covers `allowMultipleExpanded` off.
+- `.svy-sidenav-heading` was added to `components/projects/servoyextracomponents/assets/sidenav/svy-sidenav.css`, the file the NG client bundles.
+- `autoSelectFirstChildNode` skips a heading in first-child position (`getFirstNonHeadingChild()`), in both runtimes.
+- About 100 lines of Vitest were added, including a check that the collapsed class is present without `expandedIndex`.
 
 ## Manual test plan
-
 **Verifying the fix**
 1. From `components/`, run `npm run build` and deploy to `servoyExtraComponentExample`.
 2. Build a menu with two headings (SALES, CATALOG), each with two leaf children. Set the flag through `jsMenuItem.putExtraProperty('Sidenav','isHeading',true)` or `extraProperties.Sidenav.isHeading` in the `.mnu`. Also test plain `MenuItem[]` through `setRootMenuItems` with `isHeading: true`.
@@ -21,23 +28,22 @@
 
 **Regression checks**
 - A menu with no `isHeading` behaves as before: carets, expand/collapse, single-open accordion.
-- `allowMultipleExpanded` on and off, with ordinary parents next to headings.
-- `autoSelectFirstChildNode` on, with a parent whose first child is a leaf, then a heading.
+- `allowMultipleExpanded` on and off, with two headings: selecting a leaf under one must not hide the other heading's children.
+- `autoSelectFirstChildNode` on, with a parent whose first child is a leaf, then a heading (the heading should be skipped).
 - Select a leaf under a heading and check the heading `<li>` styling.
 - `isDivider` items still render and style as before.
 - A heading with `enabled: false`, and a heading with no children.
 - `setSelectedMenuItem(<headingId>)` from a script, then check `selectedIndex`.
 - Collapsed and slide-out sidenav modes (not assessed).
 
-**Automated checks:** from `components/`, run `npm run build`, `npm run lint` and `npx ng test @servoy/servoyextracomponents --no-watch --include "projects/servoyextracomponents/src/sidenav/sidenav.spec.ts"`. These cannot catch the two High risks below, because jsdom does not load the component CSS.
+**Automated checks:** from `components/`, run `npm run build`, `npm run lint` and `npx ng test @servoy/servoyextracomponents --no-watch --include "projects/servoyextracomponents/src/sidenav/sidenav.spec.ts"`.
 
 ## Possible improvements / follow-ups
-- **High, unverified in a browser:** the heading's child `<ul>` keeps `[class.svy-sidenav-collapsed]="isNodeExpanded(item.id, N)"` (`src/sidenav/sidenav.html:55, 83, 111`). `.svy-sidenav-menu` is `display:none` unless it has that class (`assets/sidenav/svy-sidenav.css:85-92`). Heading children are therefore probably hidden. The likely fix is `|| item.isHeading` in the class binding. The legacy template follows the same pattern.
-- **High, unverified in a browser:** `.svy-sidenav-heading` exists only in `components/sidenav/svy-sidenav.css:160`. It is missing from `components/projects/servoyextracomponents/assets/sidenav/svy-sidenav.css`, which the NG client imports through `assets/servoyextra.css:3`.
-- **Medium:** with `autoSelectFirstChildNode` on, `sidenav.ts:868-870` and `sidenav_server.js:1043-1045, 1099-1101` can select a heading that is first child.
-- **Medium:** `selectItem`, `expandItem` and `collapseItem` return `false` silently for headings, including the server selection sync and scripted calls.
+- **Performance (unmeasured):** `isNodeExpanded()` now calls `getNodeById` and walks the whole menu tree on every call, and the template calls it several times per item on each render. Large menus may render slower.
+- **Items without an id (untraced, low risk):** `getNodeById` matches on `id === nodeId`. A heading with no id could make `isNodeExpanded(undefined)` match it, so other id-less items might report as expanded.
+- **Medium:** `selectItem`, `expandItem` and `collapseItem` return `false` silently for headings, including the server selection sync and scripted calls. This is undocumented.
 - **Medium (product call):** selecting a leaf marks its heading ancestor as selected (left border and colour at level 1).
-- **Low:** heading and `isDivider` branches are not mutually exclusive. `tooltip`, `badgeText` and `iconStyleClass` are dropped silently on headings. The heading `<span>` has no role or aria label. Tests cover level-1 headings only.
-- **Docs:** skill4servoy `servoyextra-sidenav.md` says children are "always shown" and headings are muted labels. Both depend on the two High items. It also says "recent build" and could name v2026.9.1 or later.
+- **Low:** heading and `isDivider` branches are not mutually exclusive. `tooltip`, `badgeText` and `iconStyleClass` are dropped silently on headings. The heading `<span>` has no role or aria label. Tests mostly cover level-1 headings.
+- **Docs:** skill4servoy `servoyextra-sidenav.md` says "recent build" and could name v2026.9.1 or later. Its "always shown" and "muted label" claims depended on the two High items, which the follow-up addressed.
 - **Docs:** `AGENTS.md` says "Current version: 2026.6.0", but master is 2026.9.2.
 - **Security:** none found.
